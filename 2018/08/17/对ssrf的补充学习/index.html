@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   
-  <title>ssrf的补充学习 | Net-Zen | 简单 有趣</title>
+  <title>SSRF的初步学习 | Net-Zen | 简单 有趣</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   
   <meta name="theme-color" content="#3F51B5">
@@ -13,7 +13,7 @@
   <meta name="description" content="一直以来没有对于SSRF相关的漏洞做过深入的研究。之前做题基本靠猜。。。这次有机会接触到一道ssrf,顺便把之前对ssrf的了解好好补充一下。 #1. 概念SSRF(Server-side request forgery)即服务器端请求伪造。  这张高大上的网图中，可以看到防火墙只允许外部用户访问系统中的web服务，而系统中右边那一堆其他服务显然是外部用户无法触及到的。此时的小黑人想要攻击这些从外">
 <meta name="keywords" content="web安全,SSRF">
 <meta property="og:type" content="article">
-<meta property="og:title" content="ssrf的补充学习">
+<meta property="og:title" content="SSRF的初步学习">
 <meta property="og:url" content="https://www.penlab.me/2018/08/17/对ssrf的补充学习/index.html">
 <meta property="og:site_name" content="Net-Zen">
 <meta property="og:description" content="一直以来没有对于SSRF相关的漏洞做过深入的研究。之前做题基本靠猜。。。这次有机会接触到一道ssrf,顺便把之前对ssrf的了解好好补充一下。 #1. 概念SSRF(Server-side request forgery)即服务器端请求伪造。  这张高大上的网图中，可以看到防火墙只允许外部用户访问系统中的web服务，而系统中右边那一堆其他服务显然是外部用户无法触及到的。此时的小黑人想要攻击这些从外">
@@ -23,9 +23,9 @@
 <meta property="og:image" content="https://ws3.sinaimg.cn/large/006tNbRwly1fukpylqwn1j302s02s744.jpg">
 <meta property="og:image" content="https://ws2.sinaimg.cn/large/006tNbRwly1fukqhnpmxhj302s02sa9u.jpg">
 <meta property="og:image" content="https://ws3.sinaimg.cn/large/006tNbRwly1fukpzd2uttj302s02sa9x.jpg">
-<meta property="og:updated_time" content="2018-08-26T13:13:44.335Z">
+<meta property="og:updated_time" content="2018-08-26T13:18:28.006Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="ssrf的补充学习">
+<meta name="twitter:title" content="SSRF的初步学习">
 <meta name="twitter:description" content="一直以来没有对于SSRF相关的漏洞做过深入的研究。之前做题基本靠猜。。。这次有机会接触到一道ssrf,顺便把之前对ssrf的了解好好补充一下。 #1. 概念SSRF(Server-side request forgery)即服务器端请求伪造。  这张高大上的网图中，可以看到防火墙只允许外部用户访问系统中的web服务，而系统中右边那一堆其他服务显然是外部用户无法触及到的。此时的小黑人想要攻击这些从外">
 <meta name="twitter:image" content="https://ws4.sinaimg.cn/large/006tNbRwly1fukmzz68inj301y02smx0.jpg">
   
@@ -111,7 +111,7 @@
         <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
           <i class="icon icon-lg icon-navicon"></i>
         </a>
-        <div class="flex-col header-title ellipsis">ssrf的补充学习</div>
+        <div class="flex-col header-title ellipsis">SSRF的初步学习</div>
         
         <div class="search-wrap" id="search-wrap">
             <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
@@ -128,7 +128,7 @@
 </header>
 <header class="content-header">
   <div class="container">
-    <h1 class="author">ssrf的补充学习</h1>
+    <h1 class="author">SSRF的初步学习</h1>
     <h5 class="subtitle">
         
             <time datetime="2018-08-17T09:00:00.000Z" itemprop="datePublished" class="page-time">
