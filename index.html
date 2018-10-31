@@ -140,7 +140,7 @@
 
   
     <h3 class="post-title" itemprop="name">
-      <a class="post-title-link" href="/2018/10/31/Ecshop-sqli/">No title</a>
+      <a class="post-title-link" href="/2018/10/31/Ecshop-sqli/">ECShop注入</a>
     </h3>
   
 
@@ -159,13 +159,12 @@
     <div class="post-content" id="post-content" itemprop="postContent" >
 
     
-         Ecshop-sqli 
- 
+         
  测试源码：  ECShop_V2.7_1.3_UTF8_release1106 
  
  Ecshop爆出的SQL注入漏洞是有前台程序文件 user.php 引起的。在用户登陆控制器下，存在参数污染: 
    
- 可以看到在第8中 $back_act 的内容可以通过 Referer 控制，构成一个控制点。根据这个变量寻找继续寻找漏洞的触发点。在17、18行我们看到E
+ 可以看到在第8中 $back_act 的内容可以通过 Referer 控制，构成一个控制点。根据这个变量寻找继续寻找漏洞的触发点。在17、18行我们看到Ecshop将 $back_a
     
     
         <a href="/2018/10/31/Ecshop-sqli/" class="post-more waves-effect waves-button">
@@ -173,6 +172,8 @@
         </a>
     </div>
     
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/web安全/">web安全</a></li></ul>
+
 </article>
 
     </li>
