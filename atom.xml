@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://www.penlab.me/"/>
-  <updated>2018-08-27T01:09:35.090Z</updated>
+  <updated>2018-10-31T10:40:19.809Z</updated>
   <id>https://www.penlab.me/</id>
   
   <author>
@@ -17,13 +17,60 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title></title>
+    <link href="https://www.penlab.me/2018/10/31/Ecshop-sqli/"/>
+    <id>https://www.penlab.me/2018/10/31/Ecshop-sqli/</id>
+    <published>2018-10-31T10:40:19.809Z</published>
+    <updated>2018-10-31T10:40:19.809Z</updated>
+    
+    <content type="html"><![CDATA[<p>Ecshop-sqli</p><blockquote><p>测试源码：  ECShop_V2.7_1.3_UTF8_release1106</p></blockquote><p>Ecshop爆出的SQL注入漏洞是有前台程序文件<code>user.php</code>引起的。在用户登陆控制器下，存在参数污染:</p><p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2018-10-31-carbon%20-19-.png" alt=""></p><p>可以看到在第8中<code>$back_act</code>的内容可以通过<code>Referer</code>控制，构成一个控制点。根据这个变量寻找继续寻找漏洞的触发点。在17、18行我们看到Ecshop将<code>$back_act</code>传入到了模版引擎中。</p><blockquote><p>shop的模版系统机制是由自行开发的模版控制系统和Smarty组合而成。</p></blockquote><p>smarty的assign方法把变量传递给了模版函数，dispay方法将显示渲染后的模版。跟进参数到达前台公共类文件中的模版类<code>cls_template</code>，首先进入该类中的<code>assign</code>方法中。</p><p>跟进<code>/includes/cls_template.php</code>的<code>assign</code>方法：</p><p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2018-10-31-carbon%20-20-.png" alt="">第18行中，<code>Referer</code>的值被传到了<code>$this-&gt;_var[$tpl_var]</code>中。</p><p>接下来看调用<code>user_passport.dwt</code>这网页模版文件。这个模版文件的作用是用户安全页面，包括会员登陆、会员注册、找回密码等。在<code>/themes/default/user_passport.dwt</code>的55-59行中加载了<code>$back_act</code>变量。</p><p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2018-10-31-carbon%20-21-.png" alt=""></p><p>跟进<code>/includes/cls_template.php</code>的<code>display</code>方法:</p><p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2018-10-31-carbon%20-22-.png" alt=""></p><p>在第7行传入<code>fetch</code>方法，在其中通过<code>make_conpiled</code>进行编译。编译时将变量输出：</p><p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2018-10-31-carbon%20-23-.png" alt=""></p><p>在<code>display</code>方法第9行中，如果渲染后的<code>$out</code>中存在<code>$this-&gt;_echash</code>，则而在ecshop中，<code>$this-&gt;_echash</code>是可控的：</p><blockquote><p>2.7 : 554fcae493e564ee0dc75bdf2ebf94ca</p><p>3.x : 45ea207d7a2b68c49582d2d22adf953</p></blockquote><p>在<code>display</code>方法第16行中，传入<code>insert_mod</code>方法一个可控参数。</p><p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2018-10-31-carbon%20-24-.png" alt=""></p><p>此函数中<code>$name</code>可控，第4行中通过<code>&#39;|&#39;</code>分割，可以实现函数调用，函数名<code>&#39;insert_可控&#39;</code>，参数进行了反序列化也可控。</p><p>我们从代码中找打<code>insert_</code>开头的函数便可控，于是我们找到<code>includes\lib_insert.php</code>该文件中的函数都是我们可以调用的，其中<code>insert_ads</code>存在数据库操作：</p><p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2018-10-31-carbon%20-25-.png" alt=""></p><p>可以看到第9行拼接了一个sql语句，<code>id</code>和<code>num</code>都是可控的。为了调用insert_ads，我们设置Referer头的形式<code>554fcae493e564ee0dc75bdf2ebf94caads|serialize($para)</code></p><p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2018-10-31-%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202018-10-31%20%E4%B8%8B%E5%8D%886.08.47.png" alt=""></p><p>我们填入序列化的后的<code>id</code>和<code>num</code>的参数内容，找了一段payload:</p><p><code>Referer:554fcae493e564ee0dc75bdf2ebf94caads|a:2:{s:3:&quot;num&quot;;s:72:&quot;0,1 procedure analyse(extractvalue(rand(),concat(0x7e,version())),1)-- -&quot;;s:2:&quot;id&quot;;i:1;}</code></p><p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2018-10-31-%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202018-10-31%20%E4%B8%8B%E5%8D%886.38.06.png" alt=""></p><p>最终传入：</p><p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2018-10-31-%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202018-10-31%20%E4%B8%8B%E5%8D%886.35.48.png" alt=""></p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;Ecshop-sqli&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;测试源码：  ECShop_V2.7_1.3_UTF8_release1106&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Ecshop爆出的SQL注入漏洞是有前台程序文件&lt;code&gt;user.php&lt;/code
+      
+    
+    </summary>
+    
+    
+  </entry>
+  
+  <entry>
+    <title></title>
+    <link href="https://www.penlab.me/2018/10/19/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%EF%BC%9AVulDeePecker:%20A%20Deep%20Learning-Based%20System%20for%20Vulnerability%20Detection/"/>
+    <id>https://www.penlab.me/2018/10/19/论文阅读：VulDeePecker: A Deep Learning-Based System for Vulnerability Detection/</id>
+    <published>2018-10-19T11:54:45.605Z</published>
+    <updated>2018-10-19T12:02:04.162Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="VulDeePecker"><a href="#VulDeePecker" class="headerlink" title="VulDeePecker"></a>VulDeePecker</h1><blockquote><p>摘要：<br> 重要的研究问题：自动化探测软件漏洞。<br> 现有的自动化解决方法的问题：</p><ol><li>设置上太依赖专业人员</li><li>漏报许多漏洞<br>本文贡献：<br>引入基于深度学习的自动化漏洞探测技术-VulDeePecker</li></ol></blockquote>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h1 id=&quot;VulDeePecker&quot;&gt;&lt;a href=&quot;#VulDeePecker&quot; class=&quot;headerlink&quot; title=&quot;VulDeePecker&quot;&gt;&lt;/a&gt;VulDeePecker&lt;/h1&gt;&lt;blockquote&gt;
+&lt;p&gt;摘要：&lt;br&gt; 重要的研究问题：自
+      
+    
+    </summary>
+    
+    
+  </entry>
+  
+  <entry>
     <title>SSRF的初步介绍</title>
     <link href="https://www.penlab.me/2018/08/17/%E5%AF%B9ssrf%E7%9A%84%E8%A1%A5%E5%85%85%E5%AD%A6%E4%B9%A0/"/>
     <id>https://www.penlab.me/2018/08/17/对ssrf的补充学习/</id>
     <published>2018-08-17T09:00:00.000Z</published>
-    <updated>2018-08-27T01:09:35.090Z</updated>
+    <updated>2018-10-19T11:53:53.349Z</updated>
     
-    <content type="html"><![CDATA[<p>一直以来没有对于SSRF相关的漏洞做过深入的研究。之前做题基本靠猜。。。<br>这次有机会接触到一道ssrf,顺便把之前对ssrf的了解好好补充一下。<br><img src="https://ws4.sinaimg.cn/large/006tNbRwly1fukmzz68inj301y02smx0.jpg" alt=""></p><p>#1. 概念<br><a href="https://ctf-wiki.github.io/ctf-wiki/web/ssrf/" target="_blank" rel="noopener">SSRF</a>(Server-side request forgery)即服务器端请求伪造。<img src="/media/15350874163261.png" alt=""><br>  这张高大上的网图中，可以看到防火墙只允许外部用户访问系统中的web服务，而系统中右边那一堆其他服务显然是外部用户无法触及到的。此时的小黑人想要攻击这些从外网无法访问的内部系统。</p><blockquote><p>攻击方式: 攻击者通过修改请求发起攻击，使服务器向第三方发起请求并返回。</p></blockquote><p> Em….好像是这样<br> <img src="https://ws3.sinaimg.cn/large/006tNbRwly1fukpylqwn1j302s02s744.jpg" alt=""></p><p>具体看个例子:<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="comment">// GET方法为url传参</span></span><br><span class="line"> <span class="keyword">if</span> (<span class="keyword">isset</span>($_GET[<span class="string">'url'</span>]))</span><br><span class="line"> &#123;</span><br><span class="line">    $url = $_GET[<span class="string">'url'</span>]</span><br><span class="line"> &#125;</span><br><span class="line"> <span class="comment">//打开文件</span></span><br><span class="line"> $image = fopen($url,<span class="string">'rb'</span>);</span><br><span class="line"> <span class="comment">//发送合适的相应头</span></span><br><span class="line"> header(<span class="string">'Content-Type: image/png'</span>);</span><br><span class="line"> <span class="comment">//发送图片内容</span></span><br><span class="line"> fpassthru($image);</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p><p>正常的服务流程是：提供一个正常的图片网址，服务器抓到然后返回给你。<br>注意此时的图片是服务器去请求的，也就是说在防火墙内部发起的。</p><blockquote><p>那就可以绕过防火墙从内网发起请求访问内网资源。</p></blockquote><p><img src="https://ws2.sinaimg.cn/large/006tNbRwly1fukqhnpmxhj302s02sa9u.jpg" alt=""></p><p>问题发生在Url的解析上，要想办法访问localhost。如构造：<br><code>GET /?url=http://localhost/server-status HTTP/1.1Host: example.com</code><br>这样子就可以访问web服务器可以接触到而外部无法接触的资源了。<br>那么利用的关键就是Url一方面能够绕过验证检查，一方面又能够解析成本地访问(想对内网攻击)。。。<br><img src="https://ws3.sinaimg.cn/large/006tNbRwly1fukpzd2uttj302s02sa9x.jpg" alt=""><br>推荐BlackHat2017上关于SSRF的分享，不再赘述(haimeixiewan)。</p>]]></content>
+    <content type="html"><![CDATA[<p>一直以来没有对于SSRF相关的漏洞做过深入的研究。之前做题基本靠猜。。。<br>这次有机会接触到一道ssrf,顺便把之前对ssrf的了解好好补充一下。<br><img src="https://ws4.sinaimg.cn/large/006tNbRwly1fukmzz68inj301y02smx0.jpg" alt=""></p><p>#1. 概念<br><a href="https://ctf-wiki.github.io/ctf-wiki/web/ssrf/" target="_blank" rel="noopener">SSRF</a>(Server-side request forgery)即服务器端请求伪造。<img src="/media/15350874163261.png" alt=""><br>  这张网图中，可以看到防火墙只允许外部用户访问系统中的web服务，而系统中右边那一堆其他服务显然是外部用户无法触及到的。此时的小黑人想要攻击这些从外网无法访问的内部系统。</p><blockquote><p>攻击方式: 攻击者通过修改请求发起攻击，使服务器向第三方发起请求并返回。</p></blockquote><p> Em….好像是这样<br> <img src="https://ws3.sinaimg.cn/large/006tNbRwly1fukpylqwn1j302s02s744.jpg" alt=""></p><p>具体看个例子:<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="comment">// GET方法为url传参</span></span><br><span class="line"> <span class="keyword">if</span> (<span class="keyword">isset</span>($_GET[<span class="string">'url'</span>]))</span><br><span class="line"> &#123;</span><br><span class="line">    $url = $_GET[<span class="string">'url'</span>]</span><br><span class="line"> &#125;</span><br><span class="line"> <span class="comment">//打开文件</span></span><br><span class="line"> $image = fopen($url,<span class="string">'rb'</span>);</span><br><span class="line"> <span class="comment">//发送合适的相应头</span></span><br><span class="line"> header(<span class="string">'Content-Type: image/png'</span>);</span><br><span class="line"> <span class="comment">//发送图片内容</span></span><br><span class="line"> fpassthru($image);</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p><p>正常的服务流程是：提供一个正常的图片网址，服务器抓到然后返回给你。<br>注意此时的图片是服务器去请求的，也就是说在防火墙内部发起的。</p><blockquote><p>那就可以绕过防火墙从内网发起请求访问内网资源。</p></blockquote><p><img src="https://ws2.sinaimg.cn/large/006tNbRwly1fukqhnpmxhj302s02sa9u.jpg" alt=""></p><p>问题发生在Url的解析上，要想办法访问localhost。如构造：<br><code>GET /?url=http://localhost/server-status HTTP/1.1Host: example.com</code><br>这样子就可以访问web服务器可以接触到而外部无法接触的资源了。<br>那么利用的关键就是Url一方面能够绕过验证检查，一方面又能够解析成本地访问(想对内网攻击)。。。<br><img src="https://ws3.sinaimg.cn/large/006tNbRwly1fukpzd2uttj302s02sa9x.jpg" alt=""><br>推荐BlackHat2017上关于SSRF的分享，不再赘述(haimeixiewan)。</p>]]></content>
     
     <summary type="html">
     
