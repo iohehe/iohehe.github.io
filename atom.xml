@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://www.penlab.me/"/>
-  <updated>2018-10-31T10:43:37.850Z</updated>
+  <updated>2018-11-07T11:53:04.890Z</updated>
   <id>https://www.penlab.me/</id>
   
   <author>
@@ -17,46 +17,20 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>ECShop注入</title>
-    <link href="https://www.penlab.me/2018/10/31/Ecshop-sqli/"/>
-    <id>https://www.penlab.me/2018/10/31/Ecshop-sqli/</id>
-    <published>2018-10-31T10:40:19.809Z</published>
-    <updated>2018-10-31T10:43:37.850Z</updated>
-    
-    <content type="html"><![CDATA[<blockquote><p>测试源码：  ECShop_V2.7_1.3_UTF8_release1106</p></blockquote><p>Ecshop爆出的SQL注入漏洞是有前台程序文件<code>user.php</code>引起的。在用户登陆控制器下，存在参数污染:</p><p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2018-10-31-carbon%20-19-.png" alt=""></p><p>可以看到在第8中<code>$back_act</code>的内容可以通过<code>Referer</code>控制，构成一个控制点。根据这个变量寻找继续寻找漏洞的触发点。在17、18行我们看到Ecshop将<code>$back_act</code>传入到了模版引擎中。</p><blockquote><p>shop的模版系统机制是由自行开发的模版控制系统和Smarty组合而成。</p></blockquote><p>smarty的assign方法把变量传递给了模版函数，dispay方法将显示渲染后的模版。跟进参数到达前台公共类文件中的模版类<code>cls_template</code>，首先进入该类中的<code>assign</code>方法中。</p><p>跟进<code>/includes/cls_template.php</code>的<code>assign</code>方法：</p><p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2018-10-31-carbon%20-20-.png" alt="">第18行中，<code>Referer</code>的值被传到了<code>$this-&gt;_var[$tpl_var]</code>中。</p><p>接下来看调用<code>user_passport.dwt</code>这网页模版文件。这个模版文件的作用是用户安全页面，包括会员登陆、会员注册、找回密码等。在<code>/themes/default/user_passport.dwt</code>的55-59行中加载了<code>$back_act</code>变量。</p><p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2018-10-31-carbon%20-21-.png" alt=""></p><p>跟进<code>/includes/cls_template.php</code>的<code>display</code>方法:</p><p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2018-10-31-carbon%20-22-.png" alt=""></p><p>在第7行传入<code>fetch</code>方法，在其中通过<code>make_conpiled</code>进行编译。编译时将变量输出：</p><p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2018-10-31-carbon%20-23-.png" alt=""></p><p>在<code>display</code>方法第9行中，如果渲染后的<code>$out</code>中存在<code>$this-&gt;_echash</code>，则而在ecshop中，<code>$this-&gt;_echash</code>是可控的：</p><blockquote><p>2.7 : 554fcae493e564ee0dc75bdf2ebf94ca</p><p>3.x : 45ea207d7a2b68c49582d2d22adf953</p></blockquote><p>在<code>display</code>方法第16行中，传入<code>insert_mod</code>方法一个可控参数。</p><p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2018-10-31-carbon%20-24-.png" alt=""></p><p>此函数中<code>$name</code>可控，第4行中通过<code>&#39;|&#39;</code>分割，可以实现函数调用，函数名<code>&#39;insert_可控&#39;</code>，参数进行了反序列化也可控。</p><p>我们从代码中找打<code>insert_</code>开头的函数便可控，于是我们找到<code>includes\lib_insert.php</code>该文件中的函数都是我们可以调用的，其中<code>insert_ads</code>存在数据库操作：</p><p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2018-10-31-carbon%20-25-.png" alt=""></p><p>可以看到第9行拼接了一个sql语句，<code>id</code>和<code>num</code>都是可控的。为了调用insert_ads，我们设置Referer头的形式<code>554fcae493e564ee0dc75bdf2ebf94caads|serialize($para)</code></p><p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2018-10-31-%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202018-10-31%20%E4%B8%8B%E5%8D%886.08.47.png" alt=""></p><p>我们填入序列化的后的<code>id</code>和<code>num</code>的参数内容，找了一段payload:</p><p><code>Referer:554fcae493e564ee0dc75bdf2ebf94caads|a:2:{s:3:&quot;num&quot;;s:72:&quot;0,1 procedure analyse(extractvalue(rand(),concat(0x7e,version())),1)-- -&quot;;s:2:&quot;id&quot;;i:1;}</code></p><p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2018-10-31-%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202018-10-31%20%E4%B8%8B%E5%8D%886.38.06.png" alt=""></p><p>最终传入：</p><p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2018-10-31-%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202018-10-31%20%E4%B8%8B%E5%8D%886.35.48.png" alt=""></p>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;blockquote&gt;
-&lt;p&gt;测试源码：  ECShop_V2.7_1.3_UTF8_release1106&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;p&gt;Ecshop爆出的SQL注入漏洞是有前台程序文件&lt;code&gt;user.php&lt;/code&gt;引起的。在用户登陆控制器下，存在参数
-      
-    
-    </summary>
-    
-    
-      <category term="web安全" scheme="https://www.penlab.me/tags/web%E5%AE%89%E5%85%A8/"/>
-    
-  </entry>
-  
-  <entry>
     <title></title>
     <link href="https://www.penlab.me/2018/10/19/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%EF%BC%9AVulDeePecker:%20A%20Deep%20Learning-Based%20System%20for%20Vulnerability%20Detection/"/>
     <id>https://www.penlab.me/2018/10/19/论文阅读：VulDeePecker: A Deep Learning-Based System for Vulnerability Detection/</id>
     <published>2018-10-19T11:54:45.605Z</published>
-    <updated>2018-10-19T12:02:04.162Z</updated>
+    <updated>2018-11-07T11:53:04.890Z</updated>
     
-    <content type="html"><![CDATA[<h1 id="VulDeePecker"><a href="#VulDeePecker" class="headerlink" title="VulDeePecker"></a>VulDeePecker</h1><blockquote><p>摘要：<br> 重要的研究问题：自动化探测软件漏洞。<br> 现有的自动化解决方法的问题：</p><ol><li>设置上太依赖专业人员</li><li>漏报许多漏洞<br>本文贡献：<br>引入基于深度学习的自动化漏洞探测技术-VulDeePecker</li></ol></blockquote>]]></content>
+    <content type="html"><![CDATA[<h1 id="VulDeePecker"><a href="#VulDeePecker" class="headerlink" title="VulDeePecker"></a>VulDeePecker</h1><hr><p>title: VulDeePecker: A Deep Learning-Based System for Vulnerability Detection<br>date: 2018-11-3 10:00:00<br>tag:论文</p><hr><p>##1. 前述<br><strong>原文信息：</strong></p><ul><li>原文作者：Zhen Li, Deqing Zou, Shouhuai Xu, Xinyu Ou, Hai Jin,Sujuan Wang, Zhijun Deng and Yuyi Zhong</li><li>原文标题：VulDeePecker: A Deep Learning-Based System for Vulnerability Detection</li><li>原文会议：the 25th Annual Network and Distributed System Security Symposium, NDSS 2018</li><li>原文链接：<a href="https://www.ndss-symposium.org/wp-content/uploads/sites/25/2018/02/ndss2018_03A-2_Li_paper.pdf" target="_blank" rel="noopener">https://www.ndss-symposium.org/wp-content/uploads/sites/25/2018/02/ndss2018_03A-2_Li_paper.pdf</a><br><strong>目标：</strong><br>自动化静态漏洞探测技术</li></ul><p><strong>当前面临的问题：</strong></p><ol><li>依赖专业人员配置</li><li>存在很大的误报率<br><img src="/media/1.png" alt="1"></li></ol><p><strong>本文研究目标：</strong><br>能够自动化探测源码中的漏洞，并找出该漏洞的位置。而且…</p><ul><li>不需要太复杂的专业技巧</li><li>具有比较理想的误报率与漏报率</li></ul><p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2018-11-05-094821.jpg" alt=""></p><p><strong>本文主要贡献</strong><br>设计实现了系统：<code>Vulnerability Deep Pecker(VulDeePecker)</code></p><ul><li>基于深度学习设计的自动化源码审计系统</li></ul><h2 id="2-指导原则"><a href="#2-指导原则" class="headerlink" title="2.指导原则"></a>2.指导原则</h2><p><strong>三个基本问题：</strong></p><ul><li>Q1: 如何在基于深度学习的漏洞探测中表示源程序<ul><li>能够保持代码单元之间的语义关系，包括控制流关系和数据流关系。</li></ul></li><li>Q2: 什么是合适的粒度<ul><li>比把整个程序或函数作为一个单元更好的粒度去表示程序。</li></ul></li><li>Q3: 什么是合适的深度学习模型 <ul><li>初步选择了能够处理语义的神经网络。<br><img src="/media/2.png" alt="2"><br><em>不同神经网络效果的比较可作为以后的工作</em></li></ul></li></ul><h2 id="3-VulDeePecker设计"><a href="#3-VulDeePecker设计" class="headerlink" title="3. VulDeePecker设计"></a>3. VulDeePecker设计</h2><p><strong>流程图</strong><br><img src="/media/3.png" alt="3"></p><p>设计思路如图所示，整个系统分为学习阶段和探测阶段两部分。</p><ul><li>学习阶段大致为：<br><code>生成code gadgets =&gt;打上ground truth labels=&gt;转化为向量 =&gt;训练神经网络</code><br>以下是设计细节。</li></ul><p><strong>Code Gadget</strong></p><ul><li>为了解决指导原则中的Q1：需要源程序转化为能够输入神经网络的向量，且保持源程序中的控制依赖和数据依赖关系。因此需要设计了一种中间形式，来作为源程序与向量之间的过渡。</li><li>为了解决指导原则中的Q2：需要找到合适的粒度，使得这种形式成能够更好的表述漏洞位置(程序级或函数级划分粒度过粗)。<br>本文借鉴了代码复用攻击中的gadget提出了一种<code>code gadget</code>来作为这种中间形式。那么如何划分<code>code gadget</code>,本文提出一种启发式的<code>key point</code>,通过找到<code>key point</code>很自然的从源码中划提取出需要的<code>code gadget</code>来。<code>key point</code>的依据是漏洞点。</li></ul><blockquote><p>如果源码中的漏洞是由于不安全地调用library/API函数引起的，那么这次函数调用便是<code>key point</code>，如果源码中的漏洞是由不安全地使用数组引起，那么这个数组就是<code>key point</code></p></blockquote><p><img src="/media/4.png" alt="4"></p><p>以上这段代码，以library/API调用为<code>key point</code>，从中获取第9行，然后根据第9行调用中的两个参数buf,str分别跟踪生成两组切片。并在生成code gadgets时进行组合。</p><blockquote><p>这里的<code>backward function</code>指的是函数不需要直接地外部输入即可调用。此处的strcpy属于一个<code>backward function</code>,需要进行<code>向后切片</code>，即</p></blockquote><p><strong>流程介绍</strong><br>经过<code>Code Gadget</code>的定义后，整个流程图详细为：<br><img src="/media/5.png" alt="5"><br>在把<code>Code Gadgets</code>转化为向量之前需要打上<code>ground truth labels</code><br><img src="/media/6.png" alt="6"><br>标明每一个<code>Code Gadget</code>是否包含漏洞。包含已知漏洞遍标为1。<br>接下来便是第三步，将<code>Code Gadgets</code>转化为符号表示。<br><img src="/media/7.png" alt="7"><br><em>Simple the names in one-to-one</em><br>将<code>code gadget</code>进行一系列预处理符号化后转化维向量形式表示。<br><img src="/media/8.png" alt="8"><br>第四步我们进行<code>BLSTM</code>神经网络训练：<br><img src="/media/9.png" alt="9"></p><p>之后的略过，详见原文。<br><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2018-11-07-112511.jpg" alt=""></p><h2 id="4-实验与结论"><a href="#4-实验与结论" class="headerlink" title="4. 实验与结论"></a>4. 实验与结论</h2><p>需要得出的结论：</p><ol><li><code>VulDeePecker</code>能不能同事处理多种类型的漏洞</li><li><code>VulDeePecker</code>能不能通过人力改善效果</li><li><code>VulDeePecker</code>与其他工具相比效果如何。</li></ol><ul><li>训练平台：</li></ul><table><thead><tr><th>训练模型</th><th>BLSTM</th></tr></thead><tbody><tr><td>软件</td><td>Theano、Keras</td></tr><tr><td>硬件</td><td>NVIDIA GeForce GTX 1080 GPU  Intel Xeon E5-1620 CPU</td></tr></tbody></table><ul><li><p>漏洞信息：<br>  19个C/C++开源产品在<code>NVD</code>中的漏洞描述信息，在<code>SARD</code>的测试案例。</p></li><li><p>训练资源：</p></li></ul><table><thead><tr><th>漏洞类型</th><th>收集资源</th></tr></thead><tbody><tr><td>buffer error vulnerability(i.e.,CWE-119)</td><td>520个开源程序文件，8122个测试案例</td></tr><tr><td>resource management error vulnerability(i.e.,CWE-399)</td><td>320个开源程序文件，1729个测试案例</td></tr></tbody></table><p>实验结果不在赘述，感兴趣的话详见原文。<br><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2018-11-07-112511.jpg" alt=""></p><h2 id="5-后记"><a href="#5-后记" class="headerlink" title="5. 后记"></a>5. 后记</h2><ul><li>只关注了c/c++语言</li><li>只关注了library/API函数调用相关的漏洞</li><li>只关注了数据流信息，没有关注控制流的信息 </li></ul>]]></content>
     
     <summary type="html">
     
       
       
-        &lt;h1 id=&quot;VulDeePecker&quot;&gt;&lt;a href=&quot;#VulDeePecker&quot; class=&quot;headerlink&quot; title=&quot;VulDeePecker&quot;&gt;&lt;/a&gt;VulDeePecker&lt;/h1&gt;&lt;blockquote&gt;
-&lt;p&gt;摘要：&lt;br&gt; 重要的研究问题：自
+        &lt;h1 id=&quot;VulDeePecker&quot;&gt;&lt;a href=&quot;#VulDeePecker&quot; class=&quot;headerlink&quot; title=&quot;VulDeePecker&quot;&gt;&lt;/a&gt;VulDeePecker&lt;/h1&gt;&lt;hr&gt;
+&lt;p&gt;title: VulDeePecker: A De
       
     
     </summary>
