@@ -3,30 +3,30 @@
 <head>
   <meta charset="utf-8">
   
-  <title>SSRF的初步介绍 | Net-Zen | 简单 有趣</title>
+  <title>SSRF介绍 | Net-Zen | 简单 有趣</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   
   <meta name="theme-color" content="#3F51B5">
   
   
   <meta name="keywords" content="web安全,SSRF">
-  <meta name="description" content="一直以来没有对于SSRF相关的漏洞做过深入的研究。之前做题基本靠猜。。。这次有机会接触到一道ssrf,顺便把之前对ssrf的了解好好补充一下。 #1. 概念SSRF(Server-side request forgery)即服务器端请求伪造。  这张网图中，可以看到防火墙只允许外部用户访问系统中的web服务，而系统中右边那一堆其他服务显然是外部用户无法触及到的。此时的小黑人想要攻击这些从外网无法访">
+  <meta name="description" content="我一直想把web安全的知识用最简单的方式阐述，但是…这是一个开始 #1. 概念SSRF(Server-side request forgery)即服务器端请求伪造。  这张网图中，可以看到防火墙只允许外部用户访问系统中的web服务，而系统中右边那一堆其他服务显然是外部用户无法触及到的。此时的小黑人想要攻击这些从外网无法访问的内部系统。  攻击方式: 攻击者通过修改请求发起攻击，使服务器向第三方发起">
 <meta name="keywords" content="web安全,SSRF">
 <meta property="og:type" content="article">
-<meta property="og:title" content="SSRF的初步介绍">
+<meta property="og:title" content="SSRF介绍">
 <meta property="og:url" content="https://www.penlab.me/2018/08/17/对ssrf的补充学习/index.html">
 <meta property="og:site_name" content="Net-Zen">
-<meta property="og:description" content="一直以来没有对于SSRF相关的漏洞做过深入的研究。之前做题基本靠猜。。。这次有机会接触到一道ssrf,顺便把之前对ssrf的了解好好补充一下。 #1. 概念SSRF(Server-side request forgery)即服务器端请求伪造。  这张网图中，可以看到防火墙只允许外部用户访问系统中的web服务，而系统中右边那一堆其他服务显然是外部用户无法触及到的。此时的小黑人想要攻击这些从外网无法访">
+<meta property="og:description" content="我一直想把web安全的知识用最简单的方式阐述，但是…这是一个开始 #1. 概念SSRF(Server-side request forgery)即服务器端请求伪造。  这张网图中，可以看到防火墙只允许外部用户访问系统中的web服务，而系统中右边那一堆其他服务显然是外部用户无法触及到的。此时的小黑人想要攻击这些从外网无法访问的内部系统。  攻击方式: 攻击者通过修改请求发起攻击，使服务器向第三方发起">
 <meta property="og:locale" content="default">
 <meta property="og:image" content="https://ws4.sinaimg.cn/large/006tNbRwly1fukmzz68inj301y02smx0.jpg">
 <meta property="og:image" content="https://www.penlab.me/media/15350874163261.png">
 <meta property="og:image" content="https://ws3.sinaimg.cn/large/006tNbRwly1fukpylqwn1j302s02s744.jpg">
 <meta property="og:image" content="https://ws2.sinaimg.cn/large/006tNbRwly1fukqhnpmxhj302s02sa9u.jpg">
 <meta property="og:image" content="https://ws3.sinaimg.cn/large/006tNbRwly1fukpzd2uttj302s02sa9x.jpg">
-<meta property="og:updated_time" content="2018-10-19T11:53:53.349Z">
+<meta property="og:updated_time" content="2019-01-05T10:54:07.685Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="SSRF的初步介绍">
-<meta name="twitter:description" content="一直以来没有对于SSRF相关的漏洞做过深入的研究。之前做题基本靠猜。。。这次有机会接触到一道ssrf,顺便把之前对ssrf的了解好好补充一下。 #1. 概念SSRF(Server-side request forgery)即服务器端请求伪造。  这张网图中，可以看到防火墙只允许外部用户访问系统中的web服务，而系统中右边那一堆其他服务显然是外部用户无法触及到的。此时的小黑人想要攻击这些从外网无法访">
+<meta name="twitter:title" content="SSRF介绍">
+<meta name="twitter:description" content="我一直想把web安全的知识用最简单的方式阐述，但是…这是一个开始 #1. 概念SSRF(Server-side request forgery)即服务器端请求伪造。  这张网图中，可以看到防火墙只允许外部用户访问系统中的web服务，而系统中右边那一堆其他服务显然是外部用户无法触及到的。此时的小黑人想要攻击这些从外网无法访问的内部系统。  攻击方式: 攻击者通过修改请求发起攻击，使服务器向第三方发起">
 <meta name="twitter:image" content="https://ws4.sinaimg.cn/large/006tNbRwly1fukmzz68inj301y02smx0.jpg">
   
     <link rel="alternative" href="/atom.xml" title="Net-Zen" type="application/atom+xml">
@@ -95,7 +95,7 @@
 
     <footer class="footer">
   <p><a rel="license" target="_blank" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons License" style="border-width:0;vertical-align:middle;" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFAAAAAPCAMAAABEF7i9AAAAllBMVEUAAAD///+rsapERER3d3eIiIjMzMzu7u4iIiKUmZO6v7rKzsoODg4RERFVVVUNDQ0NDg0PEA8zMzNLTEtbXltmZmZydnF9gn2AgICPkI+ZmZmqqqq7u7vFxsXIzMgNDQwZGRkgICAhISEkJSMnKCcuMC4xMzE5Ozk7PTtBQkFCQkJDQ0Nna2eGhoaHh4ezuLLGysbd3d1wVGpAAAAA4UlEQVR42q2T1xqCMAyFk7QsBQeKA9x7j/d/OSm22CpX0nzcpA1/T05aAOuBVkMAScQFHLnEwoCo2f1TnQIGoVMewjZEjVFN4GH1Ue1Cn2jWqwfsOOj6wDwGvotsl/c8lv7KIq1eLOsT0HMFHMIE/RZyHnlphryT9zyV+8WH5e8yQw3wnQvgAFxPTKUVi555SHR/lOfLMgVTeDlSfN+TaoUsiTyeIm+bCkHvCA2FUKG48LDtYBZBknsYP/G8NTw0gaaHyuQf4H5pecrB/FYCT2sL9zAfy1Xyjou6L8X2W7YcLyBZCRtnq/zfAAAAAElFTkSuQmCC" /></a></p>
-  <p>Net-Zen &copy; 2018</p>
+  <p>Net-Zen &copy; 2019</p>
   <p>Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme
   <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a></p>
   <a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-2x icon-rss-square"></i></a>
@@ -111,7 +111,7 @@
         <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
           <i class="icon icon-lg icon-navicon"></i>
         </a>
-        <div class="flex-col header-title ellipsis">SSRF的初步介绍</div>
+        <div class="flex-col header-title ellipsis">SSRF介绍</div>
         
         <div class="search-wrap" id="search-wrap">
             <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
@@ -128,7 +128,7 @@
 </header>
 <header class="content-header">
   <div class="container">
-    <h1 class="author">SSRF的初步介绍</h1>
+    <h1 class="author">SSRF介绍</h1>
     <h5 class="subtitle">
         
             <time datetime="2018-08-17T09:00:00.000Z" itemprop="datePublished" class="page-time">
@@ -164,7 +164,7 @@
         <div class="post-main">
 
             <div class="post-content" id="post-content" itemprop="postContent">
-            <p>一直以来没有对于SSRF相关的漏洞做过深入的研究。之前做题基本靠猜。。。<br>这次有机会接触到一道ssrf,顺便把之前对ssrf的了解好好补充一下。<br><img src="https://ws4.sinaimg.cn/large/006tNbRwly1fukmzz68inj301y02smx0.jpg" alt=""></p>
+            <p>我一直想把web安全的知识用最简单的方式阐述，但是…<br><img src="https://ws4.sinaimg.cn/large/006tNbRwly1fukmzz68inj301y02smx0.jpg" alt=""><br>这是一个开始</p>
 <p>#1. 概念<br><a href="https://ctf-wiki.github.io/ctf-wiki/web/ssrf/" target="_blank" rel="noopener">SSRF</a>(Server-side request forgery)即服务器端请求伪造。<img src="/media/15350874163261.png" alt=""><br>  这张网图中，可以看到防火墙只允许外部用户访问系统中的web服务，而系统中右边那一堆其他服务显然是外部用户无法触及到的。此时的小黑人想要攻击这些从外网无法访问的内部系统。</p>
 <blockquote>
 <p>攻击方式: 攻击者通过修改请求发起攻击，使服务器向第三方发起请求并返回。</p>
