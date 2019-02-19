@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://www.penlab.me/"/>
-  <updated>2019-02-19T00:56:47.827Z</updated>
+  <updated>2019-02-19T00:55:51.853Z</updated>
   <id>https://www.penlab.me/</id>
   
   <author>
@@ -15,20 +15,6 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
-  
-  <entry>
-    <title></title>
-    <link href="https://www.penlab.me/2019/02/19/Paper_Code-Reuse%20Attacks%20for%20the%20Web:%20Breaking%20Cross-Site%20Scripting%20Mitigations%20via%20Script%20Gadgets/"/>
-    <id>https://www.penlab.me/2019/02/19/Paper_Code-Reuse Attacks for the Web: Breaking Cross-Site Scripting Mitigations via Script Gadgets/</id>
-    <published>2019-02-19T00:54:11.264Z</published>
-    <updated>2019-02-19T00:56:47.827Z</updated>
-    
-    <summary type="html">
-    
-    </summary>
-    
-    
-  </entry>
   
   <entry>
     <title>POP链</title>
