@@ -12,7 +12,7 @@
 <blockquote>
 <p>搜索项目发现了3处包含__toString方法的<br>找到下一个可利用的魔术方法点或者漏洞触发点</p>
 </blockquote>
-<p>Typecho/Feed.php-&gt;<strong>toString()<br><img src="/media/Audit_php_object_inject/5.jpg" alt="5"><br>blabla…<br><img src="/media/Audit_php_object_inject/5.jpg" alt="6"><br>**在第290行，出现了object-&gt;attr结构，对象名可控，此时，只要类内不包含screenName这个属性，便会触发</strong>get方法。**</p>
+<p>Typecho/Feed.php-&gt;<strong>toString()<br><img src="/media/Audit_php_object_inject/5.jpg" alt="5"><br>…<br><img src="/media/Audit_php_object_inject/5.jpg" alt="6"><br>**在第290行，出现了object-&gt;attr结构，对象名可控，此时，只要类内不包含screenName这个属性，便会触发</strong>get方法。**</p>
 <blockquote>
 <p>在项目中搜索包含__get方法&amp;&amp;没有screenName属性的任意类</p>
 </blockquote>
