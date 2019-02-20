@@ -164,10 +164,8 @@ a:focus {
 #header #nav-menu a {
 	margin-left: -0.07em;
 	display: inline-block;
-	padding: 1px 20px 0;
 	height: 30px;
 	line-height: 30px;
-	color: #444;
 	font-size: 13px;
 	border: 1px solid transparent;
 }
