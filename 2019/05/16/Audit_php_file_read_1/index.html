@@ -1,0 +1,47 @@
+<!DOCTYPE html><html lang="null"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="renderer" content="webkit"><title>PHP 文件读写- 打开文件 - PenLab</title><meta name="description" content="PHP文件读取PHP在处理文件时，通常包含三个步骤：打开文件-&amp;gt;处理文件-&amp;gt;关闭文件。0x01 打开文件打开一个文件，需要使用fopen函数:1fopen ( string $filename , string $mode [, bool $use_include_path = FALSE [, resource $context ]] ) : resource第一个参数：绝对路径从根"><link type="text/css" rel="stylesheet" href="/css/pure.css?v=0.0.1"><link type="text/css" rel="stylesheet" href="/css/style.css?v=0.0.1"><script type="text/javascript" src="//cdn.bootcss.com/jquery/1.11.0/jquery.min.js"></script><link rel="alternate" type="application/atom+xml" href="/atom.xml"></head></html><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">PHP 文件读写- 打开文件</h1><a id="logo" href="/.">PenLab</a></div><div id="nav-menu"><div class="bitcron_nav"><div class="site_nav_wrap"><div class="site_nav"></div></div></div></div></div><div id="layout" class="pure-g"><div class="pure-u-1"><div class="content_container"><div class="post"><h1 class="post-title">PHP 文件读写- 打开文件</h1><br><!--文章内容--><div class="post-content"><h1 id="PHP文件读取"><a href="#PHP文件读取" class="headerlink" title="PHP文件读取"></a>PHP文件读取</h1><p>PHP在处理文件时，通常包含三个步骤：打开文件-&gt;处理文件-&gt;关闭文件。</p>
+<h2 id="0x01-打开文件"><a href="#0x01-打开文件" class="headerlink" title="0x01 打开文件"></a>0x01 打开文件</h2><p>打开一个文件，需要使用<a href="https://php.net/manual/en/function.fopen.php" target="_blank" rel="noopener">fopen</a>函数:</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">fopen ( string $filename , string $mode [, bool $use_include_path = <span class="keyword">FALSE</span> [, resource $context ]] ) : resource</span><br></pre></td></tr></table></figure>
+<ul>
+<li>第一个参数：</li>
+</ul>
+<ol>
+<li><code>绝对路径</code>从根目录开始(linux-&gt;/,win通常在’c:\’)，<code>相对路径</code>描述一个相对于文档根目录的文件系统位置</li>
+<li><p>为了路径表示简短，开发时通常会使用<code>__DIR__</code>,<code>$_SERVER[&#39;DOCUMENT_ROOT&#39;]</code>等进行路径拼接</p>
+</li>
+<li><p>UNIX环境下，路径使用正斜线<code>/</code>，而在Windows下可以使用反斜线<code>\</code>,在<code>fopen</code>中，使用反斜线必须进行转义，即使用<code>\\</code>。</p>
+</li>
+<li>如果传入的文件路径是一个URL，如<code>http://</code>,<code>ftp://</code>等，PHP会根据URL打开一个<code>protocol handler</code>，这会带来一些问题。</li>
+</ol>
+<ul>
+<li><p>第二个参数：</p>
+<ol>
+<li><p>文件模式：只读(r),读写(r+),只写(w),读写(w+),谨慎写(x),谨慎读写(x+),追加写(a),追加读写(a+),二进制(b),追加二进制(b+),文本(t)。</p>
+</li>
+<li><p>r+和w+的区别在于，r+没有文件内容的清空权利和文件的创建权。而w+可以在文件不存在时创建这个文件，文件有内容则清空之(非追加模式)。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">@ $fp = fopen(<span class="string">'$DOCUMENT_ROOT/../orders/orders.txt'</span>,<span class="string">'w+'</span>);<span class="comment">//如果open时是w,那么指定文件已经被清空了,此时如果去读也是空文件了。</span></span><br><span class="line"><span class="keyword">if</span> (!$fp)</span><br><span class="line">&#123;</span><br><span class="line">  <span class="keyword">echo</span> <span class="string">"Your order could not be processed at this time."</span></span><br><span class="line">  <span class="keyword">exit</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+</ul>
+<h2 id="0x02-安全问题"><a href="#0x02-安全问题" class="headerlink" title="0x02 安全问题"></a>0x02 安全问题</h2><p>打开文件时文件操作的第一步，如<code>readfile</code>或者<code>file_get_contents</code>这种直接传路径，而不是文件指针的函数也包含了打开文件这一步。此时需要的是一个资源路径，如果这个路径可控，常常会引发安全问题。</p>
+<ul>
+<li><p>任意文件读取</p>
+<p>如果打开文件功能设置了不正确的访问权限，可能造成任意文件读取漏洞。</p>
+</li>
+<li><p>封装协议</p>
+<p>PHP带有很多内置URL风格的封装协议，可用于类似<code>fopen()</code>，<code>copy()</code>,<code>file_exist()</code>和<code>filesize()</code>的文件系统函数(<a href="https://www.php.net/manual/zh/wrappers.php" target="_blank" rel="noopener">参考</a>)。可能造成SSRF,文件读取,Phar反序列化等问题。</p>
+</li>
+<li><p>其他</p>
+<p>后续总结其他一些问题，如<code>readfile</code>函数直接将内容输出到显示器，可能造成一些<code>xss</code>等问题。</p>
+</li>
+</ul>
+</div></div></div></div></div><div id="footer">© <a href="/." rel="nofollow">PenLab.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a> Theme<a target="_blank" href="https://github.com/7ye/maupassant-hexo"> Maupassant.</a></div><a id="back_to_top" href="javascript:void(0)" class="back_to_top"><span>△</span></a><script type="text/javascript" src="/js/totop.js?v=0.0.1"></script><script>function auto_code_fit(){
+  if($(".highlight").length != 0){
+    var pc_width = $(".post-content").width();
+    $(".highlight .code").find("pre").width((pc_width-70)+"px");
+  }
+}
+window.onresize = function(){
+  auto_code_fit();
+}
+auto_code_fit();</script></div></body>
