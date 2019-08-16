@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://www.penlab.me/"/>
-  <updated>2019-05-27T12:44:58.540Z</updated>
+  <updated>2019-07-19T01:22:44.141Z</updated>
   <id>https://www.penlab.me/</id>
   
   <author>
@@ -15,6 +15,57 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title></title>
+    <link href="https://www.penlab.me/2019/07/19/%E6%9C%AA%E5%91%BD%E5%90%8D/"/>
+    <id>https://www.penlab.me/2019/07/19/未命名/</id>
+    <published>2019-07-19T01:22:44.141Z</published>
+    <updated>2019-07-19T01:22:44.141Z</updated>
+    
+    <summary type="html">
+    
+    </summary>
+    
+    
+  </entry>
+  
+  <entry>
+    <title></title>
+    <link href="https://www.penlab.me/2019/07/17/Untitled%201/"/>
+    <id>https://www.penlab.me/2019/07/17/Untitled 1/</id>
+    <published>2019-07-17T07:17:51.285Z</published>
+    <updated>2019-07-17T07:17:51.285Z</updated>
+    
+    <summary type="html">
+    
+    </summary>
+    
+    
+  </entry>
+  
+  <entry>
+    <title></title>
+    <link href="https://www.penlab.me/2019/07/05/Untitled/"/>
+    <id>https://www.penlab.me/2019/07/05/Untitled/</id>
+    <published>2019-07-05T06:37:37.155Z</published>
+    <updated>2019-07-07T03:11:54.512Z</updated>
+    
+    <content type="html"><![CDATA[<p>、</p><p> CSRF是欺骗，而XSS是注入。</p><h1 id="0x001-CSRF"><a href="#0x001-CSRF" class="headerlink" title="0x001 CSRF"></a>0x001 CSRF</h1><p>由于HTTP协议本身的非连续性，造成每一次请求的独立性。因此服务器每次都要判断： 这是不是目标用户提交的？ 这是一个博弈过程，我们判断一个用户就要取验证能够唯一表示用户且值得信赖的信息-cookie中的信息，cookie保持着会话。</p><p>通常防护CSRF的方式是两个token, 一个在cookie中， 一个在浏览器上。即Cookie-Form型防御。</p><p>CSRF漏洞发生的情况是验证字段是可控的，或者根本无验证。那么比如一个表单，它提交时包含防御csrf的token(一串验证标识)，那么想触发CSRF我们需要欺骗服务器，让他以为，这个表单就是用户实时发出的，我能想到的方法有：</p><ol><li><p>绕，  判断token的逻辑有问题，可以绕过去</p></li><li><p>猜，token有一定的规律，能被猜出来</p></li><li>盗， 盗取token</li></ol><p>在第三种方法盗取中，我们就可以用到了xss+csrf, xss是一种注入， 如果网站设置了httponly，通常我们是拿不到cookie的了，这是后我们可以拿到我页的其他信息。因为我们还是有整个页面的脚本执行权的。</p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;、&lt;/p&gt;
+&lt;p&gt; CSRF是欺骗，而XSS是注入。&lt;/p&gt;
+&lt;h1 id=&quot;0x001-CSRF&quot;&gt;&lt;a href=&quot;#0x001-CSRF&quot; class=&quot;headerlink&quot; title=&quot;0x001 CSRF&quot;&gt;&lt;/a&gt;0x001 CSRF&lt;/h1&gt;&lt;p&gt;由于HT
+      
+    
+    </summary>
+    
+    
+  </entry>
   
   <entry>
     <title>PHP 文件读写- 打开文件</title>
