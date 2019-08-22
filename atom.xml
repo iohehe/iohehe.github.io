@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://www.penlab.me/"/>
-  <updated>2019-07-07T03:11:54.512Z</updated>
+  <updated>2019-08-22T11:55:39.224Z</updated>
   <id>https://www.penlab.me/</id>
   
   <author>
@@ -18,24 +18,41 @@
   
   <entry>
     <title></title>
-    <link href="https://www.penlab.me/2019/07/05/Untitled/"/>
-    <id>https://www.penlab.me/2019/07/05/Untitled/</id>
-    <published>2019-07-05T06:37:37.155Z</published>
-    <updated>2019-07-07T03:11:54.512Z</updated>
+    <link href="https://www.penlab.me/2019/08/22/Untitled%201/"/>
+    <id>https://www.penlab.me/2019/08/22/Untitled 1/</id>
+    <published>2019-08-22T11:55:39.224Z</published>
+    <updated>2019-08-22T11:55:39.224Z</updated>
     
-    <content type="html"><![CDATA[<p>、</p><p> CSRF是欺骗，而XSS是注入。</p><h1 id="0x001-CSRF"><a href="#0x001-CSRF" class="headerlink" title="0x001 CSRF"></a>0x001 CSRF</h1><p>由于HTTP协议本身的非连续性，造成每一次请求的独立性。因此服务器每次都要判断： 这是不是目标用户提交的？ 这是一个博弈过程，我们判断一个用户就要取验证能够唯一表示用户且值得信赖的信息-cookie中的信息，cookie保持着会话。</p><p>通常防护CSRF的方式是两个token, 一个在cookie中， 一个在浏览器上。即Cookie-Form型防御。</p><p>CSRF漏洞发生的情况是验证字段是可控的，或者根本无验证。那么比如一个表单，它提交时包含防御csrf的token(一串验证标识)，那么想触发CSRF我们需要欺骗服务器，让他以为，这个表单就是用户实时发出的，我能想到的方法有：</p><ol><li><p>绕，  判断token的逻辑有问题，可以绕过去</p></li><li><p>猜，token有一定的规律，能被猜出来</p></li><li>盗， 盗取token</li></ol><p>在第三种方法盗取中，我们就可以用到了xss+csrf, xss是一种注入， 如果网站设置了httponly，通常我们是拿不到cookie的了，这是后我们可以拿到我页的其他信息。因为我们还是有整个页面的脚本执行权的。</p>]]></content>
+    <summary type="html">
+    
+    </summary>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>hdwiki6.0二次注入</title>
+    <link href="https://www.penlab.me/2019/08/22/Untitled/"/>
+    <id>https://www.penlab.me/2019/08/22/Untitled/</id>
+    <published>2019-08-21T16:00:00.000Z</published>
+    <updated>2019-08-22T12:23:37.271Z</updated>
+    
+    <content type="html"><![CDATA[<p>分析了师傅们之前分析过hdwiki中的两个SQL注入拿来分享以下。</p><p>从目录上来看<code>hdwiki</code>是采用MVC模式，单入口访问方式。主要执行流程从实例化<code>hdwiki</code>类开始</p><ol><li><p><code>ini_request()</code> 方法在构造对象时中触发，在这里会将<code>GPC</code>全局变量进行统一消毒然后注册为对象中的数组使用。</p><p><img src="/../../Library/Application Support/typora-user-images/image-20190822200640904.png" alt="image-20190822200640904"></p></li></ol><p>这里进行了消毒，<code>String.class.php</code>文件中有各种对付文本的方法，这里是一个常见递归参数<code>addslashes</code>符号转义。<br><img src="/../../Library/Application Support/typora-user-images/image-20190822200804322.png" alt="image-20190822200804322"></p><p>下面还有一个<code>checksecurity()</code>方法，是get请求的关键字检查。然并没有过滤<code>post</code>。</p><ol start="2"><li><code>load_control()</code>方法加载了从参数中提取的，指定的控制器。</li><li><code>run()</code>开始执行控制器内容</li></ol><h1 id="0x001-二次注入"><a href="#0x001-二次注入" class="headerlink" title="0x001 二次注入"></a>0x001 二次注入</h1><p>系统开始全局过滤参数，我们注入的sql语句会失效，但是二次注入的时候往往忽略了过滤。而数据在写入数据库的时候转义字符会失效，这就构成了二次注入。</p><p>首先，找到词条评论功能：</p><p><a href="http://10.10.20.16:8888/hdwiki/hdwiki/index.php?comment-view-47" target="_blank" rel="noopener">http://10.10.20.16:8888/hdwiki/hdwiki/index.php?comment-view-47</a></p><p>POST如下内容:<br><code>&#39;,1236789,1), (&#39;admin&#39;,&#39;1&#39;,&#39;0&#39;,&#39;2&#39;,&#39;admin&#39;,&#39;xxx&#39;,(select concat(username,0x20,password) from wiki_user where uid=1),236789,1)#</code></p><p>此时内容会被转移，但是插入到<code>wiki_commit</code>表里的时候：</p><p><img src="/../../Library/Application Support/typora-user-images/image-20190822201754375.png" alt="image-20190822201754375"></p><p>我们在找一个可以读他的出来并在此构造<code>insert</code>的地方，这里有一处举报功能，会将评论里举报的条目<code>comment</code>内容读出放到<code>wiki_psm</code>表中，这一放就构造了一个<code>insert</code>方法的二次注入:</p><p>点击举报</p><p><img src="/../../Library/Application Support/typora-user-images/image-20190822201937065.png" alt="image-20190822201937065"></p><p>发送触发包</p><p><img src="/../../Library/Application Support/typora-user-images/image-20190822201951678.png" alt="image-20190822201951678"></p><p>注入语句生效</p><p><img src="/../../Library/Application Support/typora-user-images/image-20190822202040048.png" alt="image-20190822202040048"></p><p>来看代码，在<code>comment.php</code>这个负责评论的控制器中,<code>doadd()</code>负责写评论：</p><p><img src="/../../Library/Application Support/typora-user-images/image-20190822202140562.png" alt="image-20190822202140562"></p><p>这里可以看出<code>$comment</code>中的内容已经被转义掉了</p><p><img src="/../../Library/Application Support/typora-user-images/image-20190822202158973.png" alt="image-20190822202158973"></p><p>还是构造了sql语句传入了数据库中。<br>刚才已经说过， 被被转义的内容在存入数据库后转义消除。<br>此时找调用comment的点，在功能上我们找到了评论边上的举报，可以看到，当举报时会发一封私信包含评论内容，这个功能的实现就是将comment内容读取转存到了私信表。由于系统以为这是内部读取没有问题，故而触发了<code>insert注入</code></p><p>在<code>pms.class.php</code>有触发方法<code>send_onwmessages</code>发信模块</p><p><img src="/../../Library/Application Support/typora-user-images/image-20190822202253754.png" alt="image-20190822202253754"></p><p>这里是存入私信模块， 注意到了，我们的内容存在<code>message</code>,而该私信是由<code>fromid</code>发给<code>toid</code>的因此我们在构造payload的时候一定要将<code>toid</code>改成我们的可控账户(账户id可以在用户页面看到)，比如我的可控账号是666，那么我构造的payload是:<br><code>&#39;,1236789,1), (&#39;admin&#39;,&#39;1&#39;,&#39;0&#39;,&#39;666&#39;,&#39;admin&#39;,&#39;私信标题&#39;,(select查询内容),236789,1)#</code><br>真样就能收到私信了。</p>]]></content>
     
     <summary type="html">
     
       
       
-        &lt;p&gt;、&lt;/p&gt;
-&lt;p&gt; CSRF是欺骗，而XSS是注入。&lt;/p&gt;
-&lt;h1 id=&quot;0x001-CSRF&quot;&gt;&lt;a href=&quot;#0x001-CSRF&quot; class=&quot;headerlink&quot; title=&quot;0x001 CSRF&quot;&gt;&lt;/a&gt;0x001 CSRF&lt;/h1&gt;&lt;p&gt;由于HT
+        &lt;p&gt;分析了师傅们之前分析过hdwiki中的两个SQL注入拿来分享以下。&lt;/p&gt;
+&lt;p&gt;从目录上来看&lt;code&gt;hdwiki&lt;/code&gt;是采用MVC模式，单入口访问方式。主要执行流程从实例化&lt;code&gt;hdwiki&lt;/code&gt;类开始&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;&lt;code
       
     
     </summary>
     
+    
+      <category term="CodeAudit" scheme="https://www.penlab.me/tags/CodeAudit/"/>
     
   </entry>
   

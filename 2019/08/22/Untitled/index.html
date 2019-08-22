@@ -1,0 +1,44 @@
+<!DOCTYPE html><html lang="null"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="renderer" content="webkit"><title>hdwiki6.0二次注入 - PenLab</title><meta name="description" content="分析了师傅们之前分析过hdwiki中的两个SQL注入拿来分享以下。从目录上来看hdwiki是采用MVC模式，单入口访问方式。主要执行流程从实例化hdwiki类开始ini_request() 方法在构造对象时中触发，在这里会将GPC全局变量进行统一消毒然后注册为对象中的数组使用。这里进行了消毒，String.class.php文件中有各种对付文本的方法，这里是一个常见递归参数addslashes符号"><link type="text/css" rel="stylesheet" href="/css/pure.css?v=0.0.1"><link type="text/css" rel="stylesheet" href="/css/style.css?v=0.0.1"><script type="text/javascript" src="//cdn.bootcss.com/jquery/1.11.0/jquery.min.js"></script><link rel="alternate" type="application/atom+xml" href="/atom.xml"></head></html><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">hdwiki6.0二次注入</h1><a id="logo" href="/.">PenLab</a></div><div id="nav-menu"><div class="bitcron_nav"><div class="site_nav_wrap"><div class="site_nav"></div></div></div></div></div><div id="layout" class="pure-g"><div class="pure-u-1"><div class="content_container"><div class="post"><h1 class="post-title">hdwiki6.0二次注入</h1><br><!--文章内容--><div class="post-content"><p>分析了师傅们之前分析过hdwiki中的两个SQL注入拿来分享以下。</p>
+<p>从目录上来看<code>hdwiki</code>是采用MVC模式，单入口访问方式。主要执行流程从实例化<code>hdwiki</code>类开始</p>
+<ol>
+<li><p><code>ini_request()</code> 方法在构造对象时中触发，在这里会将<code>GPC</code>全局变量进行统一消毒然后注册为对象中的数组使用。</p>
+<p><img src="/../../Library/Application Support/typora-user-images/image-20190822200640904.png" alt="image-20190822200640904"></p>
+</li>
+</ol>
+<p>这里进行了消毒，<code>String.class.php</code>文件中有各种对付文本的方法，这里是一个常见递归参数<code>addslashes</code>符号转义。<br><img src="/../../Library/Application Support/typora-user-images/image-20190822200804322.png" alt="image-20190822200804322"></p>
+<p>下面还有一个<code>checksecurity()</code>方法，是get请求的关键字检查。然并没有过滤<code>post</code>。</p>
+<ol start="2">
+<li><code>load_control()</code>方法加载了从参数中提取的，指定的控制器。</li>
+<li><code>run()</code>开始执行控制器内容</li>
+</ol>
+<h1 id="0x001-二次注入"><a href="#0x001-二次注入" class="headerlink" title="0x001 二次注入"></a>0x001 二次注入</h1><p>系统开始全局过滤参数，我们注入的sql语句会失效，但是二次注入的时候往往忽略了过滤。而数据在写入数据库的时候转义字符会失效，这就构成了二次注入。</p>
+<p>首先，找到词条评论功能：</p>
+<p><a href="http://10.10.20.16:8888/hdwiki/hdwiki/index.php?comment-view-47" target="_blank" rel="noopener">http://10.10.20.16:8888/hdwiki/hdwiki/index.php?comment-view-47</a></p>
+<p>POST如下内容:<br><code>&#39;,1236789,1), (&#39;admin&#39;,&#39;1&#39;,&#39;0&#39;,&#39;2&#39;,&#39;admin&#39;,&#39;xxx&#39;,(select concat(username,0x20,password) from wiki_user where uid=1),236789,1)#</code></p>
+<p>此时内容会被转移，但是插入到<code>wiki_commit</code>表里的时候：</p>
+<p><img src="/../../Library/Application Support/typora-user-images/image-20190822201754375.png" alt="image-20190822201754375"></p>
+<p>我们在找一个可以读他的出来并在此构造<code>insert</code>的地方，这里有一处举报功能，会将评论里举报的条目<code>comment</code>内容读出放到<code>wiki_psm</code>表中，这一放就构造了一个<code>insert</code>方法的二次注入:</p>
+<p>点击举报</p>
+<p><img src="/../../Library/Application Support/typora-user-images/image-20190822201937065.png" alt="image-20190822201937065"></p>
+<p>发送触发包</p>
+<p><img src="/../../Library/Application Support/typora-user-images/image-20190822201951678.png" alt="image-20190822201951678"></p>
+<p>注入语句生效</p>
+<p><img src="/../../Library/Application Support/typora-user-images/image-20190822202040048.png" alt="image-20190822202040048"></p>
+<p>来看代码，在<code>comment.php</code>这个负责评论的控制器中,<code>doadd()</code>负责写评论：</p>
+<p><img src="/../../Library/Application Support/typora-user-images/image-20190822202140562.png" alt="image-20190822202140562"></p>
+<p>这里可以看出<code>$comment</code>中的内容已经被转义掉了</p>
+<p><img src="/../../Library/Application Support/typora-user-images/image-20190822202158973.png" alt="image-20190822202158973"></p>
+<p>还是构造了sql语句传入了数据库中。<br>刚才已经说过， 被被转义的内容在存入数据库后转义消除。<br>此时找调用comment的点，在功能上我们找到了评论边上的举报，可以看到，当举报时会发一封私信包含评论内容，这个功能的实现就是将comment内容读取转存到了私信表。由于系统以为这是内部读取没有问题，故而触发了<code>insert注入</code></p>
+<p>在<code>pms.class.php</code>有触发方法<code>send_onwmessages</code>发信模块</p>
+<p><img src="/../../Library/Application Support/typora-user-images/image-20190822202253754.png" alt="image-20190822202253754"></p>
+<p>这里是存入私信模块， 注意到了，我们的内容存在<code>message</code>,而该私信是由<code>fromid</code>发给<code>toid</code>的因此我们在构造payload的时候一定要将<code>toid</code>改成我们的可控账户(账户id可以在用户页面看到)，比如我的可控账号是666，那么我构造的payload是:<br><code>&#39;,1236789,1), (&#39;admin&#39;,&#39;1&#39;,&#39;0&#39;,&#39;666&#39;,&#39;admin&#39;,&#39;私信标题&#39;,(select查询内容),236789,1)#</code><br>真样就能收到私信了。</p>
+</div></div></div></div></div><div id="footer">© <a href="/." rel="nofollow">PenLab.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a> Theme<a target="_blank" href="https://github.com/7ye/maupassant-hexo"> Maupassant.</a></div><a id="back_to_top" href="javascript:void(0)" class="back_to_top"><span>△</span></a><script type="text/javascript" src="/js/totop.js?v=0.0.1"></script><script>function auto_code_fit(){
+  if($(".highlight").length != 0){
+    var pc_width = $(".post-content").width();
+    $(".highlight .code").find("pre").width((pc_width-70)+"px");
+  }
+}
+window.onresize = function(){
+  auto_code_fit();
+}
+auto_code_fit();</script></div></body>
