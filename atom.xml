@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://www.penlab.me/"/>
-  <updated>2019-11-05T08:48:12.704Z</updated>
+  <updated>2019-11-06T12:30:36.268Z</updated>
   <id>https://www.penlab.me/</id>
   
   <author>
@@ -17,34 +17,11 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>PHP数据传入点分析</title>
-    <link href="https://www.penlab.me/2019/11/05/php_source/"/>
-    <id>https://www.penlab.me/2019/11/05/php_source/</id>
-    <published>2019-11-04T16:00:00.000Z</published>
-    <updated>2019-11-05T08:48:12.704Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="0x01介绍"><a href="#0x01介绍" class="headerlink" title="0x01介绍"></a>0x01介绍</h1><p>要验证PHP中污点传播漏洞大概需要验证三点，第一个是用户传入点，此点用户可控。 第二个是作用点， 此点触发了危险函数。第三个是在数据传播的路径上有没有效的过滤。</p><p>归根结底还是要使得传入危险函数的参数<code>有害</code>。这里讨论一下参数的传入。</p><h1 id="0x01-变量注册"><a href="#0x01-变量注册" class="headerlink" title="0x01 变量注册"></a>0x01 变量注册</h1><ul><li><p>全局变量</p><p>用户的前端交互会被注册到全局变量里，最常用的即<code>GPC(GET, POST, Cookie)</code>此外$_REQUEST中也可包含<code>GPC</code>的内容，而且会注册成两个变量，如果过滤器中一个而没有过滤另一个就有可能造成绕过：</p><p>​    例子：</p><p><img src="/Users/he/Desktop/屏幕快照 2019-11-05 下午3.59.00.png" alt="屏幕快照 2019-11-05 下午3.59.00"></p><p>​                                                                    (POEM-RIPS SECURITY CALENDAR 2017 )</p></li></ul><p>  相似的， 还有<code>$_SERVER</code>中的内容， 有的逻辑会从<code>$_ERVER</code>中提取URL甚至参数，构成绕过。</p><p>  例子：<a href="https://bugs.leavesongs.com/php/%E8%B4%B7%E9%BD%90%E4%B9%90%E7%B3%BB%E7%BB%9F%E6%9C%80%E6%96%B0%E7%89%88sql%E6%B3%A8%E5%85%A5%EF%BC%88%E6%97%A0%E9%9C%80%E7%99%BB%E5%BD%95%E7%BB%95%E8%BF%87waf%E5%8F%AFunion-select%E8%B7%A8%E8%A1%A8%E6%9F%A5%E8%AF%A2%EF%BC%89/" target="_blank" rel="noopener">贷齐乐系统最新版SQL注入（无需登录绕过WAF可union select跨表查询）</a></p><ul><li>key</li></ul><p>用户通过交互web前端向服务器提交的内容通常先写在全局变量中。 有时我们只注意到了<code>GET/POST/COOKIE</code>等提交的变量的<code>value</code>,  而忽视了变量本身的<code>key</code>。</p><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">  <span class="keyword">foreach</span>($_GET <span class="keyword">as</span> $key=&gt;$value)</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="keyword">echo</span> $key .<span class="string">"\n"</span>;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure><h1 id="0x02-变量覆盖"><a href="#0x02-变量覆盖" class="headerlink" title="0x02 变量覆盖"></a>0x02 变量覆盖</h1><p>变量覆盖是在脚本运行时对已有变量的非预期赋值。</p><ul><li>extract</li></ul><p>此函数在指定参数为<code>EXTR_OVERWRITE</code>或者缺省时，可以导致变量覆盖。</p><p>函数原型： </p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">extract ( array &amp;$array [, int $flags = EXTR_OVERWRITE [, string $prefix = NULL ]] ) : int</span><br></pre></td></tr></table></figure><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//?xss=666 =&gt; 666</span></span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$xss = <span class="number">123</span>;</span><br><span class="line">extract($_GET);</span><br><span class="line"><span class="keyword">echo</span> $xss;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure><ul><li>\$$</li></ul><p>双$符表示PHP中的可变变量，可以构成PHP中比较独特的变量覆盖方式。一般发生在遍历一个传入的全局变量数组时：</p><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//?xss=666 =&gt; 666</span></span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$xss = <span class="number">123</span>;</span><br><span class="line"><span class="keyword">foreach</span>($_GET <span class="keyword">as</span> $key =&gt; $value)</span><br><span class="line">&#123;</span><br><span class="line">  $$key = $value;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">echo</span> $xss;</span><br></pre></td></tr></table></figure><ul><li><p>parse_str</p><p>此函数解析字符串中的<code>QUERY STRING</code> 如果没有设置第二个变量<code>result</code>则可能导致变量覆盖。</p><p>函数原型：</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">parse_str ( string $encoded_string [, array &amp;$result ] ) : void</span><br></pre></td></tr></table></figure></li></ul>  <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//?xss=666 =&gt; 666</span></span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$xss= <span class="number">123</span>;</span><br><span class="line">parse_str($_SERVER[<span class="string">'QUERY_STRING'</span>])</span><br><span class="line"><span class="keyword">echo</span> $xss;</span><br></pre></td></tr></table></figure><ul><li><p>mb_parse_str</p><p>与parse_str类似，解析 GET/POST/COOKIE 数据并设置全局变量</p><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//?xss=666 =&gt; 666</span></span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$xss = <span class="number">123</span>;</span><br><span class="line">mb_parse_str($_SERVER[<span class="string">'QUERY_STRING'</span>] );</span><br><span class="line"><span class="keyword">echo</span> $xss;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></li></ul><ul><li>import_request_variables</li></ul><p>​       <a href="https://www.php.net/manual/zh/function.import-request-variables.php" target="_blank" rel="noopener">php.net</a>原文中说明，将 GET／POST／Cookie 变量导入到全局作用域中。如果你禁止了 <a href="https://www.php.net/manual/zh/ini.core.php#ini.register-globals" target="_blank" rel="noopener">register_globals</a>，但又想用到一些全局变量，那么此函数就很有用。(<code>register_globals</code>是PHP的一个特性。)</p><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//?xss=666 =&gt; 666</span></span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$xss = <span class="number">123</span>;</span><br><span class="line">import_request_variables(<span class="string">'G'</span>);</span><br><span class="line"><span class="keyword">echo</span> $xss;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure><p>但是这个特性已经在php5.4.0移除。</p>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;h1 id=&quot;0x01介绍&quot;&gt;&lt;a href=&quot;#0x01介绍&quot; class=&quot;headerlink&quot; title=&quot;0x01介绍&quot;&gt;&lt;/a&gt;0x01介绍&lt;/h1&gt;&lt;p&gt;要验证PHP中污点传播漏洞大概需要验证三点，第一个是用户传入点，此点用户可控。 第二个是作用点， 此点触发了
-      
-    
-    </summary>
-    
-    
-      <category term="php" scheme="https://www.penlab.me/tags/php/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>C常见漏洞学习</title>
-    <link href="https://www.penlab.me/2019/10/28/c_vul/"/>
-    <id>https://www.penlab.me/2019/10/28/c_vul/</id>
-    <published>2019-10-27T16:00:00.000Z</published>
-    <updated>2019-10-28T03:21:15.051Z</updated>
+    <title></title>
+    <link href="https://www.penlab.me/2019/11/06/c_vul/"/>
+    <id>https://www.penlab.me/2019/11/06/c_vul/</id>
+    <published>2019-11-05T16:00:00.000Z</published>
+    <updated>2019-11-06T12:30:36.268Z</updated>
     
     <content type="html"><![CDATA[<h1 id="0x01"><a href="#0x01" class="headerlink" title="0x01"></a>0x01</h1><p>demo_code:</p><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Buffer Underwrite ('Buffer Underflow')</span></span><br><span class="line"><span class="comment"> * https://cwe.mitre.org/data/definitions/124.html</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"> </span><br><span class="line"> <span class="meta"># <span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">char</span> src[<span class="number">12</span>];</span><br><span class="line">    <span class="built_in">strncpy</span>(src,, <span class="string">"Buffer Underflow"</span>, <span class="keyword">sizeof</span>(src));</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">size_t</span> length = <span class="built_in">strlen</span>(src);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">int</span> index = (length <span class="number">-1</span>);</span><br><span class="line">    </span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure><h1 id="0x02-dead-store"><a href="#0x02-dead-store" class="headerlink" title="0x02 dead_store"></a>0x02 dead_store</h1>]]></content>
     
@@ -59,7 +36,53 @@
     </summary>
     
     
-      <category term="C" scheme="https://www.penlab.me/tags/C/"/>
+      <category term="pwn" scheme="https://www.penlab.me/tags/pwn/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>一些php审计的复现</title>
+    <link href="https://www.penlab.me/2019/11/06/statement/"/>
+    <id>https://www.penlab.me/2019/11/06/statement/</id>
+    <published>2019-11-05T16:00:00.000Z</published>
+    <updated>2019-11-06T12:28:42.307Z</updated>
+    
+    <content type="html"><![CDATA[<p>目前感觉自己手工审计的洞还是少了，眼高手低。 之前分析过的一些洞都放在笔记里了，但是写完了自己都不太愿意看 XD。毕竟是复线师傅们的成果，现在暂时开了<a href="https://www.yuque.com/u303154/ayooqu" target="_blank" rel="noopener">代码审计的复现</a>系列，与自己的博客区别开来。最近要加大手工审计量，加油～</p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;目前感觉自己手工审计的洞还是少了，眼高手低。 之前分析过的一些洞都放在笔记里了，但是写完了自己都不太愿意看 XD。毕竟是复线师傅们的成果，现在暂时开了&lt;a href=&quot;https://www.yuque.com/u303154/ayooqu&quot; target=&quot;_blank&quot;
+      
+    
+    </summary>
+    
+    
+      <category term="other" scheme="https://www.penlab.me/tags/other/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>PHP数据传入点分析</title>
+    <link href="https://www.penlab.me/2019/11/05/php_source/"/>
+    <id>https://www.penlab.me/2019/11/05/php_source/</id>
+    <published>2019-11-04T16:00:00.000Z</published>
+    <updated>2019-11-05T11:05:47.412Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="0x01介绍"><a href="#0x01介绍" class="headerlink" title="0x01介绍"></a>0x01介绍</h1><p>要验证PHP中污点传播漏洞大概需要验证三点，第一个是用户传入点，此点用户可控。 第二个是作用点， 此点触发了危险函数。第三个是在数据传播的路径上有没有效的过滤。</p><p>归根结底还是要使得传入危险函数的参数<code>有害</code>。这里讨论一下参数的传入。</p><h1 id="0x01-变量注册"><a href="#0x01-变量注册" class="headerlink" title="0x01 变量注册"></a>0x01 变量注册</h1><ul><li><p>全局变量</p><p>用户的前端交互会被注册到全局变量里，最常用的即<code>GPC(GET, POST, Cookie)</code>此外$_REQUEST中也可包含<code>GPC</code>的内容，而且会注册成两个变量，如果过滤器中一个而没有过滤另一个就有可能造成绕过：</p><p>​    例子：</p><p><img src="/Users/he/Hexo/source/media/php_source/panda.png" alt="屏幕快照 2019-11-05 下午3.59.00"></p><p>​                                                                    (POEM-RIPS SECURITY CALENDAR 2017 )</p></li></ul><p>  相似的， 还有<code>$_SERVER</code>中的内容， 有的逻辑会从<code>$_ERVER</code>中提取URL甚至参数，构成绕过。</p><p>  例子：<a href="https://bugs.leavesongs.com/php/%E8%B4%B7%E9%BD%90%E4%B9%90%E7%B3%BB%E7%BB%9F%E6%9C%80%E6%96%B0%E7%89%88sql%E6%B3%A8%E5%85%A5%EF%BC%88%E6%97%A0%E9%9C%80%E7%99%BB%E5%BD%95%E7%BB%95%E8%BF%87waf%E5%8F%AFunion-select%E8%B7%A8%E8%A1%A8%E6%9F%A5%E8%AF%A2%EF%BC%89/" target="_blank" rel="noopener">贷齐乐系统最新版SQL注入（无需登录绕过WAF可union select跨表查询）</a></p><ul><li>key</li></ul><p>用户通过交互web前端向服务器提交的内容通常先写在全局变量中。 有时我们只注意到了<code>GET/POST/COOKIE</code>等提交的变量的<code>value</code>,  而忽视了变量本身的<code>key</code>。</p><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">  <span class="keyword">foreach</span>($_GET <span class="keyword">as</span> $key=&gt;$value)</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="keyword">echo</span> $key .<span class="string">"\n"</span>;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure><h1 id="0x02-变量覆盖"><a href="#0x02-变量覆盖" class="headerlink" title="0x02 变量覆盖"></a>0x02 变量覆盖</h1><p>变量覆盖是在脚本运行时对已有变量的非预期赋值。</p><ul><li>extract</li></ul><p>此函数在指定参数为<code>EXTR_OVERWRITE</code>或者缺省时，可以导致变量覆盖。</p><p>函数原型： </p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">extract ( array &amp;$array [, int $flags = EXTR_OVERWRITE [, string $prefix = NULL ]] ) : int</span><br></pre></td></tr></table></figure><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//?xss=666 =&gt; 666</span></span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$xss = <span class="number">123</span>;</span><br><span class="line">extract($_GET);</span><br><span class="line"><span class="keyword">echo</span> $xss;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure><ul><li>\$$</li></ul><p>双$符表示PHP中的可变变量，可以构成PHP中比较独特的变量覆盖方式。一般发生在遍历一个传入的全局变量数组时：</p><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//?xss=666 =&gt; 666</span></span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$xss = <span class="number">123</span>;</span><br><span class="line"><span class="keyword">foreach</span>($_GET <span class="keyword">as</span> $key =&gt; $value)</span><br><span class="line">&#123;</span><br><span class="line">  $$key = $value;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">echo</span> $xss;</span><br></pre></td></tr></table></figure><ul><li><p>parse_str</p><p>此函数解析字符串中的<code>QUERY STRING</code> 如果没有设置第二个变量<code>result</code>则可能导致变量覆盖。</p><p>函数原型：</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">parse_str ( string $encoded_string [, array &amp;$result ] ) : void</span><br></pre></td></tr></table></figure></li></ul>  <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//?xss=666 =&gt; 666</span></span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$xss= <span class="number">123</span>;</span><br><span class="line">parse_str($_SERVER[<span class="string">'QUERY_STRING'</span>])</span><br><span class="line"><span class="keyword">echo</span> $xss;</span><br></pre></td></tr></table></figure><ul><li><p>mb_parse_str</p><p>与parse_str类似，解析 GET/POST/COOKIE 数据并设置全局变量</p><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//?xss=666 =&gt; 666</span></span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$xss = <span class="number">123</span>;</span><br><span class="line">mb_parse_str($_SERVER[<span class="string">'QUERY_STRING'</span>] );</span><br><span class="line"><span class="keyword">echo</span> $xss;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></li></ul><ul><li>import_request_variables</li></ul><p>​       <a href="https://www.php.net/manual/zh/function.import-request-variables.php" target="_blank" rel="noopener">php.net</a>原文中说明，将 GET／POST／Cookie 变量导入到全局作用域中。如果你禁止了 <a href="https://www.php.net/manual/zh/ini.core.php#ini.register-globals" target="_blank" rel="noopener">register_globals</a>，但又想用到一些全局变量，那么此函数就很有用。(<code>register_globals</code>是PHP的一个特性。)</p><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//?xss=666 =&gt; 666</span></span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$xss = <span class="number">123</span>;</span><br><span class="line">import_request_variables(<span class="string">'G'</span>);</span><br><span class="line"><span class="keyword">echo</span> $xss;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure><p>但是这个特性已经在php5.4.0移除。</p><p>THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG OF CAESAR AND YOUR UNIQUE SOLUTION IS PBO</p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h1 id=&quot;0x01介绍&quot;&gt;&lt;a href=&quot;#0x01介绍&quot; class=&quot;headerlink&quot; title=&quot;0x01介绍&quot;&gt;&lt;/a&gt;0x01介绍&lt;/h1&gt;&lt;p&gt;要验证PHP中污点传播漏洞大概需要验证三点，第一个是用户传入点，此点用户可控。 第二个是作用点， 此点触发了
+      
+    
+    </summary>
+    
+    
+      <category term="php" scheme="https://www.penlab.me/tags/php/"/>
     
   </entry>
   
