@@ -48,7 +48,10 @@
 <p>​       <a href="https://www.php.net/manual/zh/function.import-request-variables.php" target="_blank" rel="noopener">php.net</a>原文中说明，将 GET／POST／Cookie 变量导入到全局作用域中。如果你禁止了 <a href="https://www.php.net/manual/zh/ini.core.php#ini.register-globals" target="_blank" rel="noopener">register_globals</a>，但又想用到一些全局变量，那么此函数就很有用。(<code>register_globals</code>是PHP的一个特性。)</p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//?xss=666 =&gt; 666</span></span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$xss = <span class="number">123</span>;</span><br><span class="line">import_request_variables(<span class="string">'G'</span>);</span><br><span class="line"><span class="keyword">echo</span> $xss;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
 <p>但是这个特性已经在php5.4.0移除。</p>
-<p>THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG OF CAESAR AND YOUR UNIQUE SOLUTION IS PBO</p>
+<h1 id="0x03-其他"><a href="#0x03-其他" class="headerlink" title="0x03 其他"></a>0x03 其他</h1><ul>
+<li>getenv()得到变量</li>
+<li>$HTTP_RAW_POST_DATA与PHP输入、输出流</li>
+</ul>
 </div></div></div></div></div><div id="footer">© <a href="/." rel="nofollow">PenLab.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a> Theme<a target="_blank" href="https://github.com/7ye/maupassant-hexo"> Maupassant.</a></div><a id="back_to_top" href="javascript:void(0)" class="back_to_top"><span>△</span></a><script type="text/javascript" src="/js/totop.js?v=0.0.1"></script><script>function auto_code_fit(){
   if($(".highlight").length != 0){
     var pc_width = $(".post-content").width();

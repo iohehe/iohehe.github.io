@@ -1,0 +1,50 @@
+<!DOCTYPE html><html lang="null"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="renderer" content="webkit"><title>RIPS分析 - PenLab</title><meta name="description" content="0x01 文件rips开源版本https://github.com/ripsscanner/rips入口文件:  index.php文件， 主要一个前端初始化页面。功能入口: main.php文件， 由index.php调用script.js这个文件，这里的scan是一个js方法。他去调用”main.php”config文件夹，一堆配置型文件。general.php 里面包含一些php设置和def"><link type="text/css" rel="stylesheet" href="/css/pure.css?v=0.0.1"><link type="text/css" rel="stylesheet" href="/css/style.css?v=0.0.1"><script type="text/javascript" src="//cdn.bootcss.com/jquery/1.11.0/jquery.min.js"></script><link rel="alternate" type="application/atom+xml" href="/atom.xml"></head></html><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">RIPS分析</h1><a id="logo" href="/.">PenLab</a></div><div id="nav-menu"><div class="bitcron_nav"><div class="site_nav_wrap"><div class="site_nav"></div></div></div></div></div><div id="layout" class="pure-g"><div class="pure-u-1"><div class="content_container"><div class="post"><h1 class="post-title">RIPS分析</h1><br><!--文章内容--><div class="post-content"><h1 id="0x01-文件"><a href="#0x01-文件" class="headerlink" title="0x01 文件"></a>0x01 文件</h1><p>rips开源版本<a href="https://github.com/ripsscanner/rips" target="_blank" rel="noopener">https://github.com/ripsscanner/rips</a></p>
+<ul>
+<li><p>入口文件:  <code>index.php</code>文件， 主要一个前端初始化页面。</p>
+</li>
+<li><p>功能入口: <code>main.php</code>文件， 由<code>index.php</code>调用script.js这个文件，这里的scan是一个js方法。他去调用”main.php”</p>
+</li>
+<li><p><code>config</code>文件夹，一堆配置型文件。</p>
+<ul>
+<li><p><code>general.php</code> 里面包含一些php设置和define,  给了目标文件类型列表，代码输出样式等选择。</p>
+</li>
+<li><p><code>source.php</code> source点的list， 分为<code>user_input</code>, <code>server_params</code>,<code>file_input</code>,<code>database_input</code>,<code>other_input</code>还挺全的， 怪不得误报率这么高。</p>
+</li>
+<li><p><code>tokens.php</code> 自己给出了一个<code>token</code>列表，说是用来<code>lexical analysis</code>，将原生<code>token</code>分类了。</p>
+<p>比如看这一类：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// XSS affected operation tokens</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> $T_XSS = <span class="keyword">array</span>(</span><br><span class="line">	T_PRINT,</span><br><span class="line">	T_ECHO,</span><br><span class="line">	T_OPEN_TAG_WITH_ECHO,</span><br><span class="line">	T_EXIT</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+<p>把这四类<code>token</code>都归为XSS。</p>
+</li>
+<li><p><code>securing.php</code> 安全检测函数的list， 里边还有一个<code>INSECURING_STRING</code>, 貌似都是些不安全的解码函数，可以加上个<code>stripslashs</code>之类的。</p>
+</li>
+<li><p><code>sinks.php</code> sink点，各种洞的sink函数，感觉总结的还挺全乎的。</p>
+</li>
+<li><p><code>info.php</code> 输出<code>interesting info</code>的。一部分是一对接口之类的函数，一部分是魔术方法。</p>
+<p>所以说rips的规则来自于<code>config</code>，<code>source</code>,<code>sink</code>,<code>sanitize</code>分别一个文件列举。还是一种基于规则的方法。</p>
+</li>
+</ul>
+</li>
+<li><p><code>lib</code>文件夹，一些功能型文件。</p>
+<ul>
+<li><code>analyzer.php</code></li>
+<li><code>constructer.php</code></li>
+<li><code>filer.php</code>: 文件遍历， 我最喜欢的功能，没有之一。</li>
+<li><code>printer.php</code></li>
+<li><code>scanner.php</code></li>
+<li><code>searcher.php</code></li>
+<li><code>tokenier.php</code></li>
+</ul>
+</li>
+<li><p><code>windows</code>文件夹， 应该是负责各个输出部分的。</p>
+</li>
+</ul>
+</div></div></div></div></div><div id="footer">© <a href="/." rel="nofollow">PenLab.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a> Theme<a target="_blank" href="https://github.com/7ye/maupassant-hexo"> Maupassant.</a></div><a id="back_to_top" href="javascript:void(0)" class="back_to_top"><span>△</span></a><script type="text/javascript" src="/js/totop.js?v=0.0.1"></script><script>function auto_code_fit(){
+  if($(".highlight").length != 0){
+    var pc_width = $(".post-content").width();
+    $(".highlight .code").find("pre").width((pc_width-70)+"px");
+  }
+}
+window.onresize = function(){
+  auto_code_fit();
+}
+auto_code_fit();</script></div></body>
