@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://www.penlab.me/"/>
-  <updated>2019-12-05T07:20:35.017Z</updated>
+  <updated>2019-12-28T09:09:40.293Z</updated>
   <id>https://www.penlab.me/</id>
   
   <author>
@@ -15,6 +15,30 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>burp插件入门</title>
+    <link href="https://www.penlab.me/2019/12/28/burp_ex_1/"/>
+    <id>https://www.penlab.me/2019/12/28/burp_ex_1/</id>
+    <published>2019-12-27T16:00:00.000Z</published>
+    <updated>2019-12-28T09:09:40.293Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="0x01-java项目"><a href="#0x01-java项目" class="headerlink" title="0x01 java项目"></a>0x01 java项目</h1><p>学习了一下burp插件的入门， 参考：</p><p><a href="https://support.portswigger.net/customer/portal/questions/17285859-how-to-deploy-an-extension" target="_blank" rel="noopener">https://support.portswigger.net/customer/portal/questions/17285859-how-to-deploy-an-extension</a></p><p>首先第一个坑是那堆接口， 自己之前没怎么写过java，所以这次，也没写…</p><p>找到官方提供的接口下载下来：</p><p><a href="https://github.com/PortSwigger/burp-extender-api" target="_blank" rel="noopener">https://github.com/PortSwigger/burp-extender-api</a></p><p>然后新建一个java项目，名字随便起一个，然后新建一个叫burp的package把所有接口都拷进去，参考：</p><p><a href="https://portswigger.net/burp/extender/writing-your-first-burp-suite-extension" target="_blank" rel="noopener">https://portswigger.net/burp/extender/writing-your-first-burp-suite-extension</a></p><p>然后我直接在burp包下常见了一个<code>BurpExtender.class</code>的类，用的就是最简单的那个官方例子的代码：</p><p><a href="https://github.com/PortSwigger/example-hello-world/blob/master/java/BurpExtender.java" target="_blank" rel="noopener">https://github.com/PortSwigger/example-hello-world/blob/master/java/BurpExtender.java</a></p><p>所以，一行代码没写:&gt;</p><h1 id="0x02-导成jar包"><a href="#0x02-导成jar包" class="headerlink" title="0x02 导成jar包"></a>0x02 导成jar包</h1><p>这个也一顿折腾，我使用的是intellij，首先打开file下的<code>Project Structure</code>，点开加号，<code>Artifacts</code>-&gt;<code>JAR</code>-&gt;<code>From modules ...</code></p><p><img src="/Users/he/Hexo/source/media/burp_ex_1/屏幕快照 2019-12-28 下午5.01.40.png" alt="屏幕快照 2019-12-28 下午5.01.40"></p><p>这里的<code>Main Class</code>我任性地随便选了一个main，然后下边<code>META-INF/MANIFEST.MF</code>也生成路径了，（虽然还不是很懂</p><p><img src="/Users/he/Hexo/source/media/burp_ex_1/屏幕快照 2019-12-28 下午5.04.37.png" alt="屏幕快照 2019-12-28 下午5.04.37"></p><p>然后选择<code>build</code>里的<code>Build Artifacts</code>-&gt;<code>Build</code>一般就生成一个<code>out</code>文件夹有一个工程同名jar包，导入burpSuite即可。</p><p><img src="/Users/he/Hexo/source/media/burp_ex_1/屏幕快照 2019-12-28 下午5.08.17.png" alt="屏幕快照 2019-12-28 下午5.08.17">对了，接口文件好像可以直接从burp里获得？</p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h1 id=&quot;0x01-java项目&quot;&gt;&lt;a href=&quot;#0x01-java项目&quot; class=&quot;headerlink&quot; title=&quot;0x01 java项目&quot;&gt;&lt;/a&gt;0x01 java项目&lt;/h1&gt;&lt;p&gt;学习了一下burp插件的入门， 参考：&lt;/p&gt;
+&lt;p&gt;&lt;a href
+      
+    
+    </summary>
+    
+    
+      <category term="java" scheme="https://www.penlab.me/tags/java/"/>
+    
+  </entry>
   
   <entry>
     <title>tp5学习-容器</title>
@@ -462,31 +486,6 @@
     
     
       <category term="websec php" scheme="https://www.penlab.me/tags/websec-php/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>新的开始</title>
-    <link href="https://www.penlab.me/2018/07/31/Beginer/"/>
-    <id>https://www.penlab.me/2018/07/31/Beginer/</id>
-    <published>2018-07-30T16:00:00.000Z</published>
-    <updated>2019-10-15T08:36:44.159Z</updated>
-    
-    <content type="html"><![CDATA[<p>之前使用typecho搭建的博客用了大概两年，期间写了不少文章，之后AWS到期，整个网站备份下线。本来打算将以前的文章全部转成静态格式，但是想想何不来个新的开始(实在懒)呢？</p><p>Em…希望我在新的环境里，健健康康，快快乐乐，继续成长～</p>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;p&gt;之前使用typecho搭建的博客用了大概两年，期间写了不少文章，之后AWS到期，整个网站备份下线。本来打算将以前的文章全部转成静态格式，但是想想何不来个新的开始(实在懒)呢？&lt;/p&gt;
-&lt;p&gt;Em…希望我在新的环境里，健健康康，快快乐乐，继续成长～&lt;/p&gt;
-
-      
-    
-    </summary>
-    
-    
-      <category term="other" scheme="https://www.penlab.me/tags/other/"/>
     
   </entry>
   
