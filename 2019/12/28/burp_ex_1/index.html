@@ -9,11 +9,12 @@
 <p><a href="https://github.com/PortSwigger/example-hello-world/blob/master/java/BurpExtender.java" target="_blank" rel="noopener">https://github.com/PortSwigger/example-hello-world/blob/master/java/BurpExtender.java</a></p>
 <p>所以，一行代码没写:&gt;</p>
 <h1 id="0x02-导成jar包"><a href="#0x02-导成jar包" class="headerlink" title="0x02 导成jar包"></a>0x02 导成jar包</h1><p>这个也一顿折腾，我使用的是intellij，首先打开file下的<code>Project Structure</code>，点开加号，<code>Artifacts</code>-&gt;<code>JAR</code>-&gt;<code>From modules ...</code></p>
-<p><img src="/Users/he/Hexo/source/media/burp_ex_1/屏幕快照 2019-12-28 下午5.01.40.png" alt="屏幕快照 2019-12-28 下午5.01.40"></p>
+<p><img src="/media/burp_ex_1/屏幕快照 2019-12-28 下午5.01.40.png" alt="屏幕快照 2019-12-28 下午5.01.40"></p>
 <p>这里的<code>Main Class</code>我任性地随便选了一个main，然后下边<code>META-INF/MANIFEST.MF</code>也生成路径了，（虽然还不是很懂</p>
-<p><img src="/Users/he/Hexo/source/media/burp_ex_1/屏幕快照 2019-12-28 下午5.04.37.png" alt="屏幕快照 2019-12-28 下午5.04.37"></p>
+<p><img src="/media/burp_ex_1/屏幕快照 2019-12-28 下午5.04.37.png" alt="屏幕快照 2019-12-28 下午5.04.37"></p>
 <p>然后选择<code>build</code>里的<code>Build Artifacts</code>-&gt;<code>Build</code>一般就生成一个<code>out</code>文件夹有一个工程同名jar包，导入burpSuite即可。</p>
-<p><img src="/Users/he/Hexo/source/media/burp_ex_1/屏幕快照 2019-12-28 下午5.08.17.png" alt="屏幕快照 2019-12-28 下午5.08.17">对了，接口文件好像可以直接从burp里获得？</p>
+<p><img src="/media/burp_ex_1/屏幕快照 2019-12-28 下午5.08.17.png" alt="屏幕快照 2019-12-28 下午5.08.17"></p>
+<p>对了，接口文件好像可以直接从burp里获得？</p>
 </div></div></div></div></div><div id="footer">© <a href="/." rel="nofollow">PenLab.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a> Theme<a target="_blank" href="https://github.com/7ye/maupassant-hexo"> Maupassant.</a></div><a id="back_to_top" href="javascript:void(0)" class="back_to_top"><span>△</span></a><script type="text/javascript" src="/js/totop.js?v=0.0.1"></script><script>function auto_code_fit(){
   if($(".highlight").length != 0){
     var pc_width = $(".post-content").width();
