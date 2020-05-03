@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://www.penlab.me/"/>
-  <updated>2020-05-03T02:38:05.979Z</updated>
+  <updated>2020-05-03T04:30:03.272Z</updated>
   <id>https://www.penlab.me/</id>
   
   <author>
@@ -17,67 +17,27 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>Post_name</title>
-    <link href="https://www.penlab.me/2020/05/03/post-name/"/>
-    <id>https://www.penlab.me/2020/05/03/post-name/</id>
-    <published>2020-05-03T02:37:16.000Z</published>
-    <updated>2020-05-03T02:38:05.979Z</updated>
+    <title>Static_analysis_1</title>
+    <link href="https://www.penlab.me/2020/05/03/static-analysis-1/"/>
+    <id>https://www.penlab.me/2020/05/03/static-analysis-1/</id>
+    <published>2020-05-03T02:43:27.000Z</published>
+    <updated>2020-05-03T04:30:03.272Z</updated>
     
-    <content type="html"><![CDATA[<p><img src="/2020/05/03/post-name/%E6%88%AA%E5%B1%8F2020-05-03%20%E4%B8%8A%E5%8D%8810.06.00.png" alt="截屏2020-05-03 上午10.06.00"></p>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;p&gt;&lt;img src=&quot;/2020/05/03/post-name/%E6%88%AA%E5%B1%8F2020-05-03%20%E4%B8%8A%E5%8D%8810.06.00.png&quot; alt=&quot;截屏2020-05-03 上午10.06.00&quot;&gt;&lt;/p&gt;
-
-      
-    
-    </summary>
-    
-    
-  </entry>
-  
-  <entry>
-    <title></title>
-    <link href="https://www.penlab.me/2020/04/22/static_analysis_1/"/>
-    <id>https://www.penlab.me/2020/04/22/static_analysis_1/</id>
-    <published>2020-04-22T03:19:31.979Z</published>
-    <updated>2020-05-03T02:19:33.871Z</updated>
-    
-    <content type="html"><![CDATA[<p>title: 南大软件分析学习1<br>date: 2020-05-03</p><p><img src="/2020/04/22/static_analysis_1/../../Desktop/%E6%88%AA%E5%B1%8F2020-05-03%20%E4%B8%8A%E5%8D%8810.06.00.png" alt="截屏2020-05-03 上午10.06.00"></p><p>博客里边捋一遍 南大静态分析课。</p><p><a href="https://www.bilibili.com/video/BV1b7411K7P4" target="_blank" rel="noopener">课程链接</a></p><p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2020-05-03-020521.png" alt="截屏2020-05-03 上午9.46.34"></p><h1 id="1-PL-and-Static-Analysis"><a href="#1-PL-and-Static-Analysis" class="headerlink" title="1. PL and Static Analysis"></a>1. PL and Static Analysis</h1><blockquote><p>介绍PL和静态分析</p></blockquote><ul><li>PL和静态分析是从属关系 </li></ul>]]></content>
+    <content type="html"><![CDATA[<p>南京大学软件分析课程，这段时间可以把自己学习的内容总结一下。</p><p><a href="https://www.bilibili.com/video/BV1b7411K7P4" target="_blank" rel="noopener">课程链接</a></p><p>第一节</p><h1 id=""><a href="#" class="headerlink" title=""></a><img src="/2020/05/03/static-analysis-1/%E6%88%AA%E5%B1%8F2020-05-03%20%E4%B8%8A%E5%8D%8810.45.01.png" alt="截屏2020-05-03 上午10.45.01"></h1><h1 id="0x01-PL-and-Static-Analysis"><a href="#0x01-PL-and-Static-Analysis" class="headerlink" title="0x01 PL and Static Analysis"></a>0x01 PL and Static Analysis</h1><blockquote><p>08:05 </p></blockquote><p>开始，剪课件…</p><p><img src="/2020/05/03/static-analysis-1/%E6%88%AA%E5%B1%8F2020-05-03%20%E4%B8%8A%E5%8D%8810.50.11.png" alt="截屏2020-05-03 上午10.50.11"></p><p>背景：将PL分了三个领域。 程序分析属于PL的应用领域。</p><ul><li>在语言的框架下谈到程序分析就是静态分析。</li></ul><h1 id="0x02-Why-We-Need-Static-Analysis"><a href="#0x02-Why-We-Need-Static-Analysis" class="headerlink" title="0x02 Why We Need Static Analysis"></a>0x02 Why We Need Static Analysis</h1><blockquote><p>17:40</p></blockquote><p>应用背景:</p><ol><li><p>Program Reliability</p></li><li><p>Program Security</p></li><li><p>Compiler Optimization</p></li><li><p>Program Understanding</p></li></ol><ul><li><p>静态分析是在编译时刻完成了对程序的分析</p></li><li><p>更深入地理解编程语言的语法、语义</p></li><li>写出更加可靠、更安全、更高效的程序</li></ul><blockquote><p>这一块自己也觉得之前写代码，感觉用不上自己学的理论知识。学了一些编译原理尤其是静态分析内容后，感觉把理论和实践打通了。再加上操作系统和组成原理。 写代码的时候逐渐知道编译器在干什么， 操作系统在干什么， 硬件在干什么…</p></blockquote><h1 id="0x03-Static-Analysis"><a href="#0x03-Static-Analysis" class="headerlink" title="0x03 Static Analysis"></a>0x03 Static Analysis</h1><blockquote><p>35:40</p></blockquote><p>正式开始了…</p><ul><li>静态分析： 在运行一个程序之前， 通过静态分析，了解程序一些行为和特征，</li></ul><p>一个静态分析的评估包含Sound 和 Complete。 <img src="/2020/05/03/static-analysis-1/%E6%88%AA%E5%B1%8F2020-05-03%20%E4%B8%8A%E5%8D%8811.36.35.png" alt="截屏2020-05-03 上午11.36.35"></p><p>Truth是我们需要的结果机， 包含了所有可能的分析结果</p><ul><li>Sound：Overapproximate， 包含了所有的Truth</li><li>Complete: Underapproximate,  在Truth</li></ul><blockquote><p>比如找洞， Truth是所有的洞， 而Complete是Truth的子集， 报出来的没有假的(无误报)。而Sound是包含了所有的Truth，但是会有误报。(这是设计时的目标方向， 实际使用时，大部分工具，既有误报，又有漏报)</p></blockquote><p>我们的目标是设计一个<code>useful static analysis</code>，在上图画一个结果集的圈， 我们需要妥协一方(看应用场景)。 妥协<code>Sound</code>，就是要让Sound妥协， 让Sound缩小，就会造成生漏报(<code>false negatives</code>)，这种分析是<code>Compromise soundness</code>。</p><p> 同样的， 妥协<code>Complete</code>， 就是要不产生误报(<code>false positives</code>)。 这种分析是<code>Compromise completeness</code>的。</p><p>这两种设计方案随目的不同，在需要的场景下，都算是<code>useful static analysis</code>。</p><p><img src="/2020/05/03/static-analysis-1/%E6%88%AA%E5%B1%8F2020-05-03%20%E4%B8%8B%E5%8D%8812.06.37.png" alt="截屏2020-05-03 下午12.06.37"></p><blockquote><p>我的理解，以truth为圆，妥协Soundness就相当于，从外部空间往里收这样就会不包含正解。</p></blockquote>]]></content>
     
     <summary type="html">
     
       
       
-        &lt;p&gt;title: 南大软件分析学习1&lt;br&gt;date: 2020-05-03&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;/2020/04/22/static_analysis_1/../../Desktop/%E6%88%AA%E5%B1%8F2020-05-03%20%E4%B8%8
+        &lt;p&gt;南京大学软件分析课程，这段时间可以把自己学习的内容总结一下。&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://www.bilibili.com/video/BV1b7411K7P4&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;课程链接&lt;/a&gt;&lt;/p&gt;
+&lt;
       
     
     </summary>
     
     
-  </entry>
-  
-  <entry>
-    <title>编码</title>
-    <link href="https://www.penlab.me/2020/04/01/%08code/"/>
-    <id>https://www.penlab.me/2020/04/01/code/</id>
-    <published>2020-03-31T16:00:00.000Z</published>
-    <updated>2020-04-01T12:31:07.636Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="0x01-认识编码"><a href="#0x01-认识编码" class="headerlink" title="0x01 认识编码"></a>0x01 认识编码</h1><p>计算机是用二进制来认识世界的， 它只认识0和1两个数字。 符号是信息的载体， 不同的信息域使用着不同的符号体系。 这些符号在计算机中，对应着0和1。计算机需要处理这些符号，就要有一个映射体制，也就是编码。 在计算机世界中，需要一套规范，来制定各自的<code>字符集</code>，使得计算机使用者去遵守。<code>字符集(Character Set)</code>指定了字符和二进制的对应关系， 而<code>编码</code>就是将字符集转化为二进制的过程。码就是字，有了字就可写词，句子，文章。</p><h1 id="0x02-编码种类"><a href="#0x02-编码种类" class="headerlink" title="0x02 编码种类"></a>0x02 编码种类</h1><h1 id="binary-to-text"><a href="#binary-to-text" class="headerlink" title="binary-to-text"></a>binary-to-text</h1><p>ASCII， GB2312, GBK, Unicode, utf-8<br>ASCII: 为了解决英语世界到计算机世界的信息转化问题。用8位二进制也就是一个字节来表示字符，共128个。<br>后来使用各个字符集就开始了指定他们自己的编码规范。通常都是以人为规范的字节(8bit)为单位扩展的。<br>如中文这个字符集: GB2312 -&gt; GBK -&gt; GB18030<br>这时候，出现了很多编码规范， 需要一个统一的规范来使得计算机世界具有通用型， 于是需要制定一个统一的规范。就像每种字符集都由使用者制定了一个通往计算机世界的接口。 接口很多，每一种字符集需要从指定的接口进入， 字符集之间还需要转化。所以人们想制定一个统一接口。 在这种呼吁下，诞生了<code>Unicode</code>，也称<code>统一码</code>，<code>万国码</code>。</p><h1 id="编程语言"><a href="#编程语言" class="headerlink" title="编程语言"></a>编程语言</h1><p>html, url, json, js, base64</p><h1 id="数学语言"><a href="#数学语言" class="headerlink" title="数学语言"></a>数学语言</h1><p>bin dem oct hex</p><h1 id="特殊功能"><a href="#特殊功能" class="headerlink" title="特殊功能"></a>特殊功能</h1><p>在一些特定情况下，由于功能需要，需要一些特殊编码， 这些编码不是给人读的文本。<br>base64：邮件传输</p>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;h1 id=&quot;0x01-认识编码&quot;&gt;&lt;a href=&quot;#0x01-认识编码&quot; class=&quot;headerlink&quot; title=&quot;0x01 认识编码&quot;&gt;&lt;/a&gt;0x01 认识编码&lt;/h1&gt;&lt;p&gt;计算机是用二进制来认识世界的， 它只认识0和1两个数字。 符号是信息的载体， 不同的
-      
-    
-    </summary>
-    
+      <category term="pl" scheme="https://www.penlab.me/tags/pl/"/>
     
   </entry>
   
@@ -160,49 +120,6 @@
       
       
         &lt;h1 id=&quot;0x01-文件包含漏洞&quot;&gt;&lt;a href=&quot;#0x01-文件包含漏洞&quot; class=&quot;headerlink&quot; title=&quot;0x01 文件包含漏洞&quot;&gt;&lt;/a&gt;0x01 文件包含漏洞&lt;/h1&gt;&lt;p&gt;&lt;code&gt;include()&lt;/code&gt;、&lt;code&gt;inclu
-      
-    
-    </summary>
-    
-    
-  </entry>
-  
-  <entry>
-    <title>Pwn入门</title>
-    <link href="https://www.penlab.me/2019/11/08/pwn_init/"/>
-    <id>https://www.penlab.me/2019/11/08/pwn_init/</id>
-    <published>2019-11-07T16:00:00.000Z</published>
-    <updated>2020-03-25T09:33:03.354Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="0x01-起因"><a href="#0x01-起因" class="headerlink" title="0x01 起因"></a>0x01 起因</h1><p>最近需要学一些C漏洞知识， 结果不务正业地沉迷二进制XD。</p><p>首先工具上，看别人一般都在用IDA，我电脑安装IDA有问题，而且我也不会用…反正不会用，索性跟着一些国外的教程折腾起了Radare2。🔧是拿来用的，能用就成。</p><h1 id="0x02-bof"><a href="#0x02-bof" class="headerlink" title="0x02 bof"></a>0x02 bof</h1><p>起手是<code>pwnable.kr</code>上challenge里的这个bof !:</p><figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">Download :</span> <span class="string">http:</span><span class="comment">//pwnable.kr/bin/bof</span></span><br><span class="line"><span class="string">Download :</span> <span class="string">http:</span><span class="comment">//pwnable.kr/bin/bof.c</span></span><br><span class="line"></span><br><span class="line">Running <span class="string">at :</span> nc pwnable.kr <span class="number">9000</span></span><br></pre></td></tr></table></figure><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">func</span><span class="params">(<span class="keyword">int</span> key)</span></span>&#123;</span><br><span class="line">true<span class="keyword">char</span> overflowme[<span class="number">32</span>];</span><br><span class="line">true<span class="built_in">printf</span>(<span class="string">"overflow me : "</span>);</span><br><span class="line">truegets(overflowme);<span class="comment">// smash me!</span></span><br><span class="line">true<span class="keyword">if</span>(key == <span class="number">0xcafebabe</span>)&#123;</span><br><span class="line">truetruesystem(<span class="string">"/bin/sh"</span>);</span><br><span class="line">true&#125;</span><br><span class="line">true<span class="keyword">else</span>&#123;</span><br><span class="line">truetrue<span class="built_in">printf</span>(<span class="string">"Nah..\n"</span>);</span><br><span class="line">true&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span>* argv[])</span></span>&#123;</span><br><span class="line">truefunc(<span class="number">0xdeadbeef</span>);</span><br><span class="line">true<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>源码里main调用了func函数，传参数，关键是<code>if (key == 0xcafebabe)</code>, 要满足这个条件，但是参数没有可控点啊， 变量覆盖吗？</p><p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2019-03-06-040249.jpg" alt=""></p><p>还真是覆盖，不过不是通过动态语言里的注入同变量名的变量进行覆盖，而是通过内存溢出去覆盖key这个变量的值。</p><p>下载下来二进制文件以后，运行。</p>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;h1 id=&quot;0x01-起因&quot;&gt;&lt;a href=&quot;#0x01-起因&quot; class=&quot;headerlink&quot; title=&quot;0x01 起因&quot;&gt;&lt;/a&gt;0x01 起因&lt;/h1&gt;&lt;p&gt;最近需要学一些C漏洞知识， 结果不务正业地沉迷二进制XD。&lt;/p&gt;
-&lt;p&gt;首先工具上，看别人一般都在
-      
-    
-    </summary>
-    
-    
-  </entry>
-  
-  <entry>
-    <title>一些Php审计的复现</title>
-    <link href="https://www.penlab.me/2019/11/06/statement/"/>
-    <id>https://www.penlab.me/2019/11/06/statement/</id>
-    <published>2019-11-05T16:00:00.000Z</published>
-    <updated>2020-03-25T09:37:28.556Z</updated>
-    
-    <content type="html"><![CDATA[<p>目前感觉自己手工审计的洞还是少了，眼高手低。 之前分析过的一些洞都放在笔记里了，但是写完了自己都不太愿意看 XD。为了专门是复现师傅们的成果，暂时开了<a href="https://www.yuque.com/u303154/ayooqu" target="_blank" rel="noopener">代码审计的复现</a>系列，与自己的博客区别开来。最近要加大手工审计量，加油～</p>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;p&gt;目前感觉自己手工审计的洞还是少了，眼高手低。 之前分析过的一些洞都放在笔记里了，但是写完了自己都不太愿意看 XD。为了专门是复现师傅们的成果，暂时开了&lt;a href=&quot;https://www.yuque.com/u303154/ayooqu&quot; target=&quot;_blank&quot;
       
     
     </summary>
