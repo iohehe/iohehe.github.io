@@ -292,7 +292,7 @@ a:focus {
 
 .post .post-content h4, .post .post-content h5, .post .post-content p, 
 .post .post-content ul, .post .post-content ol, .post .post-content blockquote, .post .post-content table {
-    margin: 1.5em 0;
+    margin: 0.9em 0;
 }
 
 .post .post-content h2, .post .post-content h3 {
@@ -600,12 +600,12 @@ blockquote, .stressed {
 }
 
 blockquote:before, .stressed-quote:before {
-	content: '“';
+	content: '|';
 	display: block;
 	font-family: times;
 	font-style: normal;
-	font-size: 48px;
-	color: #444;
+	font-size: 36px;
+	color: #797979;
 	font-weight: bold;
 	line-height: 30px;
 	margin-left: -50px;
