@@ -282,7 +282,7 @@ a:focus {
 
 /*文章内容*/
 .post .post-content {
-	font-size: 14px;
+	font-size: 16px;
 	color: #333;
 	overflow: hidden;
 	text-align: justify;
@@ -1318,3 +1318,4 @@ figure.highlight .line,
 .highlight.yml .number {
 	color: #0086b3;
 }
+
