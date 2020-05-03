@@ -11,7 +11,7 @@
 </ul>
 <p>该团队来自北卡罗来纳州立大学(NCSU)，主要关心的是在开源代码库中，私有证书的管理。这篇文章六个月内扫描了Github上13%的公共代码库，发现了超过10万代码库泄露了API令牌和加密密钥。</p>
 <p>API Key作为接口间通信的长期身份认证令牌，一旦泄漏即可绕过认证系统。</p>
-<p><img src="/.me//Other_Git_Leak/1.png" alt="1"></p>
+<p><img src="/2019/03/25/Git_Leak/Other_Git_Leak/1.png" alt="1"></p>
 <p>本文获取这些敏感信息的过程如下：</p>
 <ul>
 <li><p>0: 总结这些敏感信息的规律，称之为Distinct Secrets。</p>
@@ -24,25 +24,25 @@
 </li>
 </ul>
 <p>本系统遵循这些敏感信息的内容是有规律可循的。下表为一些有迹可循的popular API keys和Asymmetric Private Keys。</p>
-<p><img src="/.me//Other_Git_Leak/2.png" alt="2"></p>
+<p><img src="/2019/03/25/Git_Leak/Other_Git_Leak/2.png" alt="2"></p>
 <p>从文中看，这个系统的实验效果还是比较好的。文章从以下几个方面进行分析。</p>
 <ul>
 <li>私有或者公有隐私信息</li>
 </ul>
-<p><img src="/.me//Other_Git_Leak/3.png" alt="3"></p>
+<p><img src="/2019/03/25/Git_Leak/Other_Git_Leak/3.png" alt="3"></p>
 <p>从这张表可以看出，在实际数据采集分析后。目标隐私信息的私密度非常的高。</p>
 <ul>
 <li><p>平行泄露</p>
 <p>即有些应用不能单方面的使用必须有”multi-factor”才能触发。如Google OAuth IDs必须同时找到OAuth Secret。而研究表明这种”parallel secrets”通常会在隐私数据前后五行内平行泄露。</p>
 </li>
 </ul>
-<p><img src="/.me//Other_Git_Leak/4.png" alt="4"></p>
+<p><img src="/2019/03/25/Git_Leak/Other_Git_Leak/4.png" alt="4"></p>
 <ul>
 <li><p>隐私存活周期</p>
 <p>研究者功能总泄密项目，观察所有者是否会发现，监控每小时探测一次。发现大约6%的用户在泄密一小时后发现并删除。19%会在两周后移除。然而这些删除掉的隐私通常仍然可以在git历史中访问。</p>
 </li>
 </ul>
-<p><img src="/.me//Other_Git_Leak/5.png" alt="5"></p>
+<p><img src="/2019/03/25/Git_Leak/Other_Git_Leak/5.png" alt="5"></p>
 <ul>
 <li>文章还分析了RSA Key Leakage, Number of Encrypted Keys以及OpenVPN Config等隐私数据泄露。总之，公共开源项目中泄露的大量的私密信息。NCSU团队表示，他们在10万个GitHub项目中总共发现了575,456个API和密钥，其中201,642个是独立的。</li>
 </ul>
