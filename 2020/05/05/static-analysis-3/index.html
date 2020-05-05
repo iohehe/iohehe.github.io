@@ -1,0 +1,39 @@
+<!DOCTYPE html><html lang="null"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="renderer" content="webkit"><title>Static-Analysis-3 - PenLab</title><meta name="description" content="03 Data Flow Analysis I课程链接Overiew of Data Flow Analysis  12:05Preliminaries of Data Flow Analysis 23:10Reaching Definitions AnalysisLive Variables AnalysisAvvailable Expressions Analysis0x01 Data Flo"><link type="text/css" rel="stylesheet" href="../../../../css/pure.css?v=undefined"><link type="text/css" rel="stylesheet" href="../../../../css/style.css?v=undefined"><script type="text/javascript" src="//cdn.bootcss.com/jquery/1.11.0/jquery.min.js"></script><link rel="alternate" type="application/atom+xml" href="../../../../atom.xml"></head></html><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">Static-Analysis-3</h1><a id="logo" href="../../../../.">PenLab</a></div><div id="nav-menu"><div class="bitcron_nav"><div class="site_nav_wrap"><div class="site_nav"></div></div></div></div></div><div id="layout" class="pure-g"><div class="pure-u-1"><div class="content_container"><div class="post"><!--h1.post-title= page.title--><!--br--><!--文章内容--><div class="post-content"><h1 id="03-Data-Flow-Analysis-I"><a href="#03-Data-Flow-Analysis-I" class="headerlink" title="03 Data Flow Analysis I"></a>03 Data Flow Analysis I</h1><p><a href="https://www.bilibili.com/video/BV1oE411K79d" target="_blank" rel="noopener">课程链接</a></p>
+<blockquote>
+<ol>
+<li>Overiew of Data Flow Analysis  12:05</li>
+<li>Preliminaries of Data Flow Analysis 23:10</li>
+<li>Reaching Definitions Analysis</li>
+<li>Live Variables Analysis</li>
+<li>Avvailable Expressions Analysis</li>
+</ol>
+</blockquote>
+<h1 id="0x01-Data-Flow-Analysis"><a href="#0x01-Data-Flow-Analysis" class="headerlink" title="0x01 Data Flow Analysis"></a>0x01 Data Flow Analysis</h1><p>数据流分析，描述的是How Data Flows on CFG(数据在控制流上的传递情况)。 不同场景的数据流分析需要关注的数据抽象(data abstraction)不同，其安全策略也不同(flow safe-approximation strategies)， 那么根据安全策略，也会制定相应的转化函数(transfer functions)和control-flow handlings。</p>
+<blockquote>
+<p>May analysis:  outputs information that may be true (over-approximation). 可能的都报出来</p>
+<p>Must analysis: outputs information that must be true (under-approximation). 报出来的必须对</p>
+<p>两者应用于不同场景，都是为了结果是正确的。以结果的正确为目的，称之为safe-approximation。</p>
+</blockquote>
+<h1 id="0x02-Prelimiaries-of-Data-Flow-Analysis"><a href="#0x02-Prelimiaries-of-Data-Flow-Analysis" class="headerlink" title="0x02 Prelimiaries of Data Flow Analysis"></a>0x02 Prelimiaries of Data Flow Analysis</h1><h2 id="Input-and-Output-States"><a href="#Input-and-Output-States" class="headerlink" title="Input and Output States"></a>Input and Output States</h2><p>控制流图上无非有三种情形： 顺序、分支、汇聚。 要在控制流分析数据，需要了然数据在控制流上的传递情况。那么数据</p>
+<p><img src="/2020/05/05/static-analysis-3/%E6%88%AA%E5%B1%8F2020-05-05%20%E4%B8%8B%E5%8D%888.47.16.png" alt="截屏2020-05-05 下午8.47.16"></p>
+<p>一条statement, 执行前的状态是<code>IN[s1]</code>， 执行后的状态是 <code>OUT[s1]</code>。顺序执行，s2的input就是s1的output。</p>
+<p><img src="/2020/05/05/static-analysis-3/%E6%88%AA%E5%B1%8F2020-05-05%20%E4%B8%8B%E5%8D%888.50.48.png" alt="截屏2020-05-05 下午8.50.48"></p>
+<p>分流、汇聚依然。注意汇聚点有一个union符号<code>^</code>。 这样每一句statement执行前就是<code>input state</code> 执行后就相当于new了一个 <code>output state</code>。而每一个<code>state</code>都与一个<code>program point</code>相关，这里的<code>program point</code>通常指的就是这条statement的上一条(before)和下一条(after)语句。</p>
+<p>根据<code>program point</code>的概念， 可以做如下定义：</p>
+<blockquote>
+<p>In each data-flow analysis application, we associate with every program point a <code>data-flow value</code> that represents an <code>abstraction</code> of the set of all possible <code>program states</code> that can be observed for that point.</p>
+</blockquote>
+<p>就是说对每一条statement的前后program point ，会关联一个数据流的值，这个值代表program states 在这一点的所有抽象，即在这一program point上所有可能的出现状态。</p>
+<p><img src="/2020/05/05/static-analysis-3/%E6%88%AA%E5%B1%8F2020-05-05%20%E4%B8%8B%E5%8D%889.02.42.png" alt="截屏2020-05-05 下午9.02.42"></p>
+<p>拿第一节探测每一个变量的check做例子，要探测每一个program point 上的program states。我们先抽象出我们关注的data， 即变量的符号。 因此将 code中的数据抽象成符号，形成一个值域，即根据应用场景，对数据所有可能的状态做的抽象集：</p>
+<p><img src="/2020/05/05/static-analysis-3/%E6%88%AA%E5%B1%8F2020-05-05%20%E4%B8%8B%E5%8D%889.06.40.png" alt="截屏2020-05-05 下午9.06.40"></p>
+</div></div></div></div></div><div id="footer">© <a href="../../../../." rel="nofollow">PenLab.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a> Theme<a target="_blank" href="https://github.com/7ye/maupassant-hexo"> Maupassant.</a></div><a id="back_to_top" href="javascript:void(0)" class="back_to_top"><span>△</span></a><script type="text/javascript" src="../../../../js/totop.js?v=undefined"></script><script>function auto_code_fit(){
+  if($(".highlight").length != 0){
+    var pc_width = $(".post-content").width();
+    $(".highlight .code").find("pre").width((pc_width-70)+"px");
+  }
+}
+window.onresize = function(){
+  auto_code_fit();
+}
+auto_code_fit();</script></div></body>
