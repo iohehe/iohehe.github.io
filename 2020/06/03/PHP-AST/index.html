@@ -1,0 +1,92 @@
+<!DOCTYPE html><html lang="null"><head><meta name="generator" content="Hexo 3.9.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="renderer" content="webkit"><title>PHP-AST - PenLab</title><meta name="description" content="放在这，没事儿了我就总结几个2 child nodesAST_CALL函数调用点child0:  ARG_LIST - 参数列表 child1:  调用函数名AST_DIM数组引用ZEND_AST_DIM = 2 &amp;lt;&amp;lt; ZEND_AST_NUM_CHILDREN_SHIFT0:  数组名1:  索引值ZEND_AST_PROP属性调用0: objetct_name1: attrZEND"><link type="text/css" rel="stylesheet" href="../../../../css/pure.css?v=undefined"><link type="text/css" rel="stylesheet" href="../../../../css/style.css?v=undefined"><script type="text/javascript" src="//cdn.bootcss.com/jquery/1.11.0/jquery.min.js"></script><link rel="alternate" type="application/atom+xml" href="../../../../atom.xml"></head></html><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">PHP-AST</h1><a id="logo" href="../../../../.">PenLab</a></div><div id="nav-menu"><div class="bitcron_nav"><div class="site_nav_wrap"><div class="site_nav"></div></div></div></div></div><div id="layout" class="pure-g"><div class="pure-u-1"><div class="content_container"><div class="post"><!--h1.post-title= page.title--><!--br--><!--文章内容--><div class="post-content"><p>放在这，没事儿了我就总结几个</p>
+<h1 id="2-child-nodes"><a href="#2-child-nodes" class="headerlink" title="2 child nodes"></a>2 child nodes</h1><h2 id="AST-CALL"><a href="#AST-CALL" class="headerlink" title="AST_CALL"></a>AST_CALL</h2><blockquote>
+<p>函数调用点</p>
+</blockquote>
+<p><img src="/2020/06/03/PHP-AST/%E6%88%AA%E5%B1%8F2020-06-01%20%E4%B8%8B%E5%8D%885.41.28-1004785.png" alt="截屏2020-06-01 下午5.41.28"></p>
+<ul>
+<li><p>child0:  ARG_LIST - 参数列表 </p>
+</li>
+<li><p>child1:  调用函数名</p>
+</li>
+</ul>
+<h2 id="AST-DIM"><a href="#AST-DIM" class="headerlink" title="AST_DIM"></a>AST_DIM</h2><blockquote>
+<p>数组引用</p>
+<p>ZEND_AST_DIM = 2 &lt;&lt; ZEND_AST_NUM_CHILDREN_SHIFT</p>
+</blockquote>
+<p><img src="/2020/06/03/PHP-AST/%E6%88%AA%E5%B1%8F2020-06-01%20%E4%B8%8B%E5%8D%885.48.46.png" alt="截屏2020-06-01 下午5.48.46"></p>
+<ul>
+<li><p>0:  数组名</p>
+</li>
+<li><p>1:  索引值</p>
+</li>
+</ul>
+<h2 id="ZEND-AST-PROP"><a href="#ZEND-AST-PROP" class="headerlink" title="ZEND_AST_PROP"></a>ZEND_AST_PROP</h2><blockquote>
+<p>属性调用</p>
+</blockquote>
+<p><img src="/2020/06/03/PHP-AST/%E6%88%AA%E5%B1%8F2020-06-20%20%E4%B8%8B%E5%8D%884.39.26.png" alt="截屏2020-06-20 下午4.39.26"></p>
+<ul>
+<li><p>0: objetct_name</p>
+</li>
+<li><p>1: attr</p>
+</li>
+</ul>
+<h2 id="ZEND-AST-WHILE"><a href="#ZEND-AST-WHILE" class="headerlink" title="ZEND_AST_WHILE"></a>ZEND_AST_WHILE</h2><p><img src="/2020/06/03/PHP-AST/%E6%88%AA%E5%B1%8F2020-06-20%20%E4%B8%8B%E5%8D%884.42.05.png" alt="截屏2020-06-20 下午4.42.05"></p>
+<ul>
+<li>0child: condtion</li>
+<li>1child: stmt_list</li>
+</ul>
+<h1 id="3-child-nodes"><a href="#3-child-nodes" class="headerlink" title="3 child nodes"></a>3 child nodes</h1><h2 id="ZEND-AST-METHOD-CALL-3-lt-lt-ZEND-AST-NUM-CHILDREN-SHIFT"><a href="#ZEND-AST-METHOD-CALL-3-lt-lt-ZEND-AST-NUM-CHILDREN-SHIFT" class="headerlink" title="ZEND_AST_METHOD_CALL = 3 &lt;&lt; ZEND_AST_NUM_CHILDREN_SHIFT"></a>ZEND_AST_METHOD_CALL = 3 &lt;&lt; ZEND_AST_NUM_CHILDREN_SHIFT</h2><p><img src="/2020/06/03/PHP-AST/%E6%88%AA%E5%B1%8F2020-06-20%20%E4%B8%8B%E5%8D%884.52.15.png" alt="截屏2020-06-20 下午4.52.15"></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$stu-&gt;getScore(<span class="string">'math'</span>);</span><br></pre></td></tr></table></figure>
+<ul>
+<li>child0: var:stu</li>
+<li>child1: name: getScore</li>
+<li>child2: args:math</li>
+</ul>
+<h2 id="ZEND-AST-STATIC-CALL"><a href="#ZEND-AST-STATIC-CALL" class="headerlink" title="ZEND_AST_STATIC_CALL"></a>ZEND_AST_STATIC_CALL</h2><p><img src="/2020/06/03/PHP-AST/%E6%88%AA%E5%B1%8F2020-06-20%20%E4%B8%8B%E5%8D%885.00.15.png" alt="截屏2020-06-20 下午5.00.15"></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">stu::getScore(<span class="string">'math'</span>);</span><br></pre></td></tr></table></figure>
+<ul>
+<li>child0: class:stu （直接指向该类） </li>
+<li>child1: name: getScore</li>
+<li>child2: args: math</li>
+</ul>
+<h2 id="AST-CONDITIONAL"><a href="#AST-CONDITIONAL" class="headerlink" title="AST_CONDITIONAL"></a>AST_CONDITIONAL</h2><p><img src="/2020/06/03/PHP-AST/%E6%88%AA%E5%B1%8F2020-06-20%20%E4%B8%8B%E5%8D%885.05.39.png" alt="截屏2020-06-20 下午5.05.39"></p>
+<h1 id="4-child-nodes"><a href="#4-child-nodes" class="headerlink" title="4 child nodes"></a>4 child nodes</h1><h2 id="AST-FOREACH"><a href="#AST-FOREACH" class="headerlink" title="AST_FOREACH"></a>AST_FOREACH</h2><p><img src="/2020/06/03/PHP-AST/%E6%88%AA%E5%B1%8F2020-06-20%20%E4%B8%8B%E5%8D%883.42.11.png" alt="截屏2020-06-20 下午3.42.11"></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">foreach</span>($arr <span class="keyword">as</span> $k =&gt; $v)&#123;</span><br><span class="line">     <span class="keyword">echo</span> $k.$v;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>child0: expr: $arr</li>
+<li>child1: keyVar: $k</li>
+<li>child2: valueVar: $v</li>
+<li>child3: stmts: 代码块list (ZEND_AST_STMT_LIST)</li>
+</ul>
+<h2 id="ZEND-AST-FOR-4-lt-lt-ZEND-AST-NUM-CHILDREN-SHIFT"><a href="#ZEND-AST-FOR-4-lt-lt-ZEND-AST-NUM-CHILDREN-SHIFT" class="headerlink" title="ZEND_AST_FOR = 4 &lt;&lt; ZEND_AST_NUM_CHILDREN_SHIFT"></a>ZEND_AST_FOR = 4 &lt;&lt; ZEND_AST_NUM_CHILDREN_SHIFT</h2><p><img src="/2020/06/03/PHP-AST/%E6%88%AA%E5%B1%8F2020-06-20%20%E4%B8%8B%E5%8D%883.50.18.png" alt="截屏2020-06-20 下午3.50.18"></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> ($i=<span class="number">0</span>; $i&lt;=<span class="number">1</span>; $i++)</span><br><span class="line">&#123;</span><br><span class="line">  <span class="keyword">echo</span> $i;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>child0: init: $i=0</li>
+<li>child1: condtion: $i&lt;=1</li>
+<li>child2: loop: $i++</li>
+<li>child3:  代码块list (ZEND_AST_STMT_LIST)</li>
+</ul>
+<h1 id="list-nodes"><a href="#list-nodes" class="headerlink" title="list nodes"></a>list nodes</h1><p>AST_ARG_LIST = 1 &lt;&lt; ZEND_AST_IS_LIST_SHIFT,    //函数参数列表（实参）</p>
+<p>AST_ARRAY //数组成员列表</p>
+<p>AST_EXPR_LIST</p>
+<p>AST_STMT_LIST //表达式块</p>
+<p>AST_IF //if判断条件列表</p>
+<p>AST_SWITCH_LIST </p>
+<p>AST_CATCH_LIST</p>
+<p>AST_PARAM_LIST //形参</p>
+<p>AST_CLOSURE_USES</p>
+<p>AST_PROP_DECL</p>
+<p>AST_CONST_DECL</p>
+<p>AST_CLASS_CONST</p>
+<p>AST_NAME_LIST<br>AST_TRAIT_ADAPTATIONS<br>AST_USE<br>AST_TYPE_UNION<br>AST_ATTRIBUTE_LIST</p>
+<hr>
+</div></div></div></div></div><div id="footer">© <a href="../../../../." rel="nofollow">PenLab.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a> Theme<a target="_blank" href="https://github.com/7ye/maupassant-hexo"> Maupassant.</a></div><a id="back_to_top" href="javascript:void(0)" class="back_to_top"><span>△</span></a><script type="text/javascript" src="../../../../js/totop.js?v=undefined"></script><script>function auto_code_fit(){
+  if($(".highlight").length != 0){
+    var pc_width = $(".post-content").width();
+    $(".highlight .code").find("pre").width((pc_width-70)+"px");
+  }
+}
+window.onresize = function(){
+  auto_code_fit();
+}
+auto_code_fit();</script></div></body>

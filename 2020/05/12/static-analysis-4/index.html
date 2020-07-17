@@ -1,0 +1,85 @@
+<!DOCTYPE html><html lang="null"><head><meta name="generator" content="Hexo 3.9.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="renderer" content="webkit"><title>南大静态分析-4(Live Variables Analysis) - PenLab</title><meta name="description" content="Live Variables AnalysisMay analysis可用性分析， 属于may analysis。 如果一个definition的变量在某一点p开始被使用过，就是一个Live Variables Analysis。v在路径上被使用过v没有被重定义Abstraction关注的抽象应该是live variables比特位表示状态，比如有100个variables，每一个比特位代表一个变"><link type="text/css" rel="stylesheet" href="../../../../css/pure.css?v=undefined"><link type="text/css" rel="stylesheet" href="../../../../css/style.css?v=undefined"><script type="text/javascript" src="//cdn.bootcss.com/jquery/1.11.0/jquery.min.js"></script><link rel="alternate" type="application/atom+xml" href="../../../../atom.xml"></head></html><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">南大静态分析-4(Live Variables Analysis)</h1><a id="logo" href="../../../../.">PenLab</a></div><div id="nav-menu"><div class="bitcron_nav"><div class="site_nav_wrap"><div class="site_nav"></div></div></div></div></div><div id="layout" class="pure-g"><div class="pure-u-1"><div class="content_container"><div class="post"><!--h1.post-title= page.title--><!--br--><!--文章内容--><div class="post-content"><h1 id="Live-Variables-Analysis"><a href="#Live-Variables-Analysis" class="headerlink" title="Live Variables Analysis"></a>Live Variables Analysis</h1><blockquote>
+<p>May analysis</p>
+</blockquote>
+<p>可用性分析， 属于may analysis。 如果一个definition的变量在某一点p开始被使用过，就是一个Live Variables Analysis。</p>
+<p><img src="/2020/05/12/static-analysis-4/%E6%88%AA%E5%B1%8F2020-05-14%20%E4%B8%8B%E5%8D%889.29.10.png" alt="截屏2020-05-14 下午9.29.10"></p>
+<blockquote>
+<ol>
+<li>v在路径上被使用过</li>
+<li>v没有被重定义</li>
+</ol>
+</blockquote>
+<h2 id="Abstraction"><a href="#Abstraction" class="headerlink" title="Abstraction"></a>Abstraction</h2><p>关注的抽象应该是<code>live variables</code></p>
+<p><img src="/2020/05/12/static-analysis-4/%E6%88%AA%E5%B1%8F2020-05-14%20%E4%B8%8B%E5%8D%889.30.51.png" alt="截屏2020-05-14 下午9.30.51"></p>
+<p>比特位表示状态，比如有100个variables，每一个比特位代表一个变量。最为标志位，每一个program point上分配一个。 有了抽象的状态表示，接下来做safe-approximation制定transfer function 和control flow analysis来操作这些状态位。</p>
+<p>#Safe-approximation </p>
+<p>我们的程序在流动之后，如何额变换我们的标知位，使得我们得到的结果safe，这里制定transfer function和control flow analysis.</p>
+<p>首先这里使用backward分析比较好， 因为如果正向分析的话，可能在usage处才发现变量被redefined了。</p>
+<p><img src="/2020/05/12/static-analysis-4/%E6%88%AA%E5%B1%8F2020-05-14%20%E4%B8%8B%E5%8D%889.36.52.png" alt="截屏2020-05-14 下午9.36.52"></p>
+<p>看这里在BB[P]处有一个<code>v=3</code> 的表达式，BB[B]不知道。而在BB[S1]处用到了<code>v</code>， 在backward中走到BB[B]，BB[S1]和BB[S2]汇合，看图中抽象公式，要处理在merge处的近似，因为是may analysis所以使用Union。(不放过任何一条path)</p>
+<p>然后就是核心的设计Transfer function：</p>
+<p><img src="/2020/05/12/static-analysis-4/%E6%88%AA%E5%B1%8F2020-05-15%20%E4%B8%8B%E5%8D%886.51.57.png" alt="截屏2020-05-15 下午6.51.57"></p>
+<p>刚才我们说过， 在此数据流分析中， 我们采用backward, <code>v</code>在BB[S1]中被使用了，且在汇合处，我们做union操作，所以得到有<code>OUT[B] = {v}</code>，现在在程序中， 我们要backward过一个条任意语句(假设Baisc Block中只有一条statement,即以单条statement为分析单位)。我们要设计transfer function，得出上出program proint处的IN[B]，即OUT[B]-&gt;IN[B]。</p>
+<p><img src="/2020/05/12/static-analysis-4/%E6%88%AA%E5%B1%8F2020-05-15%20%E4%B8%8B%E5%8D%887.00.47.png" alt="截屏2020-05-15 下午7.00.47"></p>
+<p>这里有一个场景，现在<code>v=3</code>寄存器<code>R</code>中待着，经过我们的<code>live</code>分析，如果走过该点，经过我们设计的transfer function，IN[B] = { v }， 那么这个值就在寄存器里待着。如果IN[B] = {}，那么就把它从寄存器中拿出。因为我们的目的是分析数据流中，变量的<code>live</code>情况，由前面的定义如果BB[P]处的变量v是live的：</p>
+<ol>
+<li>BB[B]中v被使用过？</li>
+<li>BB[B]中v没有被重新定义？</li>
+</ol>
+<p><img src="/2020/05/12/static-analysis-4/%E6%88%AA%E5%B1%8F2020-05-15%20%E4%B8%8B%E5%8D%888.00.26.png" alt="截屏2020-05-15 下午8.00.26"></p>
+<p>因为我们是在backward分析IN[B]这个<code>program point</code>的状态，来决定<code>v=3</code>是否被寄存器丢掉，即<code>IN[B]</code>这一点的事关<code>v</code>在未来是否会被使用到。看在第一个情况中，与<code>v</code>无关，但是我们知道OUT[B]这一点我们union出了<code>OUT[B]={v}</code>，因为是<code>backward</code>分析，即接下来<code>v</code>会被使用到(BB[S1]处)。那么这一点中，<code>v</code>没有被重新定义，那么<code>IN[B]={v}</code></p>
+<p><img src="/2020/05/12/static-analysis-4/%E6%88%AA%E5%B1%8F2020-05-15%20%E4%B8%8B%E5%8D%888.09.19.png" alt="截屏2020-05-15 下午8.09.19"></p>
+<p>这里面<code>v</code>被使用了，离着<code>v=3</code>更近，这种情况下，即使<code>OUT[B]={}</code>，也会有<code>IN[B]={v}</code>。</p>
+<p><img src="/2020/05/12/static-analysis-4/%E6%88%AA%E5%B1%8F2020-05-15%20%E4%B8%8B%E5%8D%888.11.14.png" alt="截屏2020-05-15 下午8.11.14"></p>
+<p>这里<code>v=2</code>，v是<code>lval</code>左值，那么这个defition中v被重新定义了，上边<code>v=3</code>就不live了，因为没有被使用过，就被<code>redefine</code>了。此时<code>IN[B]={}</code>，依据这个状态，从这个<code>program point</code>开始，寄存器中的<code>3</code>可以拿掉了。</p>
+<p><img src="/2020/05/12/static-analysis-4/%E6%88%AA%E5%B1%8F2020-05-15%20%E4%B8%8B%E5%8D%888.18.10.png" alt="截屏2020-05-15 下午8.18.10"></p>
+<p>再想象一下寄存器中的那个3，<code>v=v-1</code>中，右边的表达式是一个使用了寄存器中该值的二元操作。因此在这一时刻，我们需要使用寄存器中的3，那么<code>IN[B]={v}</code>。</p>
+<p><img src="/2020/05/12/static-analysis-4/%E6%88%AA%E5%B1%8F2020-05-15%20%E4%B8%8B%E5%8D%888.21.04.png" alt="截屏2020-05-15 下午8.21.04"></p>
+<p>这里case5是先写后读，case6是先读后写。在先写的时候 ，寄存器完全可以舍去<code>3</code> 。因为没有用到，还要重新读，而在case6中，寄存器中的<code>3</code>先被user了一下，所以在被<code>redefine</code>之前，有<code>use</code>，就是<code>live</code>咯。</p>
+<p><img src="/2020/05/12/static-analysis-4/%E6%88%AA%E5%B1%8F2020-05-15%20%E4%B8%8B%E5%8D%888.28.22.png" alt="截屏2020-05-15 下午8.28.22"></p>
+<p>这里就定义了经过BB时的transfer function。</p>
+<p>设计好了，就开始用算法动起来。</p>
+<p><img src="/2020/05/12/static-analysis-4/%E6%88%AA%E5%B1%8F2020-05-15%20%E4%B8%8B%E5%8D%888.31.52.png" alt="截屏2020-05-15 下午8.31.52"></p>
+<blockquote>
+<p>这里的定义，我理解的是因为transfer function是从下往上一句一句走的，那么先走到define被删掉了，然后use就又加上了。所以正序来看，先use后define就是live的。</p>
+</blockquote>
+<ul>
+<li>INPUT:  CFG</li>
+<li><p>OUTPUT: 每一个program  point的标志位的状态</p>
+</li>
+<li><p>METHOD: 第一句的边界条件，因为是backward的，所以是IN[exit]，这里设置是空。（未来没有变量会被用到了）。然后所有BB初始化为空，求到所有的IN[B]不回被change了(反向)。</p>
+</li>
+</ul>
+<p><img src="/2020/05/12/static-analysis-4/%E6%88%AA%E5%B1%8F2020-05-15%20%E4%B8%8B%E5%8D%889.22.50.png" alt="截屏2020-05-15 下午9.22.50"></p>
+<p>STEP:</p>
+<ol>
+<li>抽象7个变量位7个特位</li>
+<li>分配给每一个program point(IN处)，并初始化为零。</li>
+<li>第一次迭代(backward)开始</li>
+<li>B5: <code>z=2p</code> ，<code>p</code>被use加上，<code>z</code>被redefine删除=》0001000</li>
+<li>B3: <code>x= x-3</code>x 先被use后被redline，需要加上=〉1001000</li>
+<li>B4: B4的OUT需要先union一下两个后继节点(successor)的IN，即(IN[B2]+IN[B5])，然后transfer =》 0101000</li>
+<li>B2: IN[B4]+IN[B3] = 1101000，加m,减y，加k，减m =&gt; 1101001</li>
+<li>B1: +q+z-y+p-x=&gt;0111001</li>
+</ol>
+<p><img src="/2020/05/12/static-analysis-4/%E6%88%AA%E5%B1%8F2020-05-15%20%E4%B8%8B%E5%8D%889.34.54.png" alt="截屏2020-05-15 下午9.34.54"></p>
+<ol start="9">
+<li><p>因为上一轮即初始化IN[]都为0，现在变了，依据算法进行第二轮迭代。</p>
+<p><img src="/2020/05/12/static-analysis-4/%E6%88%AA%E5%B1%8F2020-05-15%20%E4%B8%8B%E5%8D%889.37.49.png" alt="截屏2020-05-15 下午9.37.49"></p>
+</li>
+</ol>
+<p>10.第二轮后IN[B4]变了，下一轮：</p>
+<p><img src="/2020/05/12/static-analysis-4/%E6%88%AA%E5%B1%8F2020-05-15%20%E4%B8%8B%E5%8D%889.38.29.png" alt="截屏2020-05-15 下午9.38.29"></p>
+<ol start="11">
+<li>第三轮没有IN转变。</li>
+</ol>
+</div></div></div></div></div><div id="footer">© <a href="../../../../." rel="nofollow">PenLab.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a> Theme<a target="_blank" href="https://github.com/7ye/maupassant-hexo"> Maupassant.</a></div><a id="back_to_top" href="javascript:void(0)" class="back_to_top"><span>△</span></a><script type="text/javascript" src="../../../../js/totop.js?v=undefined"></script><script>function auto_code_fit(){
+  if($(".highlight").length != 0){
+    var pc_width = $(".post-content").width();
+    $(".highlight .code").find("pre").width((pc_width-70)+"px");
+  }
+}
+window.onresize = function(){
+  auto_code_fit();
+}
+auto_code_fit();</script></div></body>
