@@ -57,7 +57,7 @@
 <li>分配给每一个program point(IN处)，并初始化为零。</li>
 <li>第一次迭代(backward)开始</li>
 <li>B5: <code>z=2p</code> ，<code>p</code>被use加上，<code>z</code>被redefine删除=》0001000</li>
-<li>B3: <code>x= x-3</code>x 先被use后被redline，需要加上=〉1001000</li>
+<li>B3: <code>x= x-3</code>x 先被use后被redfine，需要加上=〉1001000</li>
 <li>B4: B4的OUT需要先union一下两个后继节点(successor)的IN，即(IN[B2]+IN[B5])，然后transfer =》 0101000</li>
 <li>B2: IN[B4]+IN[B3] = 1101000，加m,减y，加k，减m =&gt; 1101001</li>
 <li>B1: +q+z-y+p-x=&gt;0111001</li>
