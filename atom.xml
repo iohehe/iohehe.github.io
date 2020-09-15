@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://www.penlab.me/"/>
-  <updated>2020-09-15T04:18:44.541Z</updated>
+  <updated>2020-09-15T04:27:34.988Z</updated>
   <id>https://www.penlab.me/</id>
   
   <author>
@@ -21,21 +21,19 @@
     <link href="https://www.penlab.me/2020/09/15/recuv/"/>
     <id>https://www.penlab.me/2020/09/15/recuv/</id>
     <published>2020-09-15T03:13:08.000Z</published>
-    <updated>2020-09-15T04:18:44.541Z</updated>
+    <updated>2020-09-15T04:27:34.988Z</updated>
     
-    <content type="html"><![CDATA[<p>设计一个递归函数， 考虑三个方面： 参数、 常量、变量</p><ul><li><p>参数： 设计递归表达式中包含的关键东西， 每一次调用，只有参数改变</p></li><li><p>常量： 每次都要重新用的量，设计为变量。</p></li><li>变量： 变量每次调用时，会在一个新的栈中存储，他在内存上和上次的变量是两块独立的空间。</li></ul><p>每一次函数调用，都有一个独立的函数栈空间， 理解好这个就可以更好的理解递归。</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">new_str = []</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">recv</span><span class="params">(_str)</span>:</span></span><br><span class="line">    <span class="keyword">global</span> new_str</span><br><span class="line">    <span class="keyword">if</span>(len(_str) &gt; <span class="number">1</span>):</span><br><span class="line">        x = _str.pop()</span><br><span class="line">        new_str.append(x)</span><br><span class="line">        recv(_str)</span><br><span class="line">        <span class="keyword">return</span> new_str</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">return</span> _str</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    _str = [<span class="string">"H"</span>, <span class="string">"e"</span>, <span class="string">"l"</span>, <span class="string">"l"</span>, <span class="string">"0"</span>]</span><br><span class="line">    res = recv(_str)</span><br><span class="line">    print(res)</span><br></pre></td></tr></table></figure><p>之前在遍历子路径时没想明白， 就在于我没有理解好每一次调用变量都存在独立的站。在递归返回上一级的时候，父函数在工作环境中继续施工，所以之前的内容都在。哈哈哈真的是，太菜了</p>]]></content>
+    <content type="html"><![CDATA[<p>设计一个递归函数， 考虑三个方面： 参数、 中间量、返回值</p><ul><li><p>参数： 设计递归表达式中包含的关键东西， 每一次调用，只有参数在改变。</p></li><li><p>中间量：中间每次调用时，会在一个新的栈中存储，他在内存上和上次的变量是两块独立的空间，他们的行为只依赖于参数的变化。</p></li><li>返回值： 需要所有过程共同的return值来完成。 </li></ul><p>每一次函数调用，都有一个独立的函数栈空间， 理解好这个就可以更好的理解递归。</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">new_str = [] // 返回值</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">recv</span><span class="params">(_str)</span>:</span></span><br><span class="line">    <span class="keyword">global</span> new_str</span><br><span class="line">    <span class="keyword">if</span>(len(_str) &gt; <span class="number">1</span>): //中间量</span><br><span class="line">        x = _str.pop() //中间量</span><br><span class="line">        new_str.append(x)</span><br><span class="line">        recv(_str)</span><br><span class="line">        <span class="keyword">return</span> new_str</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">return</span> _str</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    _str = [<span class="string">"H"</span>, <span class="string">"e"</span>, <span class="string">"l"</span>, <span class="string">"l"</span>, <span class="string">"0"</span>] //参数</span><br><span class="line">    res = recv(_str)</span><br><span class="line">    print(res)</span><br></pre></td></tr></table></figure><p>之前在遍历子路径时没想明白， 就在于我没有理解好每一次调用变量都存在独立的站。在递归返回上一级的时候，父函数在工作环境中继续施工，所以之前的内容都在。哈哈哈真的是，太菜了</p><p>(这里的new_str不写在递归区域， 因为new_str是返回值，所以不能每个过程都开一个新的，而是每次都将结果压入一个共同的空间中)</p>]]></content>
     
     <summary type="html">
     
       
       
-        &lt;p&gt;设计一个递归函数， 考虑三个方面： 参数、 常量、变量&lt;/p&gt;
+        &lt;p&gt;设计一个递归函数， 考虑三个方面： 参数、 中间量、返回值&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;p&gt;参数： 设计递归表达式中包含的关键东西， 每一次调用，只有参数改变&lt;/p&gt;
+&lt;li&gt;&lt;p&gt;参数： 设计递归表达式中包含的关键东西， 每一次调用，只有参数在改变。&lt;/p&gt;
 &lt;/li&gt;
-&lt;li&gt;&lt;p&gt;常量： 每次都要重新用的量，设计为变量。&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;变量： 变量每
+&lt;li&gt;&lt;p&gt;中间量：中间每次调用时，会在一个新的栈中存储，他在内存上和上次的变量是两块独
       
     
     </summary>
