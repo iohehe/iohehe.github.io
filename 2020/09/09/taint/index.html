@@ -20,7 +20,7 @@
 <ul>
 <li><code>evil($target)</code>: 污点标为target</li>
 <li><code>$target = $pass_1</code>: 污点标为$pass_1</li>
-<li><code>$pass_1 = foo_2($pass_2)</code>: 污点进标为foo_2的第一个Argument，转入foo_2<ul>
+<li><code>$pass_1 = foo_2($pass_2)</code>: 污点标为foo_2的第一个Argument，转入foo_2<ul>
 <li>foo_2标记第一个Parameter</li>
 <li>foo_2有return，从return开始追踪</li>
 <li><code>return $foo_2_res</code>: 标记$foo_2_res为污点</li>
