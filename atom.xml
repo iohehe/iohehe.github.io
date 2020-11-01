@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://www.penlab.me/"/>
-  <updated>2020-09-15T04:27:34.988Z</updated>
+  <updated>2020-11-01T01:13:25.112Z</updated>
   <id>https://www.penlab.me/</id>
   
   <author>
@@ -15,6 +15,30 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>论文：What&#39;s in an Exploit? an Empirical Analysis of Reflected Server XSS Exploitation Techniques</title>
+    <link href="https://www.penlab.me/2020/10/26/RAID-2020_Relfected_Server_XSS/"/>
+    <id>https://www.penlab.me/2020/10/26/RAID-2020_Relfected_Server_XSS/</id>
+    <published>2020-10-26T00:47:41.000Z</published>
+    <updated>2020-11-01T01:13:25.112Z</updated>
+    
+    <content type="html"><![CDATA[<p><a href="https://github.com/iohehe/research/RAID-2020-xss-stats-paper/xss-stats-paper.pdf" target="_blank" rel="noopener">原文链接</a></p><p>本文发表自RAID2020年，作者来自微软、东北大学和纽约大学。一项对反射型XSS的实证分析研究。</p><p><img src="/2020/10/26/RAID-2020_Relfected_Server_XSS/image-20201030143613662.png" alt="image-20201030143613662"></p><p>本文从XSSED和OPENBUGBOUNTY两个网站收集了近十年来的反射型XSS提交的payload。 两个测试集OBB的比较新一些。</p><p><img src="/2020/10/26/RAID-2020_Relfected_Server_XSS/image-20201030162110612.png" alt="image-20201030162110612"></p><p>在此即上进行EXP分析，设计了一个验证系统。证明这些反射型的EXP是可以被精确的识别出来的。</p><p>  <img src="/2020/10/26/RAID-2020_Relfected_Server_XSS/image-20201030162154660.png" alt="image-20201030162154660"></p><p>整个系统分为动态和静态两个佐证部分，尝试识别出每个exp的trick:</p><ul><li><p>静态：</p><p>静态部分是:EXP Extraction ​到​ ​S​t​a​ti​c​ ​F​e​a​t​ur​e​ ​E​x​t​ra​c​t​i​on。​ 其实我觉得还带是正则。</p></li><li><p>动态：</p><p>动态部分是：EXP Execution 到 Dynamic Feature Extraction。 将收集的response的page使用chrome和FireFox加载，在沙箱环境中观察，因为有一些触发条件需要特定操作或者加载资源，因此作者分了四个round，后三个round需要操作(Mouse Move, Mouse Click, Network Error)，通过在response page中插桩，观察XSS执行里的trick。</p></li></ul><p>  <img src="/2020/10/26/RAID-2020_Relfected_Server_XSS/image-20201030173010493.png" alt="image-20201030173010493"></p><p>下面来看看对payload的一些分统计：</p><ol><li><p>Context( Escaping and Creation)技术:</p><p><img src="/2020/10/26/RAID-2020_Relfected_Server_XSS/image-20201030163940277.png" alt="image-20201030163940277"></p></li></ol><p>这一类主要是指逃逸+构造，日常使用中确实最多。细分为： HTML环境注释逃逸法、 JS环境注视逃逸法、属性环境标签闭合逃逸+构造标签、属性环境属性闭合+构造属性、JS环境代码续接。 （我瞎编的:expressionless:)​</p><ol start="2"><li>Synatx Confusion技术</li></ol><p><img src="/2020/10/26/RAID-2020_Relfected_Server_XSS/image-20201030164425916.png" alt="image-20201030164425916"></p><p>这一类就是语法混淆，包括： 方法名的额外括号、大小写混淆、 unicode编码混淆(乱入：注意方法括号不能unicode)、第四个厉害了没听说过、 空白符混淆、 斜杠替换空格(还有alert(/xss/))、 标签解析混淆(频率还很高，mark!)</p><ol start="3"><li>Control Flow Modification技术</li></ol><p>此技术在OBB的测试集中使用比较多。也就是有48.2%的</p><p><img src="/2020/10/26/RAID-2020_Relfected_Server_XSS/image-20201030165941047.png" alt="image-20201030165941047"></p><p>这个分类粒度是控制流更改(可能喝上两种不是一个维度)。主要是躲过\&lt;script>标签过，有1, 自动触发事件 2，exploit-triggered events(咋翻译？) 3,用户交互事件  4, 将事件赋给一个变量！ 5，抛异常！！</p><p>这个类型分的有点混乱，可能我还没看仔细。</p><ol start="4"><li><p>字符解释技术</p><p><img src="/2020/10/26/RAID-2020_Relfected_Server_XSS/image-20201030171318469.png" alt="image-20201030171318469"></p><p>能够将字符当作JS代码解释的方法， 1，document.write 2, eval 3, setTimeout 4, top (写一遍加深印象…)</p></li></ol><h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p><img src="/2020/10/26/RAID-2020_Relfected_Server_XSS/image-20201030171651652.png" alt="image-20201030171651652"></p><p>En…还是闭合标签感觉爽些。</p><h2 id="Tips"><a href="#Tips" class="headerlink" title="Tips"></a>Tips</h2><p>看完这篇文章其他部分没仔细看， 光学姿势去了…</p><ul><li>可能有些位置就是可以用多种方法，最近趋于喜欢直接用svg做注入</li><li>是时候总结一波姿势了</li></ul>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;&lt;a href=&quot;https://github.com/iohehe/research/RAID-2020-xss-stats-paper/xss-stats-paper.pdf&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;原文链接&lt;/a&gt;&lt;/p&gt;
+&lt;p
+      
+    
+    </summary>
+    
+    
+      <category term="paper" scheme="https://www.penlab.me/tags/paper/"/>
+    
+  </entry>
   
   <entry>
     <title>递归</title>
@@ -337,28 +361,6 @@
       
         &lt;h1 id=&quot;0x00-层次聚类描述&quot;&gt;&lt;a href=&quot;#0x00-层次聚类描述&quot; class=&quot;headerlink&quot; title=&quot;0x00 层次聚类描述&quot;&gt;&lt;/a&gt;0x00 层次聚类描述&lt;/h1&gt;&lt;ol&gt;
 &lt;li&gt;首把每一个样本点看作是一个cluster, 一开始有k个
-      
-    
-    </summary>
-    
-    
-  </entry>
-  
-  <entry>
-    <title>Burp插件入门</title>
-    <link href="https://www.penlab.me/2019/12/28/burp_ex_1/"/>
-    <id>https://www.penlab.me/2019/12/28/burp_ex_1/</id>
-    <published>2019-12-27T16:00:00.000Z</published>
-    <updated>2020-09-09T08:39:02.231Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="0x01-java项目"><a href="#0x01-java项目" class="headerlink" title="0x01 java项目"></a>0x01 java项目</h1><p>学习了一下burp插件的入门， 参考：</p><p><a href="https://support.portswigger.net/customer/portal/questions/17285859-how-to-deploy-an-extension" target="_blank" rel="noopener">https://support.portswigger.net/customer/portal/questions/17285859-how-to-deploy-an-extension</a></p><p>首先第一个坑是那堆接口， 自己之前没怎么写过java，所以这次，也没写…</p><p>找到官方提供的接口下载下来：</p><p><a href="https://github.com/PortSwigger/burp-extender-api" target="_blank" rel="noopener">https://github.com/PortSwigger/burp-extender-api</a></p><p>然后新建一个java项目，名字随便起一个，然后新建一个叫burp的package把所有接口都拷进去，参考：</p><p><a href="https://portswigger.net/burp/extender/writing-your-first-burp-suite-extension" target="_blank" rel="noopener">https://portswigger.net/burp/extender/writing-your-first-burp-suite-extension</a></p><p>然后我直接在burp包下创建了一个<code>BurpExtender.class</code>的类，用的就是最简单的那个官方例子的代码：</p><p><a href="https://github.com/PortSwigger/example-hello-world/blob/master/java/BurpExtender.java" target="_blank" rel="noopener">https://github.com/PortSwigger/example-hello-world/blob/master/java/BurpExtender.java</a></p><p>所以，一行代码没写:&gt;</p><h1 id="0x02-导成jar包"><a href="#0x02-导成jar包" class="headerlink" title="0x02 导成jar包"></a>0x02 导成jar包</h1><p>这个也一顿折腾，我使用的是intellij，首先打开file下的<code>Project Structure</code>，点开加号，<code>Artifacts</code>-&gt;<code>JAR</code>-&gt;<code>From modules ...</code></p><p><img src="/2019/12/28/burp_ex_1/burp_ex_1/屏幕快照 2019-12-28 下午5.01.40.png" alt="屏幕快照 2019-12-28 下午5.01.40"></p><p>这里的<code>Main Class</code>我任性地随便选了一个main，然后下边<code>META-INF/MANIFEST.MF</code>也生成路径了，（虽然还不是很懂</p><p><img src="/2019/12/28/burp_ex_1/burp_ex_1/屏幕快照 2019-12-28 下午5.04.37.png" alt="屏幕快照 2019-12-28 下午5.04.37"></p><p>然后选择<code>build</code>里的<code>Build Artifacts</code>-&gt;<code>Build</code>一般就生成一个<code>out</code>文件夹有一个工程同名jar包，导入burpSuite即可。</p><p><img src="/2019/12/28/burp_ex_1/burp_ex_1/屏幕快照 2019-12-28 下午5.08.17.png" alt="屏幕快照 2019-12-28 下午5.08.17"></p><p>对了，接口文件好像可以直接从burp里获得？</p>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;h1 id=&quot;0x01-java项目&quot;&gt;&lt;a href=&quot;#0x01-java项目&quot; class=&quot;headerlink&quot; title=&quot;0x01 java项目&quot;&gt;&lt;/a&gt;0x01 java项目&lt;/h1&gt;&lt;p&gt;学习了一下burp插件的入门， 参考：&lt;/p&gt;
-&lt;p&gt;&lt;a href
       
     
     </summary>
