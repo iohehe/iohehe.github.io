@@ -85,7 +85,68 @@
 <li>实现污点分析。</li>
 </ol>
 <p>(说的挺复杂，开源版的RIPS的基础分析能力还是以分析tokens流并以各种数据结构辅助追踪为主)</p>
+<h2 id="创新点"><a href="#创新点" class="headerlink" title="创新点"></a>创新点</h2><p>那么本paper novel在什么地方呢：</p>
+<ul>
+<li>在污点分析时添加了sanitization tags来表明数据被过滤</li>
+<li>为952个内建方法建模，从而更精准的把控整个分析流的变化</li>
+<li>在处理include file时，当作functions来处理，而不是直接加入到当前CFG，防止重复分析, 减少开销</li>
+<li>根据基本块边来总结他们之间的sanitization影响</li>
+<li>实现了后向污点分析，每一个基本块的分析结果，cache到一个变量里。</li>
+<li>使用上下文敏感字符分析(context-sensitive stirng analysis)来精炼污点分析结果，基于当前环境。</li>
+</ul>
+<h2 id="CFGBuilder"><a href="#CFGBuilder" class="headerlink" title="CFGBuilder"></a>CFGBuilder</h2><p>要构建一个CFG, 先定义statements, 划分基本块。</p>
+<p><img src="/2020/11/01/NDSS-14-RIPS/image-20201102203138487.png" alt="image-20201102203138487"></p>
+<p>这里作者定义了几种划分基本块的stmt， 配合算法：  </p>
+<p><img src="/2020/11/01/NDSS-14-RIPS/image-20201102203339071.png" alt="image-20201102203339071"></p>
+<p> 中间的循环AST上的每一个点，如果遇到四种stmt的情况。 </p>
+<ul>
+<li><p>JSTMT, 遇到IF, Switch, Try, Ternary, LogicalOr（后两个没见过）， 就递归分析每个分支下的基本块。将入口条件加到基本块头。</p>
+</li>
+<li><p>LSTMT, 生成循环基本块</p>
+</li>
+<li><p>SSTMT, 停止，基本块下的stmts不可达</p>
+</li>
+<li><p>RSTMT, return,到达return或者是探测到程序退出，就不和下一个基本块建立连接。</p>
+<p>这里增量在<code>simluate()</code>方法上，来看。</p>
+</li>
+</ul>
+<h2 id="simulating-Basic-Blocks"><a href="#simulating-Basic-Blocks" class="headerlink" title="simulating Basic Blocks"></a>simulating Basic Blocks</h2><p>静态分析能干的事，就是编译器或者解释器能干的事。 RIPS为获取基本块内的data flow, 在控制流的基础上进行所谓的simulating，实现simulating:</p>
+<p>1) 制定symbols:   值-val, 变量名-varibale, 常量-constant, 数组-ArrayDimFetch… 每一个symbol都会有几个状态(type, encoding, sanitization)，通过观察状态变化做到对类型，编码以及sanitize的敏感。</p>
+<p>2）Block Summary: 此过程就是将制定的符号集在块中使用进行后向追踪。生成一些块属性(block Summary):</p>
+<pre><code>* DataFlow - 记录变量/数组的assign
+* Constants - 记录常量的assign
+* GlobalDefines - 记录名称，加入global scope
+* ReturnValue - 记录块中的返回值(每个块一个返回， return和exit后的代码丢弃)
+* registerGlobals - 记录使用extract()或者import_request_varibales()注册变量
+</code></pre><p>在每个块的后向data flow分析后记录以上内容， 生成block summary.</p>
+<p>3)  Data Flow Analysis</p>
+<p>4) Simulating Includes and Dynamic Code： php 的includes是一个动态表达式，通过路径去找，找到加入，若无正则匹配。eval同理。</p>
+<p>5) Simulating Built-in Functions:</p>
+<p>​     本文重点。 对621个内建函数进行数据流建模， configured name and effected parameters. 分类如下：</p>
+<ul>
+<li>Alphanumeric(284):  返回值只有字母数字组成的，effectively sanitize. 如: md5(), strlen()</li>
+<li>Argument(122): 原样返回实参或部分的, 如： trim(), strrev()</li>
+<li>escape(20): mysql_real_escap_string()这种， 遇到将symbol中的sanitization属性打上SQLI_SQ 和 SQLI_DO标签(如果没遇到就SQLI_NQ)</li>
+<li>Substring(6): substr(), chunk_split()这种，返回实参字串的。 </li>
+<li>Encode(18):  urlencode(), base64_encode() …</li>
+<li>Decode(25): urldecode(), base64_decode()…</li>
+<li>Callbacks(51): 回调函数，如果调用函数名事字符串，就调用分析。如果是变量，正则猜测。</li>
+</ul>
+<h2 id="Intra-produral-Analysis"><a href="#Intra-produral-Analysis" class="headerlink" title="Intra-produral Analysis"></a>Intra-produral Analysis</h2><p>实现intra</p>
+<h2 id="Inter-procedural-Analysis"><a href="#Inter-procedural-Analysis" class="headerlink" title="Inter-procedural Analysis"></a>Inter-procedural Analysis</h2><p>实现inter</p>
+<h2 id="Simluating-Block-Edges"><a href="#Simluating-Block-Edges" class="headerlink" title="Simluating Block Edges"></a>Simluating Block Edges</h2><p>块与块之间的simluating, 考虑validation的情况</p>
+<ul>
+<li>operators(6): isset(), empty()…</li>
+<li>Type  checks(21): is_numeric()…</li>
+<li>File checks(11): is_file()…</li>
+<li>Whitelists(3): array_search()</li>
+<li>Regex(8): 正则</li>
+</ul>
+<p>（原来validatation的情况可以放到块与块间，这样就和sanitization的情况分开来去了）。</p>
+<h2 id="Taint-Analysis"><a href="#Taint-Analysis" class="headerlink" title="Taint Analysis"></a>Taint Analysis</h2><p>污点分析探测漏洞的过程略。:</p>
 <h2 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h2><p>之前看这篇觉得没啥东西， 仔细分析来东西还是挺多的， 毕竟顶会。</p>
+<p>他几乎把所有语言特性层和面向过程层的东西讲到了， 缺少OO层的分析，也是后来不上人针对发文的。</p>
+<p>(为什么看起来这么高大上的东西开源版本用起来和…一样)</p>
 </div></div></div></div></div><div id="footer">© <a href="../../../../." rel="nofollow">PenLab.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a> Theme<a target="_blank" href="https://github.com/7ye/maupassant-hexo"> Maupassant.</a></div><a id="back_to_top" href="javascript:void(0)" class="back_to_top"><span>△</span></a><script type="text/javascript" src="../../../../js/totop.js?v=undefined"></script><script>function auto_code_fit(){
   if($(".highlight").length != 0){
     var pc_width = $(".post-content").width();
