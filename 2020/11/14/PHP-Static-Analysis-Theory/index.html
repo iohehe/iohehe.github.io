@@ -1,0 +1,48 @@
+<!DOCTYPE html><html lang="null"><head><meta name="generator" content="Hexo 3.9.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="renderer" content="webkit"><title>PHP静态分析理论 - PenLab</title><meta name="description" content="Static Detection of Security Vulnerabilities in Scripting Languages本文为Stanford大学2005年发表的文章追本溯源，这个Yichen Xie和Alex Aiken团队似乎是PHP安全静态分析比较早的，那个时候，台大的Huang等的WebSSARI应该出来了； Livshits等的Pixy也在构建中。 这一篇理论性的东西比较多"><link type="text/css" rel="stylesheet" href="../../../../css/pure.css?v=undefined"><link type="text/css" rel="stylesheet" href="../../../../css/style.css?v=undefined"><script type="text/javascript" src="//cdn.bootcss.com/jquery/1.11.0/jquery.min.js"></script><link rel="alternate" type="application/atom+xml" href="../../../../atom.xml"></head></html><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">PHP静态分析理论</h1><a id="logo" href="../../../../.">PenLab</a></div><div id="nav-menu"><div class="bitcron_nav"><div class="site_nav_wrap"><div class="site_nav"></div></div></div></div></div><div id="layout" class="pure-g"><div class="pure-u-1"><div class="content_container"><div class="post"><!--h1.post-title= page.title--><!--br--><!--文章内容--><div class="post-content"><h1 id="Static-Detection-of-Security-Vulnerabilities-in-Scripting-Languages"><a href="#Static-Detection-of-Security-Vulnerabilities-in-Scripting-Languages" class="headerlink" title="Static Detection of Security Vulnerabilities in Scripting Languages"></a>Static Detection of Security Vulnerabilities in Scripting Languages</h1><p>本文为Stanford大学2005年发表的文章追本溯源，这个Yichen Xie和Alex Aiken团队似乎是PHP安全静态分析比较早的，那个时候，台大的Huang等的WebSSARI应该出来了； Livshits等的Pixy也在构建中。 这一篇理论性的东西比较多，都是在构建数学模型，有借鉴意义。 再拿来总结一下。</p>
+<p>本文提出的是一个PHP安全漏洞的静态分析算法， 他们提出了一种三层架构从块内，过程内， 过程间三个级别进行静态分析。 尝试解决脚本语言独有的一些的动态特性，如动态类型， 代码包含。</p>
+<h2 id="AST"><a href="#AST" class="headerlink" title="AST"></a>AST</h2><p>AST:  将PHP解析成抽象语法树(用的PHP5.0.5)， 处理无封装语句作为main function, main function作为程序入口。略。</p>
+<h2 id="CFG"><a href="#CFG" class="headerlink" title="CFG"></a>CFG</h2><p>CFG: 单entry, 单exit, 基本的CFG生成算法。略。</p>
+<h2 id="Simulate"><a href="#Simulate" class="headerlink" title="Simulate"></a>Simulate</h2><p>在语言建模的基础上，完成转化，生成每个块的summary（BlockSummary）</p>
+<p><img src="/2020/11/14/PHP-Static-Analysis-Theory/image-20201114140707691.png" alt="image-20201114140707691"></p>
+<p>这个总的算法，一个块，以return和exit为出口， 对每一个基本块做一个simulate然后生成这个块的summary。</p>
+<p> 首先看对语言的建模: </p>
+<p><img src="/2020/11/14/PHP-Static-Analysis-Theory/image-20201114142327873.png" alt="image-20201114142327873"></p>
+<ol>
+<li>Type: 有字符，布尔，数组，静态无法确认的数据(如形参)。 这里没有对array等复合结构作处理。</li>
+<li>Const: 有字符，数字，true, false, null</li>
+<li><p>L-val: 左值，这里有variable x, 实参，array等复合结构 </p>
+</li>
+<li><p>Expr：表达式包含前两种， 另外还有表达式的一元操作二元操作。最后一个是type cast类型转换。</p>
+</li>
+<li><p>Stmt: statement的话就是单一表达式给左值， 过程给左值， return, exit跟include。</p>
+<p>其中提到了，include这种statement是scripting language所特有的(which allows prorammers to dynamically insert code into the program)。</p>
+</li>
+</ol>
+<p>状态转化就是从L(第一行)到表示的值(最后一行)的映射过程。<img src="/2020/11/14/PHP-Static-Analysis-Theory/image-20201114145427950.png" alt="image-20201114145427950"></p>
+<p>来看值表示，在每一个function中从入口出找初始值Lo(范围是Loc)， 然后这些值可以表示为三类分别是(String, Boolean和Integer)， 其中，String是最基本的类型，也是我们关注的类型。 他由一些列的segment为元素组成，segment代表的可以是string, 也可以是a set of memory location（contains(o)）。</p>
+<p>每个Lo就是一个Loc-&gt;Value的过程。有string, boolean, integer, Init-Values, unknow五种结果。(这个模型看着还是有点乱啊）。</p>
+<h3 id="Locations和L-val转化规则"><a href="#Locations和L-val转化规则" class="headerlink" title="Locations和L-val转化规则"></a>Locations和L-val转化规则</h3><p>这里在解释L-val, 首先看模型：</p>
+<p><img src="/2020/11/14/PHP-Static-Analysis-Theory/image-20201114152059860.png" alt="image-20201114152059860"></p>
+<p>如上面对Lv的规则的定义， var, arg,dim三种(注意当时的文章都不考虑OO)。</p>
+<p>看下边这个例子：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$hash = $_POST; <span class="comment">//$_POST这个hash table赋给$hash</span></span><br><span class="line">$key = <span class="string">"user"</span>; <span class="comment">//常量赋值</span></span><br><span class="line">$userid = $hash[$key];</span><br></pre></td></tr></table></figure>
+<p>分析这段代码， 首先看初始状态</p>
+<p><img src="/2020/11/14/PHP-Static-Analysis-Theory/image-20201114152915770.png" alt="image-20201114152915770"></p>
+<p>我们让每一个符号指向一个初始状态。然后根据上边的规则定义， 根据var的规则处理前两条：</p>
+<p><img src="/2020/11/14/PHP-Static-Analysis-Theory/image-20201114153406937.png" alt="image-20201114153406937"></p>
+<p>他们都指向了一个unique location。</p>
+<p>第三条来用dim的规则定义处理。此时根据横线上方两条条件规则(e是名e’是键)，分别映射到_POST0和[‘userid’]那么他将映射到L[阿尔法]中， 即_POST[userid]0。</p>
+<h3 id="Exp转化规则"><a href="#Exp转化规则" class="headerlink" title="Exp转化规则"></a>Exp转化规则</h3><p><img src="/2020/11/14/PHP-Static-Analysis-Theory/image-20201114154757715.png" alt="image-20201114154757715"></p>
+<p>因为脚本语言是一种动态类型， 在运行解释器会选择当前运算最适合的规则(弱类型)。那么就带了了类型转化问题。</p>
+<p><img src="/2020/11/14/PHP-Static-Analysis-Theory/image-20201114154900851.png" alt="image-20201114154900851"></p>
+<p>(模型啥的刚不动了，等有空继续)</p>
+<h3 id="Statements转化规则"><a href="#Statements转化规则" class="headerlink" title="Statements转化规则"></a>Statements转化规则</h3></div></div></div></div></div><div id="footer">© <a href="../../../../." rel="nofollow">PenLab.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a> Theme<a target="_blank" href="https://github.com/7ye/maupassant-hexo"> Maupassant.</a></div><a id="back_to_top" href="javascript:void(0)" class="back_to_top"><span>△</span></a><script type="text/javascript" src="../../../../js/totop.js?v=undefined"></script><script>function auto_code_fit(){
+  if($(".highlight").length != 0){
+    var pc_width = $(".post-content").width();
+    $(".highlight .code").find("pre").width((pc_width-70)+"px");
+  }
+}
+window.onresize = function(){
+  auto_code_fit();
+}
+auto_code_fit();</script></div></body>
