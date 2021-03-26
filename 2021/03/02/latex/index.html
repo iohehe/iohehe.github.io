@@ -1,0 +1,46 @@
+<!DOCTYPE html><html lang="null"><head><meta name="generator" content="Hexo 3.9.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="renderer" content="webkit"><title>Latex - PenLab</title><meta name="description" content="0x00 概念引擎：编译tex文档的，一般有TEX引擎、pdfTEX引擎。Float: 浮动体，一个整体的不可分割的内容块。0x01 算法算法的架构这个已经说的比较清楚了:Link解释一下这些包：Algorithm: Float wrapper for algorithms， 即对算法打包成浮动体的包。Algorithmic: 即使写算法为代码的一些环境，提前定义了if, while,proced"><link type="text/css" rel="stylesheet" href="../../../../css/pure.css?v=undefined"><link type="text/css" rel="stylesheet" href="../../../../css/style.css?v=undefined"><script type="text/javascript" src="//cdn.bootcss.com/jquery/1.11.0/jquery.min.js"></script><link rel="alternate" type="application/atom+xml" href="../../../../atom.xml"></head></html><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">Latex</h1><a id="logo" href="../../../../.">PenLab</a></div><div id="nav-menu"><div class="bitcron_nav"><div class="site_nav_wrap"><div class="site_nav"></div></div></div></div></div><div id="layout" class="pure-g"><div class="pure-u-1"><div class="content_container"><div class="post"><!--h1.post-title= page.title--><!--br--><!--文章内容--><div class="post-content"><h1 id="0x00-概念"><a href="#0x00-概念" class="headerlink" title="0x00 概念"></a>0x00 概念</h1><ul>
+<li><p>引擎：编译tex文档的，一般有TEX引擎、pdfTEX引擎。</p>
+</li>
+<li><p>Float: 浮动体，一个整体的不可分割的内容块。</p>
+</li>
+</ul>
+<h1 id="0x01-算法"><a href="#0x01-算法" class="headerlink" title="0x01 算法"></a>0x01 算法</h1><p>算法的架构这个已经说的比较清楚了:<a href="https://tex.stackexchange.com/questions/229355/algorithm-algorithmic-algorithmicx-algorithm2e-algpseudocode-confused" target="_blank" rel="noopener">Link</a></p>
+<p>解释一下这些包：</p>
+<ul>
+<li><p>Algorithm: Float wrapper for algorithms， 即对算法打包成浮动体的包。</p>
+</li>
+<li><p>Algorithmic: 即使写算法为代码的一些环境，提前定义了if, while,procedure….，使用这些关键字时用大写:\IF{cond}…\ELSE…</p>
+<p>所以基本的算法可以这样写:</p>
+</li>
+</ul>
+<figure class="highlight tex"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">\<span class="name">usepackage</span><span class="string">&#123;algorithm&#125;</span></span></span><br><span class="line"><span class="tag">\<span class="name">usepackage</span><span class="string">&#123;algorithmic&#125;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">% algorithm环境</span></span><br><span class="line"><span class="tag">\<span class="name">begin</span><span class="string">&#123;algorithm&#125;</span></span></span><br><span class="line">true  <span class="comment">% 标题 </span></span><br><span class="line">    <span class="tag">\<span class="name">caption</span><span class="string">&#123;Algorithm caption&#125;</span></span></span><br><span class="line">    <span class="tag">\<span class="name">label</span><span class="string">&#123;alg:algorithm-label&#125;</span></span></span><br><span class="line">    <span class="comment">% algorithmic环境</span></span><br><span class="line">    <span class="tag">\<span class="name">begin</span><span class="string">&#123;algorithmic&#125;</span></span></span><br><span class="line">    	  	  <span class="comment">% 伪代码中的关键字命令</span></span><br><span class="line">            <span class="tag">\<span class="name">IF</span><span class="string">&#123;some condition is true&#125;</span></span></span><br><span class="line">                <span class="tag">\<span class="name">STATE</span></span> do some processing</span><br><span class="line">            <span class="tag">\<span class="name">ELSIF</span><span class="string">&#123;some other condition is true&#125;</span></span></span><br><span class="line">                <span class="tag">\<span class="name">STATE</span></span> do some different processing</span><br><span class="line">            <span class="tag">\<span class="name">ELSE</span></span></span><br><span class="line">                <span class="tag">\<span class="name">STATE</span></span> do the default actions</span><br><span class="line">            <span class="tag">\<span class="name">ENDIF</span></span></span><br><span class="line">    <span class="tag">\<span class="name">end</span><span class="string">&#123;algorithmic&#125;</span></span></span><br><span class="line"><span class="tag">\<span class="name">end</span><span class="string">&#123;algorithm&#125;</span></span></span><br></pre></td></tr></table></figure>
+<p>这里变用了两个环境(algorithm和algorithmic)是为了提供最大的灵活性。</p>
+<ul>
+<li>Algorithmicx: 可以看作是algorithmic的增强版。他允许用户去定义一些宏来客制化一些算法的命令(暂时没用过) </li>
+<li>Algpseudocode: 这个包，用以algorithmicx的布局。因为algorithmicx中没有定义任何的commands, 他只是提供你定义commands的能力，所以你需要导入一些已经使用它定义好的commands来达到algorithmic一样的布局效果，algpsedudocode就是已经定义好的same look as algorithmic  的package。</li>
+<li>Algorithm2e: 除了algorithmic和algorithmicx外的另外一个algorithm environment</li>
+</ul>
+<p>还有一点要注意，algorithmic的环境，命令需要纯大写{IF{condition}}。而algorithmicx中默认的事开头大写(If{condition}), algorithm2e也是。</p>
+<h1 id="0x02-符号"><a href="#0x02-符号" class="headerlink" title="0x02 符号"></a>0x02 符号</h1><p>Latex中使用<code>$</code>来表达数学表达式，包括一些伪代码中的数学符号。</p>
+<ul>
+<li>inline math mode（行间模式）: $…$</li>
+<li>display math mode: $$…$$  </li>
+</ul>
+<h1 id="0x03-表格"><a href="#0x03-表格" class="headerlink" title="0x03 表格"></a>0x03 表格</h1><figure class="highlight tex"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">\<span class="name">begin</span><span class="string">&#123;tabular&#125;</span><span class="string">[&lt;align&gt;]</span><span class="string">&#123;&lt;column-spce&gt;&#125;</span></span></span><br><span class="line">&lt;item1&gt; &amp; &lt;item2&gt; &amp; ... <span class="tag">\<span class="name">\</span></span></span><br><span class="line"><span class="tag">\<span class="name">hline</span></span></span><br><span class="line">&lt;item1&gt; &amp; &lt;item2&gt; &amp; ... <span class="tag">\<span class="name">\</span></span></span><br><span class="line"><span class="tag">\<span class="name">end</span><span class="string">&#123;tabluar&#125;</span></span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>&amp; 分割单元格</li>
+<li><p>\\ 换行</p>
+</li>
+<li><p>\hline 行间横线</p>
+</li>
+</ul>
+</div></div></div></div></div><div id="footer">© <a href="../../../../." rel="nofollow">PenLab.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a> Theme<a target="_blank" href="https://github.com/7ye/maupassant-hexo"> Maupassant.</a></div><a id="back_to_top" href="javascript:void(0)" class="back_to_top"><span>△</span></a><script type="text/javascript" src="../../../../js/totop.js?v=undefined"></script><script>function auto_code_fit(){
+  if($(".highlight").length != 0){
+    var pc_width = $(".post-content").width();
+    $(".highlight .code").find("pre").width((pc_width-70)+"px");
+  }
+}
+window.onresize = function(){
+  auto_code_fit();
+}
+auto_code_fit();</script></div></body>

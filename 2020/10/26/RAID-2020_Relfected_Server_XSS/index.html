@@ -1,0 +1,59 @@
+<!DOCTYPE html><html lang="null"><head><meta name="generator" content="Hexo 3.9.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="renderer" content="webkit"><title>What's in an Exploit? an Empirical Analysis of Reflected Server XSS Exploitation Techniques - PenLab</title><meta name="description" content="原文链接本文发表自RAID2020年，作者来自微软、东北大学和纽约大学。一项对反射型XSS的实证分析研究。本文从XSSED和OPENBUGBOUNTY两个网站收集了近十年来的反射型XSS提交的payload。 两个测试集OBB的比较新一些。在此即上进行EXP分析，设计了一个验证系统。证明这些反射型的EXP是可以被精确的识别出来的。  整个系统分为动态和静态两个佐证部分，尝试识别出每个exp的tri"><link type="text/css" rel="stylesheet" href="../../../../css/pure.css?v=undefined"><link type="text/css" rel="stylesheet" href="../../../../css/style.css?v=undefined"><script type="text/javascript" src="//cdn.bootcss.com/jquery/1.11.0/jquery.min.js"></script><link rel="alternate" type="application/atom+xml" href="../../../../atom.xml"></head></html><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">What's in an Exploit? an Empirical Analysis of Reflected Server XSS Exploitation Techniques</h1><a id="logo" href="../../../../.">PenLab</a></div><div id="nav-menu"><div class="bitcron_nav"><div class="site_nav_wrap"><div class="site_nav"></div></div></div></div></div><div id="layout" class="pure-g"><div class="pure-u-1"><div class="content_container"><div class="post"><!--h1.post-title= page.title--><!--br--><!--文章内容--><div class="post-content"><p><a href="https://github.com/iohehe/research/RAID-2020-xss-stats-paper/xss-stats-paper.pdf" target="_blank" rel="noopener">原文链接</a></p>
+<p>本文发表自RAID2020年，作者来自微软、东北大学和纽约大学。一项对反射型XSS的实证分析研究。</p>
+<p><img src="/2020/10/26/RAID-2020_Relfected_Server_XSS/image-20201030143613662.png" alt="image-20201030143613662"></p>
+<p>本文从XSSED和OPENBUGBOUNTY两个网站收集了近十年来的反射型XSS提交的payload。 两个测试集OBB的比较新一些。</p>
+<p><img src="/2020/10/26/RAID-2020_Relfected_Server_XSS/image-20201030162110612.png" alt="image-20201030162110612"></p>
+<p>在此即上进行EXP分析，设计了一个验证系统。证明这些反射型的EXP是可以被精确的识别出来的。</p>
+<p>  <img src="/2020/10/26/RAID-2020_Relfected_Server_XSS/image-20201030162154660.png" alt="image-20201030162154660"></p>
+<p>整个系统分为动态和静态两个佐证部分，尝试识别出每个exp的trick:</p>
+<ul>
+<li><p>静态：</p>
+<p>静态部分是:EXP Extraction ​到​ ​S​t​a​ti​c​ ​F​e​a​t​ur​e​ ​E​x​t​ra​c​t​i​on。​ 其实我觉得还带是正则。</p>
+</li>
+<li><p>动态：</p>
+<p>动态部分是：EXP Execution 到 Dynamic Feature Extraction。 将收集的response的page使用chrome和FireFox加载，在沙箱环境中观察，因为有一些触发条件需要特定操作或者加载资源，因此作者分了四个round，后三个round需要操作(Mouse Move, Mouse Click, Network Error)，通过在response page中插桩，观察XSS执行里的trick。</p>
+</li>
+</ul>
+<p>  <img src="/2020/10/26/RAID-2020_Relfected_Server_XSS/image-20201030173010493.png" alt="image-20201030173010493"></p>
+<p>下面来看看对payload的一些分统计：</p>
+<ol>
+<li><p>Context( Escaping and Creation)技术:</p>
+<p><img src="/2020/10/26/RAID-2020_Relfected_Server_XSS/image-20201030163940277.png" alt="image-20201030163940277"></p>
+</li>
+</ol>
+<p>这一类主要是指逃逸+构造，日常使用中确实最多。细分为： HTML环境注释逃逸法、 JS环境注视逃逸法、属性环境标签闭合逃逸+构造标签、属性环境属性闭合+构造属性、JS环境代码续接。 （我瞎编的:expressionless:)​</p>
+<ol start="2">
+<li>Synatx Confusion技术</li>
+</ol>
+<p><img src="/2020/10/26/RAID-2020_Relfected_Server_XSS/image-20201030164425916.png" alt="image-20201030164425916"></p>
+<p>这一类就是语法混淆，包括： 方法名的额外括号、大小写混淆、 unicode编码混淆(乱入：注意方法括号不能unicode)、第四个厉害了没听说过、 空白符混淆、 斜杠替换空格(还有alert(/xss/))、 标签解析混淆(频率还很高，mark!)</p>
+<ol start="3">
+<li>Control Flow Modification技术</li>
+</ol>
+<p>此技术在OBB的测试集中使用比较多。也就是有48.2%的</p>
+<p><img src="/2020/10/26/RAID-2020_Relfected_Server_XSS/image-20201030165941047.png" alt="image-20201030165941047"></p>
+<p>这个分类粒度是控制流更改(可能喝上两种不是一个维度)。主要是躲过\&lt;script>标签过，有1, 自动触发事件 2，exploit-triggered events(咋翻译？) 3,用户交互事件  4, 将事件赋给一个变量！ 5，抛异常！！</p>
+<p>这个类型分的有点混乱，可能我还没看仔细。</p>
+<ol start="4">
+<li><p>字符解释技术</p>
+<p><img src="/2020/10/26/RAID-2020_Relfected_Server_XSS/image-20201030171318469.png" alt="image-20201030171318469"></p>
+<p>能够将字符当作JS代码解释的方法， 1，document.write 2, eval 3, setTimeout 4, top (写一遍加深印象…)</p>
+</li>
+</ol>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p><img src="/2020/10/26/RAID-2020_Relfected_Server_XSS/image-20201030171651652.png" alt="image-20201030171651652"></p>
+<p>En…还是闭合标签感觉爽些。</p>
+<h2 id="Tips"><a href="#Tips" class="headerlink" title="Tips"></a>Tips</h2><p>看完这篇文章其他部分没仔细看， 光学姿势去了…</p>
+<ul>
+<li>可能有些位置就是可以用多种方法，最近趋于喜欢直接用svg做注入</li>
+<li>是时候总结一波姿势了</li>
+</ul>
+</div></div></div></div></div><div id="footer">© <a href="../../../../." rel="nofollow">PenLab.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a> Theme<a target="_blank" href="https://github.com/7ye/maupassant-hexo"> Maupassant.</a></div><a id="back_to_top" href="javascript:void(0)" class="back_to_top"><span>△</span></a><script type="text/javascript" src="../../../../js/totop.js?v=undefined"></script><script>function auto_code_fit(){
+  if($(".highlight").length != 0){
+    var pc_width = $(".post-content").width();
+    $(".highlight .code").find("pre").width((pc_width-70)+"px");
+  }
+}
+window.onresize = function(){
+  auto_code_fit();
+}
+auto_code_fit();</script></div></body>

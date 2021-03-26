@@ -1,0 +1,34 @@
+<!DOCTYPE html><html lang="null"><head><meta name="generator" content="Hexo 3.9.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="renderer" content="webkit"><title>静态分析之殇 - PenLab</title><meta name="description" content="0x00 前言计算机高级语言带来了软件开发的遍历性， 其解决的问题是：如何使用更接近人类的交流方式与机器进行交流。 因此不可或缺的是一个从人类阅读的语言到机器阅读的语言之间的一个桥梁。 这个转化过程叫做编译。 在编译过程中，从信息的高级语言形式，到机器码形式我们可以看到还有几层中间语言：AST, IR…其实汇编语言就很像机器语言了，可以看成他的一层壳。但是语义还不是很方便人类提取，高级语言解决了这"><link type="text/css" rel="stylesheet" href="../../../../css/pure.css?v=undefined"><link type="text/css" rel="stylesheet" href="../../../../css/style.css?v=undefined"><script type="text/javascript" src="//cdn.bootcss.com/jquery/1.11.0/jquery.min.js"></script><link rel="alternate" type="application/atom+xml" href="../../../../atom.xml"></head></html><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">静态分析之殇</h1><a id="logo" href="../../../../.">PenLab</a></div><div id="nav-menu"><div class="bitcron_nav"><div class="site_nav_wrap"><div class="site_nav"></div></div></div></div></div><div id="layout" class="pure-g"><div class="pure-u-1"><div class="content_container"><div class="post"><!--h1.post-title= page.title--><!--br--><!--文章内容--><div class="post-content"><h1 id="0x00-前言"><a href="#0x00-前言" class="headerlink" title="0x00 前言"></a>0x00 前言</h1><p>计算机高级语言带来了软件开发的遍历性， 其解决的问题是：如何使用更接近人类的交流方式与机器进行交流。 因此不可或缺的是一个从人类阅读的语言到机器阅读的语言之间的一个桥梁。 这个转化过程叫做编译。 在编译过程中，从信息的高级语言形式，到机器码形式我们可以看到还有几层中间语言：AST, IR…其实汇编语言就很像机器语言了，可以看成他的一层壳。但是语义还不是很方便人类提取，高级语言解决了这个问题。 再看高级语言往汇编去的路上。 有AST， 为什么要有这一层，我想，因为AST是一种将语法结构化的数据结构。 而高级语言和机器语言是给人和机器去看的， 而中间语言是要被处理的。 而计算机处理一种信息最方便的方式就是将他结构化，对信息中的每一个最小单元进行定位。 而树状结构是层级的，方便与遍历token之间的关系，从而检查语法， 解析语义。 但是程序是用来执行的， 他是一种强逻辑性语言，没有歧义。 因此程序中每一条执行流都是明确的。 而如果要分析程序中的控制流， 和数据流等，AST这种结构就不太合适了。一个是因为，流分析往往是以基本块为单位的，基本块的最小单位是一条statement，而一条statement表示成AST树状结构很复杂， 也没有必要(这样就成了在树上画图，结构会很复杂，见属性图)。对于流分析，这种statement展开是没有必要的，而此时,AST也要向汇编码汇聚，所以我猜这样才出现了IR。</p>
+<p>可以把软件分析分作两个阶段：1. Complie 阶段和2. Run-time阶段，在compile的分析都是静态阶段， 此时，程序还没有产生Archive Record。</p>
+<h1 id="0x01-流"><a href="#0x01-流" class="headerlink" title="0x01 流"></a>0x01 流</h1><p>静态分析， 就是自动化的去分析程序的流。 我们常见的流有一个过程内的控制流和数据流，以及过程间的调用。这些流会在程序中构造一张张的图。 控制流图， 数据流图， 调用图， 类图…。每一张图对应一种不同的层级关系或者功能。有几点需要注意：</p>
+<ol>
+<li>控制流图唯一，数据流图不唯一。 控制流图往往取决于AST结构。 AST结构定了，控制流图就定了。而数据流图会对分析的目的不同而不同，可以正向构建也可以后向构建。只要目的达成， 就有意义</li>
+</ol>
+<h1 id="0x02-问题"><a href="#0x02-问题" class="headerlink" title="0x02 问题"></a>0x02 问题</h1><h2 id="四大敏感"><a href="#四大敏感" class="headerlink" title="四大敏感"></a>四大敏感</h2><p>通常所说的流敏感，路径敏感，上下文敏感和字段敏感</p>
+<h2 id="复合结构"><a href="#复合结构" class="headerlink" title="复合结构"></a>复合结构</h2><h2 id="调用"><a href="#调用" class="headerlink" title="调用"></a>调用</h2><h1 id="0x03-web安全"><a href="#0x03-web安全" class="headerlink" title="0x03 web安全"></a>0x03 web安全</h1><p>这一张的题目起的比较大，这里指的其实是信息流安全， 就是web中的信息流漏洞，如各种漏洞。通常静态使用污点分析的方式去做。</p>
+<h2 id="流图"><a href="#流图" class="headerlink" title="流图"></a>流图</h2><p>控制流：</p>
+<p>CFG</p>
+<p>ICFG</p>
+<p>数据流：</p>
+<p>use-define chain</p>
+<p>过程间链</p>
+<h2 id="前向分析与后向分析"><a href="#前向分析与后向分析" class="headerlink" title="前向分析与后向分析"></a>前向分析与后向分析</h2><p>作为一种数据流分析，没有标准， 前向和后向流分析都可以。后向分析，有时候可以排除路径爆炸，但是后向很难知道数据边上具体传的是啥。</p>
+<h2 id="CHECK"><a href="#CHECK" class="headerlink" title="CHECK"></a>CHECK</h2><p>除了污点分析自身的各种敏感问题，和静态分析很难cover的复合结构和调用问题》 还有各种CHECK的检查问题。</p>
+<p>在我看来， CHECK可以分为两大类： validation和sanitization。 validation就是通过分支，将不安全的输入引导一个敏感函数不可达的分支中。 而sanitization就是通过对用户输入变形， 从而让威胁失去意义。 sanitization通常有很多叫法，一般的，在输入端做的叫sanitization, 而在输入数据走完逻辑后输出的地方叫做escaping，  反正意思都是一样就是转译。</p>
+<p>不论是validation还是sanitization都要有规则， 其中都可以用黑白名单实现。而sanitization中除了黑白名单规则，还可以进行编码，如htmlspecialchars, htmlenities，将敏感符号转义成html实体编码。</p>
+<p>还有一种通常叫cast, 就是强制类型转换(int)$a。 </p>
+<p>以上是对数据流进行直接check， 还有间接check。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">  $action = $_GET[<span class="string">'action'</span>];</span><br><span class="line"><span class="keyword">switch</span>($action)</span><br><span class="line">  <span class="keyword">case</span> <span class="string">"login"</span>:</span><br><span class="line">truetruetruetruetrue<span class="keyword">echo</span> $action;</span><br><span class="line">truetruetruetruetrue<span class="keyword">break</span>;</span><br><span class="line">  <span class="keyword">case</span> <span class="string">"logout"</span>:</span><br><span class="line">truetruetruetruetrue<span class="keyword">echo</span> $action;</span><br><span class="line">truetruetruetruetrue<span class="keyword">break</span></span><br><span class="line">  <span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+<p>如这个简易的路由。 这时看起来并没有显示的安全检测， 但是其实是隐式的限制，数据是在一个指定的域里才可以进入危险分支。</p>
+<p>再如，用户输入必须在数据库中存在， 才能进入危险分支， 这种在web非常常见。</p>
+<p>最后就是一些用户身份验证， 和表单验证。 这些常常在路径中截断控制流。 因此我们做静态分析时，很难达到一个精准的状态。</p>
+</div></div></div></div></div><div id="footer">© <a href="../../../../." rel="nofollow">PenLab.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a> Theme<a target="_blank" href="https://github.com/7ye/maupassant-hexo"> Maupassant.</a></div><a id="back_to_top" href="javascript:void(0)" class="back_to_top"><span>△</span></a><script type="text/javascript" src="../../../../js/totop.js?v=undefined"></script><script>function auto_code_fit(){
+  if($(".highlight").length != 0){
+    var pc_width = $(".post-content").width();
+    $(".highlight .code").find("pre").width((pc_width-70)+"px");
+  }
+}
+window.onresize = function(){
+  auto_code_fit();
+}
+auto_code_fit();</script></div></body>
