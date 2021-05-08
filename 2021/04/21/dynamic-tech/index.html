@@ -1,0 +1,55 @@
+<!DOCTYPE html><html lang="null"><head><meta name="generator" content="Hexo 3.9.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="renderer" content="webkit"><title>All You Ever Wanted to Know About Dynamic Taint Analysis and Forward Symbolic Execution - PenLab</title><meta name="description" content="  把这篇文章当博客写一方面是自己动态分析水平太差了， 一直以来拒绝各种动态工具(如FUZZ)，想想还是太执着。动静结合其实还是很好玩的， 而且动态污点分析和动态污点分析看起来也非常艺术。 另一方面， 我觉着，笔者的文笔太好了。 值得我好好好好学习。0x00 摘要1. 第一段： 问题介绍动态污点分析和前向符号执行越来越流行(提出主题)用在漏洞挖掘，恶意代码检测等领域(两种技术的应用场景举例)尽管用"><link type="text/css" rel="stylesheet" href="../../../../css/pure.css?v=undefined"><link type="text/css" rel="stylesheet" href="../../../../css/style.css?v=undefined"><script type="text/javascript" src="//cdn.bootcss.com/jquery/1.11.0/jquery.min.js"></script><link rel="alternate" type="application/atom+xml" href="../../../../atom.xml"></head></html><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">All You Ever Wanted to Know About Dynamic Taint Analysis and Forward Symbolic Execution</h1><a id="logo" href="../../../../.">PenLab</a></div><div id="nav-menu"><div class="bitcron_nav"><div class="site_nav_wrap"><div class="site_nav"></div></div></div></div></div><div id="layout" class="pure-g"><div class="pure-u-1"><div class="content_container"><div class="post"><!--h1.post-title= page.title--><!--br--><!--文章内容--><div class="post-content"><p>  把这篇文章当博客写一方面是自己动态分析水平太差了， 一直以来拒绝各种动态工具(如FUZZ)，想想还是太执着。动静结合其实还是很好玩的， 而且动态污点分析和动态污点分析看起来也非常艺术。</p>
+<p> 另一方面， 我觉着，笔者的文笔太好了。 值得我好好好好学习。</p>
+<h1 id="0x00-摘要"><a href="#0x00-摘要" class="headerlink" title="0x00 摘要"></a>0x00 摘要</h1><h2 id="1-第一段：-问题介绍"><a href="#1-第一段：-问题介绍" class="headerlink" title="1. 第一段： 问题介绍"></a>1. 第一段： 问题介绍</h2><ul>
+<li><ol>
+<li>动态污点分析和前向符号执行越来越流行(提出主题)</li>
+</ol>
+</li>
+<li><ol start="2">
+<li>用在漏洞挖掘，恶意代码检测等领域(两种技术的应用场景举例)</li>
+</ol>
+</li>
+<li><ol start="3">
+<li>尽管用处很广，但是目前业界没有形式化的定义其算法与总结其关键技术难题(提出挑战)</li>
+</ol>
+</li>
+</ul>
+<h2 id="2-第二段：-工作介绍"><a href="#2-第二段：-工作介绍" class="headerlink" title="2. 第二段： 工作介绍"></a>2. 第二段： 工作介绍</h2><ul>
+<li><ol>
+<li>我们的贡献有两部分：</li>
+</ol>
+</li>
+<li><ol start="2">
+<li>一是我们精确的描述了两种技术的算法</li>
+</ol>
+</li>
+<li><ol start="3">
+<li>二是我们把安全场景下实现两种技术的难点都列了出来</li>
+</ol>
+</li>
+</ul>
+<p>由于这是一片类似于总结性的文章， 所以摘要中没有效果说明部分。(所以这篇文章也并不是design, evaluation架构的八股文)</p>
+<h1 id="0x01-Introduction"><a href="#0x01-Introduction" class="headerlink" title="0x01 Introduction"></a>0x01 Introduction</h1><h2 id="1-动态分析技术"><a href="#1-动态分析技术" class="headerlink" title="1 动态分析技术"></a>1 动态分析技术</h2><ul>
+<li><p>Dynamic analysis - the ability to monitor code as it executes - has become a fundamental tool in computer security research.(我啥时候才能写出这样牛逼的句子)</p>
+</li>
+<li><p>Dynamic analysis is attractive because it allows us to reason about actual executions, and thus can perform precise security analysis based upon run-time information.（动态分析666）</p>
+</li>
+<li><p>Further, dynamic analysis is simple: we need only consider facts about a single execution at a time.(进一步666)</p>
+</li>
+</ul>
+<h2 id="2-引出两种具体的技术"><a href="#2-引出两种具体的技术" class="headerlink" title="2 引出两种具体的技术"></a>2 引出两种具体的技术</h2><ul>
+<li>Two of the most commonly employed dynamic analysis techniques in security research are dynamic taint analysis and forward symbolic execution.（引出两种技术）</li>
+<li>Dynamic taint analysis runs a program and observes which computations are affected by predefined taint source such as user input.(污点分析一句介绍，用了被动)</li>
+<li>Dynamic forward symbolic execution automatically builds a logical formula describing a program execution path, which reduces the problem of reasoning about the execution to the domain of logic(这一句有点懵)</li>
+<li>The two analyses can be used in conjunction to bulid formulas</li>
+</ul>
+</div></div></div></div></div><div id="footer">© <a href="../../../../." rel="nofollow">PenLab.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a> Theme<a target="_blank" href="https://github.com/7ye/maupassant-hexo"> Maupassant.</a></div><a id="back_to_top" href="javascript:void(0)" class="back_to_top"><span>△</span></a><script type="text/javascript" src="../../../../js/totop.js?v=undefined"></script><script>function auto_code_fit(){
+  if($(".highlight").length != 0){
+    var pc_width = $(".post-content").width();
+    $(".highlight .code").find("pre").width((pc_width-70)+"px");
+  }
+}
+window.onresize = function(){
+  auto_code_fit();
+}
+auto_code_fit();</script></div></body>
