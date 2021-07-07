@@ -1,0 +1,33 @@
+<!DOCTYPE html><html lang="null"><head><meta name="generator" content="Hexo 3.9.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="renderer" content="webkit"><title>Program Analysis an Appetizer读书笔记： 第一章 - PenLab</title><meta name="description" content="本书在结构上如上图所示：本书没有使用任何具体的程序语言， 而是使用作者设计的两套prototypical programming languages, based on Guarded Commands and a subset of C，即上图A和B。第一章：  介绍了basic model of program graphs第二章和第三章： 介绍了基本的过程内程序分析： 四个经典的bit-ve"><link type="text/css" rel="stylesheet" href="../../../../css/pure.css?v=undefined"><link type="text/css" rel="stylesheet" href="../../../../css/style.css?v=undefined"><script type="text/javascript" src="//cdn.bootcss.com/jquery/1.11.0/jquery.min.js"></script><link rel="alternate" type="application/atom+xml" href="../../../../atom.xml"></head></html><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">Program Analysis an Appetizer读书笔记： 第一章</h1><a id="logo" href="../../../../.">PenLab</a></div><div id="nav-menu"><div class="bitcron_nav"><div class="site_nav_wrap"><div class="site_nav"></div></div></div></div></div><div id="layout" class="pure-g"><div class="pure-u-1"><div class="content_container"><div class="post"><!--h1.post-title= page.title--><!--br--><!--文章内容--><div class="post-content"><p><img src="/2021/07/07/PAAA-1/image-20210707182952591.png" alt="image-20210707182952591"></p>
+<p>本书在结构上如上图所示：本书没有使用任何具体的程序语言， 而是使用作者设计的两套prototypical programming languages, based on Guarded Commands and a subset of C，即上图A和B。</p>
+<ul>
+<li>第一章：  介绍了basic model of program graphs</li>
+<li>第二章和第三章： 介绍了基本的过程内程序分析： 四个经典的bit-vector analyses, monotone framework。 </li>
+</ul>
+<h1 id="第一章：-Programs-as-Graphs"><a href="#第一章：-Programs-as-Graphs" class="headerlink" title="第一章： Programs as Graphs"></a>第一章： Programs as Graphs</h1><p><img src="/2021/07/07/PAAA-1/image-20210707184040462.png" alt="image-20210707184040462"></p>
+<p>Figure 1.1 的有向图表示了一个程序图， 其中有五个点，定点表示了<code>initial node</code>, 最右边的叶子节点是<code>final node</code>。 q1, q2, q3 是三个<code>additional nodes</code>。</p>
+<p>边上的label是该边相关的<code>actions</code> ， 构成了程序的语义。 可以看出这个程序是在迭代的计算阶乘。</p>
+<h2 id="1-1-Actions"><a href="#1-1-Actions" class="headerlink" title="1.1 Actions"></a>1.1 Actions</h2><p>根据上面所描述的， 程序图的边上的actions代表了程序的语义。 </p>
+<p><img src="/2021/07/07/PAAA-1/image-20210707191056485.png" alt="image-20210707191056485"></p>
+<p>以上是对每一个action的形式化的描述：首先看第一个第一式子中有七种可能， </p>
+<ul>
+<li><p>Assign: 分别是变量或数组赋值，</p>
+</li>
+<li><p>Input: 从channel或文件读取的数据赋值给变量或数组，</p>
+</li>
+<li><p>Output: 将数据写入channle或文件</p>
+</li>
+<li>Boolean</li>
+<li>skip</li>
+</ul>
+<p>其中a代表一个算数表达式， b代表一个布尔表达式， 也给出了定义。</p>
+<h2 id="1-2-Memories"><a href="#1-2-Memories" class="headerlink" title="1.2 Memories"></a>1.2 Memories</h2><h2 id="1-3-Semantics"><a href="#1-3-Semantics" class="headerlink" title="1.3 Semantics"></a>1.3 Semantics</h2><h2 id="1-4-Program-Graphs"><a href="#1-4-Program-Graphs" class="headerlink" title="1.4 Program Graphs"></a>1.4 Program Graphs</h2><h2 id="1-6-The-Nature-of-Approximation"><a href="#1-6-The-Nature-of-Approximation" class="headerlink" title="1.6 The Nature of Approximation"></a>1.6 The Nature of Approximation</h2></div></div></div></div></div><div id="footer">© <a href="../../../../." rel="nofollow">PenLab.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a> Theme<a target="_blank" href="https://github.com/7ye/maupassant-hexo"> Maupassant.</a></div><a id="back_to_top" href="javascript:void(0)" class="back_to_top"><span>△</span></a><script type="text/javascript" src="../../../../js/totop.js?v=undefined"></script><script>function auto_code_fit(){
+  if($(".highlight").length != 0){
+    var pc_width = $(".post-content").width();
+    $(".highlight .code").find("pre").width((pc_width-70)+"px");
+  }
+}
+window.onresize = function(){
+  auto_code_fit();
+}
+auto_code_fit();</script></div></body>
