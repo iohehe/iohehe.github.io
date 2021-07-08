@@ -284,7 +284,7 @@ a:focus {
 /*文章内容*/
 .post .post-content {
 	font-size: 16px;
-	color: #333;
+	color: #666666;
 	overflow: hidden;
 	text-align: justify;
 	text-justify: ideographic;
@@ -297,8 +297,8 @@ a:focus {
 
 .post .post-content h2, .post .post-content h3 {
 	margin: 1.5em 0 0;
-	color: #666;
-	font-weight: normal;
+	color: #000;
+	font-weight: bold;
 }
 
 .post .post-content h2{
