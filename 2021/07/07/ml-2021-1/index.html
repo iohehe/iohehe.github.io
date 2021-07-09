@@ -61,7 +61,55 @@
 <p>两种求误差的方法根据需求选择。</p>
 <p><img src="/2021/07/07/ml-2021-1/image-20210708205619696.png" alt="image-20210708205619696" style="zoom:50%;"></p>
 <p>经过作者对Model进行一系列的调参后的真实结果， 在穷举各种<code>w</code>和<code>b</code>后，使用真实数据计算出来的Loss结果。各种组合的Loss表示为上边的等高线图，越偏红色， 表示计算出的Loss越大， <code>w</code>跟<code>b</code>放入mdoel，效果越差。可以看到估测最准的大约在<code>w</code>在1，b在100左右。</p>
-<h2 id="3-Optimization"><a href="#3-Optimization" class="headerlink" title="3. Optimization"></a>3. Optimization</h2></div></div></div></div></div><div id="footer">© <a href="../../../../." rel="nofollow">PenLab.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a> Theme<a target="_blank" href="https://github.com/7ye/maupassant-hexo"> Maupassant.</a></div><a id="back_to_top" href="javascript:void(0)" class="back_to_top"><span>△</span></a><script type="text/javascript" src="../../../../js/totop.js?v=undefined"></script><script>function auto_code_fit(){
+<h2 id="3-Optimization"><a href="#3-Optimization" class="headerlink" title="3. Optimization"></a>3. Optimization</h2><p> 第三步是解一个最佳化的问题， 找到一组最好的<code>w</code>跟<code>b</code>(<code>w*</code>, <code>b*</code>)，可以让Loss的值最小 ：</p>
+<p><img src="/2021/07/07/ml-2021-1/image-20210709202254891.png" alt="image-20210709202254891" style="zoom:25%;"></p>
+<p>此门课程中唯一用到的Optimization方法是<code>Gradient Descent</code>。</p>
+<p>上大图：</p>
+<p><img src="/2021/07/07/ml-2021-1/image-20210709202351925.png" alt="image-20210709202351925" style="zoom:50%;"></p>
+<p>如图， 为了简化期间， 假设我们已知参数<code>b</code>, 只有一个参数<code>w</code>未知。 当<code>w</code>在不同的数值的时候， 就会得到不同的Loss, 由于简化为只有一个参数， 所以是一条曲线(1D)。</p>
+<p>现在的问题是， 如何找到一个<code>w</code>， 使得<code>Loss</code>的值最小?</p>
+<p>首先， 我们随机选择一个随机的点<code>w0</code>。 接下来计算， 当<code>w=w0</code>时， <code>w</code>这个参数对<code>L</code>的微分。 即使计算<code>w0</code>点的<code>error surface</code>的切线斜率。如果是<code>Negative</code>就<code>Increase w</code>, 反之。</p>
+<p>如图就是猴子哥现在的位置。猴子哥站在那里， 看到左高右低，就向右<code>Increase w</code>。</p>
+<p><img src="/2021/07/07/ml-2021-1/image-20210709203107456.png" alt="image-20210709203107456" style="zoom:50%;"></p>
+<p>再来一张图，此时猴子哥移动了一段位置，由<code>w0</code>到了<code>w1</code>, 这段距离还依赖于一个参数<code>η</code>, 这个参数是认为设定的<code>learning rate</code>。</p>
+<blockquote>
+<p>在机器学习中， 自己设定的值，就叫做hyperparameters</p>
+</blockquote>
+<p>继续反复操作， 最后停下了： 两种情况下停下了: 1)到上限了(hyperparameters)  2)   到达极值点</p>
+<p><img src="/2021/07/07/ml-2021-1/image-20210709203845841.png" alt="image-20210709203845841" style="zoom:50%;"></p>
+<p>如图假设我们移动到了<code>Local minima</code>的位置停止了， 那么， 我们其实没有到达真正最好的， 可以让<code>Loss</code>最小的<code>w</code>(global minima)。但是实际上，这是一个假问题(不是实际中真正的痛点)。</p>
+<p>以上例子只有一个参数<code>w</code>。 那么有<code>w</code>, 跟<code>b</code>如何做<code>Gradient Descent</code>呢？</p>
+<ul>
+<li><p>给定随机初始值 <code>w0</code>, <code>b0</code></p>
+</li>
+<li><p>分别在初始位置计算<code>w</code>和<code>b</code>对<code>L</code>的微分</p>
+</li>
+<li><p>更新<code>w</code>跟<code>b</code>，得到<code>w1</code>跟<code>b1</code> </p>
+<p><img src="/2021/07/07/ml-2021-1/image-20210709204432226.png" alt="image-20210709204432226" style="zoom:33%;"></p>
+</li>
+</ul>
+<ul>
+<li>迭代更新， 找到<code>w*</code>跟<code>b*</code></li>
+</ul>
+<p><img src="/2021/07/07/ml-2021-1/image-20210709204603236.png" alt="image-20210709204603236" style="zoom:50%;"></p>
+<p>将<code>w</code>跟<code>b</code>结合起来，得到箭头的方向，一直移动…</p>
+<p>算出来的<code>w*=0.97</code>, <code>b*=0.1k</code> , <code>Loss=0.48K</code>(观看误差大约500人)。</p>
+<p>我们以上的三个步骤， 叫做训练。 我们真正要做的是， 对未来的未知的观看次数的预测。</p>
+<p><img src="/2021/07/07/ml-2021-1/image-20210709204838642.png" alt="image-20210709204838642" style="zoom:50%;"></p>
+<p>如图我们发现在2021的误差值是0.58。因此在位置的数据上， 误差相对较大。</p>
+<p>如何再缩小误差， 分析结果：</p>
+<p><img src="/2021/07/07/ml-2021-1/image-20210709205158675.png" alt="image-20210709205158675" style="zoom:50%;"></p>
+<p>蓝色的线几乎是红色向右平移，因为这个model只参考前一天的结果。 找规律， 发现有<code>每七天一个循环</code>，也许使用一个参考7天的model结果会更准确。修改模型</p>
+<blockquote>
+<p>对模型的修改往往来自于对问题的理解(Domain Knowledge)</p>
+</blockquote>
+<p><img src="/2021/07/07/ml-2021-1/image-20210709205554126.png" alt="image-20210709205554126" style="zoom:33%;"></p>
+<p>第二个模型，将7天的数据，都列入考虑。我们得到了一个更低的<code>Loss</code>（0.38k）。这个模型中计算了前七天的<code>wjxj</code>, 每一个<code>w</code>跟<code>b</code>都用Gradient Descent计算，来看每一天的<code>w*</code>，让<code>L</code>减小的是<code>w2, w4, w5</code>为负值。</p>
+<p><img src="/2021/07/07/ml-2021-1/image-20210709205750727.png" alt="image-20210709205750727" style="zoom:50%;"> </p>
+<p>以此类推考虑更多天…28天…56天…<code>Loss</code>在没有看过的资料上还是<code>0.46k</code>。</p>
+<p>这种将x(feature)乘上一个weight, 再加上bias得到预测结果的模型， 叫做<code>Linear models</code>。</p>
+<p>下一讲介绍如何将linear model做到更好。 </p>
+</div></div></div></div></div><div id="footer">© <a href="../../../../." rel="nofollow">PenLab.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a> Theme<a target="_blank" href="https://github.com/7ye/maupassant-hexo"> Maupassant.</a></div><a id="back_to_top" href="javascript:void(0)" class="back_to_top"><span>△</span></a><script type="text/javascript" src="../../../../js/totop.js?v=undefined"></script><script>function auto_code_fit(){
   if($(".highlight").length != 0){
     var pc_width = $(".post-content").width();
     $(".highlight .code").find("pre").width((pc_width-70)+"px");
