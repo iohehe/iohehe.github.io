@@ -4,7 +4,7 @@
 <p>08:05 </p>
 </blockquote>
 <p>开始，剪课件…</p>
-<p><img src="/2020/05/03/static-analysis-1/%E6%88%AA%E5%B1%8F2020-05-03%20%E4%B8%8A%E5%8D%8810.50.11.png" alt="截屏2020-05-03 上午10.50.11"></p>
+<p><img src="/2020/05/03/static-analysis-1/%E6%88%AA%E5%B1%8F2020-05-03%20%E4%B8%8A%E5%8D%8810.50.11.png" alt="截屏2020-05-03 上午10.50.11 " style="zoom:50%;"></p>
 <p>背景：将PL分了三个领域。 程序分析属于PL的应用领域。</p>
 <ul>
 <li>在语言的框架下谈到程序分析就是静态分析。</li>
@@ -40,7 +40,7 @@
 <ul>
 <li>静态分析： 在运行一个程序之前， 通过静态分析，了解程序一些行为和特征，</li>
 </ul>
-<p><img src="/2020/05/03/static-analysis-1/%E6%88%AA%E5%B1%8F2020-05-03%20%E4%B8%8A%E5%8D%8811.36.35.png" alt="截屏2020-05-03 上午11.36.35"></p>
+<p><img src="/2020/05/03/static-analysis-1/%E6%88%AA%E5%B1%8F2020-05-03%20%E4%B8%8A%E5%8D%8811.36.35.png" alt="截屏2020-05-03 上午11.36.35 " style="zoom:50%;"></p>
 <p>Truth是我们需要的结果机， 包含了所有可能的分析结果</p>
 <ul>
 <li>Sound：Overapproximate， 包含了所有的Truth</li>
@@ -52,7 +52,7 @@
 <p>我们的目标是设计一个<code>useful static analysis</code>，在上图画一个结果集的圈， 我们需要妥协一方(看应用场景)。 妥协<code>Sound</code>，就是要让Sound妥协， 让Sound缩小，就会造成生漏报(<code>false negatives</code>)，这种分析是<code>Compromise soundness</code>。</p>
 <p> 同样的， 妥协<code>Complete</code>， 就是要不产生误报(<code>false positives</code>)。 这种分析是<code>Compromise completeness</code>的。</p>
 <p>这两种设计方案随目的不同，在需要的场景下，都算是<code>useful static analysis</code>。</p>
-<p><img src="/2020/05/03/static-analysis-1/%E6%88%AA%E5%B1%8F2020-05-03%20%E4%B8%8B%E5%8D%8812.06.37.png" alt="截屏2020-05-03 下午12.06.37"></p>
+<p><img src="/2020/05/03/static-analysis-1/%E6%88%AA%E5%B1%8F2020-05-03%20%E4%B8%8B%E5%8D%8812.06.37.png" alt="截屏2020-05-03 下午12.06.37 " style="zoom:50%;"></p>
 <ul>
 <li><p>Soundness is <code>critical</code>  to a collection of import(static analysis) applications such as commpiler optimization and program verification.(编译优化和程序验证soundness尤为重要)</p>
 <p>这里说一个静态分析，soundness是重要的，也就是complete妥协。可以产生误报， 可以不那么准确。 </p>
@@ -69,12 +69,12 @@
 <p>71:00</p>
 <p>Two Words to Conclude Static Analysis: Abstraction+ Over-approximation</p>
 </blockquote>
-<p><img src="/2020/05/03/static-analysis-1/%E6%88%AA%E5%B1%8F2020-05-03%20%E4%B8%8B%E5%8D%888.36.59.png" alt="截屏2020-05-03 下午8.36.59"></p>
+<p><img src="/2020/05/03/static-analysis-1/%E6%88%AA%E5%B1%8F2020-05-03%20%E4%B8%8B%E5%8D%888.36.59.png" alt="截屏2020-05-03 下午8.36.59 " style="zoom:50%;"></p>
 <p>一个check, 探测每一个变量的符号。</p>
 <ol>
 <li>Abstraction： 将真实值转化为抽象值(abstract values)</li>
 </ol>
-<p><img src="/2020/05/03/static-analysis-1/%E6%88%AA%E5%B1%8F2020-05-03%20%E4%B8%8B%E5%8D%888.39.29.png" alt="截屏2020-05-03 下午8.39.29"></p>
+<p><img src="/2020/05/03/static-analysis-1/%E6%88%AA%E5%B1%8F2020-05-03%20%E4%B8%8B%E5%8D%888.39.29.png" alt="截屏2020-05-03 下午8.39.29 " style="zoom:50%;"></p>
 <ol start="2">
 <li>Over-approximation: Transfer Functions</li>
 </ol>
@@ -84,9 +84,9 @@
 <li><p>Transfer functions are defined according to “analysis problem” and the “semantics” of different program statements.（根据分析目标和每一句话的语义制定转移函数）</p>
 </li>
 </ul>
-<p>  <img src="/2020/05/03/static-analysis-1/%E6%88%AA%E5%B1%8F2020-05-03%20%E4%B8%8B%E5%8D%888.49.08.png" alt="截屏2020-05-03 下午8.49.08"></p>
+<p>  <img src="/2020/05/03/static-analysis-1/%E6%88%AA%E5%B1%8F2020-05-03%20%E4%B8%8B%E5%8D%888.49.08.png" alt="截屏2020-05-03 下午8.49.08 " style="zoom:50%;"></p>
 <p>现在，有了抽象值， 有了转化函数， 可以进行静态分析。</p>
-<p><img src="/2020/05/03/static-analysis-1/%E6%88%AA%E5%B1%8F2020-05-03%20%E4%B8%8B%E5%8D%888.52.07.png" alt="截屏2020-05-03 下午8.52.07"></p>
+<p><img src="/2020/05/03/static-analysis-1/%E6%88%AA%E5%B1%8F2020-05-03%20%E4%B8%8B%E5%8D%888.52.07.png" alt="截屏2020-05-03 下午8.52.07 " style="zoom:50%;"></p>
 <p>其中， a可正可负，p 中y做索引错， q中a做索引， 保证soundness， 可能错。</p>
 <ul>
 <li><p>c 除零错误</p>
@@ -97,7 +97,7 @@
 </li>
 </ul>
 <p>为了保证soundness，要求所有控制流的汇聚的点，都需要做merge。 Flow-Merge作为默认的一种Over-approximation方式。 </p>
-<p><img src="/2020/05/03/static-analysis-1/%E6%88%AA%E5%B1%8F2020-05-03%20%E4%B8%8B%E5%8D%889.00.38.png" alt="截屏2020-05-03 下午9.00.38"></p>
+<p><img src="/2020/05/03/static-analysis-1/%E6%88%AA%E5%B1%8F2020-05-03%20%E4%B8%8B%E5%8D%889.00.38.png" alt="截屏2020-05-03 下午9.00.38 " style="zoom:50%;"></p>
 <blockquote>
 <p>每一个语句， 与control flow 构成了真正的程序。 将两者抽象，就讲整个程序抽象了。</p>
 </blockquote>
