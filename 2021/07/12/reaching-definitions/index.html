@@ -2,7 +2,18 @@
 <p><img src="/2021/07/12/reaching-definitions/image-20210712192406787.png" alt="image-20210712192406787" style="zoom:40%;"></p>
 <p>As shown in the Figure 2.1, we can see that the node <code>q1</code> there are two possibilities for the variable <code>y</code>, either it was modified using the action from <code>q_start</code> to <code>q1</code>, or the action <code>q3</code> to <code>q1</code>.</p>
 <p>For the variables <code>x</code> there are also two possibilities: either the action from <code>q3</code> to <code>q1</code>, or it has not been modified at all and hence it  has <code>retained its original value</code>.</p>
-<h2 id="Analysis-assignments"><a href="#Analysis-assignments" class="headerlink" title="Analysis assignments"></a>Analysis assignments</h2></div></div></div></div></div><div id="footer">© <a href="../../../../." rel="nofollow">PenLab.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a> Theme<a target="_blank" href="https://github.com/7ye/maupassant-hexo"> Maupassant.</a></div><a id="back_to_top" href="javascript:void(0)" class="back_to_top"><span>△</span></a><script type="text/javascript" src="../../../../js/totop.js?v=undefined"></script><script>function auto_code_fit(){
+<h2 id="Analysis-assignments"><a href="#Analysis-assignments" class="headerlink" title="Analysis assignments"></a>Analysis assignments</h2><ul>
+<li><p>Variable: <img src="/2021/07/12/reaching-definitions/image-20210715191536593.png" alt="image-20210715191536593"></p>
+</li>
+<li><p>Array: <img src="/2021/07/12/reaching-definitions/image-20210715191551279.png" alt="image-20210715191551279"></p>
+</li>
+</ul>
+<p>the q means a program point on the graph Q. and there has an edge with an action \alpha:  <img src="/2021/07/12/reaching-definitions/image-20210715191717541.png" alt="image-20210715191717541"></p>
+<p>so the variable y in the Figure 2.1 can be represented as the triple: </p>
+<p> <img src="/2021/07/12/reaching-definitions/image-20210715191939568.png" alt="image-20210715191939568">: y is modified by the action labelling the edge from q2 to q3.<img src="/2021/07/12/reaching-definitions/image-20210715192150692.png" alt="image-20210715192150692"></p>
+<p>: symbol ‘?’ means retaining its initial value.</p>
+<p><img src="/2021/07/12/reaching-definitions/image-20210715192357776.png" alt="image-20210715192357776" style="zoom:60%;"></p>
+<h2 id="What-is-defined-on-a-path"><a href="#What-is-defined-on-a-path" class="headerlink" title="What is defined on a path"></a>What is defined on a path</h2><h2 id="Constraints-for-Reaching-Definitions"><a href="#Constraints-for-Reaching-Definitions" class="headerlink" title="Constraints for Reaching Definitions"></a>Constraints for Reaching Definitions</h2><h2 id="Solving-the-constraints"><a href="#Solving-the-constraints" class="headerlink" title="Solving the constraints"></a>Solving the constraints</h2><h2 id="Solutions-summarise-the-path"><a href="#Solutions-summarise-the-path" class="headerlink" title="Solutions summarise the path"></a>Solutions summarise the path</h2></div></div></div></div></div><div id="footer">© <a href="../../../../." rel="nofollow">PenLab.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a> Theme<a target="_blank" href="https://github.com/7ye/maupassant-hexo"> Maupassant.</a></div><a id="back_to_top" href="javascript:void(0)" class="back_to_top"><span>△</span></a><script type="text/javascript" src="../../../../js/totop.js?v=undefined"></script><script>function auto_code_fit(){
   if($(".highlight").length != 0){
     var pc_width = $(".post-content").width();
     $(".highlight .code").find("pre").width((pc_width-70)+"px");

@@ -44,26 +44,44 @@
 <p><img src="/2020/11/14/PHP-Static-Analysis-Theory/image-20201114140707691.png" alt="image-20201114140707691 " style="zoom:50%;"></p>
 <p>这个总的算法，输入为一个基本块，初始一个<code>state</code> 用来初始化块中变量状态(<code>x</code>-&gt;<code>x0</code>) 。 并在循环中迭代更新状态，如果遇到return和exit，则为出口；end block（迭代完成）也为出口，过程间分析时遇到<code>exit</code>也为出口。用每一个基本块的simulate后的state做一个summary, 然后返回这个块的summary。</p>
 <p><code>intra-block simulation</code>的关键 问题就是在于如何simulate state， 以下讨论<code>simulation process</code>:</p>
-<p> 先看对语言的建模: </p>
-<p><img src="/2020/11/14/PHP-Static-Analysis-Theory/image-20201114142327873.png" alt="image-20201114142327873 " style="zoom:50%;"></p>
+<h2 id="Language：-先对语言进行建模"><a href="#Language：-先对语言进行建模" class="headerlink" title="Language： 先对语言进行建模"></a>Language： 先对语言进行建模</h2><p><img src="/2020/11/14/PHP-Static-Analysis-Theory/image-20201114142327873.png" alt="image-20201114142327873 " style="zoom:50%;"></p>
 <p>在此作者根据需求， 对PHP语言进行建模， 形成了一个子集：</p>
 <ol>
-<li><p>Type: 有字符，布尔，数组，静态无法确认的数据(如形参)。 这里没有对array等复合结构作处理。</p>
+<li><p>变量值类型(Value Type): 字符，布尔，数组，静态无法确认的数据(如形参) </p>
 </li>
-<li><p>Const: 有字符，数字，true, false, null</p>
+<li><p>常量值类型(Constant): 字符串，数字，true, false, null</p>
 </li>
-<li><p>L-val: 左值，这里有variable x, 实参，array等复合结构 </p>
+<li><p>L-val(location value)，这里有variable x, 实参，array </p>
 </li>
-<li><p>Expr：表达式包含前两种， 另外还有表达式的一元操作二元操作。最后一个是type cast类型转换。</p>
+<li><p>表达式(Expression)：常量表达式，变量表达式， 二元操作表达式， 一元操作表达式， 表达式类型转化。 </p>
 </li>
-<li><p>Stmt: statement的话就是单一表达式给左值， 过程给左值， return, exit跟include。</p>
+<li><p>语句(Statement):  赋值语句(表达式运算)，赋值语句(过程调用) ，返回值语句return, 退出语句exit，包含语句include。</p>
 <p>其中提到了，include这种statement是scripting language所特有的(which allows prorammers to dynamically insert code into the program)。</p>
 </li>
 </ol>
-<p>状态转化就是从L(第一行)到表示的值(最后一行)的映射过程。</p>
+<h2 id="Simulation-State-Memory-Location-gt-Value"><a href="#Simulation-State-Memory-Location-gt-Value" class="headerlink" title="Simulation State(Memory Location -&gt; Value)"></a>Simulation State(Memory Location -&gt; Value)</h2><p><code>Simulation State</code> 是一个映射， 此映射: Memory Location-&gt;their value representations, 此处的<code>memory location</code> 指的是一个<code>program variable</code>(e.g., x), 或者<code>a hash table accessed via another location</code>（e.g. x[key]).</p>
+<p><img src="/2020/11/14/PHP-Static-Analysis-Theory/image-20210713163228163.png" alt="image-20210713163228163" style="zoom:50%;"></p>
+<blockquote>
+<p>The simulation state maps memory locations to their value representations</p>
+<p><img src="/2020/11/14/PHP-Static-Analysis-Theory/image-20210715164509813.png" alt="image-20210715164509813" style="zoom:50%;"></p>
+</blockquote>
+<p>图(a)是完整的表述。这一段就是形成一个Location到value的映射。</p>
 <p><img src="/2020/11/14/PHP-Static-Analysis-Theory/image-20201114145427950.png" alt="image-20201114145427950 " style="zoom:50%;"></p>
-<p>来看值表示，在每一个function中从入口出找初始值Lo(范围是Loc)， 然后这些值可以表示为三类分别是(String, Boolean和Integer)， 其中，String是最基本的类型，也是我们关注的类型。 他由一些列的segment为元素组成，segment代表的可以是string, 也可以是a set of memory location（contains(o)）。</p>
-<p>每个Lo就是一个Loc-&gt;Value的过程。有string, boolean, integer, Init-Values, unknow五种结果。(这个模型看着还是有点乱啊）。</p>
+<p>在开始分析的时候， Loc会被初始化为一个<code>L0</code>, 组成了simulation的初始状态集合。然后迭代value， 这里的value分为三类，具体看图(a)中的value representation部分，可以表示为三类分别是(String, Boolean和Integer)。</p>
+<ul>
+<li><p>String:</p>
+<p>String是最基本的类型，也是我们关注的类型。modeling string 的精确程度，直接影响了分析的精确性。</p>
+<p>作者认为，<code>modeling concatenation well enables an analysis to better understand information flow in a script</code>. 举例子来说，就像用户输入的GET, POST会拿来拼接SQL语句，SQL查询结果又会拼接到HTML中， 这是常见的动态web操作。因此，作者将<code>string values are represented as an ordered concatenation of string segments,.</code></p>
+<p><img src="/2020/11/14/PHP-Static-Analysis-Theory/image-20210713162322867.png" alt="image-20210713162322867" style="zoom:67%;"></p>
+</li>
+<li><p>Boolean:</p>
+</li>
+</ul>
+<ul>
+<li><p>Integer:</p>
+<p>Support track integer constants and binary and unary operations between them. We also support type cast from integers to Boolean and string values.</p>
+</li>
+</ul>
 <h3 id="Locations和L-val转化规则"><a href="#Locations和L-val转化规则" class="headerlink" title="Locations和L-val转化规则"></a>Locations和L-val转化规则</h3><p>这里在解释L-val, 首先看模型：</p>
 <p><img src="/2020/11/14/PHP-Static-Analysis-Theory/image-20201114152059860.png" alt="image-20201114152059860 " style="zoom:50%;"></p>
 <p>如上面对Lv的规则的定义， var, arg,dim三种(注意当时的文章都不考虑OO)。</p>
@@ -78,8 +96,15 @@
 <h3 id="Exp转化规则"><a href="#Exp转化规则" class="headerlink" title="Exp转化规则"></a>Exp转化规则</h3><p><img src="/2020/11/14/PHP-Static-Analysis-Theory/image-20201114154757715.png" alt="image-20201114154757715 " style="zoom:50%;"></p>
 <p>因为脚本语言是一种动态类型， 在运行解释器会选择当前运算最适合的规则(弱类型)。那么就带了了类型转化问题。</p>
 <p><img src="/2020/11/14/PHP-Static-Analysis-Theory/image-20201114154900851.png" alt="image-20201114154900851 " style="zoom:50%;"></p>
-<p>(模型啥的刚不动了，等有空继续)</p>
-<h3 id="Statements转化规则"><a href="#Statements转化规则" class="headerlink" title="Statements转化规则"></a>Statements转化规则</h3></div></div></div></div></div><div id="footer">© <a href="../../../../." rel="nofollow">PenLab.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a> Theme<a target="_blank" href="https://github.com/7ye/maupassant-hexo"> Maupassant.</a></div><a id="back_to_top" href="javascript:void(0)" class="back_to_top"><span>△</span></a><script type="text/javascript" src="../../../../js/totop.js?v=undefined"></script><script>function auto_code_fit(){
+<h3 id="Statements转化规则"><a href="#Statements转化规则" class="headerlink" title="Statements转化规则"></a>Statements转化规则</h3><p>赋值有两种： 表达式计算赋值，和过程间调用赋值。 先看表达式计算如何被model:</p>
+<p><img src="/2020/11/14/PHP-Static-Analysis-Theory/image-20210715171024725.png" alt="image-20210715171024725"></p>
+<p>Assignment rule：</p>
+<ol>
+<li>resolves the left-hand side into a memory location l. (上式lv=&gt;l)</li>
+<li>evaluates the right-hand side into a value v.(上式e=&gt;v)</li>
+</ol>
+<p>然后根据rule update the simulation state after the assignment maps <code>l</code> to the new value <code>v</code>。 </p>
+</div></div></div></div></div><div id="footer">© <a href="../../../../." rel="nofollow">PenLab.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a> Theme<a target="_blank" href="https://github.com/7ye/maupassant-hexo"> Maupassant.</a></div><a id="back_to_top" href="javascript:void(0)" class="back_to_top"><span>△</span></a><script type="text/javascript" src="../../../../js/totop.js?v=undefined"></script><script>function auto_code_fit(){
   if($(".highlight").length != 0){
     var pc_width = $(".post-content").width();
     $(".highlight .code").find("pre").width((pc_width-70)+"px");

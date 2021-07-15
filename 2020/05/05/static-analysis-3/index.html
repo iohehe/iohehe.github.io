@@ -1,29 +1,35 @@
-<!DOCTYPE html><html lang="null"><head><meta name="generator" content="Hexo 3.9.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="renderer" content="webkit"><title>南大静态分析-3 - PenLab</title><meta name="description" content="03 Data Flow Analysis I课程链接Overiew of Data Flow Analysis  12:05Preliminaries of Data Flow Analysis 23:10Notations for Transfer Function’s ConstraintsNotations for Control Flows’s Constraints 34:40Reac"><link type="text/css" rel="stylesheet" href="../../../../css/pure.css?v=undefined"><link type="text/css" rel="stylesheet" href="../../../../css/style.css?v=undefined"><script type="text/javascript" src="//cdn.bootcss.com/jquery/1.11.0/jquery.min.js"></script><link rel="alternate" type="application/atom+xml" href="../../../../atom.xml"></head></html><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">南大静态分析-3</h1><a id="logo" href="../../../../.">PenLab</a></div><div id="nav-menu"><div class="bitcron_nav"><div class="site_nav_wrap"><div class="site_nav"></div></div></div></div></div><div id="layout" class="pure-g"><div class="pure-u-1"><div class="content_container"><div class="post"><!--h1.post-title= page.title--><!--br--><!--文章内容--><div class="post-content"><h1 id="03-Data-Flow-Analysis-I"><a href="#03-Data-Flow-Analysis-I" class="headerlink" title="03 Data Flow Analysis I"></a>03 Data Flow Analysis I</h1><p><a href="https://www.bilibili.com/video/BV1oE411K79d" target="_blank" rel="noopener">课程链接</a></p>
+<!DOCTYPE html><html lang="null"><head><meta name="generator" content="Hexo 3.9.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="renderer" content="webkit"><title>南大静态分析-3 - PenLab</title><meta name="description" content="03 Data Flow Analysis I课程链接Overiew of Data Flow Analysis  12:05Preliminaries of Data Flow Analysis 23:10Notations for Transfer Function’s Constraints Notations for Control Flows’s Constraints 34:40Rea"><link type="text/css" rel="stylesheet" href="../../../../css/pure.css?v=undefined"><link type="text/css" rel="stylesheet" href="../../../../css/style.css?v=undefined"><script type="text/javascript" src="//cdn.bootcss.com/jquery/1.11.0/jquery.min.js"></script><link rel="alternate" type="application/atom+xml" href="../../../../atom.xml"></head></html><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">南大静态分析-3</h1><a id="logo" href="../../../../.">PenLab</a></div><div id="nav-menu"><div class="bitcron_nav"><div class="site_nav_wrap"><div class="site_nav"></div></div></div></div></div><div id="layout" class="pure-g"><div class="pure-u-1"><div class="content_container"><div class="post"><!--h1.post-title= page.title--><!--br--><!--文章内容--><div class="post-content"><h1 id="03-Data-Flow-Analysis-I"><a href="#03-Data-Flow-Analysis-I" class="headerlink" title="03 Data Flow Analysis I"></a>03 Data Flow Analysis I</h1><p><a href="https://www.bilibili.com/video/BV1oE411K79d" target="_blank" rel="noopener">课程链接</a></p>
 <blockquote>
 <ol>
 <li><p>Overiew of Data Flow Analysis  12:05</p>
 </li>
 <li><p>Preliminaries of Data Flow Analysis 23:10</p>
 <ol>
-<li>Notations for Transfer Function’s Constraints</li>
+<li>Notations for Transfer Function’s Constraints </li>
 <li>Notations for Control Flows’s Constraints 34:40</li>
 </ol>
 </li>
 <li><p>Reaching Definitions Analysis 39:10</p>
-<p>休息至  56:40</p>
+<p>休息至  56:25</p>
 </li>
 </ol>
 </blockquote>
-<h1 id="0x01-Data-Flow-Analysis"><a href="#0x01-Data-Flow-Analysis" class="headerlink" title="0x01 Data Flow Analysis"></a>0x01 Data Flow Analysis</h1><p>数据流分析，描述的是<code>How Data Flows on CFG(数据在控制流上的传递情况)</code>。我们关注的是<code>application-specific Data</code>(数据)，不同场景的数据流分析需要关注的数据抽象(data abstraction)不同，其安全策略也不同(flow safe-approximation strategies)， 那么根据安全策略，也会制定相应的转化函数(transfer functions)和边(control-flow handlings)。</p>
+<h1 id="0x01-Data-Flow-Analysis-How-data-flows-on-CFG"><a href="#0x01-Data-Flow-Analysis-How-data-flows-on-CFG" class="headerlink" title="0x01 Data Flow Analysis(How data flows on CFG)"></a>0x01 Data Flow Analysis(How data flows on CFG)</h1><p>数据流分析，描述的是<code>How Data Flows on CFG(数据在控制流上的传递情况)</code>。</p>
+<p>什么样的DATA: <code>application-specific Data</code>。</p>
+<p>Flow：</p>
+<p>即在不同场景的数据流分析需要关注的数据抽象(data abstraction)不同，其安全策略也不同(flow safe-approximation strategies)， 那么根据安全策略，也会制定相应的转化函数(transfer functions)和边(control-flow handlings)。</p>
+<p>Analysis:</p>
 <blockquote>
 <p>May analysis:  outputs information that may be true (over-approximation). 可能的都报出来</p>
 <p>Must analysis: outputs information that must be true (under-approximation). 报出来的必须对</p>
 <p>两者应用于不同场景，都是为了结果是正确的。以结果的正确为目的，称之为safe-approximation。</p>
 </blockquote>
 <p><img src="/2020/05/05/static-analysis-3/%E6%88%AA%E5%B1%8F2020-05-09%20%E4%B8%8B%E5%8D%885.10.09.png" alt="截屏2020-05-09 下午5.10.09 " style="zoom:90%;"></p>
-<p>所以对于数据流分析来说：</p>
+<p>所以对于数据流分析来说：</p>
 <p><img src="/2020/05/05/static-analysis-3/image-20210712194843394.png" alt="image-20210712194843394" style="zoom:50%;"></p>
 <p>不同的数据流分析应用， 关注的data就不同，其safe-approximation策略就不同(transfer functions 和control-flow handlings不同)。</p>
+<h2 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h2><p><img src="/2020/05/05/static-analysis-3/image-20210714194847170.png" alt="image-20210714194847170" style="zoom:50%;"></p>
+<p>数据流分析就是<code>application-specific Data</code>(不同的数据抽象策略)，如何在CFG上(<code>a program</code>)沿着点(<code>Transfer function</code>)和Edges(<code>control flows</code>)流动的评估(<code>safe-approximation</code>)</p>
 <h1 id="0x02-Prelimiaries-of-Data-Flow-Analysis"><a href="#0x02-Prelimiaries-of-Data-Flow-Analysis" class="headerlink" title="0x02 Prelimiaries of Data Flow Analysis"></a>0x02 Prelimiaries of Data Flow Analysis</h1><h2 id="Input-and-Output-States"><a href="#Input-and-Output-States" class="headerlink" title="Input and Output States"></a>Input and Output States</h2><p>控制流图上无非有三种情形： 顺序、 分支、汇聚。 要在控制流分析数据，需要了然数据在控制流上的传递情况。那么数据如何变化的呢。</p>
 <p><img src="/2020/05/05/static-analysis-3/%E6%88%AA%E5%B1%8F2020-05-05%20%E4%B8%8B%E5%8D%888.47.16.png" alt="截屏2020-05-05 下午8.47.16 " style="zoom:50%;"></p>
 <p>一条statement, 执行前的状态是<code>IN[s1]</code>， 执行后的状态是 <code>OUT[s1]</code>。</p>
@@ -53,14 +59,20 @@
 <p>Among BBs: 进入状态是s1的状态， 出状态就是sn的状态。</p>
 <p><img src="/2020/05/05/static-analysis-3/%E6%88%AA%E5%B1%8F2020-05-09%20%E4%B8%8B%E5%8D%885.23.31.png" alt="截屏2020-05-09 下午5.23.31 " style="zoom:50%;"></p>
 <p>定义正向、反向的BBs间的Control Flow’s Constraints。正反各有两条，第一条是定义出口， 正向为例。OUT[B]是出口， fb这个从右往左，依次连接基本块内每一条语句的转换函数(注意transfer functions时从右往左连接)。得到出口处的转化规则fb，以IN[B]为参数即可。而第二条则是定义入口， 入口处分支汇合的情况，因此我们需要^上这些OUT[P]。逆向反着来，同样的原理。</p>
-<h1 id="0x03-Reaching-Definitions-Analysis"><a href="#0x03-Reaching-Definitions-Analysis" class="headerlink" title="0x03 Reaching Definitions Analysis"></a>0x03 Reaching Definitions Analysis</h1><p><img src="/2020/05/05/static-analysis-3/%E6%88%AA%E5%B1%8F2020-05-09%20%E4%B8%8B%E5%8D%885.35.26.png" alt="截屏2020-05-09 下午5.35.26"></p>
-<p> 如图， 假设在d 这个 <code>program point</code>处有一个变量v的定义操作，那么在p到q这条执行路径上，没有对变量v做重新定义。</p>
+<h1 id="0x03-Reaching-Definitions-Analysis"><a href="#0x03-Reaching-Definitions-Analysis" class="headerlink" title="0x03 Reaching Definitions Analysis"></a>0x03 Reaching Definitions Analysis</h1><p><img src="/2020/05/05/static-analysis-3/%E6%88%AA%E5%B1%8F2020-05-09%20%E4%B8%8B%E5%8D%885.35.26.png" alt="截屏2020-05-09 下午5.35.26 " style="zoom:80%;"></p>
+<p>Reaching Definitions, 即一个definitions在传播路径上能不能reaches到某一点。 </p>
 <p><img src="/2020/05/05/static-analysis-3/%E6%88%AA%E5%B1%8F2020-05-09%20%E4%B8%8B%E5%8D%885.34.19.png" alt="截屏2020-05-09 下午5.34.19"></p>
+<p>一条reaching definition满足三点：</p>
+<ol>
+<li>路径上有一个point p, 定义了v</li>
+<li>p有一条路径流向q</li>
+<li>改路径上， v没有被重新定义</li>
+</ol>
 <blockquote>
-<p>Reaching Definitions 是一个may analysis, 定义上没有说must, 那就是over-approximation</p>
+<p>Reaching Definitions 是一个may analysis, 定义上没有说must, 那就是over-approximation。</p>
 </blockquote>
 <p>关注的数据是-&gt; definitions</p>
-<p><img src="/2020/05/05/static-analysis-3/%E6%88%AA%E5%B1%8F2020-05-09%20%E4%B8%8B%E5%8D%888.04.45.png" alt="截屏2020-05-09 下午8.04.45"></p>
+<p><img src="/2020/05/05/static-analysis-3/%E6%88%AA%E5%B1%8F2020-05-09%20%E4%B8%8B%E5%8D%888.04.45.png" alt="截屏2020-05-09 下午8.04.45 " style="zoom:50%;"></p>
 <p>假设程序中有100个definitions，抽象为100个比特位。</p>
 <p>有了抽象，我们就要有每一个program point 的状态规则，设计transfer Function，继而设计control flow。</p>
 <blockquote>
@@ -100,7 +112,7 @@
 </ul>
 <p><img src="/2020/05/05/static-analysis-3/%E6%88%AA%E5%B1%8F2020-05-09%20%E4%B8%8B%E5%8D%889.10.53.png" alt="截屏2020-05-09 下午9.10.53 " style="zoom:50%;"></p>
 <p>第一轮迭代：</p>
-<p><img src="/2020/05/05/static-analysis-3/../../Desktop/%E6%88%AA%E5%B1%8F2020-05-09%20%E4%B8%8B%E5%8D%889.23.22.png" alt="截屏2020-05-09 下午9.23.22"></p>
+<p><img src="/2020/05/05/static-analysis-3/image-20210714204736937.png" alt="image-20210714204736937" style="zoom:50%;"></p>
 <ol>
 <li><p>左上角是我们设计的数据抽象，表示definitions的状态。</p>
 </li>
@@ -108,7 +120,7 @@
 </li>
 <li><p>左下角是我们的transfer function 形式化描述。 </p>
 </li>
-<li><p>根据transfer function开始第一轮迭代。(合并IN-&gt;加入新的definition-&gt;删除其他相同变量definition定义的位置)</p>
+<li><p>根据transfer function开始第一轮迭代。(合并IN-&gt;加入新的d efinition-&gt;删除其他相同变量definition定义的位置)</p>
 </li>
 <li><p>如果有任何一个OUT变化了，继续迭代</p>
 <p><img src="/2020/05/05/static-analysis-3/%E6%88%AA%E5%B1%8F2020-05-09%20%E4%B8%8B%E5%8D%889.28.22.png" alt="截屏2020-05-09 下午9.28.22 " style="zoom:50%;"></p>
@@ -124,14 +136,26 @@
 <blockquote>
 <p>输入一样的， 输出也是一样的</p>
 </blockquote>
-<p>所以可以看出： 每一个<code>program point</code>最后都会关联一个<code>data-flow value</code>，这个<code>data-flow value</code>就是在这一点观察到的状态上的<code>抽象</code>。(这里是一个definition 能否reach)</p>
+<p>所以可以看出： 每一个<code>program point</code>最后都会关联一个<code>data-flow value</code>，这个<code>data-flow value</code>就是在这一点观察到的状态上的<code>抽象</code>。</p>
+<ul>
+<li>Data Abstraction: 一个definition 能否reach</li>
+</ul>
 <p><img src="/2020/05/05/static-analysis-3/%E6%88%AA%E5%B1%8F2020-05-09%20%E4%B8%8B%E5%8D%889.35.09.png" alt="截屏2020-05-09 下午9.35.09"></p>
 <p>如何得到这个状态：</p>
 <p><img src="/2020/05/05/static-analysis-3/%E6%88%AA%E5%B1%8F2020-05-09%20%E4%B8%8B%E5%8D%889.35.56.png" alt="截屏2020-05-09 下午9.35.56"></p>
-<p>数据流就是不停的迭代transfer functin  和 control flow handling，直到停止找到一个结果。</p>
-<h2 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h2><p><img src="/2020/05/05/static-analysis-3/%E6%88%AA%E5%B1%8F2020-05-09%20%E4%B8%8B%E5%8D%889.44.19.png" alt="截屏2020-05-09 下午9.44.19"></p>
-<p>因为分析目标程序statements固定，那么gens和kills固定。OUT不会缩小。</p>
-<p>算法最终会到达一个不动点。</p>
+<p>迭代数据流分析就是不停的迭代<code>directed constraints</code>(transfer functin 和 control flow handling)，直到停止找到solutaion。</p>
+<h2 id="算法为什么会停"><a href="#算法为什么会停" class="headerlink" title="算法为什么会停"></a>算法为什么会停</h2><p><img src="/2020/05/05/static-analysis-3/%E6%88%AA%E5%B1%8F2020-05-09%20%E4%B8%8B%E5%8D%889.44.19.png" alt="截屏2020-05-09 下午9.44.19 " style="zoom:50%;"></p>
+<p>改算法最重要的部分，就是他的transfer function, 其由四部分组成:</p>
+<ul>
+<li>输入: IN[S]</li>
+<li>输出: OUT[S]</li>
+<li>kill_s</li>
+<li>gen_s</li>
+</ul>
+<p>这里，由于gen和kill都是由statement的性质决定的， 所以statement集合定了，gen和kill的动作就定了。 </p>
+<p>而变化的就是IN和OUT了。 如果一轮迭代中，IN新加入了内容(more facts)，这些新的内容流入S后只有两种结果： 1. 被kill了 2. survivor存活了。 那么存活的内容就会被加入到OUT中。</p>
+<p><code>而OUT，不会变小了</code>, 感觉这是理解的关键，因为如果进入了out, 就证明没有被kill掉，而每一轮kill的都是相同的内容。那么既然这一轮survivor了，那么就不会再被kill掉了。 所以<code>OUT不会缩小， 只会变大</code>。</p>
+<p>那么在迭代数据流中， 每一个<code>OUT都没有变化，算法就停止了</code>， 可以看到OUT就是在格上往上爬，最终一定会到达一个不懂点。</p>
 </div></div></div></div></div><div id="footer">© <a href="../../../../." rel="nofollow">PenLab.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a> Theme<a target="_blank" href="https://github.com/7ye/maupassant-hexo"> Maupassant.</a></div><a id="back_to_top" href="javascript:void(0)" class="back_to_top"><span>△</span></a><script type="text/javascript" src="../../../../js/totop.js?v=undefined"></script><script>function auto_code_fit(){
   if($(".highlight").length != 0){
     var pc_width = $(".post-content").width();

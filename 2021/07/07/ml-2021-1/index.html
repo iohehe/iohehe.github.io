@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="null"><head><meta name="generator" content="Hexo 3.9.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="renderer" content="webkit"><title>台大机器学习2021-1 - PenLab</title><meta name="description" content="从上次南大静态分析搞完之后，就说博客再也不写学习笔记了。 于是，我就很久没有更新了…算了， 还是把博客搞成学习笔记本好了…xD李宏毅老师的机器学习课程非常的棒，我一定要好好学习….定义对于机器学习可以理解成：其实就是约等于一个找函数的能力， 如：语音辨识(Image Recognition)：这里的声音信号做为输入， 而对应的文字作为输出。 这种函数会非常的复杂， 因此我们期望通过机器把它找出来。"><link type="text/css" rel="stylesheet" href="../../../../css/pure.css?v=undefined"><link type="text/css" rel="stylesheet" href="../../../../css/style.css?v=undefined"><script type="text/javascript" src="//cdn.bootcss.com/jquery/1.11.0/jquery.min.js"></script><link rel="alternate" type="application/atom+xml" href="../../../../atom.xml"></head></html><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">台大机器学习2021-1</h1><a id="logo" href="../../../../.">PenLab</a></div><div id="nav-menu"><div class="bitcron_nav"><div class="site_nav_wrap"><div class="site_nav"></div></div></div></div></div><div id="layout" class="pure-g"><div class="pure-u-1"><div class="content_container"><div class="post"><!--h1.post-title= page.title--><!--br--><!--文章内容--><div class="post-content"><p>从上次南大静态分析搞完之后，就说博客再也不写学习笔记了。 于是，我就很久没有更新了…</p>
+<!DOCTYPE html><html lang="null"><head><meta name="generator" content="Hexo 3.9.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="renderer" content="webkit"><title>台大深度学习2021-1 - PenLab</title><meta name="description" content="从上次南大静态分析搞完之后，就说博客再也不写学习笔记了。 于是，我就很久没有更新了…算了， 还是把博客搞成学习笔记本好了…xD李宏毅老师的机器学习课程非常的棒，我一定要好好学习….定义对于机器学习可以理解成：其实就是约等于一个找函数的能力， 如：语音辨识(Image Recognition)：这里的声音信号做为输入， 而对应的文字作为输出。 这种函数会非常的复杂， 因此我们期望通过机器把它找出来。"><link type="text/css" rel="stylesheet" href="../../../../css/pure.css?v=undefined"><link type="text/css" rel="stylesheet" href="../../../../css/style.css?v=undefined"><script type="text/javascript" src="//cdn.bootcss.com/jquery/1.11.0/jquery.min.js"></script><link rel="alternate" type="application/atom+xml" href="../../../../atom.xml"></head></html><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">台大深度学习2021-1</h1><a id="logo" href="../../../../.">PenLab</a></div><div id="nav-menu"><div class="bitcron_nav"><div class="site_nav_wrap"><div class="site_nav"></div></div></div></div></div><div id="layout" class="pure-g"><div class="pure-u-1"><div class="content_container"><div class="post"><!--h1.post-title= page.title--><!--br--><!--文章内容--><div class="post-content"><p>从上次南大静态分析搞完之后，就说博客再也不写学习笔记了。 于是，我就很久没有更新了…</p>
 <p>算了， 还是把博客搞成学习笔记本好了…xD</p>
 <p>李宏毅老师的机器学习课程非常的棒，我一定要好好学习….</p>
 <h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h2><p>对于机器学习可以理解成：</p>
@@ -19,12 +19,12 @@
 <p>等等…</p>
 <hr>
 <h3 id="专有名词介绍"><a href="#专有名词介绍" class="headerlink" title="专有名词介绍"></a>专有名词介绍</h3><ul>
-<li>Regression: The function outputs a scalar.</li>
+<li><code>Regression</code>: The function outputs a scalar.</li>
 </ul>
 <p>  <img src="/2021/07/07/ml-2021-1/image-20210707204151325.png" alt="image-20210707204151325" style="zoom:80%;"></p>
 <p> 如上图所示，是一个回归(Regression)任务，此函数输入是今天已知的与输出有关的各种参数， 输出是对于明天PM2.5指数的预测。</p>
 <ul>
-<li>Classification: Given options(classes), the function outputs the correct one.</li>
+<li><code>Classification</code>: Given options(classes), the function outputs the correct one.</li>
 </ul>
 <p>Classification是做选择题:</p>
 <p><img src="/2021/07/07/ml-2021-1/image-20210707204729572.png" alt="image-20210707204729572" style="zoom:80%;"></p>
@@ -59,7 +59,7 @@
 <p>这种依据绝对值求Loss的方法叫做<code>MAE</code>, 而使用平方和求Loss的方法叫做<code>MSE</code>:</p>
 <p><img src="/2021/07/07/ml-2021-1/image-20210708205441134.png" alt="image-20210708205441134" style="zoom:25%;"></p>
 <p>两种求误差的方法根据需求选择。</p>
-<p><img src="/2021/07/07/ml-2021-1/image-20210708205619696.png" alt="image-20210708205619696" style="zoom:50%;"></p>
+<p><img src="/2021/07/07/ml-2021-1/image-20210708205619696.png" alt="image-20210708205619696" style="zoom:30%;"></p>
 <p>经过作者对Model进行一系列的调参后的真实结果， 在穷举各种<code>w</code>和<code>b</code>后，使用真实数据计算出来的Loss结果。各种组合的Loss表示为上边的等高线图，越偏红色， 表示计算出的Loss越大， <code>w</code>跟<code>b</code>放入mdoel，效果越差。可以看到估测最准的大约在<code>w</code>在1，b在100左右。</p>
 <h2 id="3-Optimization"><a href="#3-Optimization" class="headerlink" title="3. Optimization"></a>3. Optimization</h2><p> 第三步是解一个最佳化的问题， 找到一组最好的<code>w</code>跟<code>b</code>(<code>w*</code>, <code>b*</code>)，可以让Loss的值最小 ：</p>
 <p><img src="/2021/07/07/ml-2021-1/image-20210709202254891.png" alt="image-20210709202254891" style="zoom:25%;"></p>
