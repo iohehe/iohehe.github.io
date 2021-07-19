@@ -93,9 +93,11 @@
 <p><img src="/2020/11/14/PHP-Static-Analysis-Theory/image-20201114153406937.png" alt="image-20201114153406937 " style="zoom:50%;"></p>
 <p>他们都指向了一个unique location。</p>
 <p>第三条来用dim的规则定义处理。此时根据横线上方两条条件规则(e是名e’是键)，分别映射到_POST0和[‘userid’]那么他将映射到L[阿尔法]中， 即_POST[userid]0。</p>
+<hr>
 <h3 id="Exp转化规则"><a href="#Exp转化规则" class="headerlink" title="Exp转化规则"></a>Exp转化规则</h3><p><img src="/2020/11/14/PHP-Static-Analysis-Theory/image-20201114154757715.png" alt="image-20201114154757715 " style="zoom:50%;"></p>
 <p>因为脚本语言是一种动态类型， 在运行解释器会选择当前运算最适合的规则(弱类型)。那么就带了了类型转化问题。</p>
 <p><img src="/2020/11/14/PHP-Static-Analysis-Theory/image-20201114154900851.png" alt="image-20201114154900851 " style="zoom:50%;"></p>
+<hr>
 <h3 id="Statements转化规则"><a href="#Statements转化规则" class="headerlink" title="Statements转化规则"></a>Statements转化规则</h3><p>赋值有两种： 表达式计算赋值，和过程间调用赋值。 先看表达式计算如何被model:</p>
 <p><img src="/2020/11/14/PHP-Static-Analysis-Theory/image-20210715171024725.png" alt="image-20210715171024725"></p>
 <p>Assignment rule：</p>
@@ -104,6 +106,44 @@
 <li>evaluates the right-hand side into a value v.(上式e=&gt;v)</li>
 </ol>
 <p>然后根据rule update the simulation state after the assignment maps <code>l</code> to the new value <code>v</code>。 </p>
+<hr>
+<h3 id="Block-summary"><a href="#Block-summary" class="headerlink" title="Block summary"></a>Block summary</h3><p>经过以上的转化后， 将块内信息转化为block summary，一个块summary是由六元组组成:</p>
+<p><img src="/2020/11/14/PHP-Static-Analysis-Theory/image-20210719203339317.png" alt="image-20210719203339317"></p>
+<ul>
+<li>Error set: 在进入BB时，每一个variables必须是sanitized的状态。</li>
+<li><p>Definitions: the set of memory locations defined in the current block. </p>
+</li>
+<li><p>Value flow:  the set of pairs of locations (l1, l2), l1 on the entry becomes a substring of l2 on exit.</p>
+</li>
+<li>Termination predicate: 块中是否含有程序终结, true if the current block contains a exit statement, or if it calls a function that causes the progmra to terminate.</li>
+<li>Return value:  返回值， records the representation for the return value if any, undefined otherwise. </li>
+<li>Untaint set:  向每个后继块传递当前的未过滤变量集合(由于有分支的存在，故每一个后继得到的summary可能不同)</li>
+</ul>
+<h3 id="Intraprocedural-Analysis"><a href="#Intraprocedural-Analysis" class="headerlink" title="Intraprocedural Analysis"></a>Intraprocedural Analysis</h3><p><img src="/2020/11/14/PHP-Static-Analysis-Theory/image-20210719204831765.png" alt="image-20210719204831765"></p>
+<p>一个过程内的抽象，是基于他的块抽象的：</p>
+<ul>
+<li>Error set: the set of <code>memory locations(variables, parameters, and hash access)</code>, 因为查的是SQL注入， 所以当其中一个memory locations的value流入database query时， 必须有记录他被sanitized了,否则error</li>
+<li>Return set:  the set of parameters or global variables 进入了return value（only string）</li>
+<li>Sanitized values:  the set of parameters or global variables,使用前向数据流可达性分析来探测被过滤输入流入每一个包含return的块。</li>
+<li>Program Exit:  一个指明当前function是否退出程序， 穷举所有CFG可达块。  如果没有return, 此程序就是一个exit function(也不一定，有的分支执行到最后就默认返回null了)</li>
+</ul>
+<h3 id="Interprocedural-Analysis"><a href="#Interprocedural-Analysis" class="headerlink" title="Interprocedural Analysis"></a>Interprocedural Analysis</h3><p>本文的分层次污点分析的最高层， interprocedural层。分析intra的summary, 对于每一个function call点， f(e1…en)分析一下四个方面：</p>
+<ul>
+<li><p>Pre-conditions:  使用error set 证明the set of parameters and global variables在进入该过程时都是安全的</p>
+</li>
+<li><p>Exit condition:  如果进入了一个exit function, 就将之后所有的stmt删除。</p>
+</li>
+<li><p>Post-conditions:  </p>
+</li>
+<li><p>Return value:  </p>
+<p><img src="/2020/11/14/PHP-Static-Analysis-Theory/image-20210719210926117.png" alt="image-20210719210926117"></p>
+</li>
+</ul>
+<p><img src="/2020/11/14/PHP-Static-Analysis-Theory/image-20210719210938703.png" alt="image-20210719210938703"></p>
+<h2 id="ExPERIMENTAL-RESULTS"><a href="#ExPERIMENTAL-RESULTS" class="headerlink" title="ExPERIMENTAL RESULTS"></a>ExPERIMENTAL RESULTS</h2><p><img src="/2020/11/14/PHP-Static-Analysis-Theory/image-20210719211022777.png" alt="image-20210719211022777"></p>
+<p>没有 False Positive, 确定没有误报？</p>
+<h2 id="CASE-STUDY"><a href="#CASE-STUDY" class="headerlink" title="CASE STUDY"></a>CASE STUDY</h2><p><img src="/2020/11/14/PHP-Static-Analysis-Theory/image-20210719211058506.png" alt="image-20210719211058506"></p>
+<p>但是我并没有看到具体的符号执行啊。</p>
 </div></div></div></div></div><div id="footer">© <a href="../../../../." rel="nofollow">PenLab.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a> Theme<a target="_blank" href="https://github.com/7ye/maupassant-hexo"> Maupassant.</a></div><a id="back_to_top" href="javascript:void(0)" class="back_to_top"><span>△</span></a><script type="text/javascript" src="../../../../js/totop.js?v=undefined"></script><script>function auto_code_fit(){
   if($(".highlight").length != 0){
     var pc_width = $(".post-content").width();
