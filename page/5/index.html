@@ -71,143 +71,6 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-static-analysis-4" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2020/05/12/static-analysis-4/" class="article-date">
-  <time class="dt-published" datetime="2020-05-12T12:38:44.000Z" itemprop="datePublished">2020-05-12</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2020/05/12/static-analysis-4/">南大静态分析-4(Live Variables Analysis)</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>前言：</p>
-<p><code>reaching definitions</code>, <code>live variables</code>和<code>avaliable expressions</code>  都是可以表示为对一个<code>bit array</code>（ <code>bit map, bit set, bit string, or bit vector</code>）迭代求解。 如<code>reaching definitions</code>, using a bit for a definition position in the program. 因此这一类问题也称 为<code>Bit vector problems</code><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Data-flow_analysis">https://en.wikipedia.org/wiki/Data-flow_analysis</a>。</p>
-<blockquote>
-<p>Live Variables Analysis:  06:10</p>
-<p>Available Expressions Analysis: </p>
-<p>总结： </p>
-</blockquote>
-<h1 id="Live-Variables-Analysis-活跃变量分析"><a href="#Live-Variables-Analysis-活跃变量分析" class="headerlink" title="Live Variables Analysis(活跃变量分析)"></a>Live Variables Analysis(活跃变量分析)</h1><blockquote>
-<p>May analysis</p>
-</blockquote>
-<p>活跃变量分析， 如果一个变量v在程序点p开始的路径里被使用过，那么在这条路径上，变量v就是一个Live Variables。 这种分析常常用作寄存器优化，将那些从某一程序点不活跃的变量(即之后不再使用的变量)，做为寄存器替换对象。</p>
-<img src="static-analysis-4/%E6%88%AA%E5%B1%8F2020-05-14%20%E4%B8%8B%E5%8D%889.29.10.png" alt="截屏2020-05-14 下午9.29.10 z" style="zoom:50%;" />
-
-<blockquote>
-<ol>
-<li>v在路径上被使用过</li>
-<li>v没有被重定义</li>
-</ol>
-</blockquote>
-<h2 id="目标抽象"><a href="#目标抽象" class="headerlink" title="目标抽象"></a>目标抽象</h2><p>关注的抽象应该是<code>live variables</code>，即活跃变量。我们设立一个数据结构来表示程序中所有的变量活跃状态。</p>
-<img src="static-analysis-4/%E6%88%AA%E5%B1%8F2020-05-14%20%E4%B8%8B%E5%8D%889.30.51.png" alt="截屏2020-05-14 下午9.30.51 " style="zoom:50%;" />
-
-<p>比特位表示状态，比如有100个variables，每一个比特位代表一个变量。形成bit vector, 每一个program point上分配一个(bit vectors)。 有了抽象的状态表示，接下来做safe-approximation制定transfer function 和control flow analysis来操作这些状态位。</p>
-<h2 id="方法设计"><a href="#方法设计" class="headerlink" title="方法设计"></a>方法设计</h2><p>我们的程序在流动之后，如何变换我们的标志位，使得我们得到的结果safe?</p>
-<p>即如何设计transfer function和control flow 合并。</p>
-<h3 id="分析方向"><a href="#分析方向" class="headerlink" title="分析方向"></a>分析方向</h3><p>前向分析和后向分析都是可以的， 但是在live variables的分析中， 我没每个program point的bit vector表示的是路径上所有变量在之后是否被用了，如果是forward分析的话， 从entry点开始向下，我们在每一个program point上不能确定每个variable是否在之后的语句中被use了， 此时如果再往下走，发现某一个variable被use了，那么需要向上传播这个消息来通知之前program point此变量在后边被use了。 但是backward的话，从exit开始进入，先找到的是variable的use点，后找definition信息， 因此变量被use了这个信息就可以随着后向数据流propagate, 从而节省了开销。</p>
-<img src="static-analysis-4/%E6%88%AA%E5%B1%8F2020-05-14%20%E4%B8%8B%E5%8D%889.36.52.png" alt="截屏2020-05-14 下午9.36.52 " style="zoom:50%;" />
-
-<h3 id="汇聚点处理"><a href="#汇聚点处理" class="headerlink" title="汇聚点处理"></a>汇聚点处理</h3><p>看这里在BB[P]处有一个<code>v=3</code> 的表达式，BB[B]不知道。而在BB[S1]处用到了<code>v</code>， 在backward中走到BB[B]，BB[S1]和BB[S2]汇合，看图中抽象公式，要处理在merge处的近似，因为是may analysis所以使用Union。(不放过任何一条path)</p>
-<p>然后就是核心的设计Transfer function：</p>
-<img src="static-analysis-4/%E6%88%AA%E5%B1%8F2020-05-15%20%E4%B8%8B%E5%8D%886.51.57.png" alt="截屏2020-05-15 下午6.51.57 " style="zoom:50%;" />
-
-<p>刚才我们说过， 在此数据流分析中， 我们采用backward, <code>v</code>在BB[S1]中被使用了，且在汇合处，我们做union操作，所以得到有<code>OUT[B] = &#123;v&#125;</code>，现在在程序中， 我们要backward过一个条任意语句(假设Baisc Block中只有一条statement,即以单条statement为分析单位)。我们要设计transfer function，得出上出program proint处的IN[B]，即OUT[B]-&gt;IN[B]。</p>
-<img src="static-analysis-4/%E6%88%AA%E5%B1%8F2020-05-15%20%E4%B8%8B%E5%8D%887.00.47.png" alt="截屏2020-05-15 下午7.00.47 " style="zoom:70%;" />
-
-<p>这里有一个场景，现在<code>v=3</code>寄存 器<code>R</code>中待着，经过我们的<code>live</code>分析，如果走过该点，经过我们设计的transfer function，IN[B] &#x3D; { v }， 那么这个值就在寄存器里待着。如果IN[B] &#x3D; {}，那么就把它从寄存器中拿出。因为我们的目的是分析数据流中，变量的<code>live </code>情况，由前面的定义如果BB[P]处的变量v是live的：</p>
-<ol>
-<li>BB[B]中v被使用过？</li>
-<li>BB[B]中v没有被重新定义？</li>
-</ol>
-<img src="static-analysis-4/%E6%88%AA%E5%B1%8F2020-05-15%20%E4%B8%8B%E5%8D%888.00.26.png" alt="截屏2020-05-15 下午8.00.26 " style="zoom:80%;" />
-
-<p>因为我们是在backward分析IN[B]这个<code>program point</code>的状态，来决定<code>v=3</code>是否被寄存器丢掉，即<code>IN[B]</code>这一点的事关<code>v</code>在未来是否会被使用到。看在第一个情况中，与<code>v</code>无关，但是我们知道OUT[B]这一点我们union出了<code>OUT[B]=&#123;v&#125;</code>，因为是<code>backward</code>分析，即接下来<code>v</code>会被使用到(BB[S1]处)。那么这一点中，<code>v</code>没有被重新定义，那么<code>IN[B]=&#123;v&#125;</code></p>
-<img src="static-analysis-4/%E6%88%AA%E5%B1%8F2020-05-15%20%E4%B8%8B%E5%8D%888.09.19.png" alt="截屏2020-05-15 下午8.09.19 " style="zoom:80%;" />
-
-<p>这里面<code>v</code>被使用了，离着<code>v=3</code>更近，这种情况下，即使<code>OUT[B]=&#123;&#125;</code>，也会有<code>IN[B]=&#123;v&#125;</code>。</p>
-<img src="static-analysis-4/%E6%88%AA%E5%B1%8F2020-05-15%20%E4%B8%8B%E5%8D%888.11.14.png" alt="截屏2020-05-15 下午8.11.14 z" style="zoom:80%;" />
-
-<p>这里<code>v=2</code>，v是<code>lval</code>左值，那么这个defition中v被重新定义了，上边<code>v=3</code>就不live了，因为没有被使用过，就被<code>redefine</code>了。此时<code>IN[B]=&#123;&#125;</code>，依据这个状态，从这个<code>program point</code>开始，寄存器中的<code>3</code>可以拿掉了。</p>
-<img src="static-analysis-4/%E6%88%AA%E5%B1%8F2020-05-15%20%E4%B8%8B%E5%8D%888.18.10.png" alt="截屏2020-05-15 下午8.18.10" style="zoom:80%;" />
-
-<p>再想象一下寄存器中的那个3，<code>v=v-1</code>中，右边的表达式是一个使用了寄存器中该值的二元操作。因此在这一时刻，我们需要使用寄存器中的3，那么<code>IN[B]=&#123;v&#125;</code>。</p>
-<img src="static-analysis-4/%E6%88%AA%E5%B1%8F2020-05-15%20%E4%B8%8B%E5%8D%888.21.04.png" alt="截屏2020-05-15 下午8.21.04 " style="zoom:80%;" />
-
-<p>这里case5是先写后读，case6是先读后写。在先写的时候 ，寄存器完全可以舍去<code>3</code> 。因为没有用到，还要重新读，而在case6中，寄存器中的<code>3</code>先被user了一下，所以在被<code>redefine</code>之前，有<code>use</code>，就是<code>live</code>咯。</p>
-<img src="static-analysis-4/%E6%88%AA%E5%B1%8F2020-05-15%20%E4%B8%8B%E5%8D%888.28.22.png" alt="截屏2020-05-15 下午8.28.22 " style="zoom:80%;" />
-
-<p>这里就定义了经过BB时的transfer function。</p>
-<p>设计好了，就开始用算法动起来。</p>
-<img src="static-analysis-4/%E6%88%AA%E5%B1%8F2020-05-15%20%E4%B8%8B%E5%8D%888.31.52.png" alt="截屏2020-05-15 下午8.31.52 " style="zoom:50%;" />
-
-<blockquote>
-<p>这里的定义，我理解的是因为transfer function是从下往上一句一句走的，那么先走到define被删掉了，然后use就又加上了。所以正序来看，先use后define就是live的。</p>
-</blockquote>
-<ul>
-<li><p>INPUT:  CFG</p>
-</li>
-<li><p>OUTPUT: 每一个program  point的标志位的状态</p>
-</li>
-<li><p>METHOD: 第一句的边界条件，因为是backward的，所以是IN[exit]，这里设置是空。（未来没有变量会被用到了）。然后所有BB初始化为空，求到所有的IN[B]不回被change了(反向)。</p>
-</li>
-</ul>
-<img src="static-analysis-4/%E6%88%AA%E5%B1%8F2020-05-15%20%E4%B8%8B%E5%8D%889.22.50.png" alt="截屏2020-05-15 下午9.22.50 " style="zoom:50%;" />
-
-<p>STEP:</p>
-<ol>
-<li>抽象7个变量位7个特位</li>
-<li>分配给每一个program point(IN处)，并初始化为零。</li>
-<li>第一次迭代(backward)开始</li>
-<li>B5: <code>z=2p</code> ，<code>p</code>被use加上，<code>z</code>被redefine删除&#x3D;》0001000</li>
-<li>B3: <code>x= x-3</code>x 先被use后被redfine，需要加上&#x3D;〉1001000</li>
-<li>B4: B4的OUT需要先union一下两个后继节点(successor)的IN，即(IN[B2]+IN[B5])，然后transfer &#x3D;》 0101000</li>
-<li>B2: IN[B4]+IN[B3] &#x3D; 1101000，加m,减y，加k，减m &#x3D;&gt; 1101001</li>
-<li>B1: +q+z-y+p-x&#x3D;&gt;0111001</li>
-</ol>
-<img src="static-analysis-4/%E6%88%AA%E5%B1%8F2020-05-15%20%E4%B8%8B%E5%8D%889.34.54.png" alt="截屏2020-05-15 下午9.34.54 " style="zoom:50%;" />
-
-<ol start="9">
-<li><p>因为上一轮即初始化IN[]都为0，现在变了，依据算法进行第二轮迭代。</p>
-<img src="static-analysis-4/%E6%88%AA%E5%B1%8F2020-05-15%20%E4%B8%8B%E5%8D%889.37.49.png" alt="截屏2020-05-15 下午9.37.49 " style="zoom:50%;" /></li>
-</ol>
-<p>10.第二轮后IN[B4]变了，下一轮：</p>
-<img src="static-analysis-4/%E6%88%AA%E5%B1%8F2020-05-15%20%E4%B8%8B%E5%8D%889.38.29.png" alt="截屏2020-05-15 下午9.38.29 " style="zoom:50%;" />
-
-<ol start="11">
-<li>第三轮没有IN转变。</li>
-</ol>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://example.com/2020/05/12/static-analysis-4/" data-id="cl1d6sq9i001oilw5dk12b9cy" data-title="南大静态分析-4(Live Variables Analysis)" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/pl/" rel="tag">pl</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
     <article id="post-xss-encode" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
     <a href="/2020/05/08/xss-encode/" class="article-date">
@@ -257,7 +120,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2020/05/08/xss-encode/" data-id="cl1d6sq9p0026ilw55oxa096z" data-title="XSS编码" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2020/05/08/xss-encode/" data-id="cl1d6yihd0024kjw54mjy7z20" data-title="XSS编码" class="article-share-link">Share</a>
       
       
       
@@ -492,7 +355,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2020/05/05/static-analysis-3/" data-id="cl1d6sq9h001milw5bzis61c7" data-title="南大静态分析-3" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2020/05/05/static-analysis-3/" data-id="cl1d6yih8001kkjw5h5s16bkt" data-title="南大静态分析-3" class="article-share-link">Share</a>
       
       
       
@@ -627,7 +490,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2020/05/04/static-analysis-2/" data-id="cl1d6sq9g001kilw56klx0iq0" data-title="南大静态分析-2" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2020/05/04/static-analysis-2/" data-id="cl1d6yih8001ikjw58474hhvc" data-title="南大静态分析-2" class="article-share-link">Share</a>
       
       
       
@@ -787,7 +650,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2020/05/03/static-analysis-1/" data-id="cl1d6sq9g001jilw5f47326yt" data-title="南大静态分析-1" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2020/05/03/static-analysis-1/" data-id="cl1d6yih7001hkjw568iv0mej" data-title="南大静态分析-1" class="article-share-link">Share</a>
       
       
       
@@ -879,7 +742,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2020/01/04/python_cluster_hi/" data-id="cl1d6sq9d001bilw57my55jch" data-title="python层次聚类学习" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2020/01/04/python_cluster_hi/" data-id="cl1d6yih40019kjw5gwdif0x7" data-title="python层次聚类学习" class="article-share-link">Share</a>
       
       
       
@@ -954,7 +817,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2019/12/28/burp_ex_1/" data-id="cl1d6sq95000milw55iwag32d" data-title="burp插件入门" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2019/12/28/burp_ex_1/" data-id="cl1d6yigw000kkjw5b910f8eu" data-title="burp插件入门" class="article-share-link">Share</a>
       
       
       
@@ -1057,7 +920,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2019/12/05/tp5-container/" data-id="cl1d6sq9n0023ilw51i9vfvvw" data-title="tp5学习-容器" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2019/12/05/tp5-container/" data-id="cl1d6yihc0021kjw50eoq2qqk" data-title="tp5学习-容器" class="article-share-link">Share</a>
       
       
       
@@ -1121,7 +984,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2019/11/08/php_file_vul/" data-id="cl1d6sq9a0011ilw50b0thc20" data-title="PHP文件操作漏洞总结" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2019/11/08/php_file_vul/" data-id="cl1d6yih1000zkjw5ex8w0t3b" data-title="PHP文件操作漏洞总结" class="article-share-link">Share</a>
       
       
       
@@ -1220,12 +1083,87 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2019/11/05/php_source/" data-id="cl1d6sq9b0014ilw59slwasb9" data-title="PHP数据传入点分析" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2019/11/05/php_source/" data-id="cl1d6yih20012kjw5dhxs13sd" data-title="PHP数据传入点分析" class="article-share-link">Share</a>
       
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/php/" rel="tag">php</a></li></ul>
 
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-re2c" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2019/10/17/re2c/" class="article-date">
+  <time class="dt-published" datetime="2019-10-16T16:00:00.000Z" itemprop="datePublished">2019-10-17</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2019/10/17/re2c/">re2c学习</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="0x01-NFA-amp-DFA"><a href="#0x01-NFA-amp-DFA" class="headerlink" title="0x01 NFA&amp;DFA"></a>0x01 NFA&amp;DFA</h1><blockquote>
+<p>Finite Automata are recongnizers; they simple say “yes” or “no” about each possible input string</p>
+</blockquote>
+<p>​    For example:</p>
+<p>​        How to recognize the language of regular expression <code>(a|b)*abb</code><a target="_blank" rel="noopener" href="http://www.cs.utsa.edu/~wagner/CS3723/fa/sa.html">[1]</a></p>
+<p>​        Let’s see the transition graph for an <code>NFA</code>:</p>
+<p><img src="http://www.cs.utsa.edu/~wagner/CS3723/fa/nfa1.png" alt="img"></p>
+<p>​    We can see that the<code>NFA</code>，the right input well make a state transfer. When we input<code>abb</code>,<code>aabb</code>,<code>babb</code>  and so on,  we will reach the 3 state, which is a double circle, means this state is accepting. And we input something like <code>acabb</code> or <code>aba</code> we can not reach here.</p>
+<p>​    But there is a problem in this method to achieve this regular expression. In state 0, when we input <code>a</code>,  we can not make sure the right next stat is 0 or 1.  So we called this is a <code>nondeterministic finite automaton</code>.</p>
+<p>In order to solve this problem, we can use the <code>deterministic finite automaton</code>, the <code>DFA</code>:</p>
+<p>​    <img src="http://www.cs.utsa.edu/~wagner/CS3723/fa/faa.png" alt="img"></p>
+<h1 id="0x02-re2c"><a href="#0x02-re2c" class="headerlink" title="0x02 re2c"></a>0x02 re2c</h1><p>re2 is a free and open-source lexer generator for C and C++<a target="_blank" rel="noopener" href="https://re2c.org/">[2]</a>:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*!rec2</span></span><br><span class="line"><span class="comment">	token  &#123;</span></span><br><span class="line"><span class="comment">		...</span></span><br><span class="line"><span class="comment">		return token ;</span></span><br><span class="line"><span class="comment">	&#125;</span></span><br><span class="line"><span class="comment">*/</span></span><br></pre></td></tr></table></figure>
+
+<p>Now we want to identify an input’s number is binary, cotal, decimal and Hexadecimal , we will use re2c right a finit state automation to judgement.</p>
+<h2 id="install"><a href="#install" class="headerlink" title="install"></a>install</h2><ul>
+<li><p>step1</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget https://github.com/skvadrik/re2c/releases/download/1.1.1/re2c-1.1.1.tar.gz</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>step2</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tar -zxvf re2c-1.1.1.tar.gz&amp;&amp;<span class="built_in">cd</span> re2c-1.1.1</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Step3</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">./configure</span><br><span class="line">make &amp; make install</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="write-the-lex"><a href="#write-the-lex" class="headerlink" title="write the lex"></a>write the lex</h2><p>The rule file’s extension is <code>.l</code> we can write a <code>integer.l</code></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="class"><span class="keyword">enum</span> <span class="title">num_t</span> &#123;</span> ERR, BIN, OCT, DEC, HEX &#125;;</span><br><span class="line"></span><br><span class="line"><span class="type">static</span> <span class="type">num_t</span> <span class="title function_">lex</span><span class="params">(<span class="type">const</span> <span class="type">char</span> *YYCURSOR)</span>&#123;</span><br><span class="line">	<span class="type">const</span> <span class="type">char</span> *YYMARKER;</span><br><span class="line">	<span class="comment">/*!re2c</span></span><br><span class="line"><span class="comment">		re2c:define:YYCTYPE = char;</span></span><br><span class="line"><span class="comment">		re2c:yyfill:enable = 0;</span></span><br><span class="line"><span class="comment">		end = &quot;\x00&quot;;</span></span><br><span class="line"><span class="comment">		bin = &#x27;0b&#x27;[01]+;</span></span><br><span class="line"><span class="comment">		oct = &quot;0&quot;[0-7]*;</span></span><br><span class="line"><span class="comment">		dec = [1-9][0-9]*;</span></span><br><span class="line"><span class="comment">		hex = &#x27;0x&#x27;[0-9a-fA-F]+;</span></span><br><span class="line"><span class="comment">		*       &#123; return ERR; &#125;</span></span><br><span class="line"><span class="comment">		bin end &#123; return BIN; &#125;</span></span><br><span class="line"><span class="comment">		oct end &#123; return OCT; &#125;</span></span><br><span class="line"><span class="comment">		dec end &#123; return DEC; &#125;</span></span><br><span class="line"><span class="comment">		hex end &#123; return HEX; &#125;</span></span><br><span class="line"><span class="comment">	*/</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">char</span> **argv)</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>; i&lt;argc; ++i)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">switch</span> (lex(argv[i]))&#123;</span><br><span class="line">			<span class="keyword">case</span> ERR: <span class="built_in">printf</span>(<span class="string">&quot;error\n&quot;</span>); <span class="keyword">break</span>;</span><br><span class="line">			<span class="keyword">case</span> BIN: <span class="built_in">printf</span>(<span class="string">&quot;binary\n&quot;</span>); <span class="keyword">break</span>;</span><br><span class="line">			<span class="keyword">case</span> OCT: <span class="built_in">printf</span>(<span class="string">&quot;octal\n&quot;</span>); <span class="keyword">break</span>;</span><br><span class="line">			<span class="keyword">case</span> DEC: <span class="built_in">printf</span>(<span class="string">&quot;decimal\n&quot;</span>); <span class="keyword">break</span>;</span><br><span class="line">			<span class="keyword">case</span> HEX: <span class="built_in">printf</span>(<span class="string">&quot;hexadecimal\n&quot;</span>); <span class="keyword">break</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>this is a rule file, the key is the comment block. It is the rule to build a finite automaton.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">re2c integer.l -o integer.c</span><br></pre></td></tr></table></figure>
+
+<p>the re2c will build a c file:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* Generated by re2c 1.1.1 on Thu Oct 17 16:03:38 2019 */</span></span><br><span class="line"><span class="meta">#<span class="keyword">line</span> 1 <span class="string">&quot;integer.l&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="class"><span class="keyword">enum</span> <span class="title">num_t</span> &#123;</span> ERR, BIN, OCT, DEC, HEX &#125;;</span><br><span class="line"></span><br><span class="line"><span class="type">static</span> <span class="type">num_t</span> <span class="title function_">lex</span><span class="params">(<span class="type">const</span> <span class="type">char</span> *YYCURSOR)</span>&#123;</span><br><span class="line">	<span class="type">const</span> <span class="type">char</span> *YYMARKER;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">line</span> 10 <span class="string">&quot;integer.c&quot;</span></span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="type">char</span> yych;</span><br><span class="line">	yych = *YYCURSOR;</span><br><span class="line">	<span class="keyword">switch</span> (yych) &#123;</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;0&#x27;</span>:	<span class="keyword">goto</span> yy4;</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;1&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;2&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;3&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;4&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;5&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;6&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;7&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;8&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;9&#x27;</span>:	<span class="keyword">goto</span> yy5;</span><br><span class="line">	<span class="keyword">default</span>:	<span class="keyword">goto</span> yy2;</span><br><span class="line">	&#125;</span><br><span class="line">yy2:</span><br><span class="line">	++YYCURSOR;</span><br><span class="line">yy3:</span><br><span class="line"><span class="meta">#<span class="keyword">line</span> 14 <span class="string">&quot;integer.l&quot;</span></span></span><br><span class="line">	&#123; <span class="keyword">return</span> ERR; &#125;</span><br><span class="line"><span class="meta">#<span class="keyword">line</span> 32 <span class="string">&quot;integer.c&quot;</span></span></span><br><span class="line">yy4:</span><br><span class="line">	yych = *(YYMARKER = ++YYCURSOR);</span><br><span class="line">	<span class="keyword">switch</span> (yych) &#123;</span><br><span class="line">	<span class="keyword">case</span> <span class="number">0x00</span>:	<span class="keyword">goto</span> yy6;</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;0&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;1&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;2&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;3&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;4&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;5&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;6&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;7&#x27;</span>:	<span class="keyword">goto</span> yy8;</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;B&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;b&#x27;</span>:	<span class="keyword">goto</span> yy11;</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;X&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;x&#x27;</span>:	<span class="keyword">goto</span> yy12;</span><br><span class="line">	<span class="keyword">default</span>:	<span class="keyword">goto</span> yy3;</span><br><span class="line">	&#125;</span><br><span class="line">yy5:</span><br><span class="line">	yych = *(YYMARKER = ++YYCURSOR);</span><br><span class="line">	<span class="keyword">switch</span> (yych) &#123;</span><br><span class="line">	<span class="keyword">case</span> <span class="number">0x00</span>:	<span class="keyword">goto</span> yy13;</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;0&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;1&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;2&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;3&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;4&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;5&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;6&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;7&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;8&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;9&#x27;</span>:	<span class="keyword">goto</span> yy15;</span><br><span class="line">	<span class="keyword">default</span>:	<span class="keyword">goto</span> yy3;</span><br><span class="line">	&#125;</span><br><span class="line">yy6:</span><br><span class="line">	++YYCURSOR;</span><br><span class="line"><span class="meta">#<span class="keyword">line</span> 16 <span class="string">&quot;integer.l&quot;</span></span></span><br><span class="line">	&#123; <span class="keyword">return</span> OCT; &#125;</span><br><span class="line"><span class="meta">#<span class="keyword">line</span> 71 <span class="string">&quot;integer.c&quot;</span></span></span><br><span class="line">yy8:</span><br><span class="line">	yych = *++YYCURSOR;</span><br><span class="line">	<span class="keyword">switch</span> (yych) &#123;</span><br><span class="line">	<span class="keyword">case</span> <span class="number">0x00</span>:	<span class="keyword">goto</span> yy6;</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;0&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;1&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;2&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;3&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;4&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;5&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;6&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;7&#x27;</span>:	<span class="keyword">goto</span> yy8;</span><br><span class="line">	<span class="keyword">default</span>:	<span class="keyword">goto</span> yy10;</span><br><span class="line">	&#125;</span><br><span class="line">yy10:</span><br><span class="line">	YYCURSOR = YYMARKER;</span><br><span class="line">	<span class="keyword">goto</span> yy3;</span><br><span class="line">yy11:</span><br><span class="line">	yych = *++YYCURSOR;</span><br><span class="line">	<span class="keyword">if</span> (yych &lt;= <span class="number">0x00</span>) <span class="keyword">goto</span> yy10;</span><br><span class="line">	<span class="keyword">goto</span> yy18;</span><br><span class="line">yy12:</span><br><span class="line">	yych = *++YYCURSOR;</span><br><span class="line">	<span class="keyword">if</span> (yych &lt;= <span class="number">0x00</span>) <span class="keyword">goto</span> yy10;</span><br><span class="line">	<span class="keyword">goto</span> yy20;</span><br><span class="line">yy13:</span><br><span class="line">	++YYCURSOR;</span><br><span class="line"><span class="meta">#<span class="keyword">line</span> 17 <span class="string">&quot;integer.l&quot;</span></span></span><br><span class="line">	&#123; <span class="keyword">return</span> DEC; &#125;</span><br><span class="line"><span class="meta">#<span class="keyword">line</span> 101 <span class="string">&quot;integer.c&quot;</span></span></span><br><span class="line">yy15:</span><br><span class="line">	yych = *++YYCURSOR;</span><br><span class="line">	<span class="keyword">switch</span> (yych) &#123;</span><br><span class="line">	<span class="keyword">case</span> <span class="number">0x00</span>:	<span class="keyword">goto</span> yy13;</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;0&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;1&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;2&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;3&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;4&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;5&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;6&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;7&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;8&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;9&#x27;</span>:	<span class="keyword">goto</span> yy15;</span><br><span class="line">	<span class="keyword">default</span>:	<span class="keyword">goto</span> yy10;</span><br><span class="line">	&#125;</span><br><span class="line">yy17:</span><br><span class="line">	yych = *++YYCURSOR;</span><br><span class="line">yy18:</span><br><span class="line">	<span class="keyword">switch</span> (yych) &#123;</span><br><span class="line">	<span class="keyword">case</span> <span class="number">0x00</span>:	<span class="keyword">goto</span> yy21;</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;0&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;1&#x27;</span>:	<span class="keyword">goto</span> yy17;</span><br><span class="line">	<span class="keyword">default</span>:	<span class="keyword">goto</span> yy10;</span><br><span class="line">	&#125;</span><br><span class="line">yy19:</span><br><span class="line">	yych = *++YYCURSOR;</span><br><span class="line">yy20:</span><br><span class="line">	<span class="keyword">switch</span> (yych) &#123;</span><br><span class="line">	<span class="keyword">case</span> <span class="number">0x00</span>:	<span class="keyword">goto</span> yy23;</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;0&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;1&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;2&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;3&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;4&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;5&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;6&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;7&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;8&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;9&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;A&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;B&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;C&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;D&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;E&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;F&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;a&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;b&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;c&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;d&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;e&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;f&#x27;</span>:	<span class="keyword">goto</span> yy19;</span><br><span class="line">	<span class="keyword">default</span>:	<span class="keyword">goto</span> yy10;</span><br><span class="line">	&#125;</span><br><span class="line">yy21:</span><br><span class="line">	++YYCURSOR;</span><br><span class="line"><span class="meta">#<span class="keyword">line</span> 15 <span class="string">&quot;integer.l&quot;</span></span></span><br><span class="line">	&#123; <span class="keyword">return</span> BIN; &#125;</span><br><span class="line"><span class="meta">#<span class="keyword">line</span> 160 <span class="string">&quot;integer.c&quot;</span></span></span><br><span class="line">yy23:</span><br><span class="line">	++YYCURSOR;</span><br><span class="line"><span class="meta">#<span class="keyword">line</span> 18 <span class="string">&quot;integer.l&quot;</span></span></span><br><span class="line">	&#123; <span class="keyword">return</span> HEX; &#125;</span><br><span class="line"><span class="meta">#<span class="keyword">line</span> 165 <span class="string">&quot;integer.c&quot;</span></span></span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">#<span class="keyword">line</span> 19 <span class="string">&quot;integer.l&quot;</span></span></span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">char</span> **argv)</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>; i&lt;argc; ++i)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">switch</span> (lex(argv[i]))&#123;</span><br><span class="line">			<span class="keyword">case</span> ERR: <span class="built_in">printf</span>(<span class="string">&quot;error\n&quot;</span>); <span class="keyword">break</span>;</span><br><span class="line">			<span class="keyword">case</span> BIN: <span class="built_in">printf</span>(<span class="string">&quot;binary\n&quot;</span>); <span class="keyword">break</span>;</span><br><span class="line">			<span class="keyword">case</span> OCT: <span class="built_in">printf</span>(<span class="string">&quot;octal\n&quot;</span>); <span class="keyword">break</span>;</span><br><span class="line">			<span class="keyword">case</span> DEC: <span class="built_in">printf</span>(<span class="string">&quot;decimal\n&quot;</span>); <span class="keyword">break</span>;</span><br><span class="line">			<span class="keyword">case</span> HEX: <span class="built_in">printf</span>(<span class="string">&quot;hexadecimal\n&quot;</span>); <span class="keyword">break</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>ok 编不下去了</p>
+<h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><p><a target="_blank" rel="noopener" href="http://www.cs.utsa.edu/~wagner/CS3723/fa/sa.html">[1] http://www.cs.utsa.edu/~wagner&#x2F;CS3723&#x2F;fa&#x2F;sa.html</a></p>
+<p><a target="_blank" rel="noopener" href="https://re2c.org/">[2] https://re2c.org/</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2019/10/17/re2c/" data-id="cl1d6yih5001akjw56tv6edlk" data-title="re2c学习" class="article-share-link">Share</a>
+      
+      
+      
     </footer>
   </div>
   
@@ -1271,7 +1209,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/03/">March 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/02/">February 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/01/">January 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/12/">December 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">September 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">August 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">April 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">February 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">January 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/02/">February 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/01/">January 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/12/">December 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">September 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">August 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">April 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">February 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">January 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li></ul>
     </div>
   </div>
 
@@ -1282,10 +1220,6 @@
     <h3 class="widget-title">Recent Posts</h3>
     <div class="widget">
       <ul>
-        
-          <li>
-            <a href="/2022/03/30/Hello/">Hello</a>
-          </li>
         
           <li>
             <a href="/2022/02/24/web/">Web应用系中注入类漏洞调研</a>
@@ -1301,6 +1235,10 @@
         
           <li>
             <a href="/2022/02/06/logic-machine/">Logic Machine</a>
+          </li>
+        
+          <li>
+            <a href="/2022/01/26/fuz/">Fuzzing</a>
           </li>
         
       </ul>
