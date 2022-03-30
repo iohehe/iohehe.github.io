@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>南大静态分析-4(Avaliable Expressions Analsis) | Penlab</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="Available Expressions Analysis （可用表达式分析） must analysis   如果说一个表达式 x op y  在 program point p 上是available的，那么  从流图入口点到点p的所有路径，都必须经过表达式x op y。(该表达式结点在流图上支配p点) 在上一次计算该表达式后， 没有再定义过x或者y    在程序优化中， 我们就可以在p出直">
+<meta property="og:type" content="article">
+<meta property="og:title" content="南大静态分析-4(Avaliable Expressions Analsis)">
+<meta property="og:url" content="http://example.com/2020/05/17/static-analysis-4-2-md/index.html">
+<meta property="og:site_name" content="Penlab">
+<meta property="og:description" content="Available Expressions Analysis （可用表达式分析） must analysis   如果说一个表达式 x op y  在 program point p 上是available的，那么  从流图入口点到点p的所有路径，都必须经过表达式x op y。(该表达式结点在流图上支配p点) 在上一次计算该表达式后， 没有再定义过x或者y    在程序优化中， 我们就可以在p出直">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/2020/05/17/static-analysis-4-2-md/static-analysis-4-2-md/%E6%88%AA%E5%B1%8F2020-05-17%20%E4%B8%8B%E5%8D%888.16.00.png">
+<meta property="og:image" content="http://example.com/2020/05/17/static-analysis-4-2-md/static-analysis-4-2-md/image-20201209145609833.png">
+<meta property="og:image" content="http://example.com/2020/05/17/static-analysis-4-2-md/static-analysis-4-2-md/image-20201209145630745.png">
+<meta property="og:image" content="http://example.com/2020/05/17/static-analysis-4-2-md/static-analysis-4-2-md/%E6%88%AA%E5%B1%8F2020-05-17%20%E4%B8%8B%E5%8D%888.16.43.png">
+<meta property="og:image" content="http://example.com/2020/05/17/static-analysis-4-2-md/static-analysis-4-2-md/%E6%88%AA%E5%B1%8F2020-05-17%20%E4%B8%8B%E5%8D%889.43.38.png">
+<meta property="og:image" content="http://example.com/static-analysis-4-2-md/%E6%88%AA%E5%B1%8F2020-05-17%20%E4%B8%8B%E5%8D%889.46.53.png">
+<meta property="og:image" content="http://example.com/2020/05/17/static-analysis-4-2-md/static-analysis-4-2-md/%E6%88%AA%E5%B1%8F2020-05-17%20%E4%B8%8B%E5%8D%889.47.55.png">
+<meta property="og:image" content="http://example.com/2020/05/17/static-analysis-4-2-md/static-analysis-4-2-md/%E6%88%AA%E5%B1%8F2020-05-17%20%E4%B8%8B%E5%8D%889.49.19.png">
+<meta property="og:image" content="http://example.com/2020/05/17/static-analysis-4-2-md/static-analysis-4-2-md/%E6%88%AA%E5%B1%8F2020-05-17%20%E4%B8%8B%E5%8D%889.51.13.png">
+<meta property="og:image" content="http://example.com/2020/05/17/static-analysis-4-2-md/static-analysis-4-2-md/%E6%88%AA%E5%B1%8F2020-05-17%20%E4%B8%8B%E5%8D%889.52.56.png">
+<meta property="og:image" content="http://example.com/2020/05/17/static-analysis-4-2-md/static-analysis-4-2-md/%E6%88%AA%E5%B1%8F2020-05-17%20%E4%B8%8B%E5%8D%889.53.57.png">
+<meta property="og:image" content="http://example.com/2020/05/17/static-analysis-4-2-md/static-analysis-4-2-md/%E6%88%AA%E5%B1%8F2020-05-17%20%E4%B8%8B%E5%8D%889.54.44.png">
+<meta property="og:image" content="http://example.com/2020/05/17/static-analysis-4-2-md/static-analysis-4-2-md/%E6%88%AA%E5%B1%8F2020-05-17%20%E4%B8%8B%E5%8D%889.56.10.png">
+<meta property="article:published_time" content="2020-05-17T11:00:37.000Z">
+<meta property="article:modified_time" content="2022-03-30T06:25:22.573Z">
+<meta property="article:author" content="iohex">
+<meta property="article:tag" content="pl">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2020/05/17/static-analysis-4-2-md/static-analysis-4-2-md/%E6%88%AA%E5%B1%8F2020-05-17%20%E4%B8%8B%E5%8D%888.16.00.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Penlab" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+<meta name="generator" content="Hexo 6.1.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Penlab</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-static-analysis-4-2-md" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2020/05/17/static-analysis-4-2-md/" class="article-date">
+  <time class="dt-published" datetime="2020-05-17T11:00:37.000Z" itemprop="datePublished">2020-05-17</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      南大静态分析-4(Avaliable Expressions Analsis)
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="Available-Expressions-Analysis-（可用表达式分析）"><a href="#Available-Expressions-Analysis-（可用表达式分析）" class="headerlink" title="Available Expressions Analysis （可用表达式分析）"></a>Available Expressions Analysis （可用表达式分析）</h1><blockquote>
+<p>must analysis </p>
+</blockquote>
+<p>如果说一个表达式 <code>x op y </code> 在 program point <code>p</code> 上是available的，那么</p>
+<ol>
+<li>从流图入口点到点<code>p</code>的所有路径，都必须经过表达式<code>x op y</code>。(该表达式结点在流图上支配p点)</li>
+<li>在上一次计算该表达式后， 没有再定义过x或者y</li>
+</ol>
+<img src="static-analysis-4-2-md/%E6%88%AA%E5%B1%8F2020-05-17%20%E4%B8%8B%E5%8D%888.16.00.png" alt="截屏2020-05-17 下午8.16.00 " style="zoom:50%;" />
+
+<p>在程序优化中， 我们就可以在p出直接利用上一次的表达式计算结果来替换该表达式。也可以用来探测全域公共子表达式。</p>
+<p>例子：</p>
+<p>表达式可利用</p>
+<img src="static-analysis-4-2-md/image-20201209145609833.png" alt="image-20201209145609833 " style="zoom:50%;" />
+
+<p>表达式不可利用</p>
+<img src="static-analysis-4-2-md/image-20201209145630745.png" alt="image-20201209145630745 " style="zoom:50%;" />
+
+
+
+<h2 id="Abstraction-数据抽象"><a href="#Abstraction-数据抽象" class="headerlink" title="Abstraction(数据抽象)"></a>Abstraction(数据抽象)</h2><img src="static-analysis-4-2-md/%E6%88%AA%E5%B1%8F2020-05-17%20%E4%B8%8B%E5%8D%888.16.43.png" alt="截屏2020-05-17 下午8.16.43 " style="zoom:70%;" />
+
+<p>在流图中抽象每条表达式，可利用状态为一个位。0代表不可利用。 </p>
+<h2 id="Safe-approximation"><a href="#Safe-approximation" class="headerlink" title="Safe-approximation"></a>Safe-approximation</h2><p>有了定义，有了抽象，下面就要进行评估-&gt;先看汇聚点怎么merge，再制定transfer function。</p>
+<img src="static-analysis-4-2-md/%E6%88%AA%E5%B1%8F2020-05-17%20%E4%B8%8B%E5%8D%889.43.38.png" alt="截屏2020-05-17 下午9.43.38 " style="zoom:67%;" />
+
+
+
+<p><img src="/static-analysis-4-2-md/%E6%88%AA%E5%B1%8F2020-05-17%20%E4%B8%8B%E5%8D%889.46.53.png" alt="截屏2020-05-17 下午9.46.53"></p>
+<p>must analysis所有的path都要满足这一条件:</p>
+<img src="static-analysis-4-2-md/%E6%88%AA%E5%B1%8F2020-05-17%20%E4%B8%8B%E5%8D%889.47.55.png" alt="截屏2020-05-17 下午9.47.55 " style="zoom:67%;" />
+
+<p>是一种 under-approximation，可以有漏报，可以是safe的。</p>
+<img src="static-analysis-4-2-md/%E6%88%AA%E5%B1%8F2020-05-17%20%E4%B8%8B%E5%8D%889.49.19.png" alt="截屏2020-05-17 下午9.49.19 " style="zoom:80%;" />
+
+<p>这里如果b删了， 这里要做交。但是有情况，如x流下来时是<code>x=3</code>而恰好左边的BB中<code>x=3</code>。那么就是一个漏报。</p>
+<h2 id="Algorithm-of-Available-Expressions-Analysis"><a href="#Algorithm-of-Available-Expressions-Analysis" class="headerlink" title="Algorithm of Available Expressions Analysis"></a>Algorithm of Available Expressions Analysis</h2><img src="static-analysis-4-2-md/%E6%88%AA%E5%B1%8F2020-05-17%20%E4%B8%8B%E5%8D%889.51.13.png" alt="截屏2020-05-17 下午9.51.13 " style="zoom:67%;" />
+
+<ul>
+<li>正向分析， boundary是<code>OUT[entry]= 空</code>;</li>
+<li>因为是must analysis,汇聚点做交，仅此<code>OUT[B] = U</code></li>
+</ul>
+<p>CASE:</p>
+<p>初始化：</p>
+<img src="static-analysis-4-2-md/%E6%88%AA%E5%B1%8F2020-05-17%20%E4%B8%8B%E5%8D%889.52.56.png" alt="截屏2020-05-17 下午9.52.56 " style="zoom:80%;" />
+
+<p>第一次迭代：</p>
+<img src="static-analysis-4-2-md/%E6%88%AA%E5%B1%8F2020-05-17%20%E4%B8%8B%E5%8D%889.53.57.png" alt="截屏2020-05-17 下午9.53.57 " style="zoom:80%;" />
+
+<p>第二次迭代：</p>
+<img src="static-analysis-4-2-md/%E6%88%AA%E5%B1%8F2020-05-17%20%E4%B8%8B%E5%8D%889.54.44.png" alt="截屏2020-05-17 下午9.54.44 " style="zoom:80%;" />
+
+
+
+<h1 id="总结三个算法"><a href="#总结三个算法" class="headerlink" title="总结三个算法"></a>总结三个算法</h1><img src="static-analysis-4-2-md/%E6%88%AA%E5%B1%8F2020-05-17%20%E4%B8%8B%E5%8D%889.56.10.png" alt="截屏2020-05-17 下午9.56.10 " style="zoom:80%;" />
+
+
+
+<ul>
+<li>设计一个数据流分析算法， 首先要描述场景， 从场景中抽象出我们需要的数据，然后设计<code>safe approximation</code>，转化成算法；还有就是理解算法是如何停止的。</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2020/05/17/static-analysis-4-2-md/" data-id="cl1d6sq9i001nilw5bd78h0v4" data-title="南大静态分析-4(Avaliable Expressions Analsis)" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/pl/" rel="tag">pl</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2020/05/18/static-analysis-5-md/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          南大静态分析5(Data Flow Analysis - Foundations 1)
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2020/05/12/static-analysis-4/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">南大静态分析-4(Live Variables Analysis)</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/paper/" rel="tag">paper</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/php/" rel="tag">php</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pl/" rel="tag">pl</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/paper/" style="font-size: 15px;">paper</a> <a href="/tags/php/" style="font-size: 10px;">php</a> <a href="/tags/pl/" style="font-size: 20px;">pl</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/03/">March 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/02/">February 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/01/">January 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/12/">December 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">September 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">August 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">April 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">February 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">January 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2022/03/30/Hello/">Hello</a>
+          </li>
+        
+          <li>
+            <a href="/2022/02/24/web/">Web应用系中注入类漏洞调研</a>
+          </li>
+        
+          <li>
+            <a href="/2022/02/18/data-mining/">data_mining</a>
+          </li>
+        
+          <li>
+            <a href="/2022/02/14/pop/">A Survey about PHP Object Injection</a>
+          </li>
+        
+          <li>
+            <a href="/2022/02/06/logic-machine/">Logic Machine</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2022 iohex<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

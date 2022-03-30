@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>python层次聚类学习 | Penlab</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="0x00 层次聚类描述 首把每一个样本点看作是一个cluster, 一开始有k个cluster 根据算法，聚合距离最近的两个cluster，形成k-1个cluster 循环直至一个最大的cluster形成 形成一张树状图区分不同的clusters  0x02 准备数据集命名规则 X - 实验样本 n - 样本数量 m - 样本特征数量 Z - 集群关系数组 k - 集群数量  生成实验样本矩阵X.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="python层次聚类学习">
+<meta property="og:url" content="http://example.com/2020/01/04/python_cluster_hi/index.html">
+<meta property="og:site_name" content="Penlab">
+<meta property="og:description" content="0x00 层次聚类描述 首把每一个样本点看作是一个cluster, 一开始有k个cluster 根据算法，聚合距离最近的两个cluster，形成k-1个cluster 循环直至一个最大的cluster形成 形成一张树状图区分不同的clusters  0x02 准备数据集命名规则 X - 实验样本 n - 样本数量 m - 样本特征数量 Z - 集群关系数组 k - 集群数量  生成实验样本矩阵X.">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-01-03T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-03-30T06:25:22.434Z">
+<meta property="article:author" content="iohex">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="Penlab" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+<meta name="generator" content="Hexo 6.1.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Penlab</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-python_cluster_hi" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2020/01/04/python_cluster_hi/" class="article-date">
+  <time class="dt-published" datetime="2020-01-03T16:00:00.000Z" itemprop="datePublished">2020-01-04</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      python层次聚类学习
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="0x00-层次聚类描述"><a href="#0x00-层次聚类描述" class="headerlink" title="0x00 层次聚类描述"></a>0x00 层次聚类描述</h1><ol>
+<li>首把每一个样本点看作是一个cluster, 一开始有k个cluster</li>
+<li>根据算法，聚合距离最近的两个cluster，形成k-1个cluster</li>
+<li>循环直至一个最大的cluster形成</li>
+<li>形成一张树状图区分不同的clusters</li>
+</ol>
+<h1 id="0x02-准备数据集"><a href="#0x02-准备数据集" class="headerlink" title="0x02 准备数据集"></a>0x02 准备数据集</h1><h2 id="命名规则"><a href="#命名规则" class="headerlink" title="命名规则"></a>命名规则</h2><ul>
+<li>X - 实验样本</li>
+<li>n - 样本数量</li>
+<li>m - 样本特征数量</li>
+<li>Z - 集群关系数组</li>
+<li>k - 集群数量</li>
+</ul>
+<h2 id="生成实验样本"><a href="#生成实验样本" class="headerlink" title="生成实验样本"></a>生成实验样本</h2><p>矩阵X.shape &#x3D;&#x3D; (n, m)，现在我有十个随机点：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"></span><br><span class="line">X = np.array([[<span class="number">5</span>,<span class="number">3</span>],</span><br><span class="line">    [<span class="number">10</span>,<span class="number">15</span>],</span><br><span class="line">    [<span class="number">15</span>,<span class="number">12</span>],</span><br><span class="line">    [<span class="number">24</span>,<span class="number">10</span>],</span><br><span class="line">    [<span class="number">30</span>,<span class="number">30</span>],</span><br><span class="line">    [<span class="number">85</span>,<span class="number">70</span>],</span><br><span class="line">    [<span class="number">71</span>,<span class="number">80</span>],</span><br><span class="line">    [<span class="number">60</span>,<span class="number">78</span>],</span><br><span class="line">    [<span class="number">70</span>,<span class="number">55</span>],</span><br><span class="line">    [<span class="number">80</span>,<span class="number">91</span>],])</span><br><span class="line"></span><br><span class="line">labels = <span class="built_in">range</span>(<span class="number">1</span>, <span class="number">11</span>)</span><br><span class="line">plt.figure(figsize=(<span class="number">10</span>, <span class="number">7</span>))</span><br><span class="line">plt.subplots_adjust(bottom=<span class="number">0.1</span>)</span><br><span class="line">plt.scatter(X[: ,<span class="number">0</span>], X[: ,<span class="number">1</span>], label=<span class="string">&#x27;True Position&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> label, x, y <span class="keyword">in</span> <span class="built_in">zip</span>(labels, X[:, <span class="number">0</span>], X[:, <span class="number">1</span>]):</span><br><span class="line">    plt.annotate(</span><br><span class="line">        label,</span><br><span class="line">        xy=(x, y), xytext=(-<span class="number">3</span>, <span class="number">3</span>),</span><br><span class="line">        textcoords=<span class="string">&#x27;offset points&#x27;</span>, ha=<span class="string">&#x27;right&#x27;</span>, va=<span class="string">&#x27;bottom&#x27;</span>)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+<p>![](&#x2F;media&#x2F;python_cluster_hi&#x2F;2020-01-04-屏幕快照 2020-01-04 下午5.11.02.png)</p>
+<h1 id="0x02-进行层次聚类"><a href="#0x02-进行层次聚类" class="headerlink" title="0x02 进行层次聚类"></a>0x02 进行层次聚类</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Z = linkage(X, method=<span class="string">&#x27;ward&#x27;</span>) <span class="comment">#average, single, complete...</span></span><br></pre></td></tr></table></figure>
+
+<p>method选择一个 距离算法。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"><span class="keyword">from</span> scipy.cluster.hierarchy <span class="keyword">import</span> dendrogram, linkage</span><br><span class="line"></span><br><span class="line">X = np.array([[<span class="number">5</span>,<span class="number">3</span>],</span><br><span class="line">    [<span class="number">10</span>,<span class="number">15</span>],</span><br><span class="line">    [<span class="number">15</span>,<span class="number">12</span>],</span><br><span class="line">    [<span class="number">24</span>,<span class="number">10</span>],</span><br><span class="line">    [<span class="number">30</span>,<span class="number">30</span>],</span><br><span class="line">    [<span class="number">85</span>,<span class="number">70</span>],</span><br><span class="line">    [<span class="number">71</span>,<span class="number">80</span>],</span><br><span class="line">    [<span class="number">60</span>,<span class="number">78</span>],</span><br><span class="line">    [<span class="number">70</span>,<span class="number">55</span>],</span><br><span class="line">    [<span class="number">80</span>,<span class="number">91</span>],])</span><br><span class="line"></span><br><span class="line">Z = linkage(X, method=<span class="string">&#x27;ward&#x27;</span>)</span><br><span class="line"><span class="built_in">print</span>(Z)</span><br></pre></td></tr></table></figure>
+
+<p>打印粗来：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[[  1.           2.           5.83095189   2.        ]</span><br><span class="line"> [  6.           7.          11.18033989   2.        ]</span><br><span class="line"> [  3.          10.          13.88044188   3.        ]</span><br><span class="line"> [  0.          12.          17.98147195   4.        ]</span><br><span class="line"> [  5.           8.          21.21320344   2.        ]</span><br><span class="line"> [  9.          11.          21.73323108   3.        ]</span><br><span class="line"> [  4.          13.          32.79634126   5.        ]</span><br><span class="line"> [ 14.          15.          33.64322616   5.        ]</span><br><span class="line"> [ 16.          17.         185.44001726  10.        ]]</span><br></pre></td></tr></table></figure>
+
+<p>  每一行是[idx, idx2, dist,  sample_count]可以看到是本来， 第一行就是对应层次聚类的第一步， 每一个点作为一个cluster, 其中1号点和2号点是聚类最近，为5.83…，于是这两个点在此步骤聚成了一个cluster, 有两个样本点。现在有<code>k-1</code>个cluster。然后第二步…。</p>
+<p>  看到第3步中，开始出现9号以外的点。此算法中，任何<code>idx&gt;=len(X)</code>的下标指向<code>Z[idx-len(X)]</code>中建立的集群。</p>
+<p>  也就是说，10代表着第<code>Z[10-10]</code>也就是<code>Z[0]</code>第一步聚成的cluster与3进行合并。也就是X[[1,2,3]]</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">print</span> X[[<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>]]</span><br><span class="line"><span class="comment">#=&gt; output:</span></span><br><span class="line">[[<span class="number">10</span> <span class="number">15</span>]</span><br><span class="line"> [<span class="number">15</span> <span class="number">12</span>]</span><br><span class="line"> [<span class="number">24</span> <span class="number">10</span>]]</span><br></pre></td></tr></table></figure>
+
+<p>单看他们的坐标点应该是挺近，看图：</p>
+<p>![](&#x2F;media&#x2F;python_cluster_hi&#x2F;2020-01-04-屏幕快照 2020-01-04 下午5.31.25.png)</p>
+<p>挺近…</p>
+<p>代码：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"><span class="keyword">from</span> scipy.cluster.hierarchy <span class="keyword">import</span> dendrogram, linkage</span><br><span class="line"></span><br><span class="line">X = np.array([[<span class="number">5</span>,<span class="number">3</span>],</span><br><span class="line">    [<span class="number">10</span>,<span class="number">15</span>],</span><br><span class="line">    [<span class="number">15</span>,<span class="number">12</span>],</span><br><span class="line">    [<span class="number">24</span>,<span class="number">10</span>],</span><br><span class="line">    [<span class="number">30</span>,<span class="number">30</span>],</span><br><span class="line">    [<span class="number">85</span>,<span class="number">70</span>],</span><br><span class="line">    [<span class="number">71</span>,<span class="number">80</span>],</span><br><span class="line">    [<span class="number">60</span>,<span class="number">78</span>],</span><br><span class="line">    [<span class="number">70</span>,<span class="number">55</span>],</span><br><span class="line">    [<span class="number">80</span>,<span class="number">91</span>],])</span><br><span class="line"></span><br><span class="line">labels = <span class="built_in">range</span>(<span class="number">0</span>, <span class="number">10</span>)</span><br><span class="line">idx = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>]</span><br><span class="line">plt.figure(figsize=(<span class="number">10</span>, <span class="number">7</span>))</span><br><span class="line">plt.subplots_adjust(bottom=<span class="number">0.1</span>)</span><br><span class="line">plt.scatter(X[: ,<span class="number">0</span>], X[: ,<span class="number">1</span>], label=<span class="string">&#x27;True Position&#x27;</span>)</span><br><span class="line">plt.scatter(X[idx,<span class="number">0</span>], X[idx,<span class="number">1</span>], label=<span class="string">&#x27;True Position&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> label, x, y <span class="keyword">in</span> <span class="built_in">zip</span>(labels, X[:, <span class="number">0</span>], X[:, <span class="number">1</span>]):</span><br><span class="line">    plt.annotate(</span><br><span class="line">        label,</span><br><span class="line">        xy=(x, y), xytext=(-<span class="number">3</span>, <span class="number">3</span>),</span><br><span class="line">        textcoords=<span class="string">&#x27;offset points&#x27;</span>, ha=<span class="string">&#x27;right&#x27;</span>, va=<span class="string">&#x27;bottom&#x27;</span>)</span><br><span class="line">plt.show()</span><br><span class="line"></span><br><span class="line">Z = linkage(X, method=<span class="string">&#x27;ward&#x27;</span>)</span><br><span class="line"><span class="built_in">print</span>(X[[<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>]])</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h1 id="0x03-树状结构图（Dendrograms）"><a href="#0x03-树状结构图（Dendrograms）" class="headerlink" title="0x03 树状结构图（Dendrograms）"></a>0x03 树状结构图（Dendrograms）</h1><p>​    </p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"><span class="keyword">from</span> scipy.cluster.hierarchy <span class="keyword">import</span> dendrogram, linkage</span><br><span class="line"></span><br><span class="line">X = np.array([[<span class="number">5</span>,<span class="number">3</span>],</span><br><span class="line">    [<span class="number">10</span>,<span class="number">15</span>],</span><br><span class="line">    [<span class="number">15</span>,<span class="number">12</span>],</span><br><span class="line">    [<span class="number">24</span>,<span class="number">10</span>],</span><br><span class="line">    [<span class="number">30</span>,<span class="number">30</span>],</span><br><span class="line">    [<span class="number">85</span>,<span class="number">70</span>],</span><br><span class="line">    [<span class="number">71</span>,<span class="number">80</span>],</span><br><span class="line">    [<span class="number">60</span>,<span class="number">78</span>],</span><br><span class="line">    [<span class="number">70</span>,<span class="number">55</span>],</span><br><span class="line">    [<span class="number">80</span>,<span class="number">91</span>],])</span><br><span class="line"></span><br><span class="line">linked = linkage(X, <span class="string">&#x27;single&#x27;</span>)</span><br><span class="line"></span><br><span class="line">labelList = <span class="built_in">range</span>(<span class="number">0</span>, <span class="number">10</span>)</span><br><span class="line"></span><br><span class="line">plt.figure(figsize=(<span class="number">10</span>, <span class="number">7</span>))</span><br><span class="line">dendrogram(linked,</span><br><span class="line">            orientation=<span class="string">&#x27;top&#x27;</span>,</span><br><span class="line">            labels=labelList,</span><br><span class="line">            distance_sort=<span class="string">&#x27;descending&#x27;</span>,</span><br><span class="line">            show_leaf_counts=<span class="literal">True</span>)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+
+
+<p>![](&#x2F;media&#x2F;python_cluster_hi&#x2F;2020-01-04-屏幕快照 2020-01-04 下午5.11.02.png)</p>
+<p>对就是这个图，让我们先，从下往上捋一捋。横坐标就是特征嘛，纵坐标看那个连接位置，就是他们聚在一起时候的值，这里好像根据的是<code>欧几里得距离</code>…再看我们聚类时的第一步:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[  1.           2.           5.83095189   2.        ]</span><br></pre></td></tr></table></figure>
+
+<p>所以说第1，2个点聚的最低，聚集起来的位置大概是5.8…。依次向上，最终聚成一个cluster。</p>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a target="_blank" rel="noopener" href="https://haojunsui.github.io/2016/07/16/scipy-hac/">[1] 利用 SciPy 实现层次聚类</a></p>
+<p><a target="_blank" rel="noopener" href="https://stackabuse.com/hierarchical-clustering-with-python-and-scikit-learn/">[2] Hierarchical Clustering with Python and Scikit-Learn</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2020/01/04/python_cluster_hi/" data-id="cl1d6sq9d001bilw57my55jch" data-title="python层次聚类学习" class="article-share-link">Share</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2020/05/03/static-analysis-1/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          南大静态分析-1
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2019/12/28/burp_ex_1/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">burp插件入门</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/paper/" rel="tag">paper</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/php/" rel="tag">php</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pl/" rel="tag">pl</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/paper/" style="font-size: 15px;">paper</a> <a href="/tags/php/" style="font-size: 10px;">php</a> <a href="/tags/pl/" style="font-size: 20px;">pl</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/03/">March 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/02/">February 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/01/">January 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/12/">December 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">September 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">August 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">April 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">February 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">January 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2022/03/30/Hello/">Hello</a>
+          </li>
+        
+          <li>
+            <a href="/2022/02/24/web/">Web应用系中注入类漏洞调研</a>
+          </li>
+        
+          <li>
+            <a href="/2022/02/18/data-mining/">data_mining</a>
+          </li>
+        
+          <li>
+            <a href="/2022/02/14/pop/">A Survey about PHP Object Injection</a>
+          </li>
+        
+          <li>
+            <a href="/2022/02/06/logic-machine/">Logic Machine</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2022 iohex<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

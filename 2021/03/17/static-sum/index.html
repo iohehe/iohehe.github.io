@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>静态分析之殇 | Penlab</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="0x00 前言计算机高级语言带来了软件开发的便利性， 其解决的问题是：如何使用更接近人类的交流方式与机器进行交流。 因此不可或缺的是一个从人类阅读的语言到机器阅读的语言之间的一个桥梁。 这个转化过程叫做编译。 在编译过程中，从信息的高级语言形式，到机器码形式我们可以看到还有几层中间语言：AST, IR…其实汇编语言就很像机器语言了，可以看成他的一层壳。但是语义还不是很方便人类提取，高级语言解决了这">
+<meta property="og:type" content="article">
+<meta property="og:title" content="静态分析之殇">
+<meta property="og:url" content="http://example.com/2021/03/17/static-sum/index.html">
+<meta property="og:site_name" content="Penlab">
+<meta property="og:description" content="0x00 前言计算机高级语言带来了软件开发的便利性， 其解决的问题是：如何使用更接近人类的交流方式与机器进行交流。 因此不可或缺的是一个从人类阅读的语言到机器阅读的语言之间的一个桥梁。 这个转化过程叫做编译。 在编译过程中，从信息的高级语言形式，到机器码形式我们可以看到还有几层中间语言：AST, IR…其实汇编语言就很像机器语言了，可以看成他的一层壳。但是语义还不是很方便人类提取，高级语言解决了这">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2021-03-17T00:52:56.000Z">
+<meta property="article:modified_time" content="2022-03-30T06:25:22.429Z">
+<meta property="article:author" content="iohex">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="Penlab" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+<meta name="generator" content="Hexo 6.1.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Penlab</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-static-sum" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2021/03/17/static-sum/" class="article-date">
+  <time class="dt-published" datetime="2021-03-17T00:52:56.000Z" itemprop="datePublished">2021-03-17</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      静态分析之殇
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="0x00-前言"><a href="#0x00-前言" class="headerlink" title="0x00 前言"></a>0x00 前言</h1><p>计算机高级语言带来了软件开发的便利性， 其解决的问题是：如何使用更接近人类的交流方式与机器进行交流。 因此不可或缺的是一个从人类阅读的语言到机器阅读的语言之间的一个桥梁。 这个转化过程叫做编译。 在编译过程中，从信息的高级语言形式，到机器码形式我们可以看到还有几层中间语言：AST, IR…其实汇编语言就很像机器语言了，可以看成他的一层壳。但是语义还不是很方便人类提取，高级语言解决了这个问题。 再看高级语言往汇编去的路上。 有AST， 为什么要有这一层，我想，因为AST是一种将语法结构化的数据结构。 而高级语言和机器语言是给人和机器去看的， 而中间语言是要被处理的。 而计算机处理一种信息最方便的方式就是将他结构化，对信息中的每一个最小单元进行定位。 而树状结构是层级的，方便与遍历token之间的关系，从而检查语法， 解析语义。 但是程序是用来执行的， 他是一种强逻辑性语言，没有歧义。 因此程序中每一条执行流都是明确的。 而如果要分析程序中的控制流， 和数据流等，AST这种结构就不太合适了。一个是因为，流分析往往是以基本块为单位的，基本块的最小单位是一条statement，而一条statement表示成AST树状结构很复杂， 也没有必要(这样就成了在树上画图，结构会很复杂，见属性图)。对于流分析，这种statement展开是没有必要的，而此时,AST也要向汇编码汇聚，所以我猜这样才出现了IR。</p>
+<p>可以把软件分析分作两个阶段：1. Complie 阶段和2. Run-time阶段，在compile的分析都是静态阶段， 此时，程序还没有产生Activation Records。</p>
+<h1 id="0x01-流"><a href="#0x01-流" class="headerlink" title="0x01 流"></a>0x01 流</h1><p>静态分析， 就是自动化的去分析程序的流。 我们常见的流有一个过程内的控制流和数据流，以及过程间的调用。这些流会在程序中构造一张张的图。 控制流图， 数据流图， 调用图， 类图…。每一张图对应一种不同的层级关系或者功能。有几点需要注意：</p>
+<ol>
+<li><p>控制流图唯一，数据流图不唯一。 控制流图往往取决于AST结构。 AST结构定了，控制流图就定了(这里我觉得我可能 有误解)。而数据流图会对分析的目的不同而不同，可以正向构建也可以后向构建。只要目的达成， 就有意义。通常过程内的流图，叫做CFG, 而过程间的(加上Call Graph)的大流图，叫做ICFG</p>
+</li>
+<li><p>常见的数据流分析问题有reache definition, live variable和available expression。</p>
+</li>
+</ol>
+<h1 id="0x02-问题"><a href="#0x02-问题" class="headerlink" title="0x02 问题"></a>0x02 问题</h1><h2 id="敏感问题"><a href="#敏感问题" class="headerlink" title="敏感问题"></a>敏感问题</h2><p>其实有各种各样的敏感问题，就是指的静态分析不能cover所有情况而引起的误报。</p>
+<h3 id="流敏感"><a href="#流敏感" class="headerlink" title="流敏感"></a>流敏感</h3><p>流敏感， 指的是一个程序的执行流上，每条语句上相同的变量可能是不同的。 这是静态下所不能覆盖所有情况的(理论上)，比如一个变量初始化声明后被外部输入影响了，静态怎确定？所以纯静态只能做到相对的减少这些误报。实现流敏感一般是需要基于控制流图。</p>
+<h3 id="路径敏感"><a href="#路径敏感" class="headerlink" title="路径敏感"></a>路径敏感</h3><p>路径敏感，是指对执行流上的分支的， 程序实际会走那条路径，纯静态在理论上也是不能确定所有情况的。</p>
+<h3 id="上下文敏感"><a href="#上下文敏感" class="headerlink" title="上下文敏感"></a>上下文敏感</h3><p>上下文是过程间的调用， 一个过程被调用，在不同的调用点(call site)其返回值也不同。</p>
+<h3 id="Field-x2F-Index-敏感"><a href="#Field-x2F-Index-敏感" class="headerlink" title="Field&#x2F;Index 敏感"></a>Field&#x2F;Index 敏感</h3><p>一个复合数组， 在理论上是可以无穷维度的， 因此静态怎么去分析？ 传统的静态分析做法是， 将数组标识符看作一个变量， 而不考虑下标的影响。(静态分析解决此类问题也可以叫数组敏感哈(随便你怎么叫))</p>
+<ul>
+<li><p>field敏感问题:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">Foo</span> <span class="variable">foo</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Foo</span>();</span><br><span class="line">foo.ParamA = GetUserInput();</span><br><span class="line">foo.ParamB = String.Empty;</span><br><span class="line">            </span><br><span class="line">Execute(foo.ParamB);</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Foo</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> string ParamA;</span><br><span class="line">    <span class="keyword">public</span> string ParamB;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>source点，和sink点不是一个field</p>
+</li>
+<li><p>index敏感问题：</p>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">string [] myArray = <span class="keyword">new</span> <span class="title class_">string</span>[len];</span><br><span class="line">myArray[<span class="number">0</span>] = GetUserInput();</span><br><span class="line">myArray[<span class="number">1</span>] = String.Empty;</span><br><span class="line">Execute(myArray[<span class="number">1</span>]); </span><br></pre></td></tr></table></figure>
+
+<p>数组敏感中可以看到user_input传到了索引0中，而执行的是下标1的元素。</p>
+<h3 id="Object-敏感"><a href="#Object-敏感" class="headerlink" title="Object 敏感"></a>Object 敏感</h3><p>字段这种存储在object上的内容，他的生存周期不是一个函数栈， 因此他可以经由不同函数操作。实现字段敏感可使用安德森算法(流不敏感，上下文不敏感)先做个指针分析，找到每个object指针指向的内容(提高指针分析的精度对后续精度的提升目前来看可能不大)。</p>
+<p>解决各种敏感问题，常见的思路，一个在每个program point 建立记录信息，这是静态思路。 还有就是动静结合的方式。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">Foo</span> <span class="variable">foo1</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Foo</span>();</span><br><span class="line">foo1.ParamA = GetUserInput();</span><br><span class="line"><span class="type">Foo</span> <span class="variable">foo2</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Foo</span>();</span><br><span class="line">foo2.ParamA = String.Empty;</span><br><span class="line">Execute(foo2.ParamA); </span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Foo</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> string ParamA;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h2 id="动态问题"><a href="#动态问题" class="headerlink" title="动态问题"></a>动态问题</h2><h2 id="调用"><a href="#调用" class="headerlink" title="调用"></a>调用</h2><p>一个数据被传到一个过程中，理论上， 是可以抛出去无限层的， 每一层的返回值都不一定包含原来的信息了。因此静态很难确定， 通常的做法也是去限定层数。</p>
+<h2 id="循环问题"><a href="#循环问题" class="headerlink" title="循环问题"></a>循环问题</h2><p>对于循环和递归，理论上，是可以有无限层的， 这也导致了，很难确定，一个变量的具体值。 对于循环，对于不同分析，需要不同考虑，比如污点分析， 可能不需要考虑回边情况。 因为循环的回边，如果没有因外的话，是回到了前必经节点，也就是说， 对信息流传播不会有影响，因为不会引入新的节点(至少我现在是这么想)。</p>
+<p>对于递归，要做全程序分析，是不得不处理的，同循环一样，去掉自己到自己的调用边，还有的处理方式是， 在调用点建summary（啊呀具体我忘了，之后补充）。 </p>
+<h2 id="指针分析与动态特性"><a href="#指针分析与动态特性" class="headerlink" title="指针分析与动态特性"></a>指针分析与动态特性</h2><p>这是大问题， 在java中，指针分析加反射就够受的了。 在脚本语言中， 还有各种动态特性(具体可以看RIPS14年NDSS那一篇built-in函数建模的)。这个， 再议～</p>
+<h1 id="0x03-web安全"><a href="#0x03-web安全" class="headerlink" title="0x03 web安全"></a>0x03 web安全</h1><p>这一张的题目起的比较大，这里指的其实是信息流安全， 就是web中的信息流漏洞，如各种漏洞。通常静态使用污点分析的方式去做。</p>
+<h2 id="数据流分析"><a href="#数据流分析" class="headerlink" title="数据流分析"></a>数据流分析</h2><h2 id="前后向"><a href="#前后向" class="headerlink" title="前后向"></a>前后向</h2><p>作为一种数据流分析，没有标准， 前向和后向流分析都可以。后向分析，有时候可以排除路径爆炸，但是后向很难知道数据边上具体传的是啥。</p>
+<h2 id="算法"><a href="#算法" class="headerlink" title="算法"></a>算法</h2><p>通常使用的是迭代数据流算法，即在控制流上对program point进行数据流推算，然后迭代收敛，到达不定点。</p>
+<p>图可达性算法， 将数据流做成有向图结构，在图上作分析。[2002 Mohen]</p>
+<h2 id="CHECK"><a href="#CHECK" class="headerlink" title="CHECK"></a>CHECK</h2><p>除了污点分析自身的各种敏感问题，和静态分析很难cover的复合结构和调用问题》 还有各种CHECK的检查问题。</p>
+<p>在我看来， CHECK可以分为两大类： validation和sanitization。 validation就是通过分支，将不安全的输入引导一个敏感函数不可达的分支中。 而sanitization就是通过对用户输入变形， 从而让威胁失去意义。 sanitization通常有很多叫法，一般的，在输入端做的叫sanitization, 而在输入数据走完逻辑后输出的地方叫做escaping，  反正意思都是一样就是转译。</p>
+<p>不论是validation还是sanitization都要有规则， 其中都可以用黑白名单实现。而sanitization中除了黑白名单规则，还可以进行编码，如htmlspecialchars, htmlenities，将敏感符号转义成html实体编码。</p>
+<p>还有一种通常叫cast, 就是强制类型转换(int)$a。 </p>
+<p>以上是对数据流进行直接check， 还有间接check。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">  <span class="variable">$action</span> = <span class="variable">$_GET</span>[<span class="string">&#x27;action&#x27;</span>];</span><br><span class="line"><span class="keyword">switch</span>(<span class="variable">$action</span>)</span><br><span class="line">  <span class="keyword">case</span> <span class="string">&quot;login&quot;</span>:</span><br><span class="line">					<span class="keyword">echo</span> <span class="variable">$action</span>;</span><br><span class="line">					<span class="keyword">break</span>;</span><br><span class="line">  <span class="keyword">case</span> <span class="string">&quot;logout&quot;</span>:</span><br><span class="line">					<span class="keyword">echo</span> <span class="variable">$action</span>;</span><br><span class="line">					<span class="keyword">break</span></span><br><span class="line">  <span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>如这个简易的路由。 这时看起来并没有显示的安全检测， 但是其实是隐式的限制，数据是在一个指定的域里才可以进入危险分支。</p>
+<p>再如，用户输入必须在数据库中存在， 才能进入危险分支， 这种在web非常常见。</p>
+<p>最后就是一些用户身份验证， 和表单验证。 这些常常在路径中截断控制流。 因此我们做静态分析时，很难达到一个精准的状态。</p>
+<h2 id="触发"><a href="#触发" class="headerlink" title="触发"></a>触发</h2><p>静态分析到了漏洞， 不行，不一定能出发， 这也是很多扫描器和AGE工具比静态分析工具好使的原因。 在触发环节， 你可能要满足各种验证条件和访问顺序才能把控制流引过了， 且污点数据依旧有效，这具有很大的不确定性。</p>
+<p>在web中，要达到这一点，需要考虑：</p>
+<ol>
+<li>资源加载问题， 通常对于PHP这一种脚本语言， 加载代码是自动化的。 而且现在的代码通常是结构化mvc，实现自动化加载，总之。你要找到你的污点信息流在客户端的操作入口。需要分析路由(多入口web能相对简单一些)。</li>
+<li>函数可达性， 确定资源被加载了， 就要进入该过程。</li>
+<li>块可达性， 确定信息流入口的基本块是可达的。</li>
+</ol>
+<h3 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h3><p><a target="_blank" rel="noopener" href="https://medium.com/swlh/sensitivities-in-static-code-analysis-3cab7b07dea">https://medium.com/swlh/sensitivities-in-static-code-analysis-3cab7b07dea</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2021/03/17/static-sum/" data-id="cl1d6sq9m001wilw57coadf1m" data-title="静态分析之殇" class="article-share-link">Share</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2021/04/07/xss-patterns/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          xss patterns
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2021/02/02/soundiness/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">soundiness</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/paper/" rel="tag">paper</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/php/" rel="tag">php</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pl/" rel="tag">pl</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/paper/" style="font-size: 15px;">paper</a> <a href="/tags/php/" style="font-size: 10px;">php</a> <a href="/tags/pl/" style="font-size: 20px;">pl</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/03/">March 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/02/">February 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/01/">January 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/12/">December 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">September 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">August 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">April 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">February 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">January 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2022/03/30/Hello/">Hello</a>
+          </li>
+        
+          <li>
+            <a href="/2022/02/24/web/">Web应用系中注入类漏洞调研</a>
+          </li>
+        
+          <li>
+            <a href="/2022/02/18/data-mining/">data_mining</a>
+          </li>
+        
+          <li>
+            <a href="/2022/02/14/pop/">A Survey about PHP Object Injection</a>
+          </li>
+        
+          <li>
+            <a href="/2022/02/06/logic-machine/">Logic Machine</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2022 iohex<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

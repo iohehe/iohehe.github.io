@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>Penlab</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta property="og:type" content="website">
+<meta property="og:title" content="Penlab">
+<meta property="og:url" content="http://example.com/page/6/index.html">
+<meta property="og:site_name" content="Penlab">
+<meta property="og:locale" content="en_US">
+<meta property="article:author" content="iohex">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="Penlab" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+<meta name="generator" content="Hexo 6.1.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Penlab</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main">
+  
+    <article id="post-re2c" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2019/10/17/re2c/" class="article-date">
+  <time class="dt-published" datetime="2019-10-16T16:00:00.000Z" itemprop="datePublished">2019-10-17</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2019/10/17/re2c/">re2c学习</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="0x01-NFA-amp-DFA"><a href="#0x01-NFA-amp-DFA" class="headerlink" title="0x01 NFA&amp;DFA"></a>0x01 NFA&amp;DFA</h1><blockquote>
+<p>Finite Automata are recongnizers; they simple say “yes” or “no” about each possible input string</p>
+</blockquote>
+<p>​    For example:</p>
+<p>​        How to recognize the language of regular expression <code>(a|b)*abb</code><a target="_blank" rel="noopener" href="http://www.cs.utsa.edu/~wagner/CS3723/fa/sa.html">[1]</a></p>
+<p>​        Let’s see the transition graph for an <code>NFA</code>:</p>
+<p><img src="http://www.cs.utsa.edu/~wagner/CS3723/fa/nfa1.png" alt="img"></p>
+<p>​    We can see that the<code>NFA</code>，the right input well make a state transfer. When we input<code>abb</code>,<code>aabb</code>,<code>babb</code>  and so on,  we will reach the 3 state, which is a double circle, means this state is accepting. And we input something like <code>acabb</code> or <code>aba</code> we can not reach here.</p>
+<p>​    But there is a problem in this method to achieve this regular expression. In state 0, when we input <code>a</code>,  we can not make sure the right next stat is 0 or 1.  So we called this is a <code>nondeterministic finite automaton</code>.</p>
+<p>In order to solve this problem, we can use the <code>deterministic finite automaton</code>, the <code>DFA</code>:</p>
+<p>​    <img src="http://www.cs.utsa.edu/~wagner/CS3723/fa/faa.png" alt="img"></p>
+<h1 id="0x02-re2c"><a href="#0x02-re2c" class="headerlink" title="0x02 re2c"></a>0x02 re2c</h1><p>re2 is a free and open-source lexer generator for C and C++<a target="_blank" rel="noopener" href="https://re2c.org/">[2]</a>:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*!rec2</span></span><br><span class="line"><span class="comment">	token  &#123;</span></span><br><span class="line"><span class="comment">		...</span></span><br><span class="line"><span class="comment">		return token ;</span></span><br><span class="line"><span class="comment">	&#125;</span></span><br><span class="line"><span class="comment">*/</span></span><br></pre></td></tr></table></figure>
+
+<p>Now we want to identify an input’s number is binary, cotal, decimal and Hexadecimal , we will use re2c right a finit state automation to judgement.</p>
+<h2 id="install"><a href="#install" class="headerlink" title="install"></a>install</h2><ul>
+<li><p>step1</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget https://github.com/skvadrik/re2c/releases/download/1.1.1/re2c-1.1.1.tar.gz</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>step2</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tar -zxvf re2c-1.1.1.tar.gz&amp;&amp;<span class="built_in">cd</span> re2c-1.1.1</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Step3</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">./configure</span><br><span class="line">make &amp; make install</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="write-the-lex"><a href="#write-the-lex" class="headerlink" title="write the lex"></a>write the lex</h2><p>The rule file’s extension is <code>.l</code> we can write a <code>integer.l</code></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="class"><span class="keyword">enum</span> <span class="title">num_t</span> &#123;</span> ERR, BIN, OCT, DEC, HEX &#125;;</span><br><span class="line"></span><br><span class="line"><span class="type">static</span> <span class="type">num_t</span> <span class="title function_">lex</span><span class="params">(<span class="type">const</span> <span class="type">char</span> *YYCURSOR)</span>&#123;</span><br><span class="line">	<span class="type">const</span> <span class="type">char</span> *YYMARKER;</span><br><span class="line">	<span class="comment">/*!re2c</span></span><br><span class="line"><span class="comment">		re2c:define:YYCTYPE = char;</span></span><br><span class="line"><span class="comment">		re2c:yyfill:enable = 0;</span></span><br><span class="line"><span class="comment">		end = &quot;\x00&quot;;</span></span><br><span class="line"><span class="comment">		bin = &#x27;0b&#x27;[01]+;</span></span><br><span class="line"><span class="comment">		oct = &quot;0&quot;[0-7]*;</span></span><br><span class="line"><span class="comment">		dec = [1-9][0-9]*;</span></span><br><span class="line"><span class="comment">		hex = &#x27;0x&#x27;[0-9a-fA-F]+;</span></span><br><span class="line"><span class="comment">		*       &#123; return ERR; &#125;</span></span><br><span class="line"><span class="comment">		bin end &#123; return BIN; &#125;</span></span><br><span class="line"><span class="comment">		oct end &#123; return OCT; &#125;</span></span><br><span class="line"><span class="comment">		dec end &#123; return DEC; &#125;</span></span><br><span class="line"><span class="comment">		hex end &#123; return HEX; &#125;</span></span><br><span class="line"><span class="comment">	*/</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">char</span> **argv)</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>; i&lt;argc; ++i)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">switch</span> (lex(argv[i]))&#123;</span><br><span class="line">			<span class="keyword">case</span> ERR: <span class="built_in">printf</span>(<span class="string">&quot;error\n&quot;</span>); <span class="keyword">break</span>;</span><br><span class="line">			<span class="keyword">case</span> BIN: <span class="built_in">printf</span>(<span class="string">&quot;binary\n&quot;</span>); <span class="keyword">break</span>;</span><br><span class="line">			<span class="keyword">case</span> OCT: <span class="built_in">printf</span>(<span class="string">&quot;octal\n&quot;</span>); <span class="keyword">break</span>;</span><br><span class="line">			<span class="keyword">case</span> DEC: <span class="built_in">printf</span>(<span class="string">&quot;decimal\n&quot;</span>); <span class="keyword">break</span>;</span><br><span class="line">			<span class="keyword">case</span> HEX: <span class="built_in">printf</span>(<span class="string">&quot;hexadecimal\n&quot;</span>); <span class="keyword">break</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>this is a rule file, the key is the comment block. It is the rule to build a finite automaton.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">re2c integer.l -o integer.c</span><br></pre></td></tr></table></figure>
+
+<p>the re2c will build a c file:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* Generated by re2c 1.1.1 on Thu Oct 17 16:03:38 2019 */</span></span><br><span class="line"><span class="meta">#<span class="keyword">line</span> 1 <span class="string">&quot;integer.l&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="class"><span class="keyword">enum</span> <span class="title">num_t</span> &#123;</span> ERR, BIN, OCT, DEC, HEX &#125;;</span><br><span class="line"></span><br><span class="line"><span class="type">static</span> <span class="type">num_t</span> <span class="title function_">lex</span><span class="params">(<span class="type">const</span> <span class="type">char</span> *YYCURSOR)</span>&#123;</span><br><span class="line">	<span class="type">const</span> <span class="type">char</span> *YYMARKER;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">line</span> 10 <span class="string">&quot;integer.c&quot;</span></span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="type">char</span> yych;</span><br><span class="line">	yych = *YYCURSOR;</span><br><span class="line">	<span class="keyword">switch</span> (yych) &#123;</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;0&#x27;</span>:	<span class="keyword">goto</span> yy4;</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;1&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;2&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;3&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;4&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;5&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;6&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;7&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;8&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;9&#x27;</span>:	<span class="keyword">goto</span> yy5;</span><br><span class="line">	<span class="keyword">default</span>:	<span class="keyword">goto</span> yy2;</span><br><span class="line">	&#125;</span><br><span class="line">yy2:</span><br><span class="line">	++YYCURSOR;</span><br><span class="line">yy3:</span><br><span class="line"><span class="meta">#<span class="keyword">line</span> 14 <span class="string">&quot;integer.l&quot;</span></span></span><br><span class="line">	&#123; <span class="keyword">return</span> ERR; &#125;</span><br><span class="line"><span class="meta">#<span class="keyword">line</span> 32 <span class="string">&quot;integer.c&quot;</span></span></span><br><span class="line">yy4:</span><br><span class="line">	yych = *(YYMARKER = ++YYCURSOR);</span><br><span class="line">	<span class="keyword">switch</span> (yych) &#123;</span><br><span class="line">	<span class="keyword">case</span> <span class="number">0x00</span>:	<span class="keyword">goto</span> yy6;</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;0&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;1&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;2&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;3&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;4&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;5&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;6&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;7&#x27;</span>:	<span class="keyword">goto</span> yy8;</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;B&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;b&#x27;</span>:	<span class="keyword">goto</span> yy11;</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;X&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;x&#x27;</span>:	<span class="keyword">goto</span> yy12;</span><br><span class="line">	<span class="keyword">default</span>:	<span class="keyword">goto</span> yy3;</span><br><span class="line">	&#125;</span><br><span class="line">yy5:</span><br><span class="line">	yych = *(YYMARKER = ++YYCURSOR);</span><br><span class="line">	<span class="keyword">switch</span> (yych) &#123;</span><br><span class="line">	<span class="keyword">case</span> <span class="number">0x00</span>:	<span class="keyword">goto</span> yy13;</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;0&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;1&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;2&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;3&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;4&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;5&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;6&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;7&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;8&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;9&#x27;</span>:	<span class="keyword">goto</span> yy15;</span><br><span class="line">	<span class="keyword">default</span>:	<span class="keyword">goto</span> yy3;</span><br><span class="line">	&#125;</span><br><span class="line">yy6:</span><br><span class="line">	++YYCURSOR;</span><br><span class="line"><span class="meta">#<span class="keyword">line</span> 16 <span class="string">&quot;integer.l&quot;</span></span></span><br><span class="line">	&#123; <span class="keyword">return</span> OCT; &#125;</span><br><span class="line"><span class="meta">#<span class="keyword">line</span> 71 <span class="string">&quot;integer.c&quot;</span></span></span><br><span class="line">yy8:</span><br><span class="line">	yych = *++YYCURSOR;</span><br><span class="line">	<span class="keyword">switch</span> (yych) &#123;</span><br><span class="line">	<span class="keyword">case</span> <span class="number">0x00</span>:	<span class="keyword">goto</span> yy6;</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;0&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;1&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;2&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;3&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;4&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;5&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;6&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;7&#x27;</span>:	<span class="keyword">goto</span> yy8;</span><br><span class="line">	<span class="keyword">default</span>:	<span class="keyword">goto</span> yy10;</span><br><span class="line">	&#125;</span><br><span class="line">yy10:</span><br><span class="line">	YYCURSOR = YYMARKER;</span><br><span class="line">	<span class="keyword">goto</span> yy3;</span><br><span class="line">yy11:</span><br><span class="line">	yych = *++YYCURSOR;</span><br><span class="line">	<span class="keyword">if</span> (yych &lt;= <span class="number">0x00</span>) <span class="keyword">goto</span> yy10;</span><br><span class="line">	<span class="keyword">goto</span> yy18;</span><br><span class="line">yy12:</span><br><span class="line">	yych = *++YYCURSOR;</span><br><span class="line">	<span class="keyword">if</span> (yych &lt;= <span class="number">0x00</span>) <span class="keyword">goto</span> yy10;</span><br><span class="line">	<span class="keyword">goto</span> yy20;</span><br><span class="line">yy13:</span><br><span class="line">	++YYCURSOR;</span><br><span class="line"><span class="meta">#<span class="keyword">line</span> 17 <span class="string">&quot;integer.l&quot;</span></span></span><br><span class="line">	&#123; <span class="keyword">return</span> DEC; &#125;</span><br><span class="line"><span class="meta">#<span class="keyword">line</span> 101 <span class="string">&quot;integer.c&quot;</span></span></span><br><span class="line">yy15:</span><br><span class="line">	yych = *++YYCURSOR;</span><br><span class="line">	<span class="keyword">switch</span> (yych) &#123;</span><br><span class="line">	<span class="keyword">case</span> <span class="number">0x00</span>:	<span class="keyword">goto</span> yy13;</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;0&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;1&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;2&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;3&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;4&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;5&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;6&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;7&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;8&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;9&#x27;</span>:	<span class="keyword">goto</span> yy15;</span><br><span class="line">	<span class="keyword">default</span>:	<span class="keyword">goto</span> yy10;</span><br><span class="line">	&#125;</span><br><span class="line">yy17:</span><br><span class="line">	yych = *++YYCURSOR;</span><br><span class="line">yy18:</span><br><span class="line">	<span class="keyword">switch</span> (yych) &#123;</span><br><span class="line">	<span class="keyword">case</span> <span class="number">0x00</span>:	<span class="keyword">goto</span> yy21;</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;0&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;1&#x27;</span>:	<span class="keyword">goto</span> yy17;</span><br><span class="line">	<span class="keyword">default</span>:	<span class="keyword">goto</span> yy10;</span><br><span class="line">	&#125;</span><br><span class="line">yy19:</span><br><span class="line">	yych = *++YYCURSOR;</span><br><span class="line">yy20:</span><br><span class="line">	<span class="keyword">switch</span> (yych) &#123;</span><br><span class="line">	<span class="keyword">case</span> <span class="number">0x00</span>:	<span class="keyword">goto</span> yy23;</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;0&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;1&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;2&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;3&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;4&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;5&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;6&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;7&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;8&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;9&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;A&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;B&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;C&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;D&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;E&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;F&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;a&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;b&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;c&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;d&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;e&#x27;</span>:</span><br><span class="line">	<span class="keyword">case</span> <span class="string">&#x27;f&#x27;</span>:	<span class="keyword">goto</span> yy19;</span><br><span class="line">	<span class="keyword">default</span>:	<span class="keyword">goto</span> yy10;</span><br><span class="line">	&#125;</span><br><span class="line">yy21:</span><br><span class="line">	++YYCURSOR;</span><br><span class="line"><span class="meta">#<span class="keyword">line</span> 15 <span class="string">&quot;integer.l&quot;</span></span></span><br><span class="line">	&#123; <span class="keyword">return</span> BIN; &#125;</span><br><span class="line"><span class="meta">#<span class="keyword">line</span> 160 <span class="string">&quot;integer.c&quot;</span></span></span><br><span class="line">yy23:</span><br><span class="line">	++YYCURSOR;</span><br><span class="line"><span class="meta">#<span class="keyword">line</span> 18 <span class="string">&quot;integer.l&quot;</span></span></span><br><span class="line">	&#123; <span class="keyword">return</span> HEX; &#125;</span><br><span class="line"><span class="meta">#<span class="keyword">line</span> 165 <span class="string">&quot;integer.c&quot;</span></span></span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">#<span class="keyword">line</span> 19 <span class="string">&quot;integer.l&quot;</span></span></span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">char</span> **argv)</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>; i&lt;argc; ++i)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">switch</span> (lex(argv[i]))&#123;</span><br><span class="line">			<span class="keyword">case</span> ERR: <span class="built_in">printf</span>(<span class="string">&quot;error\n&quot;</span>); <span class="keyword">break</span>;</span><br><span class="line">			<span class="keyword">case</span> BIN: <span class="built_in">printf</span>(<span class="string">&quot;binary\n&quot;</span>); <span class="keyword">break</span>;</span><br><span class="line">			<span class="keyword">case</span> OCT: <span class="built_in">printf</span>(<span class="string">&quot;octal\n&quot;</span>); <span class="keyword">break</span>;</span><br><span class="line">			<span class="keyword">case</span> DEC: <span class="built_in">printf</span>(<span class="string">&quot;decimal\n&quot;</span>); <span class="keyword">break</span>;</span><br><span class="line">			<span class="keyword">case</span> HEX: <span class="built_in">printf</span>(<span class="string">&quot;hexadecimal\n&quot;</span>); <span class="keyword">break</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>ok 编不下去了</p>
+<h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><p><a target="_blank" rel="noopener" href="http://www.cs.utsa.edu/~wagner/CS3723/fa/sa.html">[1] http://www.cs.utsa.edu/~wagner&#x2F;CS3723&#x2F;fa&#x2F;sa.html</a></p>
+<p><a target="_blank" rel="noopener" href="https://re2c.org/">[2] https://re2c.org/</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2019/10/17/re2c/" data-id="cl1d6sq9d001cilw5h8f727ic" data-title="re2c学习" class="article-share-link">Share</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-pl" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2019/09/22/pl/" class="article-date">
+  <time class="dt-published" datetime="2019-09-21T16:00:00.000Z" itemprop="datePublished">2019-09-22</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2019/09/22/pl/">闲谈PL</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>如果一年前选一个安全之外的方向，我可能毫不犹豫地选择AI，但是现在我可能更偏向于选择PL(Program Language)。对于这两个方向，我都算是个门外汉，只是想谈谈我现有水平下对于两个方向的一些看法。</p>
+<p>我觉得现阶段的机器学习，更像是在“训狗”，把机器当作动物去进行训练然后识别。而反倒是比较传统的”PL”方向更像是把机器当作一个“人”去交流。 </p>
+<p>这里我完全是自己扯给自己玩的。 没啥依据。</p>
+<p>起初，人们是通过人力去做功的，比如从A地到B地需要人力去达到目的。后来人们开始发明自行车一类的简单机械使之更容易达到这个目的。但还不是自动。我觉得所谓自动，就是人不用主动去做功罢了，但是还是需要能量来代替人的能量。这时候人们开始用一些其他的动能来源去替代人力做功，即自动化。</p>
+<p>后来人们开始使用一种更纯粹的能量形式–电能。电具有巨大能量。人们通过控制电这种能量来做功，进入了电气社会。发明了各种机械：电灯、汽车、轮船…。这些机械极大解放了人力，但是他们还需要人来控制，是一个有能量而无思想的工具。</p>
+<p>那么机械是否能够达到真正的自动，比如一辆汽车如果前方十米有一个障碍物我就自动停车而不用人来控制。那么我如何能够和器械进行交流，把我的这种思想传递给他？ 人们目前最常用的思想交流方式是语言，那么对于机器，我是否可以有一种语言和他们交流，让他们理解我的意图。</p>
+<p>语言是信息的载体，而传达信息简易的形式是二进制。通过二进制来向机器传达任务，自然成了最直接的方式。</p>
+<p>二进制是一种很底层的信息载体，当然，人们平时也可以用二进制来交流，比如摩尔斯点码。虽然不及一些高维信息载体方便，但是我们完全可以通过这种方式进行交流，我们的计算机初期也是这么做的。比如早期的程序载体–打孔纸带。后来为了便于理解，汇编语言逐渐演化开来，然后高级语言等等。</p>
+<p>那么我愿意相信，计算机出现的初衷就是使得机器具有<code>智能</code>，能够自动化做功。而具有这种智能的标志我目前认为不是能够识别某些东西，而是能够<code>交流</code>。如果能够加深这层交流，便可能更加智能化，这种智能的精髓在于使机器能够真正的理解交流，而不是去做单纯的聚类和识别。也许有一天，真的能够用机器来创造音乐。对我来说那是更高级，也是更直接的交流。</p>
+<p><img src="/media/other/15711300496425.png"></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2019/09/22/pl/" data-id="cl1d6sq9b0015ilw56wrg038c" data-title="闲谈PL" class="article-share-link">Share</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-tp5-config" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2019/09/19/tp5-config/" class="article-date">
+  <time class="dt-published" datetime="2019-09-18T16:00:00.000Z" itemprop="datePublished">2019-09-19</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2019/09/19/tp5-config/">TP5学习-配置文件</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>在ThinkPHP中[<a target="_blank" rel="noopener" href="https://www.kancloud.cn/manual/thinkphp5/118024">1]</a>，一般来说应用的配置文件是自动加载的， 加载的顺序是：</p>
+<blockquote>
+<p>惯例配置-&gt;应用配置-&gt;扩展配置-&gt;场景配置-&gt;模块配置-&gt;动态配置</p>
+</blockquote>
+<h1 id="0x01-配置介绍"><a href="#0x01-配置介绍" class="headerlink" title="0x01 配置介绍"></a>0x01 配置介绍</h1><ul>
+<li>惯例配置</li>
+</ul>
+<p>位于<code>thinkphp/convention.php</code>， 相当于系统的默认配置</p>
+<ul>
+<li>应用配置</li>
+</ul>
+<p>默认位于<code>application/config.php</code>，应用初始化时首先加载的公共配置文件,每个应用初始化的配置，这个是个文件夹，文件可对应<code>convention</code>中的一部分</p>
+<ul>
+<li>模块配置</li>
+</ul>
+<p>对应每个模块的配置文件</p>
+<ul>
+<li>动态配置</li>
+</ul>
+<p>RT</p>
+<h1 id="0x02-ArrayAccess"><a href="#0x02-ArrayAccess" class="headerlink" title="0x02 ArrayAccess"></a>0x02 ArrayAccess</h1><blockquote>
+<p>ArrayAccess提供像访问数组一样的方式访问对象的接口</p>
+</blockquote>
+<p>接口</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">ArrayAccess</span> &#123;</span><br><span class="line">    <span class="keyword">abstract</span> <span class="keyword">public</span> <span class="keyword">mixed</span> <span class="title function_ invoke__">offsetGet</span> ( <span class="keyword">mixed</span> <span class="variable">$offset</span> )</span><br><span class="line">    <span class="keyword">abstract</span> <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_ invoke__">offsetSet</span> ( <span class="keyword">mixed</span> <span class="variable">$offset</span> , <span class="keyword">mixed</span> <span class="variable">$value</span> )</span><br><span class="line">    <span class="keyword">abstract</span> <span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title function_ invoke__">offsetExists</span> ( <span class="keyword">mixed</span> <span class="variable">$offset</span> )</span><br><span class="line">    <span class="keyword">abstract</span> <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_ invoke__">offsetUnset</span> ( <span class="keyword">mixed</span> <span class="variable">$offset</span> )</span><br></pre></td></tr></table></figure>
+
+<p>实现</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ObjAray</span> <span class="keyword">implements</span> \<span class="title">ArrayAccess</span></span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="variable">$testdata</span> = [</span><br><span class="line">        <span class="string">&quot;title&quot;</span> =&gt; <span class="string">&quot;heheda&quot;</span>,</span><br><span class="line">    ];</span><br><span class="line">  </span><br><span class="line">		<span class="comment"># 判断存在  </span></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">offsetExists</span>(<span class="params"><span class="variable">$offset</span></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="comment">// <span class="doctag">TODO:</span> Implement offsetExists() method.</span></span><br><span class="line">        <span class="keyword">echo</span> <span class="string">&#x27;offsetExists&#x27;</span>. <span class="variable">$offset</span>;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">isset</span>(<span class="variable">$offset</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 获取</span></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">offsetGet</span>(<span class="params"><span class="variable">$offset</span></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="comment">// <span class="doctag">TODO:</span> Implement offsetGet() method.</span></span><br><span class="line">        <span class="keyword">echo</span> <span class="string">&#x27;offsetGet&#x27;</span>. <span class="variable">$offset</span>;</span><br><span class="line">        <span class="keyword">return</span> <span class="variable language_">$this</span>-&gt;testdata[<span class="variable">$offset</span>];</span><br><span class="line">    &#125;</span><br><span class="line">		</span><br><span class="line">    <span class="comment"># 设置</span></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">offsetSet</span>(<span class="params"><span class="variable">$offset</span>, <span class="variable">$value</span></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="comment">// <span class="doctag">TODO:</span> Implement offsetSet() method.</span></span><br><span class="line">        <span class="keyword">echo</span> <span class="string">&#x27;offsetSet&#x27;</span>. <span class="variable">$offset</span>;</span><br><span class="line">        <span class="variable">$offset</span> = <span class="variable">$value</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">  	<span class="comment"># 删除</span></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">offsetUnset</span>(<span class="params"><span class="variable">$offset</span></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="comment">// <span class="doctag">TODO:</span> Implement offsetUnset() method.</span></span><br><span class="line">        <span class="keyword">unset</span>(<span class="variable">$offset</span>);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>调用</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">obj</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="variable">$obj</span> = <span class="keyword">new</span> <span class="title class_">\ObjAray</span>();</span><br><span class="line"><span class="comment"># 像 数组一样使用</span></span><br><span class="line">    <span class="title function_ invoke__">var_dump</span>(<span class="variable">$obj</span>[<span class="string">&#x27;title&#x27;</span>]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="0x3-流程分析"><a href="#0x3-流程分析" class="headerlink" title="0x3 流程分析"></a>0x3 流程分析</h1><ol>
+<li>配置文件</li>
+</ol>
+<p> 通常是php，yaml格式需要安装扩展，tp还提供了一些其他格式(ini,json,xml)以驱动的方式通过工厂模式parse<br><img src="/media/tp5/15711298089923.png"></p>
+<ol start="2">
+<li>方法</li>
+</ol>
+<ul>
+<li>set: 设置配置</li>
+<li>get: 获得配置</li>
+</ul>
+<h2 id="加载"><a href="#加载" class="headerlink" title="加载"></a>加载</h2><p>系统从应用程序入口<code>run()</code>方法来到框架中的<code>initialize()</code>(\public\index.php -&gt; \library\think\App.php)，这里会调用初始化方法<code>init()</code>。<code>init()</code>中有自动读取配置文件模块。</p>
+<p>自动读取配置文件代码段</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">     <span class="comment">// 自动读取配置文件</span></span><br><span class="line">      <span class="comment"># 找config目录位置</span></span><br><span class="line">      <span class="keyword">if</span> (<span class="title function_ invoke__">is_dir</span>(<span class="variable">$path</span> . <span class="string">&#x27;config&#x27;</span>))</span><br><span class="line">      &#123;</span><br><span class="line">          <span class="variable">$dir</span> = <span class="variable">$path</span> . <span class="string">&#x27;config&#x27;</span> . DIRECTORY_SEPARATOR;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">elseif</span> (<span class="title function_ invoke__">is_dir</span>(<span class="variable">$this</span>-&gt;configPath . <span class="variable">$module</span>))</span><br><span class="line">      &#123;</span><br><span class="line">          <span class="variable">$dir</span> = <span class="variable language_">$this</span>-&gt;configPath . <span class="variable">$module</span>;</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 获得文件列表并加载</span></span><br><span class="line">      <span class="variable">$files</span> = <span class="keyword">isset</span>(<span class="variable">$dir</span>) ? <span class="title function_ invoke__">scandir</span>(<span class="variable">$dir</span>) : [];</span><br><span class="line"></span><br><span class="line">      <span class="keyword">foreach</span> (<span class="variable">$files</span> <span class="keyword">as</span> <span class="variable">$file</span>) &#123;</span><br><span class="line">        	<span class="comment">#.php</span></span><br><span class="line">          <span class="keyword">if</span> (<span class="string">&#x27;.&#x27;</span> . <span class="title function_ invoke__">pathinfo</span>(<span class="variable">$file</span>, PATHINFO_EXTENSION) === <span class="variable language_">$this</span>-&gt;configExt) &#123;</span><br><span class="line">              <span class="variable language_">$this</span>-&gt;config-&gt;<span class="title function_ invoke__">load</span>(<span class="variable">$dir</span> . <span class="variable">$file</span>, <span class="title function_ invoke__">pathinfo</span>(<span class="variable">$file</span>, PATHINFO_FILENAME));</span><br><span class="line">          &#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里加载配置文件会使用<code>load（）</code>方法</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 拿到文件路径和文件前缀(ex. ../cache.php, cache)</span></span><br><span class="line">  <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">load</span>(<span class="params"><span class="variable">$file</span>, <span class="variable">$name</span> = <span class="string">&#x27;&#x27;</span></span>)</span></span><br><span class="line"><span class="function">  </span>&#123;</span><br><span class="line">      <span class="keyword">if</span> (<span class="title function_ invoke__">is_file</span>(<span class="variable">$file</span>))</span><br><span class="line">      &#123;</span><br><span class="line">          <span class="variable">$filename</span> = <span class="variable">$file</span>;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">elseif</span> (<span class="title function_ invoke__">is_file</span>(<span class="variable">$this</span>-&gt;path . <span class="variable">$file</span> . <span class="variable">$this</span>-&gt;ext))</span><br><span class="line">      &#123;</span><br><span class="line">          <span class="variable">$filename</span> = <span class="variable language_">$this</span>-&gt;path . <span class="variable">$file</span> . <span class="variable language_">$this</span>-&gt;ext;</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      <span class="keyword">if</span> (<span class="keyword">isset</span>(<span class="variable">$filename</span>))</span><br><span class="line">      &#123;</span><br><span class="line">          <span class="comment"># 拿到php配置文件内容</span></span><br><span class="line">          <span class="keyword">return</span> <span class="variable language_">$this</span>-&gt;<span class="title function_ invoke__">loadFile</span>(<span class="variable">$filename</span>, <span class="variable">$name</span>);</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="comment">// Yaconf设置</span></span><br><span class="line">      <span class="keyword">elseif</span> (<span class="variable language_">$this</span>-&gt;yaconf &amp;&amp; <span class="title class_">Yaconf</span>::<span class="title function_ invoke__">has</span>(<span class="variable">$file</span>))</span><br><span class="line">      &#123;</span><br><span class="line">          <span class="keyword">return</span> <span class="variable language_">$this</span>-&gt;<span class="title function_ invoke__">set</span>(<span class="title class_">Yaconf</span>::<span class="title function_ invoke__">get</span>(<span class="variable">$file</span>), <span class="variable">$name</span>);</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">return</span> <span class="variable language_">$this</span>-&gt;config;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里会判断是否使用了<code>Yaconf</code>扩展[<a target="_blank" rel="noopener" href="http://www.laruence.com/2015/06/12/3051.html">2]</a>，如果使用了有一个标量可以判断然后进入这个块。然鹅我并没有用过这个。</p>
+<p>看加载文件的<code>loadFile()</code></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">protected</span> <span class="function"><span class="keyword">function</span> <span class="title">loadFile</span>(<span class="params"><span class="variable">$file</span>, <span class="variable">$name</span></span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="variable">$name</span> = <span class="title function_ invoke__">strtolower</span>(<span class="variable">$name</span>);</span><br><span class="line">    <span class="variable">$type</span> = <span class="title function_ invoke__">pathinfo</span>(<span class="variable">$file</span>, PATHINFO_EXTENSION);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (<span class="string">&#x27;php&#x27;</span> == <span class="variable">$type</span>)</span><br><span class="line">    &#123;</span><br><span class="line">       <span class="comment"># php配置文件-&gt;load-&gt;loadFile-&gt;set</span></span><br><span class="line">       <span class="keyword">return</span> <span class="variable language_">$this</span>-&gt;<span class="title function_ invoke__">set</span>(<span class="keyword">include</span> <span class="variable">$file</span>, <span class="variable">$name</span>);</span><br><span class="line">    &#125;</span><br><span class="line">  	<span class="comment"># 通过function_exists判断是否安装该模块</span></span><br><span class="line">    <span class="keyword">elseif</span> (<span class="string">&#x27;yaml&#x27;</span> == <span class="variable">$type</span> &amp;&amp; <span class="title function_ invoke__">function_exists</span>(<span class="string">&#x27;yaml_parse_file&#x27;</span>))</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="variable language_">$this</span>-&gt;<span class="title function_ invoke__">set</span>(<span class="title function_ invoke__">yaml_parse_file</span>(<span class="variable">$file</span>), <span class="variable">$name</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment"># 非php和yaml走到这</span></span><br><span class="line">    <span class="keyword">return</span> <span class="variable language_">$this</span>-&gt;<span class="title function_ invoke__">parse</span>(<span class="variable">$file</span>, <span class="variable">$type</span>, <span class="variable">$name</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>这里区分加载了上边说的三类配置文件类型，直接加载的<code>.php</code>文件，需要扩展的<code>.yaml</code>文件以及用工厂模式加载的那三类<code>(ini,json,xml)</code>。这个<code>parse</code>感兴趣的可以走走，跑路了:&gt;。</p>
+<h2 id="set"><a href="#set" class="headerlink" title="set"></a>set</h2><p>加载了文件，还需要<code>set</code>方法来设置配置</p>
+<p>如在加载<code>loadFile()</code>中加载应用配置的时候， 调用是 <code>return $this-&gt;set(include $file, $name);</code>而<code>set</code>方法接收是<code>public function set($name, $value = null)</code>就感觉很怪，可能我还没能理解意图。如传入<code>app.php</code>这个应用配置,<code>$name</code>是配置数组，而<code>$value</code>是文件名前缀。接下来如果是数组就进入批量设置，然后如果有<code>$this-&gt;config</code>就<code>array_merge</code>没有就创建一个。然后赋上<code>$name</code>,对<code>$name</code>是内容，<code>$value</code>应该是做key来用，代码我就不贴了哈。</p>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p>[<a target="_blank" rel="noopener" href="https://www.kancloud.cn/manual/thinkphp5/118024">1] ThinkPHP5.0完全开发手册</a></p>
+<p>[<a target="_blank" rel="noopener" href="http://www.laruence.com/2015/06/12/3051.html">2] Yaconf – 一个高性能的配置管理扩展</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2019/09/19/tp5-config/" data-id="cl1d6sq9n0022ilw5hja97rlm" data-title="TP5学习-配置文件" class="article-share-link">Share</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-tp5-autoload" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2019/09/06/tp5-autoload/" class="article-date">
+  <time class="dt-published" datetime="2019-09-05T16:00:00.000Z" itemprop="datePublished">2019-09-06</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2019/09/06/tp5-autoload/">TP5学习-自动加载</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="0x01-注册自动加载"><a href="#0x01-注册自动加载" class="headerlink" title="0x01 注册自动加载"></a>0x01 注册自动加载</h1><p>在tp5中，从<code>base.php</code>载入框架，第一件事就是实现自动加载。</p>
+<p>首先，载入<code>Loader</code>类</p>
+<p><code>thinkphp\base.php</code></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">require</span> think;</span><br><span class="line"><span class="keyword">require</span> <span class="keyword">__DIR__</span>.<span class="string">&#x27;library/think/Loader.php&#x27;</span>;</span><br><span class="line"><span class="comment"># 调用的第一个方法</span></span><br><span class="line"><span class="title class_">Loader</span>::<span class="title function_ invoke__">register</span>();</span><br></pre></td></tr></table></figure>
+
+
+
+<p><code>thinkphp\library\think\Loader.php</code></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 注册自动加载机制</span></span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">static</span> <span class="function"><span class="keyword">function</span> <span class="title">register</span>(<span class="params"><span class="variable">$autoload</span> = <span class="string">&#x27;&#x27;</span></span>)</span>&#123;</span><br><span class="line">        <span class="comment">// 注册系统自动加载</span></span><br><span class="line">        <span class="comment"># 当类找不到时候， 调用`autoload`方法</span></span><br><span class="line">        <span class="title function_ invoke__">spl_autoload_register</span>(<span class="variable">$autoload</span> ?: <span class="string">&#x27;think\\Loader::autoload&#x27;</span>, <span class="literal">true</span>, <span class="literal">true</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 根目录</span></span><br><span class="line">        <span class="variable">$rootPath</span> = <span class="built_in">self</span>::<span class="title function_ invoke__">getRootPath</span>();</span><br><span class="line"></span><br><span class="line">  <span class="comment"># 首先加载的是composer里的内容,定位到vendor/composer</span></span><br><span class="line">  <span class="built_in">self</span>::<span class="variable">$composerPath</span> = <span class="variable">$rootPath</span> . <span class="string">&#x27;vendor&#x27;</span> . DIRECTORY_SEPARATOR . <span class="string">&#x27;composer&#x27;</span> . DIRECTORY_SEPARATOR;</span><br><span class="line">  </span><br><span class="line">  <span class="comment"># 然后就可以自动加载支持</span></span><br><span class="line">  </span><br><span class="line">  </span><br><span class="line"><span class="comment">// Composer自动加载支持</span></span><br><span class="line"><span class="keyword">if</span> (<span class="title function_ invoke__">is_dir</span>(<span class="built_in">self</span>::<span class="variable">$composerPath</span>))</span><br><span class="line">   &#123;</span><br><span class="line">    <span class="comment"># 找compsoer 下的`autoload_static.php`文件</span></span><br><span class="line">    <span class="keyword">if</span> (<span class="title function_ invoke__">is_file</span>(<span class="built_in">self</span>::<span class="variable">$composerPath</span> . <span class="string">&#x27;autoload_static.php&#x27;</span>))</span><br><span class="line">      <span class="keyword">require</span> <span class="built_in">self</span>::<span class="variable">$composerPath</span> . <span class="string">&#x27;autoload_static.php&#x27;</span>;</span><br><span class="line">      <span class="comment"># 内置函数：get_declared_classes()</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="Composer自动加载支持"><a href="#Composer自动加载支持" class="headerlink" title="Composer自动加载支持"></a>Composer自动加载支持</h2><p>首先自动加载的是composer里的内容，composer的内容默认在vendor中。</p>
+<p>他会去找其中的<code>autoload_static.php</code>这里边有两个数组：</p>
+<ol>
+<li>$prefixLengthsPsr4：二维数组，先通过索引找命名空间，再映射到命名空间名的长度，以替换成路径。</li>
+<li>$prefixDirPsr4：命名空间到他的路径位置索引</li>
+</ol>
+<p>这里存在一个问题， <code>autoload_Static.php</code>里的类名是随机的：这里存在一个问题， <code>autoload_Static.php</code>里的类名是随机的：</p>
+<p><img src="/media/tp5/image-20190906195031150.png"></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 拿到类名后检查类中是否存在指定属性</span></span><br><span class="line">              <span class="keyword">foreach</span> ([<span class="string">&#x27;prefixLengthsPsr4&#x27;</span>, <span class="string">&#x27;prefixDirsPsr4&#x27;</span>, <span class="string">&#x27;fallbackDirsPsr4&#x27;</span>, <span class="string">&#x27;prefixesPsr0&#x27;</span>, <span class="string">&#x27;fallbackDirsPsr0&#x27;</span>, <span class="string">&#x27;classMap&#x27;</span>, <span class="string">&#x27;files&#x27;</span>] <span class="keyword">as</span> <span class="variable">$attr</span>)</span><br><span class="line">              &#123;</span><br><span class="line">                  <span class="keyword">if</span> (<span class="title function_ invoke__">property_exists</span>(<span class="variable">$composerClass</span>, <span class="variable">$attr</span>))</span><br><span class="line">                  &#123;</span><br><span class="line">                      <span class="comment"># 有的话就注册该属性</span></span><br><span class="line">                      <span class="built_in">self</span>::$&#123;<span class="variable">$attr</span>&#125; = <span class="variable">$composerClass</span>::$&#123;<span class="variable">$attr</span>&#125;;</span><br><span class="line">                  &#125;</span><br><span class="line">              &#125;</span><br><span class="line">          &#125;</span><br><span class="line">          <span class="keyword">else</span></span><br><span class="line">          &#123;   </span><br><span class="line">              <span class="comment"># 如果composer中没有`autoload_static.php`通过这里分别加载:</span></span><br><span class="line">            	<span class="comment"># `autoload_namespaces` `autoload_psr4` `autoload_classmap` `autoload_files`</span></span><br><span class="line">              <span class="built_in">self</span>::<span class="title function_ invoke__">registerComposerLoader</span>(<span class="built_in">self</span>::<span class="variable">$composerPath</span>);</span><br><span class="line">          &#125;</span><br><span class="line">      &#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们通过<code>composer</code>加载的组件都可以通过这里加载框架中有引用。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 注册命名空间定义</span></span><br><span class="line">       <span class="built_in">self</span>::<span class="title function_ invoke__">addNamespace</span>([</span><br><span class="line">           <span class="string">&#x27;think&#x27;</span>  =&gt; <span class="keyword">__DIR__</span>,</span><br><span class="line">           <span class="string">&#x27;traits&#x27;</span> =&gt; <span class="title function_ invoke__">dirname</span>(<span class="keyword">__DIR__</span>) . DIRECTORY_SEPARATOR . <span class="string">&#x27;traits&#x27;</span>,</span><br><span class="line">       ]);</span><br></pre></td></tr></table></figure>
+
+<p>这里找到了<code>thinkphp/library/</code>目录下的两个文件夹，是框架级的类库。将这两个路径以数组的形式传入<code>addNamespace</code>方法</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 注册命名空间</span></span><br><span class="line">   <span class="keyword">public</span> <span class="built_in">static</span> <span class="function"><span class="keyword">function</span> <span class="title">addNamespace</span>(<span class="params"><span class="variable">$namespace</span>, <span class="variable">$path</span> = <span class="string">&#x27;&#x27;</span></span>)</span></span><br><span class="line"><span class="function">   </span>&#123;</span><br><span class="line">       <span class="comment"># 列出 thinkphp/library/ 目录下的两个文件夹</span></span><br><span class="line">       <span class="keyword">if</span> (<span class="title function_ invoke__">is_array</span>(<span class="variable">$namespace</span>)) &#123;</span><br><span class="line">           <span class="keyword">foreach</span> (<span class="variable">$namespace</span> <span class="keyword">as</span> <span class="variable">$prefix</span> =&gt; <span class="variable">$paths</span>) &#123;</span><br><span class="line">               <span class="comment"># 调用此方法加载框架里的内容</span></span><br><span class="line">               <span class="built_in">self</span>::<span class="title function_ invoke__">addPsr4</span>(<span class="variable">$prefix</span> . <span class="string">&#x27;\\&#x27;</span>, <span class="title function_ invoke__">rtrim</span>(<span class="variable">$paths</span>, DIRECTORY_SEPARATOR), <span class="literal">true</span>);</span><br><span class="line">           &#125;</span><br><span class="line">       &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">           <span class="built_in">self</span>::<span class="title function_ invoke__">addPsr4</span>(<span class="variable">$namespace</span> . <span class="string">&#x27;\\&#x27;</span>, <span class="title function_ invoke__">rtrim</span>(<span class="variable">$path</span>, DIRECTORY_SEPARATOR), <span class="literal">true</span>);</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里是数组，就解数组然后通过<code>addPsr4</code>这个方法将该属性注册到之前<code>composer</code>加载的类库中。与其合并在<code>$prefixLengthsPsr4</code>和<code>$prefixDirPsr4</code>当中。</p>
+<h2 id="类库映射文件以及extend目录"><a href="#类库映射文件以及extend目录" class="headerlink" title="类库映射文件以及extend目录"></a>类库映射文件以及extend目录</h2><ul>
+<li>类库映射关系，效率会比通过命名空间定位更高[<a target="_blank" rel="noopener" href="https://www.kancloud.cn/manual/thinkphp5/118015">1]</a></li>
+</ul>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 加载类库映射文件</span></span><br><span class="line">    <span class="keyword">if</span> (<span class="title function_ invoke__">is_file</span>(<span class="variable">$rootPath</span> . <span class="string">&#x27;runtime&#x27;</span> . DIRECTORY_SEPARATOR . <span class="string">&#x27;classmap.php&#x27;</span>))</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="comment"># 此文件为runtime文件夹下通过`php think optimiz:autoload`生成的`classmap.php`文件</span></span><br><span class="line">        <span class="built_in">self</span>::<span class="title function_ invoke__">addClassMap</span>(<span class="title function_ invoke__">__include_file</span>(<span class="variable">$rootPath</span> . <span class="string">&#x27;runtime&#x27;</span> . DIRECTORY_SEPARATOR . <span class="string">&#x27;classmap.php&#x27;</span>));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 自动加载extend目录</span></span><br><span class="line">    <span class="comment"># 用户扩展,可以在此导入用户自建的类库，供上层应用使用</span></span><br><span class="line">    <span class="built_in">self</span>::<span class="title function_ invoke__">addAutoLoadDir</span>(<span class="variable">$rootPath</span> . <span class="string">&#x27;extend&#x27;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>通过<code>addClassMap</code>方法来实现类别名的映射，类库映射文件通过<code>php think optimiz:autoload</code>命令在<code>runtime</code>目录下生成。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 注册classmap</span></span><br><span class="line"><span class="keyword">public</span> <span class="built_in">static</span> <span class="function"><span class="keyword">function</span> <span class="title">addClassMap</span>(<span class="params"><span class="variable">$class</span>, <span class="variable">$map</span> = <span class="string">&#x27;&#x27;</span></span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="title function_ invoke__">is_array</span>(<span class="variable">$class</span>)) &#123;</span><br><span class="line">        <span class="built_in">self</span>::<span class="variable">$classMap</span> = <span class="title function_ invoke__">array_merge</span>(<span class="built_in">self</span>::<span class="variable">$classMap</span>, <span class="variable">$class</span>);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="built_in">self</span>::<span class="variable">$classMap</span>[<span class="variable">$class</span>] = <span class="variable">$map</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>将<code>$class</code>都导入到了<code>self::$classMap</code>的静态属性中。</p>
+<p>接下来，加载<code>extend</code>目录，这个目录下通常编写一些用户的基础类库，为了上层应用能加载到他。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 自动加载extend目录</span></span><br><span class="line">     <span class="comment"># 用户扩展</span></span><br><span class="line">     <span class="built_in">self</span>::<span class="title function_ invoke__">addAutoLoadDir</span>(<span class="variable">$rootPath</span> . <span class="string">&#x27;extend&#x27;</span>);</span><br></pre></td></tr></table></figure>
+
+<h1 id="0x02-使用流程"><a href="#0x02-使用流程" class="headerlink" title="0x02 使用流程"></a>0x02 使用流程</h1><p>在<code>base.php</code>中注册自动加载完成后开始注册错误和异常处理机制<code>Error::register();</code>这个类不存在，激活<code>spl_autoload_register</code>调用<code>autoload</code>方法传入<code>think\Error</code>：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"> <span class="comment">// 自动加载</span></span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">static</span> <span class="function"><span class="keyword">function</span> <span class="title">autoload</span>(<span class="params"><span class="variable">$class</span></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 是否存在别名</span></span><br><span class="line">      	<span class="comment"># 这里的别名在`base.php`最后一步有加载一个别名列表</span></span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">isset</span>(<span class="built_in">self</span>::<span class="variable">$classAlias</span>[<span class="variable">$class</span>]))</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="comment"># 调用内部函数`class_alias`注册一个别名</span></span><br><span class="line">            <span class="keyword">return</span> <span class="title function_ invoke__">class_alias</span>(<span class="built_in">self</span>::<span class="variable">$classAlias</span>[<span class="variable">$class</span>], <span class="variable">$class</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (<span class="variable">$file</span> = <span class="built_in">self</span>::<span class="title function_ invoke__">findFile</span>(<span class="variable">$class</span>))</span><br><span class="line">        &#123;</span><br><span class="line"></span><br><span class="line">            <span class="comment">// Win环境严格区分大小写</span></span><br><span class="line">            <span class="keyword">if</span> (<span class="title function_ invoke__">strpos</span>(PHP_OS, <span class="string">&#x27;WIN&#x27;</span>) !== <span class="literal">false</span> &amp;&amp; <span class="title function_ invoke__">pathinfo</span>(<span class="variable">$file</span>, PATHINFO_FILENAME) != <span class="title function_ invoke__">pathinfo</span>(<span class="title function_ invoke__">realpath</span>(<span class="variable">$file</span>), PATHINFO_FILENAME))</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="title function_ invoke__">__include_file</span>(<span class="variable">$file</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里主要是调用了<code>self::findFile</code>这个方法， 这里会查找类库映射找到</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">think/Error = /Applications/MAMP/htdocs/learn_tp5/learn_tp5/thinkphp/library//think/Error.php</span><br></pre></td></tr></table></figure>
+
+<p>通过这条映射将该文件加载。如果没找到就会向后找注册Psr4属性(classMap-&gt;prefix-&gt;fallback)。再比如把<code>runtime</code>下的类库映射文件<code>classmap.php</code>删除，就会触发 <code>查找 PSR-4</code>这一段：</p>
+<p><img src="/media/tp5/15711294662916.png"></p>
+<p>如果我们开发了一个类库，放入到<code>extends</code>文件夹下，如：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//extend/mytools/sayHi.php</span></span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">  </span><br><span class="line"><span class="keyword">namespace</span> <span class="title class_">mytools</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">sayHi</span></span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">static</span> <span class="function"><span class="keyword">function</span> <span class="title">sayHi</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">        <span class="keyword">echo</span> <span class="string">&#x27;Hi~&#x27;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>在控制器中即可加载：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="keyword">namespace</span> <span class="title class_">app</span>\<span class="title class_">index</span>\<span class="title class_">controller</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">use</span> <span class="title">mytools</span>\<span class="title">sayHi</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Index</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">  	<span class="comment">//...</span></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">test</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">        say<span class="title class_">Hi</span>::<span class="title function_ invoke__">sayHi</span>();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="0x03-原理"><a href="#0x03-原理" class="headerlink" title="0x03 原理"></a>0x03 原理</h1><p>这一部分涉及了<code>spl_autoload_register</code>，<code>命名空间</code>以及<code>Psr4</code>的知识可参考[<a target="_blank" rel="noopener" href="https://www.cnblogs.com/woider/p/6443854.html">2]</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2019/09/06/tp5-autoload/" data-id="cl1d6sq9n0020ilw5cn0xg8x2" data-title="TP5学习-自动加载" class="article-share-link">Share</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-php_parser" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2019/09/01/php_parser/" class="article-date">
+  <time class="dt-published" datetime="2019-08-31T16:00:00.000Z" itemprop="datePublished">2019-09-01</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2019/09/01/php_parser/">PHP-Parser使用</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="0x01-Introduction"><a href="#0x01-Introduction" class="headerlink" title="0x01 Introduction"></a>0x01 Introduction</h1><p>PHP-Parser是基于PHP内部词法分析方法token_get_all来实现的一个抽象语法树(AST)分析工具。</p>
+<ul>
+<li>参考： PHP-Parser</li>
+</ul>
+<h1 id="0x02-使用"><a href="#0x02-使用" class="headerlink" title="0x02 使用"></a>0x02 使用</h1><h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p>使用composer 安装</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">composer require nikic/php-parser</span><br></pre></td></tr></table></figure>
+
+<h2 id="基本用法"><a href="#基本用法" class="headerlink" title="基本用法"></a>基本用法</h2><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//加载</span></span><br><span class="line"><span class="keyword">require_once</span> <span class="string">&quot;vendor/autoload.php&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">//声明命名空间</span></span><br><span class="line"><span class="keyword">use</span> <span class="title">PhpParser</span>\<span class="title">Error</span>;</span><br><span class="line"><span class="keyword">use</span> <span class="title">PhpParser</span>\<span class="title">ParserFactory</span>;</span><br><span class="line"><span class="keyword">use</span> <span class="title">PhpPaser</span>\<span class="title">NodeDumper</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">//载入内容</span></span><br><span class="line"><span class="variable">$code</span> = <span class="title function_ invoke__">file_get_content</span>(<span class="string">&#x27;target.php&#x27;</span>);</span><br><span class="line"><span class="comment">//初始化parser实例(这里使用了工厂模式)</span></span><br><span class="line"><span class="variable">$parser</span> =  (<span class="keyword">new</span> <span class="title class_">ParserFactory</span>())-&gt;<span class="title function_ invoke__">create</span>(<span class="title class_">ParserFactory</span>::<span class="variable constant_">PREFER_PHP7</span>); </span><br><span class="line"></span><br><span class="line"><span class="variable">$nodeDumper</span> = <span class="keyword">new</span> <span class="title class_">NodeDumper</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">//解析</span></span><br><span class="line"><span class="keyword">try</span>&#123;</span><br><span class="line">  	<span class="variable">$stmts</span> = <span class="variable">$parser</span>-&gt;<span class="title function_ invoke__">parse</span>(<span class="variable">$code</span>);</span><br><span class="line">		<span class="keyword">echo</span> <span class="variable">$nodeDumper</span>-&gt;<span class="title function_ invoke__">dump</span>(<span class="variable">$stmts</span>),<span class="string">&quot;\n&quot;</span>;</span><br><span class="line">&#125;<span class="keyword">catch</span> (<span class="built_in">Error</span> <span class="variable">$e</span>)&#123;</span><br><span class="line">  	<span class="keyword">echo</span> <span class="string">&#x27;Parse Error: &#x27;</span>, <span class="variable">$e</span>-&gt;<span class="title function_ invoke__">getMessage</span>();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>比如<code>target.php</code>的内容是:</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span> <span class="variable">$a</span> = <span class="number">1</span>;<span class="meta">?&gt;</span><span class="comment">//要加php标签</span></span><br></pre></td></tr></table></figure>
+
+<p>那么输出:</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">array</span>( <span class="number">0</span>: <span class="title function_ invoke__">Stmt_Expression</span>( <span class="attr">expr</span>: <span class="title function_ invoke__">Expr_Assign</span>( <span class="attr">var</span>: <span class="title function_ invoke__">Expr_Variable</span>( <span class="attr">name</span>: a ) <span class="attr">expr</span>: <span class="title function_ invoke__">Scalar_LNumber</span>( <span class="attr">value</span>: <span class="number">1</span> ) ) ) )</span><br></pre></td></tr></table></figure>
+
+<p>可以看到输出为一个节点数组，这里只有一行，因此只有一个元素。 可以看你到每个节点都是(类型_节点名)表示，在<code>nikic\lib\PhpParser\Node</code>节点下定义，因为在PHP中有大约140种不同的节点[<a target="_blank" rel="noopener" href="https://github.com/nikic/PHP-Parser/blob/master/doc/2_Usage_of_basic_components.markdown">1]</a>，这里大致分为了三类:</p>
+<ul>
+<li><strong>PhpParser\Node\Stmt: 声明节点(statement nodes)，一些声明性的内容，如声明一个类，不具有返回值。</strong></li>
+<li><strong>PhpParser\Node\Expr: 表达式节点(expression nodes)，具有返回值，且能在其他表达式中调用的。</strong></li>
+<li><strong>PhpParser\Node\Scalar: 纯量节点(scalar values)， 包含字符串，数字，常量等。</strong></li>
+</ul>
+<p>还有一些节点不在次三类中。</p>
+<h2 id="节点遍历"><a href="#节点遍历" class="headerlink" title="节点遍历"></a>节点遍历</h2><p>在解析AST的时候<code>PHP-Parser</code>提供了四个钩子，分别在遍历前和遍历后执行<code>beforeTraverse</code>和<code>afterTravers</code>在访问每一个节点时执行<code>enterNode</code>和<code>leaveNode</code>。我们需要写一个Visitor子类来描述我们要在这个步骤上做什么。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> <span class="title">PhpParser</span>\<span class="title">Node</span>;</span><br><span class="line"><span class="keyword">use</span> <span class="title">PhpParser</span>\<span class="title">NodeVisitorAbstract</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyNodeVisitor</span> <span class="keyword">extends</span> <span class="title">NodeVisitorAbstract</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">leaveNode</span>(<span class="params">Node <span class="variable">$node</span></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="variable">$node</span> <span class="keyword">instanceof</span> Node\Scalar\String_) &#123;</span><br><span class="line">            <span class="variable">$node</span>-&gt;value = <span class="string">&#x27;foo&#x27;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这是官方的例子， 描述的是在访问每一个节点后将所有的字符串内容变为<code>foo</code></p>
+<p>我们可以根据上面描述的几类节点更改。比如我要把所有变量名改成<code>var</code></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (<span class="variable">$node</span> <span class="keyword">instanceof</span> Node\Expr\Variable)&#123;</span><br><span class="line">         <span class="variable">$node</span>-&gt;name = <span class="string">&#x27;var&#x27;</span>;</span><br><span class="line">     &#125;</span><br></pre></td></tr></table></figure>
+
+<p>遍历一个节点的时候<code>enterNode</code>比<code>leaveNode</code>先执行， 在使用<code>enterNode</code>的时候节点的子节点还没有访问，一次我们可以使用<code>NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN</code>等来进行访问控制。具体参照官方文档[<a target="_blank" rel="noopener" href="https://github.com/nikic/PHP-Parser/blob/master/doc/component/Lexer.markdown">2]</a></p>
+<p>例子： 比如我们要对一个php中的函数进行切片，可以使用简单的例子：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">se PhpParser\Node;</span><br><span class="line"><span class="keyword">use</span> <span class="title">PhpParser</span>\<span class="title">NodeFinder</span>;</span><br><span class="line"><span class="keyword">use</span> <span class="title">PhpParser</span>\<span class="title">ParserFactory</span>;</span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> $file_name</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> mixed</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getFunctionsInfo</span>(<span class="params"><span class="variable">$file_name</span></span>)</span>&#123;</span><br><span class="line">    <span class="variable">$parser</span> = (<span class="keyword">new</span> <span class="title class_">ParserFactory</span>())-&gt;<span class="title function_ invoke__">create</span>(<span class="title class_">ParserFactory</span>::<span class="variable constant_">PREFER_PHP7</span>);</span><br><span class="line"></span><br><span class="line">    <span class="variable">$code</span> = <span class="title function_ invoke__">file_get_contents</span>(<span class="variable">$file_name</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">try</span>&#123;</span><br><span class="line">        <span class="variable">$stmts</span> =  <span class="variable">$parser</span>-&gt;<span class="title function_ invoke__">parse</span>(<span class="variable">$code</span>);</span><br><span class="line"></span><br><span class="line">        <span class="variable">$nodeFinder</span> = <span class="keyword">new</span> <span class="title class_">NodeFinder</span>;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Find all function nodes.</span></span><br><span class="line">        <span class="variable">$functions</span>  = <span class="variable">$nodeFinder</span>-&gt;<span class="title function_ invoke__">findInstanceOf</span>(<span class="variable">$stmts</span>, <span class="title class_">Node\Stmt\Function_</span>::<span class="variable language_">class</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">catch</span> (<span class="built_in">Error</span> <span class="variable">$e</span>)&#123;</span><br><span class="line">        <span class="keyword">echo</span> <span class="string">&#x27;Parse Error: &#x27;</span>, <span class="variable">$e</span>-&gt;<span class="title function_ invoke__">getMessage</span>();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="keyword">foreach</span> (<span class="variable">$functions</span> <span class="keyword">as</span> <span class="variable">$k</span>=&gt;<span class="variable">$v</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="variable">$function_name</span> = <span class="variable">$v</span>-&gt;name-&gt;name;</span><br><span class="line">        <span class="variable">$function_lines</span>= <span class="variable">$v</span>-&gt;<span class="title function_ invoke__">getAttributes</span>();</span><br><span class="line">        <span class="variable">$functions_info</span>[<span class="variable">$function_name</span>] = <span class="variable">$function_lines</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="variable">$functions_info</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里使用了<code>NodeFinder</code>这个更简便的操作[<a target="_blank" rel="noopener" href="https://github.com/nikic/PHP-Parser/blob/master/doc/component/Walking_the_AST.markdown">3]</a>。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2019/09/01/php_parser/" data-id="cl1d6sq9a0013ilw5acs3e7ma" data-title="PHP-Parser使用" class="article-share-link">Share</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-Git_Leak" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2019/03/25/Git_Leak/" class="article-date">
+  <time class="dt-published" datetime="2019-03-24T16:00:00.000Z" itemprop="datePublished">2019-03-25</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2019/03/25/Git_Leak/">git隐私泄露</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h3 id="0x01-Github平台的信息"><a href="#0x01-Github平台的信息" class="headerlink" title="0x01 Github平台的信息"></a>0x01 Github平台的信息</h3><p>Github做为全球最大的代码托管(tongxingjiaoyou)平台，有着令人惊讶的数据量。您除了会在其中泄露一些个人信息，最重要的就是源码。你的项目可能出卖了你。最有名的事件大概就是18年8月发生的华住5亿数据泄露。此事件的缘起，据说就是开发人员将数据库的套接字与口令直接上传到了github库中。</p>
+<p><img src="https://i.guancha.cn/news/social/2018/08/28/20180828140050752.jpg" alt="img"></p>
+<p>如今，各种Github泄露监控软件如雨后春笋板的出现。说道Github信息泄露，就不得不说今年ndss上发布的那篇-“How Bad Can It Git? Characterizing Secret Leakage in Public GitHub Repositories ”，哈哈哈哈哈哈哈。</p>
+<h3 id="0x02-论文"><a href="#0x02-论文" class="headerlink" title="0x02 论文"></a>0x02 论文</h3><ul>
+<li><p>原文作者：Michael Meli, Matthew R.McNiece, Bradley Reaves</p>
+</li>
+<li><p>原文标题：How Bad Can It Git? Characterizing Secret Leakage in Public GitHub Repositories </p>
+</li>
+<li><p>原文会议：the 26th Annual Network and Distributed System Security Symposium, NDSS 2019</p>
+</li>
+</ul>
+<p>该团队来自北卡罗来纳州立大学(NCSU)，主要关心的是在开源代码库中，私有证书的管理。这篇文章六个月内扫描了Github上13%的公共代码库，发现了超过10万代码库泄露了API令牌和加密密钥。</p>
+<p>API Key作为接口间通信的长期身份认证令牌，一旦泄漏即可绕过认证系统。</p>
+<p><img src="/media/Other_Git_Leak/1.png" alt="1"></p>
+<p>本文获取这些敏感信息的过程如下：</p>
+<ul>
+<li><p>0: 总结这些敏感信息的规律，称之为Distinct Secrets。</p>
+</li>
+<li><p>1(1a, 1b): 总结根据这些规律通过GitHub API 和 Google Github Snapshot（两者互补）收集潜在的代码和数据文件。形成Candidate Files。</p>
+</li>
+<li><p>2: 对Candidate Files中的Distinct Secrets进行正则，形成Candidate Secrets。</p>
+</li>
+<li><p>3:（3a, 3b, 3c）对Candidate Secrets进行三层过滤(熵\词法\结构模式)，形成Valid Secret。</p>
+</li>
+</ul>
+<p>本系统遵循这些敏感信息的内容是有规律可循的。下表为一些有迹可循的popular API keys和Asymmetric Private Keys。</p>
+<p><img src="/media/Other_Git_Leak/2.png" alt="2"></p>
+<p>从文中看，这个系统的实验效果还是比较好的。文章从以下几个方面进行分析。</p>
+<ul>
+<li>私有或者公有隐私信息</li>
+</ul>
+<p><img src="/media/Other_Git_Leak/3.png" alt="3"></p>
+<p>从这张表可以看出，在实际数据采集分析后。目标隐私信息的私密度非常的高。</p>
+<ul>
+<li><p>平行泄露</p>
+<p>即有些应用不能单方面的使用必须有”multi-factor”才能触发。如Google OAuth IDs必须同时找到OAuth Secret。而研究表明这种”parallel secrets”通常会在隐私数据前后五行内平行泄露。</p>
+</li>
+</ul>
+<p><img src="/media/Other_Git_Leak/4.png" alt="4"></p>
+<ul>
+<li><p>隐私存活周期</p>
+<p>研究者功能总泄密项目，观察所有者是否会发现，监控每小时探测一次。发现大约6%的用户在泄密一小时后发现并删除。19%会在两周后移除。然而这些删除掉的隐私通常仍然可以在git历史中访问。</p>
+</li>
+</ul>
+<p><img src="/media/Other_Git_Leak/5.png" alt="5"></p>
+<ul>
+<li>文章还分析了RSA Key Leakage, Number of Encrypted Keys以及OpenVPN Config等隐私数据泄露。总之，公共开源项目中泄露的大量的私密信息。NCSU团队表示，他们在10万个GitHub项目中总共发现了575,456个API和密钥，其中201,642个是独立的。</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2019/03/25/Git_Leak/" data-id="cl1d6sq8x0005ilw5hjbzhj1e" data-title="git隐私泄露" class="article-share-link">Share</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-php_object_inject" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2018/11/10/php_object_inject/" class="article-date">
+  <time class="dt-published" datetime="2018-11-09T16:00:00.000Z" itemprop="datePublished">2018-11-10</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2018/11/10/php_object_inject/">POP链</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>在二进制安全领域，<code>Return-oriented programming(ROP)</code>是一种常用的绕过防护攻击方式。攻击者可以利用内存中已有的程序片段（称作<code>gadgets</code>），通过汇集这些程序片构建一个攻击途径(称作<code>gadget chains</code>)。<br>在2009年，Esser提出这种代码复用产生攻击的思想在PHP系统中同样适用[1][2]。</p>
+<h2 id="0x01-PHP对象注入攻击"><a href="#0x01-PHP对象注入攻击" class="headerlink" title="0x01 PHP对象注入攻击"></a>0x01 PHP对象注入攻击</h2><p>PHP对象注入攻击本质上属于一种代码复用技术。那么为何代码可以复用？得益于魔术方法，在一定的条件下魔术方法可以不被调用直接触发，得以代码复用。<br>这种触发形式层层相扣，在魔术方法中触发另一个类的魔术方法，这便形成了POP链。<br><img src="/media/Audit_php_object_inject/1.png" alt="1"></p>
+<p>POP链的入口点在哪？<br>触发魔术方法，我们需要这个类在内存中的对象值。而像数组、对象这种复杂数据结构在非内存使用的情况下通常是以序列化形式存在。我的理解是将复杂数据结构转化成另一中便于存储或者传输的形式存在，比如存入数据库，显然一个字符串更合适。当程序调用时在还原成原来的形式调入内存，这就是反序列化。<br>反序列化的对象当然能触发类中的魔术方法，从而触发POP链。</p>
+<blockquote>
+<p>string serialize ( mixed $value )<br>serialize() 返回字符串，此字符串包含了表示 value 的字节流，可以存储于任何地方。<br>这有利于存储或传递 PHP 的值，同时不丢失其类型和结构。</p>
+</blockquote>
+<h2 id="0x02-TypechoPOP链"><a href="#0x02-TypechoPOP链" class="headerlink" title="0x02 TypechoPOP链"></a>0x02 TypechoPOP链</h2><p>typecho&#x2F;install.php<br><img src="/media/Audit_php_object_inject/2.jpg" alt="2"><br><strong>第230行反序列化操作，在内存中还原数据。<br>第232行new了一个Db类，触发指定__construct函数，参数可控</strong><br><img src="/media/Audit_php_object_inject/3.jpg" alt="3"><br><strong>第120行进行了字符串连接操作，如果$adapterName是一个object结构数据，触发__toString函数。</strong></p>
+<blockquote>
+<p>在项目中搜索包含__toString方法的任意类</p>
+</blockquote>
+<p><img src="/media/Audit_php_object_inject/4.jpg" alt="4"></p>
+<blockquote>
+<p>搜索项目发现了3处包含__toString方法的<br>找到下一个可利用的魔术方法点或者漏洞触发点</p>
+</blockquote>
+<p>Typecho&#x2F;Feed.php-&gt;__toString()<br><img src="/media/Audit_php_object_inject/5.jpg" alt="5"><br>…<br><img src="/media/Audit_php_object_inject/5.jpg" alt="6"><br><strong>在第290行，出现了object-&gt;attr结构，对象名可控，此时，只要类内不包含screenName这个属性，便会触发__get方法。</strong></p>
+<blockquote>
+<p>在项目中搜索包含__get方法&amp;&amp;没有screenName属性的任意类</p>
+</blockquote>
+<p><img src="/media/Audit_php_object_inject/7.jpg" alt="7"><br><strong>搜索项目发现了13处包含__get方法的类（盗图）</strong></p>
+<blockquote>
+<p>找到下一个可利用的魔术方法点或者漏洞触发点</p>
+</blockquote>
+<p>&#x2F;Typecho&#x2F;Request.php<br><img src="/media/Audit_php_object_inject/8.jpg" alt="8"><br>调函数<br><img src="/media/Audit_php_object_inject/9.jpg" alt="9"><br>再调函数<br><img src="/media/Audit_php_object_inject/10.jpg" alt="10"><br><strong>最终跳到了第164行，两个参数都可控，命令执行。</strong><br><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2018-11-07-112511.jpg"><br>简单总结一下：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//install.php</span></span><br><span class="line"><span class="variable">$config</span>=<span class="title function_ invoke__">unserialize</span>(<span class="title function_ invoke__">base64_decode</span>(<span class="title class_">Typecho_Cookie</span>::<span class="title function_ invoke__">get</span>(<span class="string">&#x27;__typecho_config&#x27;</span>)));</span><br><span class="line"><span class="variable">$db</span>=<span class="keyword">new</span> <span class="title class_">Typecho_Db</span>(<span class="variable">$config</span>[<span class="string">&#x27;adapter&#x27;</span>], <span class="variable">$config</span>[<span class="string">&#x27;prefix&#x27;</span>\]);</span><br><span class="line"></span><br><span class="line"><span class="comment">//Db.php</span></span><br><span class="line">Public <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params"><span class="variable">$adapterName</span>,<span class="variable">$prefix</span>=<span class="string">&#x27;typecho_&#x27;</span></span>) </span></span><br><span class="line"><span class="function">$<span class="title">adapterName</span>=&#x27;<span class="title">Typecho_Db_Adapter_</span>&#x27;.$<span class="title">adapterName</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">//Feed.php</span></span><br><span class="line">Public <span class="title function_ invoke__">function__toString</span>()</span><br><span class="line">&lt;description&gt;<span class="string">&#x27;.htmlspecialchars($this-&gt;_subTitle).&#x27;</span>&lt;/description&gt;</span><br><span class="line"></span><br><span class="line"><span class="comment">//Request.php</span></span><br><span class="line">Public <span class="function"><span class="keyword">function</span> <span class="title">__get</span>(<span class="params"><span class="variable">$key</span></span>)</span></span><br><span class="line"><span class="function"><span class="title">Return</span> $<span class="title">this</span>-&gt;<span class="title">get</span>(<span class="params"><span class="variable">$key</span></span>)</span>;</span><br><span class="line">Public <span class="function"><span class="keyword">function</span> <span class="title">get</span>(<span class="params"><span class="variable">$key</span>,<span class="variable">$default</span>=<span class="literal">NULL</span></span>)</span></span><br><span class="line"><span class="function"><span class="title">Return</span> $<span class="title">this</span>-&gt;<span class="title">_applyFilter</span>(<span class="params"><span class="variable">$value</span></span>)</span>;</span><br><span class="line">Private <span class="title function_ invoke__">function_applyFilter</span>(<span class="variable">$value</span>)</span><br><span class="line"><span class="title function_ invoke__">call_user_func</span>(<span class="variable">$filter</span>,<span class="variable">$value</span>);</span><br></pre></td></tr></table></figure>
+
+<p>[1] <a target="_blank" rel="noopener" href="https://www.owasp.org/images/f/f6/POC2009-ShockingNewsInPHPExploitation.pdf">Esser, S. Shocking News in PHP Exploitation. In Power of Community (POC) (2009)</a>.<br>[2] <a target="_blank" rel="noopener" href="https://www.owasp.org/images/9/9e/Utilizing-Code-Reuse-Or-Return-Oriented-Programming-In-PHP-Application-Exploits.pdf">Esser, S. Utilizing Code Reuse Or Return Oriented Programming in PHP Applications. In BlackHat USA (2010).</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2018/11/10/php_object_inject/" data-id="cl1d6sq9a0012ilw5cjru8ih6" data-title="POP链" class="article-share-link">Share</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-VulDeePecker" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2018/11/07/VulDeePecker/" class="article-date">
+  <time class="dt-published" datetime="2018-11-06T16:00:00.000Z" itemprop="datePublished">2018-11-07</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2018/11/07/VulDeePecker/">论文：VulDeePecker</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p><strong>原文信息：</strong></p>
+<ul>
+<li>原文作者：Zhen Li, Deqing Zou, Shouhuai Xu, Xinyu Ou, Hai Jin,Sujuan Wang, Zhijun Deng and Yuyi Zhong</li>
+<li>原文标题：VulDeePecker: A Deep Learning-Based System for Vulnerability Detection</li>
+<li>原文会议：the 25th Annual Network and Distributed System Security Symposium, NDSS 2018</li>
+<li>原文链接：<a target="_blank" rel="noopener" href="https://www.ndss-symposium.org/wp-content/uploads/sites/25/2018/02/ndss2018_03A-2_Li_paper.pdf">https://www.ndss-symposium.org/wp-content/uploads/sites/25/2018/02/ndss2018_03A-2_Li_paper.pdf</a></li>
+</ul>
+<p><strong>目标：</strong><br>自动化静态漏洞探测技术</p>
+<p><strong>当前面临的问题：</strong></p>
+<ol>
+<li>依赖专业人员配置</li>
+<li>存在很大的漏报率<br><img src="/media/Paper_VulDeePecker/1.png" alt="1"></li>
+</ol>
+<p><strong>本文研究目标：</strong><br>能够自动化探测源码中的漏洞，并找出该漏洞的位置。而且…</p>
+<ul>
+<li>不需要太复杂的专业技巧</li>
+<li>具有比较理想的误报率与漏报率</li>
+</ul>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2018-11-05-094821.jpg"></p>
+<p><strong>本文主要贡献</strong><br>设计实现了系统：<code>Vulnerability Deep Pecker(VulDeePecker)</code></p>
+<ul>
+<li>基于深度学习设计的自动化源码审计系统</li>
+</ul>
+<h2 id="0x01-指导原则"><a href="#0x01-指导原则" class="headerlink" title="0x01 指导原则"></a>0x01 指导原则</h2><p><strong>三个基本问题：</strong></p>
+<ul>
+<li><p>Q1: 如何在基于深度学习的漏洞探测中表示源程序</p>
+<ul>
+<li>能够保持代码单元之间的语义关系，包括控制流关系和数据流关系。</li>
+</ul>
+</li>
+<li><p>Q2: 什么是合适的粒度</p>
+<ul>
+<li>比把整个程序或函数作为一个单元更好的粒度去表示程序。</li>
+</ul>
+</li>
+<li><p>Q3: 什么是合适的深度学习模型 </p>
+<ul>
+<li><p>初步选择了能够处理语义的神经网络。</p>
+</li>
+<li><p><img src="/media/Paper_VulDeePecker/2.png" alt="2"><br>  <em>不同神经网络效果的比较可作为以后的工作</em></p>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="0x02-VulDeePecker设计"><a href="#0x02-VulDeePecker设计" class="headerlink" title="0x02 VulDeePecker设计"></a>0x02 VulDeePecker设计</h2><p><strong>流程图</strong><br>    <img src="/media/Paper_VulDeePecker/3.png" alt="3"></p>
+<p>设计思路如图所示，整个系统分为学习阶段和探测阶段两部分。</p>
+<ul>
+<li>学习阶段大致为：<br><code>生成code gadgets =&gt;打上ground truth labels=&gt;转化为向量 =&gt;训练神经网络</code><br>以下是设计细节。</li>
+</ul>
+<p><strong>流程介绍</strong></p>
+<ul>
+<li>为了解决指导原则中的Q1：需要源程序转化为能够输入神经网络的向量，且保持源程序中的控制依赖和数据依赖关系。因此需要设计了一种中间形式，来作为源程序与向量之间的过渡。</li>
+<li>为了解决指导原则中的Q2：需要找到合适的粒度，使得这种形式成能够更好的表述漏洞位置(程序级或函数级划分粒度过粗)。<br> 本文借鉴了代码复用攻击中的gadget提出了一种<code>code gadget</code>来作为这种中间形式。那么如何划分<code>code gadget</code>,本文提出一种启发式的<code>key point</code>,通过找到<code>key point</code>很自然的从源码中划提取出需要的<code>code gadget</code>来。<code>key point</code>的依据是漏洞点。</li>
+</ul>
+<blockquote>
+<p>如果源码中的漏洞是由于不安全地调用library&#x2F;API函数引起的，那么这次函数调用便是<code>key point</code>，如果源码中的漏洞是由不安全地使用数组引起，那么这个数组就是<code>key point</code>。</p>
+</blockquote>
+<p><img src="/media/Paper_VulDeePecker/4.png" alt="4"></p>
+<p>以上这段代码，以library&#x2F;API调用为<code>key point</code>，从中获取第9行（StepI.1），然后根据第9行调用中的两个参数buf,str分别跟踪生成两组切片（StepI.2）。并在生成code gadgets时进行组合(StepII.1)。</p>
+<blockquote>
+<p>这里的<code>backward function</code>指的是函数不需要直接地外部输入即可调用。此处的strcpy属于一个<code>backward function</code>,需要进行<code>向后切片</code>，即<code>backward slices</code></p>
+</blockquote>
+<p>经过<code>Code Gadget</code>的定义后，整个流程图详细为：<br><img src="/media/Paper_VulDeePecker/5.png" alt="5"><br>在把<code>Code Gadgets</code>转化为向量之前需要打上<code>ground truth labels</code>,即StepII.2。<br><img src="/media/Paper_VulDeePecker/6.png" alt="6"><br>标明每一个<code>Code Gadget</code>是否包含漏洞。包含已知漏洞遍标为1。<br>接下来便是StepIII.1:将<code>Code Gadgets</code>转化为符号表示。<br><img src="/media/Paper_VulDeePecker/7.png" alt="7"><br><em>Simple the names in one-to-one</em><br>StepIII.2:将<code>code gadget</code>进行一系列预处理符号化后转化维向量形式表示。<br><img src="/media/Paper_VulDeePecker/8.png" alt="8"><br>StepIV:我们进行<code>BLSTM</code>神经网络训练：<br><img src="/media/Paper_VulDeePecker/9.png" alt="9"></p>
+<p>之后的略过，详见原文。<br><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2018-11-07-112511.jpg"></p>
+<h2 id="0x03-实验与结论"><a href="#0x03-实验与结论" class="headerlink" title="0x03 实验与结论"></a>0x03 实验与结论</h2><p> 需要得出的结论：<br>       1. <code>VulDeePecker</code>能不能同时处理多种类型的漏洞<br>       2. <code>VulDeePecker</code>能不能通过人力改善效果<br>       3. <code>VulDeePecker</code>与其他工具相比效果如何</p>
+<ul>
+<li>训练平台：</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>训练模型</th>
+<th>BLSTM</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>软件</td>
+<td>Theano、Keras</td>
+</tr>
+<tr>
+<td>硬件</td>
+<td>NVIDIA GeForce GTX 1080 GPU  Intel Xeon E5-1620 CPU</td>
+</tr>
+</tbody></table>
+<ul>
+<li><p>漏洞信息：<br>  19个C&#x2F;C++开源产品在<code>NVD</code>中的漏洞描述信息，在<code>SARD</code>的测试案例。</p>
+</li>
+<li><p>训练资源：</p>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>漏洞类型</th>
+<th>收集资源</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>buffer error vulnerability(i.e.,CWE-119)</td>
+<td>520个开源程序文件，8122个测试案例</td>
+</tr>
+<tr>
+<td>resource management error vulnerability(i.e.,CWE-399)</td>
+<td>320个开源程序文件，1729个测试案例</td>
+</tr>
+</tbody></table>
+<p>实验结果不在赘述，感兴趣的话详见原文。<br><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2018-11-07-112511.jpg"></p>
+<h2 id="0x04-后记"><a href="#0x04-后记" class="headerlink" title="0x04 后记"></a>0x04 后记</h2><ul>
+<li>只关注了c&#x2F;c++语言<ul>
+<li>只关注了library&#x2F;API函数调用相关的漏洞</li>
+<li>只关注了数据流信息，没有关注控制流的信息</li>
+</ul>
+</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2018/11/07/VulDeePecker/" data-id="cl1d6sq93000hilw5ebhd2ob5" data-title="论文：VulDeePecker" class="article-share-link">Share</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-Beginer" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2018/07/31/Beginer/" class="article-date">
+  <time class="dt-published" datetime="2018-07-30T16:00:00.000Z" itemprop="datePublished">2018-07-31</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2018/07/31/Beginer/">新的开始</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>之前使用typecho搭建的博客用了大概两年，期间写了不少文章，之后AWS到期，整个网站备份下线。本来打算将以前的文章全部转成静态格式，但是想想何不来个新的开始(实在懒)呢？</p>
+<p>Em…希望我在新的环境里，健健康康，快快乐乐，继续成长～</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2018/07/31/Beginer/" data-id="cl1d6sq8t0001ilw5fcope2nw" data-title="新的开始" class="article-share-link">Share</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+
+
+  <nav id="page-nav">
+    
+    <a class="extend prev" rel="prev" href="/page/5/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="page-number current">6</span>
+  </nav>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/paper/" rel="tag">paper</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/php/" rel="tag">php</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pl/" rel="tag">pl</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/paper/" style="font-size: 15px;">paper</a> <a href="/tags/php/" style="font-size: 10px;">php</a> <a href="/tags/pl/" style="font-size: 20px;">pl</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/03/">March 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/02/">February 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/01/">January 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/12/">December 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">September 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">August 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">April 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">February 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">January 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2022/03/30/Hello/">Hello</a>
+          </li>
+        
+          <li>
+            <a href="/2022/02/24/web/">Web应用系中注入类漏洞调研</a>
+          </li>
+        
+          <li>
+            <a href="/2022/02/18/data-mining/">data_mining</a>
+          </li>
+        
+          <li>
+            <a href="/2022/02/14/pop/">A Survey about PHP Object Injection</a>
+          </li>
+        
+          <li>
+            <a href="/2022/02/06/logic-machine/">Logic Machine</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2022 iohex<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

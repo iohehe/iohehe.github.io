@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>南大静态分析-1 | Penlab</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="南京大学软件分析课程，这段时间可以把自己学习的内容总结一下。 课程链接 0x01 PL and Static Analysis 08:05   开始，剪课件…     背景：将PL分了三个领域。 程序分析属于PL的应用领域。  在语言的框架下谈到程序分析就是静态分析。  0x02 Why We Need Static Analysis 17:40  应用背景:  Program Reliabili">
+<meta property="og:type" content="article">
+<meta property="og:title" content="南大静态分析-1">
+<meta property="og:url" content="http://example.com/2020/05/03/static-analysis-1/index.html">
+<meta property="og:site_name" content="Penlab">
+<meta property="og:description" content="南京大学软件分析课程，这段时间可以把自己学习的内容总结一下。 课程链接 0x01 PL and Static Analysis 08:05   开始，剪课件…     背景：将PL分了三个领域。 程序分析属于PL的应用领域。  在语言的框架下谈到程序分析就是静态分析。  0x02 Why We Need Static Analysis 17:40  应用背景:  Program Reliabili">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/2020/05/03/static-analysis-1/static-analysis-1/%E6%88%AA%E5%B1%8F2020-05-03%20%E4%B8%8A%E5%8D%8810.50.11.png">
+<meta property="og:image" content="http://example.com/2020/05/03/static-analysis-1/static-analysis-1/%E6%88%AA%E5%B1%8F2020-05-03%20%E4%B8%8A%E5%8D%8811.36.35.png">
+<meta property="og:image" content="http://example.com/2020/05/03/static-analysis-1/static-analysis-1/%E6%88%AA%E5%B1%8F2020-05-03%20%E4%B8%8B%E5%8D%8812.06.37.png">
+<meta property="og:image" content="http://example.com/2020/05/03/static-analysis-1/static-analysis-1/%E6%88%AA%E5%B1%8F2020-05-03%20%E4%B8%8B%E5%8D%888.36.59.png">
+<meta property="og:image" content="http://example.com/2020/05/03/static-analysis-1/static-analysis-1/%E6%88%AA%E5%B1%8F2020-05-03%20%E4%B8%8B%E5%8D%888.39.29.png">
+<meta property="og:image" content="http://example.com/2020/05/03/static-analysis-1/static-analysis-1/%E6%88%AA%E5%B1%8F2020-05-03%20%E4%B8%8B%E5%8D%888.49.08.png">
+<meta property="og:image" content="http://example.com/2020/05/03/static-analysis-1/static-analysis-1/%E6%88%AA%E5%B1%8F2020-05-03%20%E4%B8%8B%E5%8D%888.52.07.png">
+<meta property="og:image" content="http://example.com/2020/05/03/static-analysis-1/static-analysis-1/%E6%88%AA%E5%B1%8F2020-05-03%20%E4%B8%8B%E5%8D%889.00.38.png">
+<meta property="article:published_time" content="2020-05-03T02:43:27.000Z">
+<meta property="article:modified_time" content="2022-03-30T06:25:22.431Z">
+<meta property="article:author" content="iohex">
+<meta property="article:tag" content="pl">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2020/05/03/static-analysis-1/static-analysis-1/%E6%88%AA%E5%B1%8F2020-05-03%20%E4%B8%8A%E5%8D%8810.50.11.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Penlab" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+<meta name="generator" content="Hexo 6.1.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Penlab</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-static-analysis-1" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2020/05/03/static-analysis-1/" class="article-date">
+  <time class="dt-published" datetime="2020-05-03T02:43:27.000Z" itemprop="datePublished">2020-05-03</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      南大静态分析-1
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>南京大学软件分析课程，这段时间可以把自己学习的内容总结一下。</p>
+<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1b7411K7P4">课程链接</a></p>
+<h1 id="0x01-PL-and-Static-Analysis"><a href="#0x01-PL-and-Static-Analysis" class="headerlink" title="0x01 PL and Static Analysis"></a>0x01 PL and Static Analysis</h1><blockquote>
+<p>08:05 </p>
+</blockquote>
+<p>开始，剪课件…</p>
+<img src="static-analysis-1/%E6%88%AA%E5%B1%8F2020-05-03%20%E4%B8%8A%E5%8D%8810.50.11.png" alt="截屏2020-05-03 上午10.50.11 " style="zoom:50%;" />
+
+
+
+<p>背景：将PL分了三个领域。 程序分析属于PL的应用领域。</p>
+<ul>
+<li>在语言的框架下谈到程序分析就是静态分析。</li>
+</ul>
+<h1 id="0x02-Why-We-Need-Static-Analysis"><a href="#0x02-Why-We-Need-Static-Analysis" class="headerlink" title="0x02 Why We Need Static Analysis"></a>0x02 Why We Need Static Analysis</h1><blockquote>
+<p>17:40</p>
+</blockquote>
+<p>应用背景:</p>
+<ol>
+<li><p>Program Reliability</p>
+</li>
+<li><p>Program Security</p>
+</li>
+<li><p>Compiler Optimization</p>
+</li>
+<li><p>Program Understanding</p>
+</li>
+</ol>
+<ul>
+<li><p>静态分析是在编译时刻完成了对程序的分析</p>
+</li>
+<li><p>更深入地理解编程语言的语法、语义</p>
+</li>
+<li><p>写出更加可靠、更安全、更高效的程序</p>
+</li>
+</ul>
+<blockquote>
+<p>这一块自己也觉得之前写代码，感觉用不上自己学的理论知识。学了一些编译原理尤其是静态分析内容后，感觉把理论和实践打通了。再加上操作系统和组成原理。 写代码的时候逐渐知道编译器在干什么， 操作系统在干什么， 硬件在干什么…</p>
+</blockquote>
+<h1 id="0x03-Static-Analysis"><a href="#0x03-Static-Analysis" class="headerlink" title="0x03 Static Analysis"></a>0x03 Static Analysis</h1><blockquote>
+<p>35:40</p>
+</blockquote>
+<p>正式开始了…</p>
+<ul>
+<li>静态分析： 在运行一个程序之前， 通过静态分析，了解程序一些行为和特征，</li>
+</ul>
+<img src="static-analysis-1/%E6%88%AA%E5%B1%8F2020-05-03%20%E4%B8%8A%E5%8D%8811.36.35.png" alt="截屏2020-05-03 上午11.36.35 " style="zoom:50%;" />
+
+<p>Truth是我们需要的结果机， 包含了所有可能的分析结果</p>
+<ul>
+<li>Sound：Overapproximate， 包含了所有的Truth</li>
+<li>Complete: Underapproximate,  在Truth</li>
+</ul>
+<blockquote>
+<p>比如找洞， Truth是所有的洞， 而Complete是Truth的子集， 报出来的没有假的(无误报)。而Sound是包含了所有的Truth，但是会有误报。(这是设计时的目标方向， 实际使用时，大部分工具，既有误报，又有漏报)</p>
+</blockquote>
+<p>我们的目标是设计一个<code>useful static analysis</code>，在上图画一个结果集的圈， 我们需要妥协一方(看应用场景)。 妥协<code>Sound</code>，就是要让Sound妥协， 让Sound缩小，就会造成生漏报(<code>false negatives</code>)，这种分析是<code>Compromise soundness</code>。</p>
+<p> 同样的， 妥协<code>Complete</code>， 就是要不产生误报(<code>false positives</code>)。 这种分析是<code>Compromise completeness</code>的。</p>
+<p>这两种设计方案随目的不同，在需要的场景下，都算是<code>useful static analysis</code>。</p>
+<img src="static-analysis-1/%E6%88%AA%E5%B1%8F2020-05-03%20%E4%B8%8B%E5%8D%8812.06.37.png" alt="截屏2020-05-03 下午12.06.37 " style="zoom:50%;" />
+
+   
+
+
+
+<ul>
+<li><p>Soundness is <code>critical</code>  to a collection of import(static analysis) applications such as commpiler optimization and program verification.(编译优化和程序验证soundness尤为重要)</p>
+<p>这里说一个静态分析，soundness是重要的，也就是complete妥协。可以产生误报， 可以不那么准确。 </p>
+<p>也就是说sound的分析会包含分析中所有的情形。(全面之后才能得到正确的结论)</p>
+<blockquote>
+<p>从静态分析角度， sound就可以理解为正确的</p>
+</blockquote>
+<blockquote>
+<p>Static Analysis: ensure(or get close to) soundness, while making good trade-offs between analysis precision and analysis speed.(在保证正确性的前提下，做精度和速度的平衡) </p>
+</blockquote>
+<h1 id="0x04-Example-about-Static-Analysis"><a href="#0x04-Example-about-Static-Analysis" class="headerlink" title="0x04 Example about Static Analysis"></a>0x04 Example about Static Analysis</h1></li>
+</ul>
+<blockquote>
+<p>71:00</p>
+<p>Two Words to Conclude Static Analysis: Abstraction+ Over-approximation</p>
+</blockquote>
+<img src="static-analysis-1/%E6%88%AA%E5%B1%8F2020-05-03%20%E4%B8%8B%E5%8D%888.36.59.png" alt="截屏2020-05-03 下午8.36.59 " style="zoom:50%;" />
+
+<p>一个check, 探测每一个变量的符号。</p>
+<ol>
+<li>Abstraction： 将真实值转化为抽象值(abstract values)</li>
+</ol>
+<img src="static-analysis-1/%E6%88%AA%E5%B1%8F2020-05-03%20%E4%B8%8B%E5%8D%888.39.29.png" alt="截屏2020-05-03 下午8.39.29 " style="zoom:50%;" />
+
+
+
+<ol start="2">
+<li>Over-approximation: Transfer Functions</li>
+</ol>
+<ul>
+<li><p>Transfer Functions define how to evaluate different program statements on abstract values.(对每一个语句的抽象值制定转化规则)</p>
+</li>
+<li><p>Transfer functions are defined according to “analysis problem” and the “semantics” of different program statements.（根据分析目标和每一句话的语义制定转移函数）</p>
+</li>
+</ul>
+  <img src="static-analysis-1/%E6%88%AA%E5%B1%8F2020-05-03%20%E4%B8%8B%E5%8D%888.49.08.png" alt="截屏2020-05-03 下午8.49.08 " style="zoom:50%;" />
+
+<p>现在，有了抽象值， 有了转化函数， 可以进行静态分析。</p>
+<img src="static-analysis-1/%E6%88%AA%E5%B1%8F2020-05-03%20%E4%B8%8B%E5%8D%888.52.07.png" alt="截屏2020-05-03 下午8.52.07 " style="zoom:50%;" />
+
+<p>其中， a可正可负，p 中y做索引错， q中a做索引， 保证soundness， 可能错。</p>
+<ul>
+<li><p>c 除零错误</p>
+</li>
+<li><p>p negative array index</p>
+</li>
+<li><p>q 误报</p>
+</li>
+</ul>
+<p>为了保证soundness，要求所有控制流的汇聚的点，都需要做merge。 Flow-Merge作为默认的一种Over-approximation方式。 </p>
+<img src="static-analysis-1/%E6%88%AA%E5%B1%8F2020-05-03%20%E4%B8%8B%E5%8D%889.00.38.png" alt="截屏2020-05-03 下午9.00.38 " style="zoom:50%;" />
+
+<blockquote>
+<p>每一个语句， 与control flow 构成了真正的程序。 将两者抽象，就讲整个程序抽象了。</p>
+</blockquote>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2020/05/03/static-analysis-1/" data-id="cl1d6sq9g001jilw5f47326yt" data-title="南大静态分析-1" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/pl/" rel="tag">pl</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2020/05/04/static-analysis-2/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          南大静态分析-2
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2020/01/04/python_cluster_hi/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">python层次聚类学习</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/paper/" rel="tag">paper</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/php/" rel="tag">php</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pl/" rel="tag">pl</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/paper/" style="font-size: 15px;">paper</a> <a href="/tags/php/" style="font-size: 10px;">php</a> <a href="/tags/pl/" style="font-size: 20px;">pl</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/03/">March 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/02/">February 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/01/">January 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/12/">December 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">September 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">August 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">April 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">February 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">January 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2022/03/30/Hello/">Hello</a>
+          </li>
+        
+          <li>
+            <a href="/2022/02/24/web/">Web应用系中注入类漏洞调研</a>
+          </li>
+        
+          <li>
+            <a href="/2022/02/18/data-mining/">data_mining</a>
+          </li>
+        
+          <li>
+            <a href="/2022/02/14/pop/">A Survey about PHP Object Injection</a>
+          </li>
+        
+          <li>
+            <a href="/2022/02/06/logic-machine/">Logic Machine</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2022 iohex<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

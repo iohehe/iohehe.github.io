@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>taint | Penlab</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="如下是一个典型污点分析算法：  一般地，污点分析会选择后向追踪。如果前向按照程序执行的方向追踪，即从sources找sinks往往会有很多误报。 从sinks后向找的话首先定位了漏洞点了。后向的话就是在一个赋值过程中左值为污点传播给右值(lval-&gt;rval) 那么一个后向算法的实现：  第一步： 根据设定的sinks列表， 在程序中全局定位所有的sinkNodes的位置 第二步： 对每一个">
+<meta property="og:type" content="article">
+<meta property="og:title" content="taint">
+<meta property="og:url" content="http://example.com/2020/09/09/taint/index.html">
+<meta property="og:site_name" content="Penlab">
+<meta property="og:description" content="如下是一个典型污点分析算法：  一般地，污点分析会选择后向追踪。如果前向按照程序执行的方向追踪，即从sources找sinks往往会有很多误报。 从sinks后向找的话首先定位了漏洞点了。后向的话就是在一个赋值过程中左值为污点传播给右值(lval-&gt;rval) 那么一个后向算法的实现：  第一步： 根据设定的sinks列表， 在程序中全局定位所有的sinkNodes的位置 第二步： 对每一个">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/taint/%E6%88%AA%E5%B1%8F2020-09-09%20%E4%B8%8A%E5%8D%889.38.59.png">
+<meta property="og:image" content="http://example.com/taint/WechatIMG10.jpeg">
+<meta property="article:published_time" content="2020-09-09T01:34:58.000Z">
+<meta property="article:modified_time" content="2022-03-30T06:25:22.784Z">
+<meta property="article:author" content="iohex">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/taint/%E6%88%AA%E5%B1%8F2020-09-09%20%E4%B8%8A%E5%8D%889.38.59.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Penlab" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+<meta name="generator" content="Hexo 6.1.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Penlab</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-taint" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2020/09/09/taint/" class="article-date">
+  <time class="dt-published" datetime="2020-09-09T01:34:58.000Z" itemprop="datePublished">2020-09-09</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      taint
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>如下是一个典型污点分析算法：</p>
+<p><img src="/taint/%E6%88%AA%E5%B1%8F2020-09-09%20%E4%B8%8A%E5%8D%889.38.59.png" alt="截屏2020-09-09 上午9.38.59"></p>
+<p>一般地，污点分析会选择后向追踪。如果前向按照程序执行的方向追踪，即从sources找sinks往往会有很多误报。 从sinks后向找的话首先定位了漏洞点了。后向的话就是在一个赋值过程中<code>左值为污点传播给右值(lval-&gt;rval)</code> 那么一个后向算法的实现：</p>
+<ul>
+<li>第一步： 根据设定的sinks列表， 在程序中全局定位所有的sinkNodes的位置</li>
+<li>第二步： 对每一个sinkNode进行后向追随，看有没有能够达到我们设定为sources的静态路径， 有就存为vulnerablePaths</li>
+</ul>
+<p>关键在于对每一个sink点如何追溯， 这里先不考虑地22行的filter。找到&lt;sink, source&gt;路径，核心是一个递归过程。这个过程的原操作是在数据流上向后走到下一个传播点，并将其标注为污点(taint)。 那么这个过程何时停？ 根据第18行，即当追到一个taint就是我们的sources，当然输出一条vulnerablePath。 当追到了Parameters时，此时此过程中的污点传播已经到头，说明污点已经传入了他的caller中，将此路径保存，停止污点追溯，回到他的caller中，如果caller中构造了vulnerablePaths，在讲这种由return传播到parameter的过程路径拼接。</p>
+<p><img src="/taint/WechatIMG10.jpeg" alt="WechatIMG10"></p>
+<p>上图描述了从sink开始找到一个赋值语句，转移函数在这里要回答右值是否标为污点？但是他的表达式中有一个call，要回答这个问题就我们就要分析这个调用。</p>
+<p>如果将这个call看作一个黑盒的话，首先它一定要有返回值，如果没有返回值， 那么就没有数据传到sink点了(这里考虑的是显式传播，不考虑控制流的影响)。其次，要看我们的taint点，是否做为实参传入，如果做为实参传入，且从return点能够从数据流后向走到Parameters(这个taint的传入位置)，那么就做为一个子过程，拼接到path上(path+call_path)。 还有就是自过程中包含source，那么这个source直接就通过return和sink拼接成vulpath了。</p>
+<p>递归过程:</p>
+<ol>
+<li>检查call中是否有返回</li>
+<li>有返回值，标注污点传入的参数位置</li>
+<li>将返回点做为sink，后向污点分析，如果遇到source,输出vul_path；走到标注的参数，返回路径；遇到call继续递归该过程。</li>
+</ol>
+<p> 给出一个Example，有空可以探测试一下。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">foo_1</span>(<span class="params"><span class="variable">$foo_1_param</span></span>)</span>&#123;</span><br><span class="line">	<span class="variable">$foo_1_res</span> = <span class="string">&quot;&lt;a&gt;&quot;</span>.<span class="variable">$foo_1_param</span>.<span class="string">&quot;&lt;/a&gt;&quot;</span>;</span><br><span class="line">	<span class="keyword">return</span> <span class="variable">$foo_1_res</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">foo_2</span>(<span class="params"><span class="variable">$foo_2_param</span></span>)</span>&#123;</span><br><span class="line">        <span class="variable">$foo_2_res</span> = <span class="title function_ invoke__">foo_1</span>(<span class="variable">$foo_2_param</span>);</span><br><span class="line">	<span class="keyword">return</span> <span class="variable">$foo_2_res</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">bar</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="variable">$pass_2</span> = <span class="variable">$_GET</span>[<span class="string">&#x27;id&#x27;</span>];</span><br><span class="line">    <span class="variable">$pass_1</span> = <span class="title function_ invoke__">foo_2</span>(<span class="variable">$pass_2</span>);</span><br><span class="line">    <span class="variable">$target</span> = <span class="variable">$pass_1</span>;</span><br><span class="line">    <span class="title function_ invoke__">evil</span>(<span class="variable">$target</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">evil</span>(<span class="params"><span class="variable">$target</span></span>)</span>&#123;</span><br><span class="line">    <span class="keyword">echo</span> <span class="variable">$target</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="title function_ invoke__">bar</span>();</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<ul>
+<li><code>evil($target)</code>: 污点标为target</li>
+<li><code>$target = $pass_1</code>: 污点标为$pass_1</li>
+<li><code>$pass_1 = foo_2($pass_2)</code>: 污点标为foo_2的第一个Argument，转入foo_2<ul>
+<li>foo_2标记第一个Parameter</li>
+<li>foo_2有return，从return开始追踪</li>
+<li><code>return $foo_2_res</code>: 标记$foo_2_res为污点</li>
+<li><code>$foo_2_res = foo_1($foo_2_param)</code>: 标记foo_2_param为污点，转入foo_1<ul>
+<li>foo_1标记第一个Parameter</li>
+<li>foo_1有return，从return开始追踪</li>
+<li><code>return $foo_1_res</code>: 标记$foo_1_param为污点</li>
+<li><code>$foo_1_res = &quot;&lt;a&gt;&quot;.$foo_1_param.&quot;&lt;/a&gt;&quot;;</code>：标记$foo_1_param为污点</li>
+<li><code>function foo_1($foo_1_param)</code>: 污点传入标记的Parameter, 返回call_path</li>
+</ul>
+</li>
+<li><code> $foo_2_res = foo_1($foo_2_param);</code>: 拼接call_path,标记$foo_2_res为污点</li>
+<li><code>function foo_2($foo_2_param)</code>: 污点传入标记的Parameter, 返回call_path</li>
+</ul>
+</li>
+<li><code>    $pass_1 = foo_2($pass_2)</code>: 标记$pass_1为污点</li>
+<li><code> $pass_2 = $_GET[&#39;id&#39;];</code>: 找到source点，输出vulPath</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2020/09/09/taint/" data-id="cl1d6sq9m001yilw56wem15v8" data-title="taint" class="article-share-link">Share</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2020/09/15/recuv/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          递归
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2020/08/19/byte/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">byte</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/paper/" rel="tag">paper</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/php/" rel="tag">php</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pl/" rel="tag">pl</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/paper/" style="font-size: 15px;">paper</a> <a href="/tags/php/" style="font-size: 10px;">php</a> <a href="/tags/pl/" style="font-size: 20px;">pl</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/03/">March 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/02/">February 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/01/">January 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/12/">December 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">September 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">August 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">April 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">February 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">January 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2022/03/30/Hello/">Hello</a>
+          </li>
+        
+          <li>
+            <a href="/2022/02/24/web/">Web应用系中注入类漏洞调研</a>
+          </li>
+        
+          <li>
+            <a href="/2022/02/18/data-mining/">data_mining</a>
+          </li>
+        
+          <li>
+            <a href="/2022/02/14/pop/">A Survey about PHP Object Injection</a>
+          </li>
+        
+          <li>
+            <a href="/2022/02/06/logic-machine/">Logic Machine</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2022 iohex<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

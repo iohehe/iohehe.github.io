@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>git隐私泄露 | Penlab</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="0x01 Github平台的信息Github做为全球最大的代码托管(tongxingjiaoyou)平台，有着令人惊讶的数据量。您除了会在其中泄露一些个人信息，最重要的就是源码。你的项目可能出卖了你。最有名的事件大概就是18年8月发生的华住5亿数据泄露。此事件的缘起，据说就是开发人员将数据库的套接字与口令直接上传到了github库中。  如今，各种Github泄露监控软件如雨后春笋板的出现。说道G">
+<meta property="og:type" content="article">
+<meta property="og:title" content="git隐私泄露">
+<meta property="og:url" content="http://example.com/2019/03/25/Git_Leak/index.html">
+<meta property="og:site_name" content="Penlab">
+<meta property="og:description" content="0x01 Github平台的信息Github做为全球最大的代码托管(tongxingjiaoyou)平台，有着令人惊讶的数据量。您除了会在其中泄露一些个人信息，最重要的就是源码。你的项目可能出卖了你。最有名的事件大概就是18年8月发生的华住5亿数据泄露。此事件的缘起，据说就是开发人员将数据库的套接字与口令直接上传到了github库中。  如今，各种Github泄露监控软件如雨后春笋板的出现。说道G">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://i.guancha.cn/news/social/2018/08/28/20180828140050752.jpg">
+<meta property="og:image" content="http://example.com/media/Other_Git_Leak/1.png">
+<meta property="og:image" content="http://example.com/media/Other_Git_Leak/2.png">
+<meta property="og:image" content="http://example.com/media/Other_Git_Leak/3.png">
+<meta property="og:image" content="http://example.com/media/Other_Git_Leak/4.png">
+<meta property="og:image" content="http://example.com/media/Other_Git_Leak/5.png">
+<meta property="article:published_time" content="2019-03-24T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-03-30T06:25:22.783Z">
+<meta property="article:author" content="iohex">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.guancha.cn/news/social/2018/08/28/20180828140050752.jpg">
+  
+    <link rel="alternate" href="/atom.xml" title="Penlab" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+<meta name="generator" content="Hexo 6.1.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Penlab</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-Git_Leak" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2019/03/25/Git_Leak/" class="article-date">
+  <time class="dt-published" datetime="2019-03-24T16:00:00.000Z" itemprop="datePublished">2019-03-25</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      git隐私泄露
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h3 id="0x01-Github平台的信息"><a href="#0x01-Github平台的信息" class="headerlink" title="0x01 Github平台的信息"></a>0x01 Github平台的信息</h3><p>Github做为全球最大的代码托管(tongxingjiaoyou)平台，有着令人惊讶的数据量。您除了会在其中泄露一些个人信息，最重要的就是源码。你的项目可能出卖了你。最有名的事件大概就是18年8月发生的华住5亿数据泄露。此事件的缘起，据说就是开发人员将数据库的套接字与口令直接上传到了github库中。</p>
+<p><img src="https://i.guancha.cn/news/social/2018/08/28/20180828140050752.jpg" alt="img"></p>
+<p>如今，各种Github泄露监控软件如雨后春笋板的出现。说道Github信息泄露，就不得不说今年ndss上发布的那篇-“How Bad Can It Git? Characterizing Secret Leakage in Public GitHub Repositories ”，哈哈哈哈哈哈哈。</p>
+<h3 id="0x02-论文"><a href="#0x02-论文" class="headerlink" title="0x02 论文"></a>0x02 论文</h3><ul>
+<li><p>原文作者：Michael Meli, Matthew R.McNiece, Bradley Reaves</p>
+</li>
+<li><p>原文标题：How Bad Can It Git? Characterizing Secret Leakage in Public GitHub Repositories </p>
+</li>
+<li><p>原文会议：the 26th Annual Network and Distributed System Security Symposium, NDSS 2019</p>
+</li>
+</ul>
+<p>该团队来自北卡罗来纳州立大学(NCSU)，主要关心的是在开源代码库中，私有证书的管理。这篇文章六个月内扫描了Github上13%的公共代码库，发现了超过10万代码库泄露了API令牌和加密密钥。</p>
+<p>API Key作为接口间通信的长期身份认证令牌，一旦泄漏即可绕过认证系统。</p>
+<p><img src="/media/Other_Git_Leak/1.png" alt="1"></p>
+<p>本文获取这些敏感信息的过程如下：</p>
+<ul>
+<li><p>0: 总结这些敏感信息的规律，称之为Distinct Secrets。</p>
+</li>
+<li><p>1(1a, 1b): 总结根据这些规律通过GitHub API 和 Google Github Snapshot（两者互补）收集潜在的代码和数据文件。形成Candidate Files。</p>
+</li>
+<li><p>2: 对Candidate Files中的Distinct Secrets进行正则，形成Candidate Secrets。</p>
+</li>
+<li><p>3:（3a, 3b, 3c）对Candidate Secrets进行三层过滤(熵\词法\结构模式)，形成Valid Secret。</p>
+</li>
+</ul>
+<p>本系统遵循这些敏感信息的内容是有规律可循的。下表为一些有迹可循的popular API keys和Asymmetric Private Keys。</p>
+<p><img src="/media/Other_Git_Leak/2.png" alt="2"></p>
+<p>从文中看，这个系统的实验效果还是比较好的。文章从以下几个方面进行分析。</p>
+<ul>
+<li>私有或者公有隐私信息</li>
+</ul>
+<p><img src="/media/Other_Git_Leak/3.png" alt="3"></p>
+<p>从这张表可以看出，在实际数据采集分析后。目标隐私信息的私密度非常的高。</p>
+<ul>
+<li><p>平行泄露</p>
+<p>即有些应用不能单方面的使用必须有”multi-factor”才能触发。如Google OAuth IDs必须同时找到OAuth Secret。而研究表明这种”parallel secrets”通常会在隐私数据前后五行内平行泄露。</p>
+</li>
+</ul>
+<p><img src="/media/Other_Git_Leak/4.png" alt="4"></p>
+<ul>
+<li><p>隐私存活周期</p>
+<p>研究者功能总泄密项目，观察所有者是否会发现，监控每小时探测一次。发现大约6%的用户在泄密一小时后发现并删除。19%会在两周后移除。然而这些删除掉的隐私通常仍然可以在git历史中访问。</p>
+</li>
+</ul>
+<p><img src="/media/Other_Git_Leak/5.png" alt="5"></p>
+<ul>
+<li>文章还分析了RSA Key Leakage, Number of Encrypted Keys以及OpenVPN Config等隐私数据泄露。总之，公共开源项目中泄露的大量的私密信息。NCSU团队表示，他们在10万个GitHub项目中总共发现了575,456个API和密钥，其中201,642个是独立的。</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2019/03/25/Git_Leak/" data-id="cl1d6sq8x0005ilw5hjbzhj1e" data-title="git隐私泄露" class="article-share-link">Share</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2019/09/01/php_parser/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          PHP-Parser使用
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2018/11/10/php_object_inject/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">POP链</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/paper/" rel="tag">paper</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/php/" rel="tag">php</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pl/" rel="tag">pl</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/paper/" style="font-size: 15px;">paper</a> <a href="/tags/php/" style="font-size: 10px;">php</a> <a href="/tags/pl/" style="font-size: 20px;">pl</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/03/">March 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/02/">February 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/01/">January 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/12/">December 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">September 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">August 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">April 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">February 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">January 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2022/03/30/Hello/">Hello</a>
+          </li>
+        
+          <li>
+            <a href="/2022/02/24/web/">Web应用系中注入类漏洞调研</a>
+          </li>
+        
+          <li>
+            <a href="/2022/02/18/data-mining/">data_mining</a>
+          </li>
+        
+          <li>
+            <a href="/2022/02/14/pop/">A Survey about PHP Object Injection</a>
+          </li>
+        
+          <li>
+            <a href="/2022/02/06/logic-machine/">Logic Machine</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2022 iohex<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

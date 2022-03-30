@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>tp5学习-容器 | Penlab</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="0x01 基础设计模式 参考大话PHP设计模式 。 单例模式单例模式就是只有一个实例化存在。  拥有一个构造函数，并且为private 拥有一个静态成员变量用来保持类的实例 拥有一个访问这个实例的静态方法  123456789101112131415161718192021222324252627&lt;?phpclass test_instance&amp;#123;    public static">
+<meta property="og:type" content="article">
+<meta property="og:title" content="tp5学习-容器">
+<meta property="og:url" content="http://example.com/2019/12/05/tp5-container/index.html">
+<meta property="og:site_name" content="Penlab">
+<meta property="og:description" content="0x01 基础设计模式 参考大话PHP设计模式 。 单例模式单例模式就是只有一个实例化存在。  拥有一个构造函数，并且为private 拥有一个静态成员变量用来保持类的实例 拥有一个访问这个实例的静态方法  123456789101112131415161718192021222324252627&lt;?phpclass test_instance&amp;#123;    public static">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2019-12-04T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-03-30T06:25:22.482Z">
+<meta property="article:author" content="iohex">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="Penlab" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+<meta name="generator" content="Hexo 6.1.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Penlab</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-tp5-container" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2019/12/05/tp5-container/" class="article-date">
+  <time class="dt-published" datetime="2019-12-04T16:00:00.000Z" itemprop="datePublished">2019-12-05</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      tp5学习-容器
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="0x01-基础设计模式"><a href="#0x01-基础设计模式" class="headerlink" title="0x01 基础设计模式"></a>0x01 基础设计模式</h1><p> 参考<a target="_blank" rel="noopener" href="https://www.kancloud.cn/webjust/php_patterns/324646">大话PHP设计模式</a> 。</p>
+<h2 id="单例模式"><a href="#单例模式" class="headerlink" title="单例模式"></a>单例模式</h2><p>单例模式就是只有一个实例化存在。</p>
+<ul>
+<li>拥有一个构造函数，并且为private</li>
+<li>拥有一个静态成员变量用来保持类的实例</li>
+<li>拥有一个访问这个实例的静态方法</li>
+</ul>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">test_instance</span></span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">static</span> <span class="variable">$is_instance</span> = <span class="literal">null</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">            <span class="keyword">echo</span> <span class="string">&quot;new a instance&quot;</span>;</span><br><span class="line">            <span class="keyword">echo</span> <span class="string">&quot;&lt;br /&gt;&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">static</span> <span class="function"><span class="keyword">function</span> <span class="title">isInstance</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="built_in">self</span>::<span class="variable">$is_instance</span>===<span class="literal">null</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="built_in">self</span>::<span class="variable">$is_instance</span> = <span class="keyword">new</span> <span class="title function_ invoke__">test_instance</span>();</span><br><span class="line">            <span class="keyword">return</span> <span class="built_in">self</span>::<span class="variable">$is_instance</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">        &#123;</span><br><span class="line">           <span class="keyword">return</span> <span class="built_in">self</span>::<span class="variable">$is_instance</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 这里不能 new了， 要访问公共静态方法new实例进$is_instance</span></span><br><span class="line"><span class="variable">$a</span> = test_instance::<span class="title function_ invoke__">isInstance</span>();</span><br><span class="line"><span class="variable">$b</span> = test_instance::<span class="title function_ invoke__">isInstance</span>();</span><br><span class="line"><span class="variable">$c</span> = test_instance::<span class="title function_ invoke__">isInstance</span>();</span><br></pre></td></tr></table></figure>
+
+<p>这是后只能访问一次构造函数，因此只有一个实例。这里的实例化方法<code>isInstance</code>和标量<code>$is_instance</code>都要是静态方法。(为了防止实例化，<code>isInstance</code>静态方法，这时候要用<code>$is_instance</code>也是没有被实例化的静态方法)。</p>
+<h2 id="工厂模式"><a href="#工厂模式" class="headerlink" title="工厂模式"></a>工厂模式</h2><p>如果一个类名进行了修改， 使用工厂模式不用把每一处的new都修改， 而是直接修改工厂方法即可。作为一个统一的调度。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Factory</span></span>&#123;</span><br><span class="line">  <span class="built_in">static</span> <span class="function"><span class="keyword">function</span> <span class="title">createDatabase</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="variable">$db</span> = <span class="keyword">new</span> <span class="title class_">Database</span>();</span><br><span class="line">    <span class="keyword">return</span> <span class="variable">$db</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># $db = new Database();</span></span><br><span class="line"><span class="variable">$db</span> = <span class="title function_ invoke__">createDatabase</span>();</span><br></pre></td></tr></table></figure>
+
+<p>引入了工厂模式，我们不需要在业务层去修改代码了。这样有利于整个软件框架稳定，比如在model层调用不同的Driver实例化。使用工厂模式只要在工厂中选择想使用的数据库Driver就可以实现切换。</p>
+<p>思想就是业务层不用new具体的类了，而是调用统一接口。由接口new并返回。工厂模式是许多高级模式里惯用的模式，如注册树模式。</p>
+<h2 id="注册树模式"><a href="#注册树模式" class="headerlink" title="注册树模式"></a>注册树模式</h2><ul>
+<li><p>注册树模式通过将对象实例注册到一棵全局的对象树上， 需要的时候从对象树上采摘下来使用。</p>
+<p>一个软件的底层有许多不同的类库， 在业务层， 我们要调用这些类库的使用。  这些底层类很乱不便于管理，这里就使用注册树模式，便于管理。（类似于配置函数生成的配置静态变量,这种操作应用于类上）</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">regTree</span></span>&#123;</span><br><span class="line">  <span class="comment">//注册树池子</span></span><br><span class="line">  <span class="keyword">protected</span> <span class="built_in">static</span> <span class="variable">$objects</span> = <span class="literal">null</span>;</span><br><span class="line">  </span><br><span class="line">  <span class="comment">//挂载</span></span><br><span class="line">  <span class="keyword">public</span> <span class="built_in">static</span> <span class="function"><span class="keyword">function</span> <span class="title">_set</span>(<span class="params"><span class="variable">$key</span>, <span class="variable">$object</span></span>)</span>&#123;</span><br><span class="line">    <span class="built_in">self</span>::<span class="variable">$objects</span>[<span class="variable">$key</span>] = <span class="variable">$object</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="comment">//获取</span></span><br><span class="line">  <span class="keyword">public</span> <span class="built_in">static</span> <span class="function"><span class="keyword">function</span> <span class="title">_get</span>(<span class="params"><span class="variable">$key</span>,</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!<span class="keyword">isset</span>(<span class="built_in">self</span>::<span class="variable">$objects</span>[<span class="variable">$key</span>]))</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="built_in">self</span>::<span class="variable">$objects</span>[<span class="variable">$keys</span>] = <span class="keyword">new</span> <span class="variable">$key</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">self</span>::<span class="variable">$objects</span>[<span class="variable">$key</span>];</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="comment">//注销</span></span><br><span class="line">  <span class="keyword">public</span> <span class="built_in">static</span> <span class="function"><span class="keyword">function</span> <span class="title">_unset</span>(<span class="params"><span class="variable">$key</span></span>)</span>&#123;</span><br><span class="line">   				<span class="keyword">unset</span>(<span class="built_in">self</span>::<span class="variable">$objects</span>[<span class="variable">$key</span>]); </span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>此时我们需要使用底层函数的时候就不需要去new了，而是像读配置一样，去注册树这个<code>配置数组</code>中去读。</p>
+<p>set:</p>
+<p><code>$a =new target(); </code></p>
+<p><code>regTree::_set(&#39;target&#39;, $a);</code></p>
+<p>get: </p>
+<p><code>$target = regTree::_get(&#39;target&#39;);</code></p>
+</li>
+</ul>
+<p>简单的思想，大概就是这样了。。。</p>
+<h1 id="0x02-容器"><a href="#0x02-容器" class="headerlink" title="0x02 容器"></a>0x02 容器</h1><p>TP5的容器类位于<code>think/thinkphp/librarythink/Container.php</code></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> <span class="title">ArrayAccess</span>;</span><br><span class="line"><span class="keyword">use</span> <span class="title">ArrayIterator</span>;</span><br><span class="line"><span class="keyword">use</span> <span class="title">Closure</span>;</span><br><span class="line"><span class="keyword">use</span> <span class="title">Countable</span>;</span><br><span class="line"><span class="keyword">use</span> <span class="title">InvalidArgumentException</span>;</span><br><span class="line"><span class="keyword">use</span> <span class="title">IteratorAggregate</span>;</span><br><span class="line"><span class="keyword">use</span> <span class="title">ReflectionClass</span>;</span><br><span class="line"><span class="keyword">use</span> <span class="title">ReflectionException</span>;</span><br><span class="line"><span class="keyword">use</span> <span class="title">ReflectionFunction</span>;</span><br><span class="line"><span class="keyword">use</span> <span class="title">ReflectionMethod</span>;</span><br><span class="line"><span class="keyword">use</span> <span class="title">think</span>\<span class="title">exception</span>\<span class="title">ClassNotFoundException</span>;</span><br></pre></td></tr></table></figure>
+
+<p>这里可以看出使用了反射机制。还使用了一堆PHP的内置接口。</p>
+<p>看类声明：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Container</span> <span class="keyword">implements</span> <span class="title">ArrayAccess</span>, <span class="title">IteratorAggregate</span>, <span class="title">Countable</span></span></span><br></pre></td></tr></table></figure>
+
+
+
+<ul>
+<li><code>ArrayAccess</code>: 像数组一样使用对象</li>
+<li><code>IteratorAggregat</code>: 聚合式的迭代器</li>
+<li><code>Countable</code>: 用来统计对象中某个元素的个数</li>
+</ul>
+<p>往下：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 容器对象实例</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@var</span> Container</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">protected</span> <span class="built_in">static</span> <span class="variable">$instance</span>;</span><br><span class="line">   <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 容器中的对象实例</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@var</span> array</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">protected</span> <span class="variable">$instances</span> = [];</span><br></pre></td></tr></table></figure>
+
+<p>一看就像个单例模式，注册树的套路。</p>
+<p>往下：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">   * 容器绑定标识</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@var</span> array</span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="keyword">protected</span> <span class="variable">$bind</span> = [</span><br><span class="line">      <span class="string">&#x27;app&#x27;</span>                   =&gt; <span class="title class_">App</span>::<span class="variable language_">class</span>,</span><br><span class="line">      <span class="string">&#x27;build&#x27;</span>                 =&gt; <span class="title class_">Build</span>::<span class="variable language_">class</span>,</span><br><span class="line">      <span class="string">&#x27;cache&#x27;</span>                 =&gt; <span class="title class_">Cache</span>::<span class="variable language_">class</span>,</span><br><span class="line">      <span class="string">&#x27;config&#x27;</span>                =&gt; <span class="title class_">Config</span>::<span class="variable language_">class</span>,</span><br><span class="line">      <span class="string">&#x27;cookie&#x27;</span>                =&gt; <span class="title class_">Cookie</span>::<span class="variable language_">class</span>,</span><br><span class="line">      <span class="string">&#x27;debug&#x27;</span>                 =&gt; <span class="title class_">Debug</span>::<span class="variable language_">class</span>,</span><br><span class="line">      <span class="string">&#x27;env&#x27;</span>                   =&gt; <span class="title class_">Env</span>::<span class="variable language_">class</span>,</span><br><span class="line">      <span class="string">&#x27;hook&#x27;</span>                  =&gt; <span class="title class_">Hook</span>::<span class="variable language_">class</span>,</span><br><span class="line">      <span class="string">&#x27;lang&#x27;</span>                  =&gt; <span class="title class_">Lang</span>::<span class="variable language_">class</span>,</span><br><span class="line">      <span class="string">&#x27;log&#x27;</span>                   =&gt; <span class="title class_">Log</span>::<span class="variable language_">class</span>,</span><br><span class="line">      <span class="string">&#x27;middleware&#x27;</span>            =&gt; <span class="title class_">Middleware</span>::<span class="variable language_">class</span>,</span><br><span class="line">      <span class="string">&#x27;request&#x27;</span>               =&gt; <span class="title class_">Request</span>::<span class="variable language_">class</span>,</span><br><span class="line">      <span class="string">&#x27;response&#x27;</span>              =&gt; <span class="title class_">Response</span>::<span class="variable language_">class</span>,</span><br><span class="line">      <span class="string">&#x27;route&#x27;</span>                 =&gt; <span class="title class_">Route</span>::<span class="variable language_">class</span>,</span><br><span class="line">      <span class="string">&#x27;session&#x27;</span>               =&gt; <span class="title class_">Session</span>::<span class="variable language_">class</span>,</span><br><span class="line">      <span class="string">&#x27;template&#x27;</span>              =&gt; <span class="title class_">Template</span>::<span class="variable language_">class</span>,</span><br><span class="line">      <span class="string">&#x27;url&#x27;</span>                   =&gt; <span class="title class_">Url</span>::<span class="variable language_">class</span>,</span><br><span class="line">      <span class="string">&#x27;validate&#x27;</span>              =&gt; <span class="title class_">Validate</span>::<span class="variable language_">class</span>,</span><br><span class="line">      <span class="string">&#x27;view&#x27;</span>                  =&gt; <span class="title class_">View</span>::<span class="variable language_">class</span>,</span><br><span class="line">      <span class="string">&#x27;rule_name&#x27;</span>             =&gt; route<span class="title class_">\RuleName</span>::<span class="variable language_">class</span>,</span><br><span class="line">      <span class="comment">// 接口依赖注入</span></span><br><span class="line">      <span class="string">&#x27;think\LoggerInterface&#x27;</span> =&gt; <span class="title class_">Log</span>::<span class="variable language_">class</span>,</span><br><span class="line">  ];</span><br></pre></td></tr></table></figure>
+
+<p>一个映射关系， 为容器标识别名。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 容器标识别名</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@var</span> array</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">protected</span> <span class="variable">$name</span> = [];</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>看入口文件：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="title class_">Container</span>::<span class="title function_ invoke__">get</span>(<span class="string">&#x27;app&#x27;</span>)-&gt;<span class="title function_ invoke__">path</span>(<span class="keyword">__DIR__</span> . <span class="string">&#x27;/application/&#x27;</span>)-&gt;<span class="title function_ invoke__">initialize</span>();</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>这个地方就是静态调用<code>Container</code>里的get方法：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 获取容器中的对象实例</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@access</span> public</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span>  string        $abstract       类名或者标识</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span>  array|true    $vars           变量</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span>  bool          $newInstance    是否每次创建新的实例</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> object</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="built_in">static</span> <span class="function"><span class="keyword">function</span> <span class="title">get</span>(<span class="params"><span class="variable">$abstract</span>, <span class="variable">$vars</span> = [], <span class="variable">$newInstance</span> = <span class="literal">false</span></span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">static</span>::<span class="title function_ invoke__">getInstance</span>()-&gt;<span class="title function_ invoke__">make</span>(<span class="variable">$abstract</span>, <span class="variable">$vars</span>, <span class="variable">$newInstance</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>看第一个参数， 传入以后，调用单例模式得到一个容器对象， 然后调用make方法。重点环节：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">    * 创建类的实例</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@access</span> public</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@param</span>  string        $abstract       类名或者标识</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@param</span>  array|true    $vars           变量</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@param</span>  bool          $newInstance    是否每次创建新的实例</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@return</span> object</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">   <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">make</span>(<span class="params"><span class="variable">$abstract</span>, <span class="variable">$vars</span> = [], <span class="variable">$newInstance</span> = <span class="literal">false</span></span>)</span></span><br><span class="line"><span class="function">   </span>&#123;</span><br><span class="line">       <span class="keyword">if</span> (<span class="literal">true</span> === <span class="variable">$vars</span>) &#123;</span><br><span class="line">           <span class="comment">// 总是创建新的实例化对象</span></span><br><span class="line">           <span class="variable">$newInstance</span> = <span class="literal">true</span>;</span><br><span class="line">           <span class="variable">$vars</span>        = [];</span><br><span class="line">       &#125;</span><br><span class="line">     </span><br><span class="line">       <span class="variable">$abstract</span> = <span class="keyword">isset</span>(<span class="variable language_">$this</span>-&gt;name[<span class="variable">$abstract</span>]) ? <span class="variable language_">$this</span>-&gt;name[<span class="variable">$abstract</span>] : <span class="variable">$abstract</span>;</span><br><span class="line">			<span class="comment">#! 从注册树上找，🈶️就返回注册树上的对象。</span></span><br><span class="line">       <span class="keyword">if</span> (<span class="keyword">isset</span>(<span class="variable language_">$this</span>-&gt;instances[<span class="variable">$abstract</span>]) &amp;&amp; !<span class="variable">$newInstance</span>) &#123;</span><br><span class="line">           <span class="keyword">return</span> <span class="variable language_">$this</span>-&gt;instances[<span class="variable">$abstract</span>];</span><br><span class="line">       &#125;</span><br><span class="line">			<span class="comment">#！标示里有没有$abstract </span></span><br><span class="line">       <span class="keyword">if</span> (<span class="keyword">isset</span>(<span class="variable language_">$this</span>-&gt;bind[<span class="variable">$abstract</span>])) &#123;</span><br><span class="line">           <span class="variable">$concrete</span> = <span class="variable language_">$this</span>-&gt;bind[<span class="variable">$abstract</span>];</span><br><span class="line">					<span class="comment">#! 判断是否是闭包方法</span></span><br><span class="line">           <span class="keyword">if</span> (<span class="variable">$concrete</span> <span class="keyword">instanceof</span> <span class="built_in">Closure</span>) &#123;</span><br><span class="line">             <span class="comment">#! 这里通过反射机制执行函数</span></span><br><span class="line">               <span class="variable">$object</span> = <span class="variable language_">$this</span>-&gt;<span class="title function_ invoke__">invokeFunction</span>(<span class="variable">$concrete</span>, <span class="variable">$vars</span>);</span><br><span class="line">           &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">               <span class="comment">#！ 再次调用`make`方法，传入的$concrete是对象的具体位置了。</span></span><br><span class="line">               <span class="variable language_">$this</span>-&gt;name[<span class="variable">$abstract</span>] = <span class="variable">$concrete</span>;</span><br><span class="line">               <span class="keyword">return</span> <span class="variable language_">$this</span>-&gt;<span class="title function_ invoke__">make</span>(<span class="variable">$concrete</span>, <span class="variable">$vars</span>, <span class="variable">$newInstance</span>);</span><br><span class="line">           &#125;</span><br><span class="line">       &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">         	<span class="comment">#！ 核心， 反射调用实例</span></span><br><span class="line">           <span class="variable">$object</span> = <span class="variable language_">$this</span>-&gt;<span class="title function_ invoke__">invokeClass</span>(<span class="variable">$abstract</span>, <span class="variable">$vars</span>);</span><br><span class="line">       &#125;</span><br><span class="line"></span><br><span class="line">       <span class="keyword">if</span> (!<span class="variable">$newInstance</span>) &#123;</span><br><span class="line">           <span class="comment">#！挂载注册树</span></span><br><span class="line">           <span class="variable language_">$this</span>-&gt;instances[<span class="variable">$abstract</span>] = <span class="variable">$object</span>;</span><br><span class="line">       &#125;</span><br><span class="line"></span><br><span class="line">       <span class="keyword">return</span> <span class="variable">$object</span>;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+<p>看类反射的具体逻辑：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 调用反射执行类的实例化 支持依赖注入</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@access</span> public</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span>  string    $class 类名</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span>  array     $vars  参数</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> mixed</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">invokeClass</span>(<span class="params"><span class="variable">$class</span>, <span class="variable">$vars</span> = []</span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="comment">#！ 反射一个类</span></span><br><span class="line">        <span class="variable">$reflect</span> = <span class="keyword">new</span> <span class="title class_">ReflectionClass</span>(<span class="variable">$class</span>);</span><br><span class="line">        <span class="comment">#！ 类中如果有&#x27;__make&#x27;方法</span></span><br><span class="line">        <span class="keyword">if</span> (<span class="variable">$reflect</span>-&gt;<span class="title function_ invoke__">hasMethod</span>(<span class="string">&#x27;__make&#x27;</span>)) &#123;</span><br><span class="line">            <span class="variable">$method</span> = <span class="keyword">new</span> <span class="title class_">ReflectionMethod</span>(<span class="variable">$class</span>, <span class="string">&#x27;__make&#x27;</span>);</span><br><span class="line">		<span class="comment">#！&#x27;__make&#x27;方法是public且static</span></span><br><span class="line">            <span class="keyword">if</span> (<span class="variable">$method</span>-&gt;<span class="title function_ invoke__">isPublic</span>() &amp;&amp; <span class="variable">$method</span>-&gt;<span class="title function_ invoke__">isStatic</span>()) &#123;</span><br><span class="line">                <span class="comment">#！ 绑定参数， 实例化</span></span><br><span class="line">                <span class="variable">$args</span> = <span class="variable language_">$this</span>-&gt;<span class="title function_ invoke__">bindParams</span>(<span class="variable">$method</span>, <span class="variable">$vars</span>);</span><br><span class="line">                <span class="keyword">return</span> <span class="variable">$method</span>-&gt;<span class="title function_ invoke__">invokeArgs</span>(<span class="literal">null</span>, <span class="variable">$args</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      </span><br><span class="line">		<span class="comment">#! 类中是不是有构造函数，$vars就是传入容器的第二个参数(参数数组)</span></span><br><span class="line">        <span class="variable">$constructor</span> = <span class="variable">$reflect</span>-&gt;<span class="title function_ invoke__">getConstructor</span>();</span><br><span class="line"></span><br><span class="line">        <span class="variable">$args</span> = <span class="variable">$constructor</span> ? <span class="variable language_">$this</span>-&gt;<span class="title function_ invoke__">bindParams</span>(<span class="variable">$constructor</span>, <span class="variable">$vars</span>) : [];</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> <span class="variable">$reflect</span>-&gt;<span class="title function_ invoke__">newInstanceArgs</span>(<span class="variable">$args</span>);</span><br><span class="line"></span><br><span class="line">    &#125; <span class="keyword">catch</span> (ReflectionException <span class="variable">$e</span>) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">ClassNotFoundException</span>(<span class="string">&#x27;class not exists: &#x27;</span> . <span class="variable">$class</span>, <span class="variable">$class</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2019/12/05/tp5-container/" data-id="cl1d6sq9n0023ilw51i9vfvvw" data-title="tp5学习-容器" class="article-share-link">Share</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2019/12/28/burp_ex_1/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          burp插件入门
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2019/11/08/php_file_vul/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">PHP文件操作漏洞总结</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/paper/" rel="tag">paper</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/php/" rel="tag">php</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pl/" rel="tag">pl</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/paper/" style="font-size: 15px;">paper</a> <a href="/tags/php/" style="font-size: 10px;">php</a> <a href="/tags/pl/" style="font-size: 20px;">pl</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/03/">March 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/02/">February 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/01/">January 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/12/">December 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">September 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">August 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">April 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">February 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">January 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2022/03/30/Hello/">Hello</a>
+          </li>
+        
+          <li>
+            <a href="/2022/02/24/web/">Web应用系中注入类漏洞调研</a>
+          </li>
+        
+          <li>
+            <a href="/2022/02/18/data-mining/">data_mining</a>
+          </li>
+        
+          <li>
+            <a href="/2022/02/14/pop/">A Survey about PHP Object Injection</a>
+          </li>
+        
+          <li>
+            <a href="/2022/02/06/logic-machine/">Logic Machine</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2022 iohex<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

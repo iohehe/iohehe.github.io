@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>Static Detection of Security Vulnerabilities in Scripting Languages | Penlab</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="Static Detection of Security Vulnerabilities in Scripting Languages本文为Stanford大学2005年发表的文章追本溯源，这个Yichen Xie和Alex Aiken团队似乎是PHP安全静态分析比较早的，那个时候，台大的Huang等的WebSSARI应该出来了； Livshits等的Pixy也在构建中。 这一篇理论性的东西比较多">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Static Detection of Security Vulnerabilities in Scripting Languages">
+<meta property="og:url" content="http://example.com/2020/11/14/PHP-Static-Analysis-Theory/index.html">
+<meta property="og:site_name" content="Penlab">
+<meta property="og:description" content="Static Detection of Security Vulnerabilities in Scripting Languages本文为Stanford大学2005年发表的文章追本溯源，这个Yichen Xie和Alex Aiken团队似乎是PHP安全静态分析比较早的，那个时候，台大的Huang等的WebSSARI应该出来了； Livshits等的Pixy也在构建中。 这一篇理论性的东西比较多">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/2020/11/14/PHP-Static-Analysis-Theory/PHP-Static-Analysis-Theory/image-20210711161321077.png">
+<meta property="og:image" content="http://example.com/2020/11/14/PHP-Static-Analysis-Theory/PHP-Static-Analysis-Theory/image-20210711161557125.png">
+<meta property="og:image" content="http://example.com/2020/11/14/PHP-Static-Analysis-Theory/PHP-Static-Analysis-Theory/image-20210711161827521.png">
+<meta property="og:image" content="http://example.com/2020/11/14/PHP-Static-Analysis-Theory/PHP-Static-Analysis-Theory/image-20210711162140830.png">
+<meta property="og:image" content="http://example.com/2020/11/14/PHP-Static-Analysis-Theory/PHP-Static-Analysis-Theory/image-20201114140707691.png">
+<meta property="og:image" content="http://example.com/2020/11/14/PHP-Static-Analysis-Theory/PHP-Static-Analysis-Theory/image-20201114142327873.png">
+<meta property="og:image" content="http://example.com/2020/11/14/PHP-Static-Analysis-Theory/PHP-Static-Analysis-Theory/image-20210713163228163.png">
+<meta property="og:image" content="http://example.com/2020/11/14/PHP-Static-Analysis-Theory/PHP-Static-Analysis-Theory/image-20210715164509813.png">
+<meta property="og:image" content="http://example.com/2020/11/14/PHP-Static-Analysis-Theory/PHP-Static-Analysis-Theory/image-20201114145427950.png">
+<meta property="og:image" content="http://example.com/2020/11/14/PHP-Static-Analysis-Theory/PHP-Static-Analysis-Theory/image-20210713162322867.png">
+<meta property="og:image" content="http://example.com/2020/11/14/PHP-Static-Analysis-Theory/PHP-Static-Analysis-Theory/image-20201114152059860.png">
+<meta property="og:image" content="http://example.com/2020/11/14/PHP-Static-Analysis-Theory/PHP-Static-Analysis-Theory/image-20201114152915770.png">
+<meta property="og:image" content="http://example.com/2020/11/14/PHP-Static-Analysis-Theory/PHP-Static-Analysis-Theory/image-20201114153406937.png">
+<meta property="og:image" content="http://example.com/2020/11/14/PHP-Static-Analysis-Theory/PHP-Static-Analysis-Theory/image-20201114154757715.png">
+<meta property="og:image" content="http://example.com/2020/11/14/PHP-Static-Analysis-Theory/PHP-Static-Analysis-Theory/image-20201114154900851.png">
+<meta property="og:image" content="http://example.com/PHP-Static-Analysis-Theory/image-20210715171024725.png">
+<meta property="og:image" content="http://example.com/PHP-Static-Analysis-Theory/image-20210719203339317.png">
+<meta property="og:image" content="http://example.com/PHP-Static-Analysis-Theory/image-20210719204831765.png">
+<meta property="og:image" content="http://example.com/PHP-Static-Analysis-Theory/image-20210719210926117.png">
+<meta property="og:image" content="http://example.com/PHP-Static-Analysis-Theory/image-20210719210938703.png">
+<meta property="og:image" content="http://example.com/PHP-Static-Analysis-Theory/image-20210719211022777.png">
+<meta property="og:image" content="http://example.com/PHP-Static-Analysis-Theory/image-20210719211058506.png">
+<meta property="article:published_time" content="2020-11-14T03:15:48.000Z">
+<meta property="article:modified_time" content="2022-03-30T06:25:22.764Z">
+<meta property="article:author" content="iohex">
+<meta property="article:tag" content="paper">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2020/11/14/PHP-Static-Analysis-Theory/PHP-Static-Analysis-Theory/image-20210711161321077.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Penlab" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+<meta name="generator" content="Hexo 6.1.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Penlab</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-PHP-Static-Analysis-Theory" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2020/11/14/PHP-Static-Analysis-Theory/" class="article-date">
+  <time class="dt-published" datetime="2020-11-14T03:15:48.000Z" itemprop="datePublished">2020-11-14</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      Static Detection of Security Vulnerabilities in Scripting Languages
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="Static-Detection-of-Security-Vulnerabilities-in-Scripting-Languages"><a href="#Static-Detection-of-Security-Vulnerabilities-in-Scripting-Languages" class="headerlink" title="Static Detection of Security Vulnerabilities in Scripting Languages"></a>Static Detection of Security Vulnerabilities in Scripting Languages</h1><p>本文为Stanford大学2005年发表的文章追本溯源，这个Yichen Xie和Alex Aiken团队似乎是PHP安全静态分析比较早的，那个时候，台大的Huang等的WebSSARI应该出来了； Livshits等的Pixy也在构建中。 这一篇理论性的东西比较多，都是在构建数学模型，有借鉴意义。 再拿来总结一下。</p>
+<p>本文提出的是一个PHP安全漏洞的静态分析算法， 他们提出了一种三层架构从块内，过程内， 过程间三个级别进行静态分析。 尝试解决脚本语言独有的一些的动态特性，如动态类型， 代码包含。</p>
+<h2 id="贡献"><a href="#贡献" class="headerlink" title="贡献"></a>贡献</h2><ul>
+<li><p>提出了一个对于PHP的过程间静态分析算法。 尝试解决一些动态语言特有的挑战， 如： 动态代码加载， 动态变量类型转化， pervasive use of hash tables and regular expression matching. </p>
+<p>如上所说， 本文的核心方法时提出了一种三层结构， 利用隔离处理，想上传播的思想。 在<code>intrablock</code>, <code>intraprocedural</code>, and <code>interprocedual </code>三个level上做文章。 如在每个BB（basic block）中， 作者尝试利用符号执行去model动态特征(dynamic features)， 然后将结果生成block summaries, 这些summaries供上层分析使用， 从而帮助我们hidden了下层内部的复杂结构。 </p>
+</li>
+<li><p>本文使用上述静态分析方法寻找SQL注入， 但是we believe that, with small modifications, the same techniques can be applied to detecting other vulnerabilities such as XSS and code injection in web applications.</p>
+</li>
+<li><p>本文experimentally validate our approach by implementing the analysisi algorithm and running it on 6 popular web application written in PHP. 找到了105个0day.</p>
+</li>
+</ul>
+<h2 id="Scripting-Language-Dynamic-Feautres"><a href="#Scripting-Language-Dynamic-Feautres" class="headerlink" title="Scripting Language Dynamic Feautres"></a>Scripting Language Dynamic Feautres</h2><p>每次遇到这个章节， 我都想总结一下:</p>
+<img src="PHP-Static-Analysis-Theory/image-20210711161321077.png" alt="image-20210711161321077 " style="zoom:40%;" />
+
+<p>如上例子， 作者对比了PHP与JAVA构造SQL语句时的不同，JAVA用的是prepared statements(当然PHP引入PDO后也是这样，但是int类型还是会出问题)。而PHP直接拼接字符串(<code>natural integration</code>)。</p>
+<img src="PHP-Static-Analysis-Theory/image-20210711161557125.png" alt="image-20210711161557125" style="zoom:40%;" />
+
+<p><code>implicit casting</code>  主要涉及到字符串,这种web app中最常见的输入。 在代码中常常做出各种诡异的转化。</p>
+<img src="PHP-Static-Analysis-Theory/image-20210711161827521.png" alt="image-20210711161827521" style="zoom:40%;" />
+
+<img src="PHP-Static-Analysis-Theory/image-20210711162140830.png" alt="image-20210711162140830" style="zoom:40%;" />  
+
+
+
+<p>如使用，<code>extract</code>会根据参数讲数组的键值映射成变量，(这一块没太看清楚,可能就是讲extract这种函数动态向符号表引入变量)。</p>
+<h2 id="ANALYSIS"><a href="#ANALYSIS" class="headerlink" title="ANALYSIS"></a>ANALYSIS</h2><p>本文主要的贡献是还是一些理论上的形式化分析， 没有看到工程上的东西。</p>
+<h3 id="步骤："><a href="#步骤：" class="headerlink" title="步骤："></a>步骤：</h3><ol>
+<li>生成AST</li>
+</ol>
+<p>AST:  将PHP解析成抽象语法树(用的PHP5.0.5)， 还是以文件为单位的， 将文件中无封装的无的语句作为main function, 每一个文件有一个main, 0-N个user-defined function, 分析从main function开始。</p>
+<ol start="2">
+<li>建BB，建CFG</li>
+</ol>
+<p>分析文件中的每个function的ast。 划分BB,本文用的粒度是<code>single entry, single exit sequences of tatements</code>(看到还有以单条statement为粒度的)。然后构建CFG，遇到conditional jumps在CFG edge上label branch predicate。</p>
+<ol start="3">
+<li><p>Simulated using Symbol execution</p>
+<p>对每一个基本块， 作者使用了动态特性去理解块中的每一条statement对global state of the program所带来的影响，并将这些信息记录成summary。</p>
+</li>
+<li><p>Reachability analysis</p>
+<p>即数据流的可达性分析， 建立在构造好summaries的块之上，combine <code>block summaries</code> into a <code>function summary</code> , 此时function summary建立了(即第二层)，每个<code>function summary</code> 描述了<code>pre- and post-conditions of a function</code></p>
+</li>
+<li><p>处理calls</p>
+<p>在function内做可达性分析时， 难免会遇到其他过程的调用，此时需cover。</p>
+</li>
+</ol>
+<p>具体来看：</p>
+<h2 id="1-Simulate-Basic"><a href="#1-Simulate-Basic" class="headerlink" title="1. Simulate Basic"></a>1. Simulate Basic</h2><p>在语言建模的基础上，完成转化，生成每个块的summary（BlockSummary）</p>
+<img src="PHP-Static-Analysis-Theory/image-20201114140707691.png" alt="image-20201114140707691 " style="zoom:50%;" />
+
+<p>这个总的算法，输入为一个基本块，初始一个<code>state</code> 用来初始化块中变量状态(<code>x</code>-&gt;<code>x0</code>) 。 并在循环中迭代更新状态，如果遇到return和exit，则为出口；end block（迭代完成）也为出口，过程间分析时遇到<code>exit</code>也为出口。用每一个基本块的simulate后的state做一个summary, 然后返回这个块的summary。</p>
+<p><code>intra-block simulation</code>的关键 问题就是在于如何simulate state， 以下讨论<code>simulation process</code>:</p>
+<h2 id="Language：-先对语言进行建模"><a href="#Language：-先对语言进行建模" class="headerlink" title="Language： 先对语言进行建模"></a>Language： 先对语言进行建模</h2><img src="PHP-Static-Analysis-Theory/image-20201114142327873.png" alt="image-20201114142327873 " style="zoom:50%;" />
+
+
+
+<p>在此作者根据需求， 对PHP语言进行建模， 形成了一个子集：</p>
+<ol>
+<li><p>变量值类型(Value Type): 字符，布尔，数组，静态无法确认的数据(如形参) </p>
+</li>
+<li><p>常量值类型(Constant): 字符串，数字，true, false, null</p>
+</li>
+<li><p>L-val(location value)，这里有variable x, 实参，array </p>
+</li>
+<li><p>表达式(Expression)：常量表达式，变量表达式， 二元操作表达式， 一元操作表达式， 表达式类型转化。 </p>
+</li>
+<li><p>语句(Statement):  赋值语句(表达式运算)，赋值语句(过程调用) ，返回值语句return, 退出语句exit，包含语句include。</p>
+<p>其中提到了，include这种statement是scripting language所特有的(which allows prorammers to dynamically insert code into the program)。</p>
+</li>
+</ol>
+<h2 id="Simulation-State-Memory-Location-gt-Value"><a href="#Simulation-State-Memory-Location-gt-Value" class="headerlink" title="Simulation State(Memory Location -&gt; Value)"></a>Simulation State(Memory Location -&gt; Value)</h2><p><code>Simulation State</code> 是一个映射， 此映射: Memory Location-&gt;their value representations, 此处的<code>memory location</code> 指的是一个<code>program variable</code>(e.g., x), 或者<code>a hash table accessed via another location</code>（e.g. x[key]).</p>
+<img src="PHP-Static-Analysis-Theory/image-20210713163228163.png" alt="image-20210713163228163" style="zoom:50%;" />
+
+<blockquote>
+<p>The simulation state maps memory locations to their value representations</p>
+<img src="PHP-Static-Analysis-Theory/image-20210715164509813.png" alt="image-20210715164509813" style="zoom:50%;" />
+</blockquote>
+<p>图(a)是完整的表述。这一段就是形成一个Location到value的映射。</p>
+<img src="PHP-Static-Analysis-Theory/image-20201114145427950.png" alt="image-20201114145427950 " style="zoom:50%;" />
+
+<p>在开始分析的时候， Loc会被初始化为一个<code>L0</code>, 组成了simulation的初始状态集合。然后迭代value， 这里的value分为三类，具体看图(a)中的value representation部分，可以表示为三类分别是(String, Boolean和Integer)。</p>
+<ul>
+<li><p>String:</p>
+<p>String是最基本的类型，也是我们关注的类型。modeling string 的精确程度，直接影响了分析的精确性。</p>
+<p>作者认为，<code>modeling concatenation well enables an analysis to better understand information flow in a script</code>. 举例子来说，就像用户输入的GET, POST会拿来拼接SQL语句，SQL查询结果又会拼接到HTML中， 这是常见的动态web操作。因此，作者将<code>string values are represented as an ordered concatenation of string segments,.</code></p>
+<img src="PHP-Static-Analysis-Theory/image-20210713162322867.png" alt="image-20210713162322867" style="zoom:67%;" />
+</li>
+<li><p>Boolean:</p>
+</li>
+<li><p>Integer:</p>
+<p>Support track integer constants and binary and unary operations between them. We also support type cast from integers to Boolean and string values.</p>
+</li>
+</ul>
+<h3 id="Locations和L-val转化规则"><a href="#Locations和L-val转化规则" class="headerlink" title="Locations和L-val转化规则"></a>Locations和L-val转化规则</h3><p>这里在解释L-val, 首先看模型：</p>
+<img src="PHP-Static-Analysis-Theory/image-20201114152059860.png" alt="image-20201114152059860 " style="zoom:50%;" />
+
+<p>如上面对Lv的规则的定义， var, arg,dim三种(注意当时的文章都不考虑OO)。</p>
+<p>看下边这个例子：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$hash</span> = <span class="variable">$_POST</span>; <span class="comment">//$_POST这个hash table赋给$hash</span></span><br><span class="line"><span class="variable">$key</span> = <span class="string">&quot;user&quot;</span>; <span class="comment">//常量赋值</span></span><br><span class="line"><span class="variable">$userid</span> = <span class="variable">$hash</span>[<span class="variable">$key</span>]; </span><br></pre></td></tr></table></figure>
+
+<p>分析这段代码， 首先看初始状态</p>
+<img src="PHP-Static-Analysis-Theory/image-20201114152915770.png" alt="image-20201114152915770 " style="zoom:50%;" />
+
+<p>我们让每一个符号指向一个初始状态。然后根据上边的规则定义， 根据var的规则处理前两条：</p>
+<img src="PHP-Static-Analysis-Theory/image-20201114153406937.png" alt="image-20201114153406937 " style="zoom:50%;" />
+
+<p>他们都指向了一个unique location。</p>
+<p>第三条来用dim的规则定义处理。此时根据横线上方两条条件规则(e是名e’是键)，分别映射到_POST0和[‘userid’]那么他将映射到L[阿尔法]中， 即_POST[userid]0。</p>
+<hr>
+<h3 id="Exp转化规则"><a href="#Exp转化规则" class="headerlink" title="Exp转化规则"></a>Exp转化规则</h3><img src="PHP-Static-Analysis-Theory/image-20201114154757715.png" alt="image-20201114154757715 " style="zoom:50%;" />
+
+<p>因为脚本语言是一种动态类型， 在运行解释器会选择当前运算最适合的规则(弱类型)。那么就带了了类型转化问题。</p>
+<img src="PHP-Static-Analysis-Theory/image-20201114154900851.png" alt="image-20201114154900851 " style="zoom:50%;" />
+
+
+
+
+
+<hr>
+<h3 id="Statements转化规则"><a href="#Statements转化规则" class="headerlink" title="Statements转化规则"></a>Statements转化规则</h3><p>赋值有两种： 表达式计算赋值，和过程间调用赋值。 先看表达式计算如何被model:</p>
+<p><img src="/PHP-Static-Analysis-Theory/image-20210715171024725.png" alt="image-20210715171024725"></p>
+<p>Assignment rule：</p>
+<ol>
+<li>resolves the left-hand side into a memory location l. (上式lv&#x3D;&gt;l)</li>
+<li>evaluates the right-hand side into a value v.(上式e&#x3D;&gt;v)</li>
+</ol>
+<p>然后根据rule update the simulation state after the assignment maps <code>l</code> to the new value <code>v</code>。 </p>
+<hr>
+<h3 id="Block-summary"><a href="#Block-summary" class="headerlink" title="Block summary"></a>Block summary</h3><p>经过以上的转化后， 将块内信息转化为block summary，一个块summary是由六元组组成:</p>
+<p><img src="/PHP-Static-Analysis-Theory/image-20210719203339317.png" alt="image-20210719203339317"></p>
+<ul>
+<li><p>Error set: 在进入BB时，每一个variables必须是sanitized的状态。</p>
+</li>
+<li><p>Definitions: the set of memory locations defined in the current block. </p>
+</li>
+<li><p>Value flow:  the set of pairs of locations (l1, l2), l1 on the entry becomes a substring of l2 on exit.</p>
+</li>
+<li><p>Termination predicate: 块中是否含有程序终结, true if the current block contains a exit statement, or if it calls a function that causes the progmra to terminate.</p>
+</li>
+<li><p>Return value:  返回值， records the representation for the return value if any, undefined otherwise. </p>
+</li>
+<li><p>Untaint set:  向每个后继块传递当前的未过滤变量集合(由于有分支的存在，故每一个后继得到的summary可能不同)</p>
+</li>
+</ul>
+<h3 id="Intraprocedural-Analysis"><a href="#Intraprocedural-Analysis" class="headerlink" title="Intraprocedural Analysis"></a>Intraprocedural Analysis</h3><p><img src="/PHP-Static-Analysis-Theory/image-20210719204831765.png" alt="image-20210719204831765"></p>
+<p>一个过程内的抽象，是基于他的块抽象的：</p>
+<ul>
+<li>Error set: the set of <code>memory locations(variables, parameters, and hash access)</code>, 因为查的是SQL注入， 所以当其中一个memory locations的value流入database query时， 必须有记录他被sanitized了,否则error</li>
+<li>Return set:  the set of parameters or global variables 进入了return value（only string）</li>
+<li>Sanitized values:  the set of parameters or global variables,使用前向数据流可达性分析来探测被过滤输入流入每一个包含return的块。</li>
+<li>Program Exit:  一个指明当前function是否退出程序， 穷举所有CFG可达块。  如果没有return, 此程序就是一个exit function(也不一定，有的分支执行到最后就默认返回null了)</li>
+</ul>
+<h3 id="Interprocedural-Analysis"><a href="#Interprocedural-Analysis" class="headerlink" title="Interprocedural Analysis"></a>Interprocedural Analysis</h3><p>本文的分层次污点分析的最高层， interprocedural层。分析intra的summary, 对于每一个function call点， f(e1…en)分析一下四个方面：</p>
+<ul>
+<li><p>Pre-conditions:  使用error set 证明the set of parameters and global variables在进入该过程时都是安全的</p>
+</li>
+<li><p>Exit condition:  如果进入了一个exit function, 就将之后所有的stmt删除。</p>
+</li>
+<li><p>Post-conditions:  </p>
+</li>
+<li><p>Return value:  </p>
+<p><img src="/PHP-Static-Analysis-Theory/image-20210719210926117.png" alt="image-20210719210926117"></p>
+</li>
+</ul>
+<p><img src="/PHP-Static-Analysis-Theory/image-20210719210938703.png" alt="image-20210719210938703"></p>
+<h2 id="ExPERIMENTAL-RESULTS"><a href="#ExPERIMENTAL-RESULTS" class="headerlink" title="ExPERIMENTAL RESULTS"></a>ExPERIMENTAL RESULTS</h2><p><img src="/PHP-Static-Analysis-Theory/image-20210719211022777.png" alt="image-20210719211022777"></p>
+<p>没有 False Positive, 确定没有误报？</p>
+<h2 id="CASE-STUDY"><a href="#CASE-STUDY" class="headerlink" title="CASE STUDY"></a>CASE STUDY</h2><p><img src="/PHP-Static-Analysis-Theory/image-20210719211058506.png" alt="image-20210719211058506"></p>
+<p>但是我并没有看到具体的符号执行啊。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2020/11/14/PHP-Static-Analysis-Theory/" data-id="cl1d6sq92000eilw5h0zb81u1" data-title="Static Detection of Security Vulnerabilities in Scripting Languages" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/paper/" rel="tag">paper</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2020/12/06/loops/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          程序分析之Loops in Flow Graphs
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2020/11/01/NDSS-14-RIPS/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Simulation of Built-in PHP Feature for Precise Static Code Analysis</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/paper/" rel="tag">paper</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/php/" rel="tag">php</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pl/" rel="tag">pl</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/paper/" style="font-size: 15px;">paper</a> <a href="/tags/php/" style="font-size: 10px;">php</a> <a href="/tags/pl/" style="font-size: 20px;">pl</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/03/">March 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/02/">February 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/01/">January 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/12/">December 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">September 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">August 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">April 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">February 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">January 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2022/03/30/Hello/">Hello</a>
+          </li>
+        
+          <li>
+            <a href="/2022/02/24/web/">Web应用系中注入类漏洞调研</a>
+          </li>
+        
+          <li>
+            <a href="/2022/02/18/data-mining/">data_mining</a>
+          </li>
+        
+          <li>
+            <a href="/2022/02/14/pop/">A Survey about PHP Object Injection</a>
+          </li>
+        
+          <li>
+            <a href="/2022/02/06/logic-machine/">Logic Machine</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2022 iohex<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

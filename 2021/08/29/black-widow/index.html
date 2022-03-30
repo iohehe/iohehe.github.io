@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>Black Widow | Penlab</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="0x01  IntroAs the title shown that the black Widow is a blackbox data-driven web scanning.  This paper is  in S&amp;P 2021, to find XSS in web applications. 0x02 ChallengesThe challenge of web applica">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Black Widow">
+<meta property="og:url" content="http://example.com/2021/08/29/black-widow/index.html">
+<meta property="og:site_name" content="Penlab">
+<meta property="og:description" content="0x01  IntroAs the title shown that the black Widow is a blackbox data-driven web scanning.  This paper is  in S&amp;P 2021, to find XSS in web applications. 0x02 ChallengesThe challenge of web applica">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/2021/08/29/black-widow/black-widow/image-20210829220127541.png">
+<meta property="og:image" content="http://example.com/2021/08/29/black-widow/black-widow/image-20210929165046202.png">
+<meta property="og:image" content="http://example.com/black-widow/image-20210929165457363.png">
+<meta property="article:published_time" content="2021-08-29T12:20:59.000Z">
+<meta property="article:modified_time" content="2022-03-30T06:25:22.779Z">
+<meta property="article:author" content="iohex">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2021/08/29/black-widow/black-widow/image-20210829220127541.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Penlab" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+<meta name="generator" content="Hexo 6.1.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Penlab</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-black-widow" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2021/08/29/black-widow/" class="article-date">
+  <time class="dt-published" datetime="2021-08-29T12:20:59.000Z" itemprop="datePublished">2021-08-29</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      Black Widow
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h2 id="0x01-Intro"><a href="#0x01-Intro" class="headerlink" title="0x01  Intro"></a>0x01  Intro</h2><p>As the title shown that the black Widow is a blackbox data-driven web scanning. </p>
+<p>This paper is  in S&amp;P 2021, to find XSS in web applications.</p>
+<h2 id="0x02-Challenges"><a href="#0x02-Challenges" class="headerlink" title="0x02 Challenges"></a>0x02 Challenges</h2><p>The challenge of web application scanning mainly has three items:</p>
+<ul>
+<li><p><strong>Navigation:</strong> Navigation is a question how can we cover the application contents as more as possible. A web application has a lot of methods to create new content, such as links, form submissions, javascript events.  So the first order of the blackbox web scanning is navigation modeling. (Op: <em>it is a question about space</em>)</p>
+</li>
+<li><p><strong>Traversing:</strong> Traversing is about how to handle complex workflows in the application. The events have some trigger sequences. For example, if there is a vulnerability on the picture comment place, at first, we must need to upload a picture before.(Op: <em>it is a question about line</em>) </p>
+</li>
+<li><p><strong>Inter-state Dependencis:</strong> This is about where we look for our payload in the web application. For instance, when we submit some data as admin, the content may output in other pages. So how to build the inter-state dependencis is a crucial point to build a strong scanner.(Op: <em>it is a question about point</em>)</p>
+</li>
+</ul>
+<h2 id="0x03-Previous"><a href="#0x03-Previous" class="headerlink" title="0x03 Previous"></a>0x03 Previous</h2><p>Black Widow compared with three tools: <em>jAk</em>,<em>Enemy of the State</em>, and <em>Ligre</em>. To address the above challenges, the author found that these tools are just imporving one of these methods in isolation. </p>
+<ul>
+<li><p><em>JAk</em> focused on exploring client-side events.(It can find sequences of events that could be exploited by deep-first fashion, but cannot extend across multiple pages)</p>
+</li>
+<li><p><em>Enemy of the State</em> focused on traversing server-side states(traversed with respect to state).</p>
+</li>
+<li><p><em>Ligre</em> used reversed engineering try to identify interestring dependencies, which towards to slove the challenge three.</p>
+</li>
+</ul>
+<h2 id="0x04-Approach"><a href="#0x04-Approach" class="headerlink" title="0x04 Approach"></a>0x04 Approach</h2><p>Black widow’s key idea is to combine the advantages of all of these methods to handle the modern complex web applications.</p>
+<img src="black-widow/image-20210829220127541.png" alt="image-20210829220127541" style="zoom:80%;" />
+
+
+
+<h3 id="Navigation"><a href="#Navigation" class="headerlink" title="Navigation"></a>Navigation</h3><p>To handle navigation,  Black widow treats the <strong>nodes</strong> in the graph as <strong>client-side states</strong> and the <strong>edges</strong> between these nodes are the <strong>action</strong> needed to move between these states. So web applications can be represented as a labeled directed graph. </p>
+<h4 id="a-Model-Construction"><a href="#a-Model-Construction" class="headerlink" title="a) Model Construction"></a>a) Model Construction</h4><p>Black widow start model construction from a initial URL, then retrieves the first webpage and the referenced resources. While execuing the loaded javascript, which extracts the registered Javascript events and add them to the model.</p>
+<p> So the model has two kinds of states, one kind is from page(e.g., URL) and another is from javascript events(e.g., click).</p>
+<p>And there are four types of actions: GET requests, form submissions, iframes and Javascript events.</p>
+<h4 id="b-Extraction-of-Actions"><a href="#b-Extraction-of-Actions" class="headerlink" title="b) Extraction of Actions"></a>b) Extraction of Actions</h4><p>Black widow uses dynamic analysis approach, monitioring for call to browser APIs to register JavaScript events and modification of the DOM treee to insert tags such as forms and ahchors.</p>
+<ul>
+<li>use <em>JAK</em>‘s library to handle event registration hooking before loading a page.</li>
+<li>Monitor DOM Modification to detect updates to the page(rescan the page).</li>
+</ul>
+<h4 id="C-Infinite-Crawls"><a href="#C-Infinite-Crawls" class="headerlink" title="C) Infinite Crawls"></a>C) Infinite Crawls</h4><p>To avoid infinite crawls:</p>
+<ul>
+<li>a set of heuristics that determine when two pages or two actions are similar.</li>
+<li>a hard limit to the maximum number of “similar” actions.</li>
+</ul>
+<h3 id="Traversal"><a href="#Traversal" class="headerlink" title="Traversal"></a>Traversal</h3><blockquote>
+<p>Traversal is describing which order actions should be performed and when to perform possibly state-changing actions.</p>
+</blockquote>
+<p>As we can  seen in the above figure, the blue line is a process of traverse we pick unvisited edge from the navigation graph in the order they were added.</p>
+<img src="black-widow/image-20210929165046202.png" alt="image-20210929165046202 " style="zoom:80%;" />
+
+<p>This is the function of traverse, the parameter is the edge(including: url, form, event, iframe).</p>
+<p>if the current edge has a previous edge, we would iterator it and check the <code>safe</code> edge, <code>safe</code> means user can visit direct, in this work, it is just the GET method. If the edge meet safe, the loop will break and create a new navigate object which init with workflow.</p>
+<p>So, in total, the goal of traversal is finding the action chains on the navigation graph.</p>
+<h3 id="Inter-sate-Dependencies"><a href="#Inter-sate-Dependencies" class="headerlink" title="Inter-sate Dependencies"></a>Inter-sate Dependencies</h3><p><img src="/black-widow/image-20210929165457363.png" alt="image-20210929165457363"></p>
+<h3 id="Dynamic-XSS-detection"><a href="#Dynamic-XSS-detection" class="headerlink" title="Dynamic XSS detection"></a>Dynamic XSS detection</h3>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2021/08/29/black-widow/" data-id="cl1d6sq94000lilw5a0vxbs14" data-title="Black Widow" class="article-share-link">Share</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2021/09/18/freedo/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          论自由
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2021/08/16/exp/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">教训与感悟</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/paper/" rel="tag">paper</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/php/" rel="tag">php</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pl/" rel="tag">pl</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/paper/" style="font-size: 15px;">paper</a> <a href="/tags/php/" style="font-size: 10px;">php</a> <a href="/tags/pl/" style="font-size: 20px;">pl</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/03/">March 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/02/">February 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/01/">January 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/12/">December 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">September 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">August 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">April 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">February 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">January 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2022/03/30/Hello/">Hello</a>
+          </li>
+        
+          <li>
+            <a href="/2022/02/24/web/">Web应用系中注入类漏洞调研</a>
+          </li>
+        
+          <li>
+            <a href="/2022/02/18/data-mining/">data_mining</a>
+          </li>
+        
+          <li>
+            <a href="/2022/02/14/pop/">A Survey about PHP Object Injection</a>
+          </li>
+        
+          <li>
+            <a href="/2022/02/06/logic-machine/">Logic Machine</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2022 iohex<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

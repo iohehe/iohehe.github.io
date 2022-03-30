@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>Penlab</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta property="og:type" content="website">
+<meta property="og:title" content="Penlab">
+<meta property="og:url" content="http://example.com/page/2/index.html">
+<meta property="og:site_name" content="Penlab">
+<meta property="og:locale" content="en_US">
+<meta property="article:author" content="iohex">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="Penlab" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+<meta name="generator" content="Hexo 6.1.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Penlab</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main">
+  
+    <article id="post-datalog" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2021/12/30/datalog/" class="article-date">
+  <time class="dt-published" datetime="2021-12-30T11:08:07.000Z" itemprop="datePublished">2021-12-30</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2021/12/30/datalog/">datalog</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="DataLog学习"><a href="#DataLog学习" class="headerlink" title="DataLog学习"></a>DataLog学习</h1><p>一直听说用datalog来做程序分析很NB，所以一直想学习他的使用方式。</p>
+<p>参考: <a target="_blank" rel="noopener" href="https://souffle-lang.github.io/tutorial">https://souffle-lang.github.io/tutorial</a></p>
+<h2 id="有向图可达性分析"><a href="#有向图可达性分析" class="headerlink" title="有向图可达性分析"></a>有向图可达性分析</h2><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">.<span class="function">decl <span class="title">edge</span><span class="params">(n: symbol, m: symbol)</span></span></span><br><span class="line"><span class="function"><span class="title">edge</span><span class="params">(<span class="string">&quot;a&quot;</span>, <span class="string">&quot;b&quot;</span>)</span>. <span class="comment">/* facts of edge */</span></span></span><br><span class="line"><span class="function"><span class="title">edge</span><span class="params">(<span class="string">&quot;b&quot;</span>, <span class="string">&quot;c&quot;</span>)</span>.</span></span><br><span class="line"><span class="function"><span class="title">edge</span><span class="params">(<span class="string">&quot;c&quot;</span>, <span class="string">&quot;b&quot;</span>)</span>.</span></span><br><span class="line"><span class="function"><span class="title">edge</span><span class="params">(<span class="string">&quot;c&quot;</span>, <span class="string">&quot;d&quot;</span>)</span>.</span></span><br><span class="line"><span class="function">.decl <span class="title">reachable</span> <span class="params">(n: symbol, m: symbol)</span></span></span><br><span class="line"><span class="function">.output reachable <span class="comment">// output relation reachable</span></span></span><br><span class="line"><span class="function"><span class="title">reachable</span><span class="params">(x, y)</span>:- edge(x, y). // base rule</span></span><br><span class="line"><span class="function">reachable(x, z):- edge(x, y), reachable(y, z). // inductive rule</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2021-12-30-111626.png" alt="image-20211230141036143"></p>
+<p>对于这样一个有向图，做可达性分析， 只要做好了顶点之间的边的关系，您不需要dfs, bfs,几行代码就可以搞定：</p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2021-12-30-111627.png" alt="image-20211230141323656"></p>
+<p>这全靠着datalog支持递归。</p>
+<p>比如第二条规则</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">reacheable</span>(x, z) :- <span class="built_in">reachable</span>(x, y),<span class="built_in">reachable</span>(y, z).</span><br></pre></td></tr></table></figure>
+
+<p>其中你告诉引擎, 如果一个符号x连接y,  y连接z，那么x, z相连。 比如a到d, 引擎先根据第一条推导出a-&gt;b，b-&gt;c, c-&gt;d,然后开始递归，即然a-&gt;b, b-&gt;c那么a-&gt;c,即然a-&gt;c, c-&gt;d那么a-&gt;d。</p>
+<h2 id="二叉树同级节点"><a href="#二叉树同级节点" class="headerlink" title="二叉树同级节点"></a>二叉树同级节点</h2><p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2021-12-30-111622.jpg" alt="Example graph"></p>
+<p>给定一颗二叉树，找出同级节点： 如b, c同级; d, f同级。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">.<span class="function">decl <span class="title">Parent</span><span class="params">(n: symbol, m: symbol)</span></span></span><br><span class="line"><span class="function"><span class="title">Parent</span><span class="params">(<span class="string">&quot;d&quot;</span>, <span class="string">&quot;b&quot;</span>)</span>.</span></span><br><span class="line"><span class="function"><span class="title">Parent</span><span class="params">(<span class="string">&quot;e&quot;</span>, <span class="string">&quot;b&quot;</span>)</span>.</span></span><br><span class="line"><span class="function"><span class="title">Parent</span><span class="params">(<span class="string">&quot;f&quot;</span>, <span class="string">&quot;c&quot;</span>)</span>.</span></span><br><span class="line"><span class="function"><span class="title">Parent</span><span class="params">(<span class="string">&quot;g&quot;</span>, <span class="string">&quot;c&quot;</span>)</span>.</span></span><br><span class="line"><span class="function"><span class="title">Parent</span><span class="params">(<span class="string">&quot;b&quot;</span>, <span class="string">&quot;a&quot;</span>)</span>.</span></span><br><span class="line"><span class="function"><span class="title">Parent</span><span class="params">(<span class="string">&quot;c&quot;</span>, <span class="string">&quot;a&quot;</span>)</span>.</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">.decl <span class="title">Person</span><span class="params">(n: symbol)</span></span></span><br><span class="line"><span class="function"><span class="title">Person</span><span class="params">(x)</span> :- Parent(x, _).   // 从子中提取person</span></span><br><span class="line"><span class="function">Person(x) :- Parent(_, x).   // 从父母中提取person</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">.decl SameGeneration(n: symbol, m:symbol)</span></span><br><span class="line"><span class="function">SameGeneration(x, x) :- Person(x). // 做一个自身到自身的关系映射, 做为初始化</span></span><br><span class="line"><span class="function">SameGeneration(x, y) :=</span> <span class="built_in">Parent</span>(x, p), <span class="built_in">SameGeneration</span>(p, q), <span class="built_in">Parent</span>(y, q). <span class="comment">// 逻辑： 如果p是x的父母，p和q同级，那么q的孩子y和x也同级(父父同级-&gt;子子同级)</span></span><br><span class="line"></span><br><span class="line">.output SameGeneration</span><br></pre></td></tr></table></figure>
+
+
+
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2021-12-30-111629.png" alt="image-20211230143847717" style="zoom:50%;" />
+
+<p>注：自己和自己一定同级。</p>
+<h2 id="0x03-Data-flow-analysis"><a href="#0x03-Data-flow-analysis" class="headerlink" title="0x03 Data-flow analysis"></a>0x03 Data-flow analysis</h2><p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2021-12-30-111616.jpg" alt="Reaching definition example"></p>
+<p>这里有一个程序流图，做一个数据流分析。</p>
+<blockquote>
+<p>Data-flow analysis(DFA) aims to determine <em>static</em> properties of programs.</p>
+</blockquote>
+<p>正向来分析变量v的<code>reaching definition</code>:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// define control flow graph</span></span><br><span class="line"><span class="comment">// via the Edge relation</span></span><br><span class="line">.<span class="function">decl <span class="title">Edge</span><span class="params">(n: symbol, m: symbol)</span></span></span><br><span class="line"><span class="function"><span class="title">Edge</span><span class="params">(<span class="string">&quot;start&quot;</span>, <span class="string">&quot;b1&quot;</span>)</span>.</span></span><br><span class="line"><span class="function"><span class="title">Edge</span><span class="params">(<span class="string">&quot;b1&quot;</span>, <span class="string">&quot;b2&quot;</span>)</span>.</span></span><br><span class="line"><span class="function"><span class="title">Edge</span><span class="params">(<span class="string">&quot;b1&quot;</span>, <span class="string">&quot;b3&quot;</span>)</span>.</span></span><br><span class="line"><span class="function"><span class="title">Edge</span><span class="params">(<span class="string">&quot;b2&quot;</span>, <span class="string">&quot;b4&quot;</span>)</span>.</span></span><br><span class="line"><span class="function"><span class="title">Edge</span><span class="params">(<span class="string">&quot;b3&quot;</span>, <span class="string">&quot;b4&quot;</span>)</span>.</span></span><br><span class="line"><span class="function"><span class="title">Edge</span><span class="params">(<span class="string">&quot;b4&quot;</span>, <span class="string">&quot;b1&quot;</span>)</span>.</span></span><br><span class="line"><span class="function"><span class="title">Edge</span><span class="params">(<span class="string">&quot;b4&quot;</span>, <span class="string">&quot;end&quot;</span>)</span>.</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"><span class="comment">// 两个define点互为gen,kill</span></span></span><br><span class="line"><span class="function"><span class="comment">// Generating Definitions </span></span></span><br><span class="line"><span class="function">.decl <span class="title">GenDef</span><span class="params">(n: symbol, d:symbol)</span>   </span></span><br><span class="line"><span class="function"><span class="title">GenDef</span><span class="params">(<span class="string">&quot;b2&quot;</span>, <span class="string">&quot;d1&quot;</span>)</span>.</span></span><br><span class="line"><span class="function"><span class="title">GenDef</span><span class="params">(<span class="string">&quot;b4&quot;</span>, <span class="string">&quot;d2&quot;</span>)</span>.</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"><span class="comment">// Killing Definitions</span></span></span><br><span class="line"><span class="function">.decl <span class="title">KillDef</span><span class="params">(n: symbol, d:symbol)</span></span></span><br><span class="line"><span class="function"><span class="title">KillDef</span><span class="params">(<span class="string">&quot;b4&quot;</span>, <span class="string">&quot;d1&quot;</span>)</span>.</span></span><br><span class="line"><span class="function"><span class="title">KillDef</span><span class="params">(<span class="string">&quot;b2&quot;</span>, <span class="string">&quot;d2&quot;</span>)</span>.</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"><span class="comment">// Reachable</span></span></span><br><span class="line"><span class="function">.decl <span class="title">Reachable</span><span class="params">(n: symbol, d:symbol)</span>  </span></span><br><span class="line"><span class="function"><span class="title">Reachable</span><span class="params">(u,d)</span> :- GenDef(u,d).    </span></span><br><span class="line"><span class="function">Reachable(v,d) :- Edge(u,v), Reachable(u,d), !KillDef(u,d).</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">.output Reachable</span></span><br></pre></td></tr></table></figure>
+
+<p>推导式:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Reachable</span>(u,d) :- <span class="built_in">GenDef</span>(u,d).    <span class="comment">// 初始化define点, 相当于Gen_B</span></span><br><span class="line"><span class="built_in">Reachable</span>(v, d) :- <span class="built_in">Edge</span>(u, v), <span class="built_in">Reachable</span>(u, d), !<span class="built_in">KillDef</span>(u, d). <span class="comment">//相当于(IN[B]-killB)</span></span><br></pre></td></tr></table></figure>
+
+<p>递归地实现了reaching definition 的迭代数据流算法:</p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2021-12-30-111607.png" alt="截屏2020-05-09 下午9.11.28 "></p>
+<blockquote>
+<p>参考南大程序分析第三节</p>
+</blockquote>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2021/12/30/datalog/" data-id="cl1d6sq96000qilw54bfbeg59" data-title="datalog" class="article-share-link">Share</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-why" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2021/12/25/why/" class="article-date">
+  <time class="dt-published" datetime="2021-12-25T05:07:30.000Z" itemprop="datePublished">2021-12-25</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2021/12/25/why/">我为什么很少写安全相关的东西</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>我的专业方向是安全，但是我一般很少写安全相关的东西。 这对我来说依然是一件很矛盾的事情， 为什么呢？</p>
+<p>就像一个锁匠，他交给一个陌生人开锁，在不了解这个人的情况下，不确定他学会不会去干坏事。 </p>
+<p>最近搭了一台服务器，好多exp打来。这些人的exp很可能是从某位师傅文章里直接拿来的。所以我写的安全工具，目前也没有放到网上过。 但是话又说回来了，不交流怎么进步呢，毕竟我从各种师傅那里学了很多，这对我来说实属矛盾。</p>
+<p>我接触wooyun的时候，始终没拿邀请码。当时也能挖到一些洞，但是有一次我看到某大学的一个sql注入漏洞被<code>厂商积极忽略</code>，我极其反感这种态度。我拿那个洞去试了一下，根本就没有修。 我的目的是让网络世界更安全，为什么要把别人的东西给你让你公开？后来国内有了各种SRC, 还有一些平台保护措施比较好了，然而我也我不到洞了，师傅们都tql ；）。</p>
+<p>有时候想想，自己玩安全真的有种自嗨的感觉，但是做喜欢的事，锦衣夜行有如何？</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2021/12/25/why/" data-id="cl1d6sq9o0025ilw5f9l4dlo5" data-title="我为什么很少写安全相关的东西" class="article-share-link">Share</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-pointer-analysis" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2021/12/15/pointer-analysis/" class="article-date">
+  <time class="dt-published" datetime="2021-12-15T09:57:35.000Z" itemprop="datePublished">2021-12-15</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2021/12/15/pointer-analysis/">pointer_analysis</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>以南大视频课件为主</p>
+</blockquote>
+<ol>
+<li><p>Motivation</p>
+</li>
+<li><p>Introduction to Pointer Analysis 06:50</p>
+<ul>
+<li>Pointer Analysis and Alias Analysis 14:50</li>
+<li>Application of Pointer Analysis 17:20</li>
+</ul>
+</li>
+<li><p>Key Factors of Pointer Analysis 19:15</p>
+<ul>
+<li>Heap Abstration 21:30</li>
+<li>Context Sensitivity 27:40</li>
+<li>Flow Sensitivity 32:30</li>
+<li>Analysis Scope 45:40</li>
+<li>Pointer Analysis in This Course 52:20  –&gt; 60:20</li>
+</ul>
+</li>
+<li><p>Concerned Statements 64:50</p>
+</li>
+<li><p>Conclusion&amp;下节课内容 77:00</p>
+</li>
+</ol>
+<h1 id="指针分析"><a href="#指针分析" class="headerlink" title="指针分析"></a>指针分析</h1><blockquote>
+<p>南大小课堂开课啦～</p>
+</blockquote>
+<h2 id="Problem-of-CHA"><a href="#Problem-of-CHA" class="headerlink" title="Problem of CHA"></a>Problem of CHA</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> <span class="title function_">foo</span><span class="params">()</span> &#123;</span><br><span class="line">  <span class="type">Number</span> <span class="variable">n</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">One</span>();</span><br><span class="line">  <span class="type">int</span> <span class="variable">x</span> <span class="operator">=</span> n.get();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">interface</span> <span class="title class_">Number</span> &#123;</span><br><span class="line">  <span class="type">int</span> <span class="title function_">get</span><span class="params">()</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Zero</span> <span class="keyword">implements</span> <span class="title class_">Number</span> &#123;</span><br><span class="line">  <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">get</span><span class="params">()</span> &#123; <span class="keyword">return</span> <span class="number">0</span>; &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">One</span> <span class="keyword">implements</span> <span class="title class_">Number</span> &#123;</span><br><span class="line">  <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">get</span><span class="params">()</span> &#123; <span class="keyword">return</span> <span class="number">1</span>; &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Two</span> <span class="keyword">implements</span> <span class="title class_">Number</span> &#123;</span><br><span class="line">  <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">get</span><span class="params">()</span> &#123;<span class="keyword">return</span> <span class="number">2</span>;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在这个例子中，很显然object n，new的是一个One。 </p>
+<p>因此返回1。</p>
+<blockquote>
+<p>如果按照CHA, 那么X就是根据变量类型(Number)来解， 而Number有三个子类。因此此时x指向3个值(0, 1, 2)</p>
+</blockquote>
+<p>一句话，CHA看不到object的声明类型。</p>
+<p>因此在做常量传播的时候，我们的CHA方法就会拿到两个假值(0,2)，此时的结果就是NAC(不精确)。</p>
+<p>而做指针分析， 故名思义，就是知道n指向哪个object。</p>
+<blockquote>
+<p>一个 class在new 的时候， 会做如下事情： 在内存中构造一个object, 运行构造函数，并使用n指向这个object, 因此这里的n就等同与一个指向object地址的指针。</p>
+</blockquote>
+<p>这个例子中，指针分析可以知道n指向<code>new One</code>这个唯一对象。然后构造调用图(对new One做dispatch)， 得到唯一一个get方法。  </p>
+<hr>
+<h2 id="指针分析介绍"><a href="#指针分析介绍" class="headerlink" title="指针分析介绍"></a>指针分析介绍</h2><h3 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h3><p>指针分析可以看作一个基础的静态分析， 他回答的问题是程序中每个指针可以指向那些地址。</p>
+<p>对于OO语言 来说，指针分析回答的是一个变量(或者field)可以指向哪些object(may analysis)。</p>
+<blockquote>
+<p>Answer: Which <strong>object</strong> a <strong>pointer</strong> can point to?</p>
+</blockquote>
+<p>Let’s explain it by an analysis process:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> <span class="title function_">foo</span><span class="params">()</span> &#123;</span><br><span class="line">  <span class="type">A</span> <span class="variable">a</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">A</span>();</span><br><span class="line">  <span class="type">B</span> <span class="variable">x</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">B</span>();</span><br><span class="line">  a.setB(x);</span><br><span class="line">  <span class="type">B</span> <span class="variable">y</span> <span class="operator">=</span> a.getB();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">A</span> &#123;</span><br><span class="line">  B b;</span><br><span class="line">  <span class="keyword">void</span> <span class="title function_">setB</span><span class="params">(B b)</span> &#123;</span><br><span class="line">    <span class="built_in">this</span>.b = b;</span><br><span class="line">  &#125;</span><br><span class="line">  B <span class="title function_">getB</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">this</span>.b;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>本例子中，类A 是类B的容器，并提供了get, set方法。 在foo()方法中，独立的new了A和B。 而变量a是<code>new A</code>的指针，变量x是<code>new B</code>的指针。 之后，a调用 setB方法将<code>new B()</code>，store进了<code>new A()</code>。接着又声明了变量y，通过getB方法获取了<code>new B</code>（指向，没 new）。</p>
+<img src="img/image-20211215193741664.png" alt="image-20211215193741664" style="zoom:50%;" />
+
+<blockquote>
+<p>很datalog </p>
+</blockquote>
+<h2 id="Key-Factors-of-Pointer-Analysis"><a href="#Key-Factors-of-Pointer-Analysis" class="headerlink" title="Key Factors of Pointer Analysis"></a>Key Factors of Pointer Analysis</h2><h3 id="Allocation-Site-Abstraction"><a href="#Allocation-Site-Abstraction" class="headerlink" title="Allocation-Site Abstraction"></a>Allocation-Site Abstraction</h3><h3 id="Context-Sensitivity"><a href="#Context-Sensitivity" class="headerlink" title="Context Sensitivity"></a>Context Sensitivity</h3><blockquote>
+<p>How to model calling contexts? </p>
+</blockquote>
+<p>上下文敏感，在指针分析中，如何对调用上下文进行建模。</p>
+<p><code>上下文</code>这个概念有点抽象。就是一个过程调用另一个过程时工作栈上的状态(好像更抽象了)。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Test</span> &#123;</span><br><span class="line">  <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">foo</span><span class="params">(<span class="type">int</span> p)</span> &#123;</span><br><span class="line"> 		<span class="keyword">if</span> (p == <span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">  </span><br><span class="line"><span class="keyword">void</span> <span class="title function_">foo</span><span class="params">()</span> &#123;</span><br><span class="line">  	<span class="type">Test</span> <span class="variable">a</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Test</span>();</span><br><span class="line">    <span class="type">Test</span> <span class="variable">b</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Test</span>();</span><br><span class="line">    <span class="type">int</span> <span class="variable">x</span> <span class="operator">=</span> <span class="number">1</span>;</span><br><span class="line">    <span class="type">boolean</span> <span class="variable">test_a</span> <span class="operator">=</span> a.foo(x);</span><br><span class="line">  	x = <span class="number">2</span>;	</span><br><span class="line">  	<span class="type">boolean</span> <span class="variable">test_b</span> <span class="operator">=</span> b.foo(x);</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<p>对于上下文敏感，对于同一个方法，他有多个上下文，么个上下文分别分析一次</p>
+<img src="img/image-20211215201557399.png" alt="image-20211215201557399" style="zoom:80%;" />
+
+<p>这里有两个上下文，就会有两个不同的分析。</p>
+<p>对于上下文不敏感：</p>
+<p><img src="/img/image-20211215202037637.png" alt="image-20211215202037637"></p>
+<p>方法foo()只分析一次。 汇合上下文可能会丢失精度。</p>
+<blockquote>
+<p>向下文敏感技术是一个重要技术，他能很大程度提高分析精度</p>
+</blockquote>
+<h3 id="Flow-Sensitivity"><a href="#Flow-Sensitivity" class="headerlink" title="Flow Sensitivity"></a>Flow Sensitivity</h3><blockquote>
+<p>How to model control flow?</p>
+</blockquote>
+<p>因为同样的语句，如果顺序不同可能结果就不一样</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> a = <span class="number">1</span>;</span><br><span class="line"><span class="type">int</span> b = <span class="number">2</span>;</span><br><span class="line">a = b;</span><br><span class="line"><span class="type">int</span> c;</span><br><span class="line">c = b-a;</span><br><span class="line">c = a-b;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>在程序的每一个点,都维护着一个映射(状态)。 每一条语句，都存着数据流到达这一点的数据流信息</p>
+<p>在指针分析中要做的流敏感，就要让每一个指针维持一个指向关系集合：</p>
+<p><img src="/img/image-20211215203219981.png" alt="image-20211215203219981"></p>
+<p>在这个图片中， 可以看到变量c指向了<code>new C</code>, 经过Allocation-site Abstraction后就是o1</p>
+<blockquote>
+<p>c-&gt;{o1}</p>
+</blockquote>
+<p>然后第二句对一个字面量<code>&quot;x&quot;</code>进行了store操作，符号c.f也就是<code>o1.f</code>。</p>
+<p>第三句中<code>s = c.f</code>把o1.f取出来塞给了s。</p>
+<p>到了第四句<code>o1.f</code>更新了。</p>
+<p>人为的去审计当然是指影响<code>o1.f</code>了，因为顺序执行,<code>s</code>的赋值语句已经被执行过了。</p>
+<p>但是在流不敏感的情况下， 分析程序只知道: <code>s = o1.f</code>，至于在<code>程序流</code>的哪个位置上是不管的。</p>
+<p>因此在第四行： </p>
+<ul>
+<li>流敏感:  s-&gt;{“x”}, o1.f-&gt;{“y”}</li>
+</ul>
+<p><img src="/img/image-20211215203935009.png" alt="image-20211215203935009"></p>
+<ul>
+<li><p>流不敏感：</p>
+<p>把程序当成无序集合， 将所有的控制流信息忽略掉。</p>
+<p>因此在整个程序中，流不敏感<code>只维护一个指针集</code></p>
+</li>
+</ul>
+<img src="img/image-20211215204252197.png" alt="image-20211215204252197" style="zoom:67%;" />
+
+<p>所有只维护一个map, 记录程序在运行期间所有指向的对象。</p>
+<p>注意由于流不敏感的分析忽略了控制流信息，因此为了保证分析结果是<code>safe</code>的，在分析到s指向o1.f后，就要把程序中所有o1.f map的对象全部传给s(保守期间)。</p>
+<blockquote>
+<p>! 目前没有证据在JAVA上Flow Sensitive 对 Flow Senisitive 精确许多</p>
+</blockquote>
+<h3 id="Analysis-Scope"><a href="#Analysis-Scope" class="headerlink" title="Analysis Scope"></a>Analysis Scope</h3><blockquote>
+<p>Which parts of program should be analyzed?</p>
+</blockquote>
+<ul>
+<li><p>全程序分析(Whole-program)</p>
+</li>
+<li><p>按需分析(Demand-driven)</p>
+</li>
+</ul>
+<img src="img/image-20211215204816102.png" alt="image-20211215204816102" style="zoom:80%;" />
+
+<p>对于如下例子:</p>
+<img src="img/image-20211215205000523.png" alt="image-20211215205000523" style="zoom:67%;" />
+
+<p>如果我们只想知道程序中第5行的call graph,那么我们只需要对变量z做指针分析就可以了。</p>
+<blockquote>
+<p>z-&gt;{o4}</p>
+</blockquote>
+<blockquote>
+<p> 有时候按需分析不一定比全程序块，可能设计大量冗余计算。</p>
+</blockquote>
+<hr>
+<h2 id="What-Do-We-Analyze"><a href="#What-Do-We-Analyze" class="headerlink" title="What Do We Analyze?"></a>What Do We Analyze?</h2><p>以下是语句不会修改指针指向的语句：</p>
+<p><del>if else</del></p>
+<p><del>switch case</del></p>
+<p><del>for&#x2F;while&#x2F;do…while</del></p>
+<p><del>break&#x2F;continue</del></p>
+<p>…</p>
+<p>Java当中有哪些指针：</p>
+<ul>
+<li>Local variable: x (数量最多)</li>
+<li>Static field: C.f (与处理variable类似，有文献看作是global field)</li>
+<li>Instance field: x.f (instance field是将x.f的组合看作一个指针，也是需要重点分析)</li>
+<li>Array element: array[i]</li>
+</ul>
+<p>对于数组， 静态分析的通用做法是建模成只有一个field的object</p>
+<blockquote>
+<p> Ignore indexes. Modeled as an object(pointed by array) with a <code>single field</code>, say arr, which may point to any value stored in array.</p>
+</blockquote>
+<p><img src="/img/image-20211216194745810.png" alt="image-20211216194745810"></p>
+<p>在右边的指针分析中，注意array在声明时new 无长度信息， 因为将array看作一个object, 包含唯一的field arr. 对所有下标(无视下标)都看作对这个field进行store。</p>
+<p>所以，指针分析基本上就是围绕以下五条语句：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">x = <span class="keyword">new</span> <span class="title class_">T</span>()   <span class="comment">// New </span></span><br><span class="line">x = y <span class="comment">// Assign</span></span><br><span class="line">x.f = y <span class="comment">// Store</span></span><br><span class="line">y = x.f <span class="comment">// Load  </span></span><br><span class="line">r = x.k(a, ...)  <span class="comment">// Call </span></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="使用三地址码简化分析"><a href="#使用三地址码简化分析" class="headerlink" title="使用三地址码简化分析"></a>使用三地址码简化分析</h3><blockquote>
+<p>Complex memory-accesses will be converted to <code>three-address code</code> by introducing temporary variables</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">x.f.g.h = y;</span><br><span class="line">t1 = x.f;</span><br><span class="line">t2 = t1.g;</span><br><span class="line">t2.h = y;</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2021/12/15/pointer-analysis/" data-id="cl1d6sq9c0018ilw5h66tetbs" data-title="pointer_analysis" class="article-share-link">Share</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-pla-dataflow" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2021/09/26/pla-dataflow/" class="article-date">
+  <time class="dt-published" datetime="2021-09-26T11:22:19.000Z" itemprop="datePublished">2021-09-26</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2021/09/26/pla-dataflow/">Founddation Data Flow Analysis</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h2 id="Data-Flow-Analysis-on-Control-Flow-Graph"><a href="#Data-Flow-Analysis-on-Control-Flow-Graph" class="headerlink" title="Data Flow Analysis on Control Flow Graph"></a>Data Flow Analysis on Control Flow Graph</h2><img src="pla-dataflow/image-20210926192419749.png" alt="image-20210926192419749" />
+
+
+
+<ul>
+<li><p>Any given node in the <code>control flow graph</code> takes some amouts of data, and then possibly join these amounts of data</p>
+</li>
+<li><p>Then applies a function(so called <code>transfer function</code>) that generate the output data.</p>
+</li>
+<li><p>In_b(<strong>in of b</strong>):  descripting the information that is avaliable when we enter the basic block b</p>
+</li>
+<li><p>ou_b(<strong>out of b</strong> ): using out of b as the information that we have been at the end of  the particular b.</p>
+</li>
+<li><p>Join of b: as the function that takes all the incomming data and merges that into in of b.</p>
+<hr>
+<h2 id="Characterising-Data-Flow-Analyses"><a href="#Characterising-Data-Flow-Analyses" class="headerlink" title="Characterising Data Flow Analyses"></a>Characterising Data Flow Analyses</h2></li>
+</ul>
+<p><img src="/pla-dataflow/image-20210927181647849.png" alt="image-20210927181647849"></p>
+<ul>
+<li>data flow analyses can be a <strong>Forward</strong> analyses or can also be a <strong>backward</strong> anslyses</li>
+<li>we. can confirm some sort of domains-some set of values we care about-something we want to collect, we called it <strong>L</strong></li>
+<li>transfer of b,  is simply going to be mapping from this analyses into the other analysis domain.</li>
+<li>the join function is the function that takes two results of analysis domain merging them together into one result.</li>
+</ul>
+<p>We require a couple of properties to ensure the termination(L, trans, join)</p>
+<p><img src="/pla-dataflow/image-20210927184108229.png" alt="image-20210927184108229"></p>
+<p>To motivate that, let’s look at an example </p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2021/09/26/pla-dataflow/" data-id="cl1d6sq9c0017ilw5fjdceetc" data-title="Founddation Data Flow Analysis" class="article-share-link">Share</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-freedo" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2021/09/18/freedo/" class="article-date">
+  <time class="dt-published" datetime="2021-09-18T14:56:57.000Z" itemprop="datePublished">2021-09-18</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2021/09/18/freedo/">论自由</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>  我觉得我比谁都热爱自由， 但是这事最不能比较， 因为一旦有比较， 其实你就不自由了。</p>
+<p>  我不喜欢被任何组织约束，这一点不得不承认克氏对我影响很深。 他的”中观”思想，能够让我保持在一种不加任何评判的观察者状态。我觉得这是一件很科学的事情，最近发现其实很多学科的”科学”根基并不牢靠，或者说并没有彻底弄清楚。 但是很多上层的“赛先生”们无比执着科学这件事情，这本身就不科学，如果不能从已知中解脱，从一个客观(或者说中观)的角度去观察问题，就不科学。</p>
+<p>  我本身也有许多问题要改正，比如成家这件事情。 我一想到自己会被”束缚”就浑身不自在。 但是最近突然觉得享受一个家庭带来的温馨欢乐其实也不错。 :)</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2021/09/18/freedo/" data-id="cl1d6sq97000tilw5dj03djs3" data-title="论自由" class="article-share-link">Share</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-black-widow" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2021/08/29/black-widow/" class="article-date">
+  <time class="dt-published" datetime="2021-08-29T12:20:59.000Z" itemprop="datePublished">2021-08-29</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2021/08/29/black-widow/">Black Widow</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h2 id="0x01-Intro"><a href="#0x01-Intro" class="headerlink" title="0x01  Intro"></a>0x01  Intro</h2><p>As the title shown that the black Widow is a blackbox data-driven web scanning. </p>
+<p>This paper is  in S&amp;P 2021, to find XSS in web applications.</p>
+<h2 id="0x02-Challenges"><a href="#0x02-Challenges" class="headerlink" title="0x02 Challenges"></a>0x02 Challenges</h2><p>The challenge of web application scanning mainly has three items:</p>
+<ul>
+<li><p><strong>Navigation:</strong> Navigation is a question how can we cover the application contents as more as possible. A web application has a lot of methods to create new content, such as links, form submissions, javascript events.  So the first order of the blackbox web scanning is navigation modeling. (Op: <em>it is a question about space</em>)</p>
+</li>
+<li><p><strong>Traversing:</strong> Traversing is about how to handle complex workflows in the application. The events have some trigger sequences. For example, if there is a vulnerability on the picture comment place, at first, we must need to upload a picture before.(Op: <em>it is a question about line</em>) </p>
+</li>
+<li><p><strong>Inter-state Dependencis:</strong> This is about where we look for our payload in the web application. For instance, when we submit some data as admin, the content may output in other pages. So how to build the inter-state dependencis is a crucial point to build a strong scanner.(Op: <em>it is a question about point</em>)</p>
+</li>
+</ul>
+<h2 id="0x03-Previous"><a href="#0x03-Previous" class="headerlink" title="0x03 Previous"></a>0x03 Previous</h2><p>Black Widow compared with three tools: <em>jAk</em>,<em>Enemy of the State</em>, and <em>Ligre</em>. To address the above challenges, the author found that these tools are just imporving one of these methods in isolation. </p>
+<ul>
+<li><p><em>JAk</em> focused on exploring client-side events.(It can find sequences of events that could be exploited by deep-first fashion, but cannot extend across multiple pages)</p>
+</li>
+<li><p><em>Enemy of the State</em> focused on traversing server-side states(traversed with respect to state).</p>
+</li>
+<li><p><em>Ligre</em> used reversed engineering try to identify interestring dependencies, which towards to slove the challenge three.</p>
+</li>
+</ul>
+<h2 id="0x04-Approach"><a href="#0x04-Approach" class="headerlink" title="0x04 Approach"></a>0x04 Approach</h2><p>Black widow’s key idea is to combine the advantages of all of these methods to handle the modern complex web applications.</p>
+<img src="black-widow/image-20210829220127541.png" alt="image-20210829220127541" style="zoom:80%;" />
+
+
+
+<h3 id="Navigation"><a href="#Navigation" class="headerlink" title="Navigation"></a>Navigation</h3><p>To handle navigation,  Black widow treats the <strong>nodes</strong> in the graph as <strong>client-side states</strong> and the <strong>edges</strong> between these nodes are the <strong>action</strong> needed to move between these states. So web applications can be represented as a labeled directed graph. </p>
+<h4 id="a-Model-Construction"><a href="#a-Model-Construction" class="headerlink" title="a) Model Construction"></a>a) Model Construction</h4><p>Black widow start model construction from a initial URL, then retrieves the first webpage and the referenced resources. While execuing the loaded javascript, which extracts the registered Javascript events and add them to the model.</p>
+<p> So the model has two kinds of states, one kind is from page(e.g., URL) and another is from javascript events(e.g., click).</p>
+<p>And there are four types of actions: GET requests, form submissions, iframes and Javascript events.</p>
+<h4 id="b-Extraction-of-Actions"><a href="#b-Extraction-of-Actions" class="headerlink" title="b) Extraction of Actions"></a>b) Extraction of Actions</h4><p>Black widow uses dynamic analysis approach, monitioring for call to browser APIs to register JavaScript events and modification of the DOM treee to insert tags such as forms and ahchors.</p>
+<ul>
+<li>use <em>JAK</em>‘s library to handle event registration hooking before loading a page.</li>
+<li>Monitor DOM Modification to detect updates to the page(rescan the page).</li>
+</ul>
+<h4 id="C-Infinite-Crawls"><a href="#C-Infinite-Crawls" class="headerlink" title="C) Infinite Crawls"></a>C) Infinite Crawls</h4><p>To avoid infinite crawls:</p>
+<ul>
+<li>a set of heuristics that determine when two pages or two actions are similar.</li>
+<li>a hard limit to the maximum number of “similar” actions.</li>
+</ul>
+<h3 id="Traversal"><a href="#Traversal" class="headerlink" title="Traversal"></a>Traversal</h3><blockquote>
+<p>Traversal is describing which order actions should be performed and when to perform possibly state-changing actions.</p>
+</blockquote>
+<p>As we can  seen in the above figure, the blue line is a process of traverse we pick unvisited edge from the navigation graph in the order they were added.</p>
+<img src="black-widow/image-20210929165046202.png" alt="image-20210929165046202 " style="zoom:80%;" />
+
+<p>This is the function of traverse, the parameter is the edge(including: url, form, event, iframe).</p>
+<p>if the current edge has a previous edge, we would iterator it and check the <code>safe</code> edge, <code>safe</code> means user can visit direct, in this work, it is just the GET method. If the edge meet safe, the loop will break and create a new navigate object which init with workflow.</p>
+<p>So, in total, the goal of traversal is finding the action chains on the navigation graph.</p>
+<h3 id="Inter-sate-Dependencies"><a href="#Inter-sate-Dependencies" class="headerlink" title="Inter-sate Dependencies"></a>Inter-sate Dependencies</h3><p><img src="/black-widow/image-20210929165457363.png" alt="image-20210929165457363"></p>
+<h3 id="Dynamic-XSS-detection"><a href="#Dynamic-XSS-detection" class="headerlink" title="Dynamic XSS detection"></a>Dynamic XSS detection</h3>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2021/08/29/black-widow/" data-id="cl1d6sq94000lilw5a0vxbs14" data-title="Black Widow" class="article-share-link">Share</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-exp" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2021/08/16/exp/" class="article-date">
+  <time class="dt-published" datetime="2021-08-16T12:55:19.000Z" itemprop="datePublished">2021-08-16</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2021/08/16/exp/">教训与感悟</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <ol>
+<li>凡事提前一点打算， 选择了拖延就选择了心灵受折磨。</li>
+<li>所谓成熟，大概就是敢于对自己的行为承担后果。</li>
+<li>削减做其他事情的时间只是制造时间变多了的假象，真正有效的是把自己聚起来去解决问题。</li>
+<li>保持正念正思维， 把人事都往好处想。</li>
+<li>把心量打开，用广阔的视角去看世界， 让自己快乐，也要让别人快乐。</li>
+<li>全心全意活在当下，不念过去，不畏未来。</li>
+<li>攻是最好的防， 输出是最好的输入。最好的输出方式，应该是自然地流露。</li>
+</ol>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2021/08/16/exp/" data-id="cl1d6sq97000silw57vv32cnw" data-title="教训与感悟" class="article-share-link">Share</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-ml-2021-2" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2021/07/15/ml-2021-2/" class="article-date">
+  <time class="dt-published" datetime="2021-07-15T12:15:15.000Z" itemprop="datePublished">2021-07-15</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2021/07/15/ml-2021-2/">台大深度学习2021-2</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p><a target="_blank" rel="noopener" href="https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/regression%20(v16).pdf">Slides</a></p>
+<p>Linear models are tooo simple, we need more sophisticated modes.</p>
+<p>也许实际情况下， 我们要找的model不是一个线性函数。</p>
+<img src="ml-2021-2/image-20210715204517964.png" alt="image-20210715204517964" style="zoom:67%;" />
+
+<p>linear models 在这种情况下就cover不了实际情况(红线)，这种限制就叫做<code>Model Bias</code>。</p>
+<p>如何表示一个更复杂的model：</p>
+<img src="ml-2021-2/image-20210715204805102.png" alt="image-20210715204805102" style="zoom:50%;" />
+
+<p>红色的function就可以表示为常量(constant)+蓝色function的集合。 以0表示常量位置，即初始值。 通过1，2，3三个蓝色function的叠加，每个蓝色function会影响红色的斜率变化。 </p>
+<blockquote>
+<p>由很多线段组成的curves, 称为piecewise linear curves</p>
+</blockquote>
+<p>Piecewise  linear curves 可以由常数加上一堆蓝色function组成， 如果curves的转折点越多需要的蓝色function就越多。</p>
+<img src="ml-2021-2/image-20210715205221020.png" alt="image-20210715205221020" style="zoom:50%;" />
+
+
+
+<p>如果是<code>continuous curve</code> 可以在其上取点连起来，构成piecewise linear curves, 所以：</p>
+<p>我们可以用piecewise linear curve 逼近任何的曲线， 又可以用蓝色的function去组合出piecewise linear curve:</p>
+<img src="ml-2021-2/image-20210715205439712.png" alt="image-20210715205439712" style="zoom:50%;" />
+
+<p>那么接下来的重点问题是， 如何表示蓝色function?</p>
+<img src="ml-2021-2/image-20210715205608267.png" alt="image-20210715205608267" style="zoom:50%;" />
+
+<p>在这里，一种思路是使用<code>sigmoid function</code>去近似地刻画蓝色function。<br>$$<br>y &#x3D; c\frac{1}{1+e^{-(b+wx_1)}}<br>$$</p>
+<p>这个function的x1趋近于无穷大， 就收敛在高度为c的地放；x1趋近于无穷小的时候就接近于零，因此就构成了上图中蓝色虚线的形状(Sigmoid)。</p>
+<p>现在有了sigmoid function, 我们就可以用它来逼近蓝色实现function（<code>hard sigmoid</code>）。</p>
+<p>如何趋近呢？ 就需要调整各个参数(<code>b</code>, <code>w</code>, <code>c</code>)：</p>
+<img src="ml-2021-2/image-20210715210255445.png" alt="image-20210715210255445" style="zoom:50%;" />
+
+<ul>
+<li>w: Change slopes,  改坡度</li>
+<li>b: shift, 左右移动</li>
+<li>c: Change height ,改高度</li>
+</ul>
+<p>因此我可以通过改参数制造出不同的sigmoid function, 把这些sigmoid function叠起来以后，我们就可以逼近不同的Piecewise Linear的function， 然后用这些Piecewise的function 来近似各种不同的 Continuous的functions（妙啊）。</p>
+<img src="ml-2021-2/image-20210802061142900.png" alt="image-20210802061142900" style="zoom:50%;" />
+
+
+
+<p>如上图所示， 我们就有三个不同的function(0为常数量)，其公式为:<br>$$<br>y &#x3D; b + \sum_ic_isigmod(b_i+w_ix_1)<br>$$<br>其中b 是constant, 1,2,3是有斜度的三个sigmod函数，我们对其求和。</p>
+<blockquote>
+<p> 总结： 本来是liner model: <code>y=b+wx1</code>, 他有非常大的限制， 叫做model bias。 因此我们可以写一个更有弹性的有未知参数的function来降低model bias(上式)。</p>
+</blockquote>
+<img src="ml-2021-2/image-20210802061606287.png" alt="image-20210802061606287" style="zoom:50%;" />
+
+
+
+
+
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2021/07/15/ml-2021-2/" data-id="cl1d6sq99000yilw50b39dsib" data-title="台大深度学习2021-2" class="article-share-link">Share</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-reaching-definitions" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2021/07/12/reaching-definitions/" class="article-date">
+  <time class="dt-published" datetime="2021-07-12T11:22:20.000Z" itemprop="datePublished">2021-07-12</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2021/07/12/reaching-definitions/">reaching_definitions</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="0x01-Bit-Vector-Program"><a href="#0x01-Bit-Vector-Program" class="headerlink" title="0x01 Bit-Vector Program"></a>0x01 Bit-Vector Program</h1><p><code>Reaching Definitions analysis</code>  aims at finding out for each node of a program graph where a variable or array might have been previously defined(or modified) the last time. It is a kind of <code>bit vector problem</code>.  </p>
+<img src="reaching-definitions/image-20210712192406787.png" alt="image-20210712192406787" style="zoom:40%;" />
+
+<p>As shown in the Figure 2.1, we can see that the node <code>q1</code> there are two possibilities for the variable <code>y</code>, either it was modified using the action from <code>q_start</code> to <code>q1</code>, or the action <code>q3</code> to <code>q1</code>.</p>
+<p>For the variables <code>x</code> there are also two possibilities: either the action from <code>q3</code> to <code>q1</code>, or it has not been modified at all and hence it  has <code>retained its original value</code>.</p>
+<h2 id="Analysis-assignments"><a href="#Analysis-assignments" class="headerlink" title="Analysis assignments"></a>Analysis assignments</h2><ul>
+<li><p>Variable: <img src="/reaching-definitions/image-20210715191536593.png" alt="image-20210715191536593"></p>
+</li>
+<li><p>Array: <img src="/reaching-definitions/image-20210715191551279.png" alt="image-20210715191551279"></p>
+</li>
+</ul>
+<p>the q means a program point on the graph Q. and there has an edge with an action \alpha:  <img src="/reaching-definitions/image-20210715191717541.png" alt="image-20210715191717541"></p>
+<p>so the variable y in the Figure 2.1 can be represented as the triple: </p>
+<p> <img src="/reaching-definitions/image-20210715191939568.png" alt="image-20210715191939568">: y is modified by the action labelling the edge from q2 to q3.<img src="/reaching-definitions/image-20210715192150692.png" alt="image-20210715192150692"></p>
+<p>: symbol ‘?’ means retaining its initial value.</p>
+<img src="reaching-definitions/image-20210715192357776.png" alt="image-20210715192357776" style="zoom:60%;" />
+
+
+
+
+
+
+
+
+
+<h2 id="What-is-defined-on-a-path"><a href="#What-is-defined-on-a-path" class="headerlink" title="What is defined on a path"></a>What is defined on a path</h2><h2 id="Constraints-for-Reaching-Definitions"><a href="#Constraints-for-Reaching-Definitions" class="headerlink" title="Constraints for Reaching Definitions"></a>Constraints for Reaching Definitions</h2><h2 id="Solving-the-constraints"><a href="#Solving-the-constraints" class="headerlink" title="Solving the constraints"></a>Solving the constraints</h2><h2 id="Solutions-summarise-the-path"><a href="#Solutions-summarise-the-path" class="headerlink" title="Solutions summarise the path"></a>Solutions summarise the path</h2><h1 id="0x02-Montone-Framework"><a href="#0x02-Montone-Framework" class="headerlink" title="0x02 Montone Framework"></a>0x02 Montone Framework</h1><h1 id="0x03-Datalog-Based-Analyses"><a href="#0x03-Datalog-Based-Analyses" class="headerlink" title="0x03 Datalog Based Analyses"></a>0x03 Datalog Based Analyses</h1>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2021/07/12/reaching-definitions/" data-id="cl1d6sq9d001dilw5etl71lm7" data-title="reaching_definitions" class="article-share-link">Share</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-CSAPP-5" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2021/07/09/CSAPP-5/" class="article-date">
+  <time class="dt-published" datetime="2021-07-09T10:37:17.000Z" itemprop="datePublished">2021-07-09</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2021/07/09/CSAPP-5/">Machine-Level Programming 1 - Basics</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>重刷，顺便练英文</p>
+<ol>
+<li><p>C, assembly, machine code</p>
+</li>
+<li><p>Assembly Basics: Registers, opeerands, move</p>
+</li>
+<li><p>Arithmetic &amp; logical operations</p>
+</li>
+</ol>
+<ul>
+<li><p>X86:</p>
+<blockquote>
+<p>X86 is sort of a colloquial term for intel processors, as the first one was called the 8086, and then 8286, 8386.. So called x86.</p>
+</blockquote>
+<img src="CSAPP-5/image-20210709191919855.png" alt="image-20210709191919855" style="zoom:40%;" /></li>
+</ul>
+<ul>
+<li><p>broadwell model</p>
+<img src="CSAPP-5/image-20210709192517170.png" alt="image-20210709192517170" style="zoom:60%;" /></li>
+</ul>
+<p>4 cores a serious standard desktop model, eight first a server class machine.</p>
+<h2 id="0x01-C-assembly-machine-code"><a href="#0x01-C-assembly-machine-code" class="headerlink" title="0x01 C, assembly, machine code"></a>0x01 C, assembly, machine code</h2><ul>
+<li>Arhchitecture(ISA: instruction set architecture)</li>
+</ul>
+<p>The hardware design people have figured out all kinds of ways to implement instructions. Some of them are fast but take a lot of hardware, some are contrary. So they managed to create this abstraction that’s called the <code>instruction set architecure</code>, which is what the target of a <code>compile</code> should be.</p>
+<ul>
+<li><p>Microachitecture: Implementation of the architecture(about hardware)</p>
+</li>
+<li><p>Code Forms:</p>
+<ul>
+<li>Machine Code: The byte-level programs that a processor executes</li>
+<li>Assembly Code: A text representation of machine code</li>
+</ul>
+</li>
+</ul>
+<p>So,You can think of from instruction set point of view: </p>
+<ul>
+<li>Example ISAs: <ul>
+<li>Intel: x86, IA32, Itanium, x86-64</li>
+<li>ARM:  used in almost all mobile phones</li>
+</ul>
+</li>
+</ul>
+<h3 id="Assembly-x2F-Machine-Code-View"><a href="#Assembly-x2F-Machine-Code-View" class="headerlink" title="Assembly&#x2F;Machine Code View"></a>Assembly&#x2F;Machine Code View</h3><img src="CSAPP-5/image-20210709194510894.png" alt="image-20210709194510894" style="zoom:60%;" />
+
+<img src="CSAPP-5/image-20210709195524486.png" alt="image-20210709195524486 " style="zoom:50%;" />
+
+<p>There are some visible parts of the instruction of the machine state; then you can examine and test and operate on and you must in fact.  In particular, there are some sort of program counters to tell you what address is the instructino that you are going to execute next, where is the localtion memroy. </p>
+<p>And then there is a set of registers which are part of that the programmer actually makes use of, and you actually give then by name as specifically. </p>
+<p>The other set of states (just a few bits of states ) that talked about what are the results of some recent instructions, where they did it produce a value of 0, did it produce a negative or a positive value.</p>
+<p>So that is the sort of the processor and the the other part of is the memory.</p>
+<p>The memory is what you can think of  logically as just an <code>array of bytes</code>. That’s what the machine level programmer sees. It’s actually kind of a ficition in different ways as I mentioned before. There is sort of a collaboration between the operating system and the hardware. What we call <code>vitual memory</code> to make it looks like each program running on the process has its own independent <code>array of bytes</code> that it can acces.</p>
+<h3 id="Turning-C-into-Object-Code"><a href="#Turning-C-into-Object-Code" class="headerlink" title="Turning C into Object Code"></a>Turning C into Object Code</h3><p><img src="/CSAPP-5/image-20210709200927134.png" alt="image-20210709200927134"></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2021/07/09/CSAPP-5/" data-id="cl1d6sq8w0003ilw55j0i56rp" data-title="Machine-Level Programming 1 - Basics" class="article-share-link">Share</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+
+
+  <nav id="page-nav">
+    
+    <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/3/">Next &raquo;</a>
+  </nav>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/paper/" rel="tag">paper</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/php/" rel="tag">php</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pl/" rel="tag">pl</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/paper/" style="font-size: 15px;">paper</a> <a href="/tags/php/" style="font-size: 10px;">php</a> <a href="/tags/pl/" style="font-size: 20px;">pl</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/03/">March 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/02/">February 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/01/">January 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/12/">December 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">September 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">August 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">April 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">February 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">January 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2022/03/30/Hello/">Hello</a>
+          </li>
+        
+          <li>
+            <a href="/2022/02/24/web/">Web应用系中注入类漏洞调研</a>
+          </li>
+        
+          <li>
+            <a href="/2022/02/18/data-mining/">data_mining</a>
+          </li>
+        
+          <li>
+            <a href="/2022/02/14/pop/">A Survey about PHP Object Injection</a>
+          </li>
+        
+          <li>
+            <a href="/2022/02/06/logic-machine/">Logic Machine</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2022 iohex<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

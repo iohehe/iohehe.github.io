@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>南大静态分析5(Data Flow Analysis - Foundations 1) | Penlab</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="Iterative Algorithm, Another View    13:00 Partial Order 27:50 Upper and Lower Bounds 38:10 Lattice, Semilattice, Complete and Product Lattice 48:40 Data Flow Analysis Framework via Lattice 65:40 Mon">
+<meta property="og:type" content="article">
+<meta property="og:title" content="南大静态分析5(Data Flow Analysis - Foundations 1)">
+<meta property="og:url" content="http://example.com/2020/05/18/static-analysis-5-md/index.html">
+<meta property="og:site_name" content="Penlab">
+<meta property="og:description" content="Iterative Algorithm, Another View    13:00 Partial Order 27:50 Upper and Lower Bounds 38:10 Lattice, Semilattice, Complete and Product Lattice 48:40 Data Flow Analysis Framework via Lattice 65:40 Mon">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/2020/05/18/static-analysis-5-md/static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-05-30%20%E4%B8%8A%E5%8D%888.34.28.png">
+<meta property="og:image" content="http://example.com/2020/05/18/static-analysis-5-md/static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-05-30%20%E4%B8%8A%E5%8D%888.38.10.png">
+<meta property="og:image" content="http://example.com/2020/05/18/static-analysis-5-md/static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-05-30%20%E4%B8%8A%E5%8D%888.39.35.png">
+<meta property="og:image" content="http://example.com/2020/05/18/static-analysis-5-md/static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-05-30%20%E4%B8%8A%E5%8D%888.45.46.png">
+<meta property="og:image" content="http://example.com/2020/05/18/static-analysis-5-md/static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-05-30%20%E4%B8%8A%E5%8D%888.51.52.png">
+<meta property="og:image" content="http://example.com/static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-05-30%20%E4%B8%8A%E5%8D%888.52.59.png">
+<meta property="og:image" content="http://example.com/2020/05/18/static-analysis-5-md/static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%886.47.18.png">
+<meta property="og:image" content="http://example.com/2020/05/18/static-analysis-5-md/static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%886.47.37.png">
+<meta property="og:image" content="http://example.com/2020/05/18/static-analysis-5-md/static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%886.47.40-1267695.png">
+<meta property="og:image" content="http://example.com/2020/05/18/static-analysis-5-md/static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%886.49.07.png">
+<meta property="og:image" content="http://example.com/2020/05/18/static-analysis-5-md/static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%886.51.34.png">
+<meta property="og:image" content="http://example.com/2020/05/18/static-analysis-5-md/static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%886.54.24.png">
+<meta property="og:image" content="http://example.com/2020/05/18/static-analysis-5-md/static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%886.59.24.png">
+<meta property="og:image" content="http://example.com/2020/05/18/static-analysis-5-md/static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%887.00.05.png">
+<meta property="og:image" content="http://example.com/2020/05/18/static-analysis-5-md/static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%887.01.38.png">
+<meta property="og:image" content="http://example.com/2020/05/18/static-analysis-5-md/static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%887.02.44.png">
+<meta property="og:image" content="http://example.com/2020/05/18/static-analysis-5-md/static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%887.03.26.png">
+<meta property="og:image" content="http://example.com/2020/05/18/static-analysis-5-md/static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%887.04.39.png">
+<meta property="og:image" content="http://example.com/2020/05/18/static-analysis-5-md/static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%887.51.49.png">
+<meta property="og:image" content="http://example.com/2020/05/18/static-analysis-5-md/static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%887.52.47.png">
+<meta property="og:image" content="http://example.com/2020/05/18/static-analysis-5-md/static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%887.57.04.png">
+<meta property="og:image" content="http://example.com/2020/05/18/static-analysis-5-md/static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%887.57.18.png">
+<meta property="og:image" content="http://example.com/2020/05/18/static-analysis-5-md/static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%887.58.17.png">
+<meta property="og:image" content="http://example.com/2020/05/18/static-analysis-5-md/static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%887.58.39.png">
+<meta property="og:image" content="http://example.com/2020/05/18/static-analysis-5-md/static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%888.01.17.png">
+<meta property="og:image" content="http://example.com/2020/05/18/static-analysis-5-md/static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%888.01.40.png">
+<meta property="og:image" content="http://example.com/2020/05/18/static-analysis-5-md/static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%888.04.09.png">
+<meta property="og:image" content="http://example.com/2020/05/18/static-analysis-5-md/static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%888.04.14.png">
+<meta property="og:image" content="http://example.com/2020/05/18/static-analysis-5-md/static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%888.05.42.png">
+<meta property="og:image" content="http://example.com/2020/05/18/static-analysis-5-md/static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%888.07.46.png">
+<meta property="og:image" content="http://example.com/2020/05/18/static-analysis-5-md/static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%888.09.28.png">
+<meta property="og:image" content="http://example.com/2020/05/18/static-analysis-5-md/static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%888.10.49.png">
+<meta property="og:image" content="http://example.com/2020/05/18/static-analysis-5-md/static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%888.11.33.png">
+<meta property="og:image" content="http://example.com/2020/05/18/static-analysis-5-md/static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%888.15.03.png">
+<meta property="og:image" content="http://example.com/2020/05/18/static-analysis-5-md/static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%888.16.30.png">
+<meta property="og:image" content="http://example.com/2020/05/18/static-analysis-5-md/static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%888.19.46.png">
+<meta property="og:image" content="http://example.com/2020/05/18/static-analysis-5-md/static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%888.20.30.png">
+<meta property="og:image" content="http://example.com/2020/05/18/static-analysis-5-md/static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%888.22.21.png">
+<meta property="og:image" content="http://example.com/2020/05/18/static-analysis-5-md/static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%888.26.04.png">
+<meta property="og:image" content="http://example.com/2020/05/18/static-analysis-5-md/static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%888.26.22.png">
+<meta property="og:image" content="http://example.com/static-analysis-5-md/2020-05-27-054002.jpg">
+<meta property="og:image" content="http://example.com/2020/05/18/static-analysis-5-md/static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%888.39.03.png">
+<meta property="og:image" content="http://example.com/2020/05/18/static-analysis-5-md/static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%888.42.10.png">
+<meta property="og:image" content="http://example.com/2020/05/18/static-analysis-5-md/static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%888.43.36.png">
+<meta property="og:image" content="http://example.com/2020/05/18/static-analysis-5-md/static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%888.45.01.png">
+<meta property="og:image" content="http://example.com/2020/05/18/static-analysis-5-md/static-analysis-5-md/image-20210723223615852.png">
+<meta property="og:image" content="http://example.com/2020/05/18/static-analysis-5-md/static-analysis-5-md/image-20210723224024442.png">
+<meta property="og:image" content="http://example.com/2020/05/18/static-analysis-5-md/static-analysis-5-md/image-20210724053026118.png">
+<meta property="og:image" content="http://example.com/2020/05/18/static-analysis-5-md/static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-10%20%E4%B8%8B%E5%8D%888.50.46.png">
+<meta property="og:image" content="http://example.com/2020/05/18/static-analysis-5-md/static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-10%20%E4%B8%8B%E5%8D%888.51.04.png">
+<meta property="og:image" content="http://example.com/2020/05/18/static-analysis-5-md/static-analysis-5-md/image-20210724055841844.png">
+<meta property="article:published_time" content="2020-05-18T12:33:55.000Z">
+<meta property="article:modified_time" content="2022-03-30T06:25:22.428Z">
+<meta property="article:author" content="iohex">
+<meta property="article:tag" content="pl">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2020/05/18/static-analysis-5-md/static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-05-30%20%E4%B8%8A%E5%8D%888.34.28.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Penlab" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+<meta name="generator" content="Hexo 6.1.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Penlab</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-static-analysis-5-md" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2020/05/18/static-analysis-5-md/" class="article-date">
+  <time class="dt-published" datetime="2020-05-18T12:33:55.000Z" itemprop="datePublished">2020-05-18</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      南大静态分析5(Data Flow Analysis - Foundations 1)
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <ol>
+<li>Iterative Algorithm, Another View    13:00</li>
+<li>Partial Order 27:50</li>
+<li>Upper and Lower Bounds 38:10</li>
+<li>Lattice, Semilattice, Complete and Product Lattice 48:40</li>
+<li>Data Flow Analysis Framework via Lattice 65:40</li>
+<li>Monotonicity and Fixed Point Theorem 74:30</li>
+</ol>
+<hr>
+<p><a target="_blank" rel="noopener" href="https://pascal-group.bitbucket.io/teaching.html">ppt</a></p>
+<h1 id="1-Iterative-Algorithm-Another-View"><a href="#1-Iterative-Algorithm-Another-View" class="headerlink" title="1. Iterative Algorithm, Another View"></a>1. Iterative Algorithm, Another View</h1><blockquote>
+<p>The general iterative  algorithm produces a solution to data flow analysis</p>
+</blockquote>
+ <img src="static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-05-30%20%E4%B8%8A%E5%8D%888.34.28.png" alt="截屏2020-05-30 上午8.34.28 " style="zoom:67%;" />
+
+<p>这是通用的<code>Iterative Algorithm</code>， 思想是假设在一个程序生成的CFG之上，有<code>k</code>个节点，这个算法就会迭代的更新每一个OUT[n]（节点的out信息）。</p>
+<img src="static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-05-30%20%E4%B8%8A%E5%8D%888.38.10.png" alt="截屏2020-05-30 上午8.38.10 " style="zoom:70%;" />
+
+<p>在值域<code>V</code>之上(就是我们待分析抽象出的domain)，那么可以定义一个<code>k-tuple</code> 他的每一个元素是每一个节点的OUT[n]，那么一次迭代分析 ，就是要更新这个集合中的值。</p>
+<img src="static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-05-30%20%E4%B8%8A%E5%8D%888.39.35.png" alt="截屏2020-05-30 上午8.39.35 " style="zoom:80%;" />
+
+<p>那么每一次迭代处理就可以理解为在这个集合上，使用我们为了达成目的所设计transfer functions（program point处使用）和control-flow handing(汇合处使用)，来做更新(两种操作一个工作合称F来形式化表述)。F的输入输出为域(即上述集合) </p>
+ <img src="static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-05-30%20%E4%B8%8A%E5%8D%888.45.46.png" alt="截屏2020-05-30 上午8.45.46 " style="zoom:60%;" />
+
+<p>当F的输入输出不再变化(相同)，停止迭代。</p>
+<img src="static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-05-30%20%E4%B8%8A%E5%8D%888.51.52.png" alt="截屏2020-05-30 上午8.51.52 " style="zoom:60%;" />
+
+<p>图示：</p>
+<p><img src="/static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-05-30%20%E4%B8%8A%E5%8D%888.52.59.png" alt="截屏2020-05-30 上午8.52.59"></p>
+<p>将算法分为了三个部分：</p>
+<p>红色代表初始化：</p>
+<img src="static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%886.47.18.png" alt="截屏2020-06-04 下午6.47.18 " style="zoom:33%;" />
+
+
+
+<p>然后初始化每个位为bottom。进行迭代(绿色部分):</p>
+<img src="static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%886.47.37.png" alt="截屏2020-06-04 下午6.47.37 " style="zoom:33%;" />
+
+<p>每次更新状态，知道状态不再变化，符合了停止条件(黄色部分): </p>
+<img src="static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%886.47.40-1267695.png" alt="截屏2020-06-04 下午6.47.40 " style="zoom:33%;" />
+
+<p>这里的i+1 与 i 的k-tuple值相同。</p>
+<img src="static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%886.49.07.png" alt="截屏2020-06-04 下午6.49.07 " style="zoom:33%;" />
+
+<p>(所以X是F的不动点, X&#x3D;F(X)（就像之前分析中，输入一个k-tuple(X)后不变了，算法停止）)</p>
+<h1 id="2-Parial-Order"><a href="#2-Parial-Order" class="headerlink" title="2. Parial Order"></a>2. Parial Order</h1><p>首先定义偏序集：</p>
+<img src="static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%886.51.34.png" alt="截屏2020-06-04 下午6.51.34 " style="zoom:50%;" />
+
+
+
+<h3 id="偏序集："><a href="#偏序集：" class="headerlink" title="偏序集："></a>偏序集：</h3><blockquote>
+<p>partial ordering就是一种偏序关系，可以理解为部分之间的关系(集合中不要求任何两个元素之间有关系)</p>
+</blockquote>
+<img src="static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%886.54.24.png" alt="截屏2020-06-04 下午6.54.24 " style="zoom:33%;" />
+
+<p>这三个性质：</p>
+<p>Reflexivity(自反性)：任意元素，关系可逆</p>
+<p>Antisymmetrry(反对称性)： x偏序于y 且 y 偏序于x &#x3D;&gt; x&#x3D;y</p>
+<p>Transitivity(传递性): …</p>
+<blockquote>
+<p>小于等于符号: 偏序关系。</p>
+</blockquote>
+<ul>
+<li>例子一：</li>
+</ul>
+<img src="static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%886.59.24.png" alt="截屏2020-06-04 下午6.59.24 " style="zoom:33%;" />
+
+<p>S这个set是一个整数集，他可不可以是一个p(偏序集)?</p>
+<img src="static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%887.00.05.png" alt="截屏2020-06-04 下午7.00.05 " style="zoom:30%;" />
+
+<p>由三条性质，是一个偏序集。</p>
+<ul>
+<li><p>例子二：</p>
+<p>还是整数集set，但是偏序关系改成了小于：</p>
+<img src="static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%887.01.38.png" alt="截屏2020-06-04 下午7.01.38 3" style="zoom:33%;" /></li>
+</ul>
+<p>不满足偏序关系。</p>
+<ul>
+<li>例子三：</li>
+</ul>
+<img src="static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%887.02.44.png" alt="截屏2020-06-04 下午7.02.44 " style="zoom:33%;" />
+
+<p>字符型集合</p>
+<img src="static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%887.03.26.png" alt="截屏2020-06-04 下午7.03.26 " style="zoom:33%;" />
+
+<p>符合，上边文字在强调偏序(<code>partial</code>)的意义。</p>
+<ul>
+<li><p>例子四：</p>
+<p>这个比较重要，每一个元素很想我们维持的状态抽象。然后箭头是控制流。。。<img src="static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%887.04.39.png" alt="截屏2020-06-04 下午7.04.39 " style="zoom:33%;" /></p>
+</li>
+</ul>
+<h2 id="Upper-and-Lower-Bounds"><a href="#Upper-and-Lower-Bounds" class="headerlink" title="Upper and Lower Bounds"></a>Upper and Lower Bounds</h2><img src="static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%887.51.49.png" alt="截屏2020-06-04 下午7.51.49 " style="zoom:33%;" />
+
+<blockquote>
+<p> upper bound 上界</p>
+</blockquote>
+<img src="static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%887.52.47.png" alt="截屏2020-06-04 下午7.52.47 " style="zoom:33%;" />
+
+<p>偏序集合P中取一子集S，这一子集中任意元素都属于或者包含的(偏序于)。这是对于子集的一个定义，而upper bound 和 lower bound可以有多个， 定义<code>least upper bound</code>和<code>greatest lower bound</code></p>
+<img src="static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%887.57.04.png" alt="截屏2020-06-04 下午7.57.04 " style="zoom:30%;" />
+
+<img src="static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%887.57.18.png" alt="截屏2020-06-04 下午7.57.18 " style="zoom:33%;" />
+
+<p>譬如这个子集， 他的upper bound可以是{a, b}也可以是{a,b,c}</p>
+<img src="static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%887.58.17.png" alt="截屏2020-06-04 下午7.58.17 " style="zoom:33%;" />
+
+<p>一个符号表示：</p>
+<img src="static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%887.58.39.png" alt="截屏2020-06-04 下午7.58.39 " style="zoom:30%;" />
+
+
+
+
+
+<p>关于lub和glb的性质：</p>
+<ol>
+<li>不是每个偏序集都有<code>lub</code> or <code>glb</code></li>
+</ol>
+<img src="static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%888.01.17.png" alt="截屏2020-06-04 下午8.01.17 " style="zoom:33%;" />
+
+<ol start="2">
+<li>如果有，一定是唯一的</li>
+</ol>
+<img src="static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%888.01.40.png" alt="截屏2020-06-04 下午8.01.40 " style="zoom:33%;" />
+
+<p>(证明： 如果有两个glb，根据glb的性质，有那个公式，然后再根据parital order的反对称性，那么就是他本身)</p>
+<h1 id="Lattice"><a href="#Lattice" class="headerlink" title="Lattice"></a>Lattice</h1><img src="static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%888.04.09.png" alt="截屏2020-06-04 下午8.04.09 " style="zoom:33%;" />
+
+<img src="static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%888.04.14.png" alt="截屏2020-06-04 下午8.04.14 " style="zoom:33%;" />
+
+<p>就是说如果一个偏序集的最大下界和最小上界都存在， 那么这就是一个Lattice。</p>
+<ul>
+<li>例子1:</li>
+</ul>
+<img src="static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%888.05.42.png" alt="截屏2020-06-04 下午8.05.42 " style="zoom:30%;" />
+
+<p>这里我们去从整数集合中取一个子集(取集合就意味着划定了边界)。那么他会有glb和lub。</p>
+<ul>
+<li><p>例子2：</p>
+<img src="static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%888.07.46.png" alt="截屏2020-06-04 下午8.07.46 " style="zoom:33%;" /></li>
+</ul>
+<p>这里的S就是所有的这些单词， 可以看到<code>pin </code>和<code>sin</code>没有上界。 虽是偏序集也就够不成一个格。</p>
+<ul>
+<li>例子3:</li>
+</ul>
+<img src="static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%888.09.28.png" alt="截屏2020-06-04 下午8.09.28 " style="zoom:33%;" />
+
+<p>这玩意就是一个格</p>
+<h2 id="Semilattice"><a href="#Semilattice" class="headerlink" title="Semilattice"></a>Semilattice</h2><p>半格， join半格(有最大下界)和meet半格(有最小上界)</p>
+<img src="static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%888.10.49.png" alt="截屏2020-06-04 下午8.10.49 " style="zoom:33%;" />
+
+
+
+<h2 id="Complete-Lattice"><a href="#Complete-Lattice" class="headerlink" title="Complete Lattice"></a>Complete Lattice</h2><img src="static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%888.11.33.png" alt="截屏2020-06-04 下午8.11.33 " style="zoom:33%;" />
+
+<p>比格的定义还要严格，格是要求偏序集中任意两个元素有最小上界和最大下界；全格要求任意两个<code>子集</code>有最小上界和最大下界。</p>
+<img src="static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%888.15.03.png" alt="截屏2020-06-04 下午8.15.03 " style="zoom:33%;" />
+
+
+
+<ul>
+<li>例子1:</li>
+</ul>
+<img src="static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%888.16.30.png" alt="截屏2020-06-04 下午8.16.30 " style="zoom:33%;" />
+
+<p>这里一个整数集合中，虽然任取两个数字是有边界的，但是任取两个子集不一定有边界，如正整数这个集合，他是正无穷的。</p>
+<ul>
+<li>例子2:</li>
+</ul>
+<img src="static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%888.19.46.png" alt="截屏2020-06-04 下午8.19.46 " style="zoom:33%;" />
+
+
+
+
+
+<img src="static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%888.20.30.png" alt="截屏2020-06-04 下午8.20.30 " style="zoom:33%;" />
+
+<p>每一个有穷的格，都是全格。</p>
+<blockquote>
+<p>数据流分析一般关注的都是全格，因为程序运行通常是有穷的</p>
+</blockquote>
+<h2 id="Product-Lattice"><a href="#Product-Lattice" class="headerlink" title="Product Lattice"></a>Product Lattice</h2><img src="static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%888.22.21.png" alt="截屏2020-06-04 下午8.22.21 " style="zoom:33%;" />
+
+ 
+
+<p>就像iterative algorithm中的k-tuple, 每一个点的L都是一个Lattice。那么整个Ln就是一个<code>Product Lattice</code></p>
+<img src="static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%888.26.04.png" alt="截屏2020-06-04 下午8.26.04 " style="zoom:33%;" />
+
+<img src="static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%888.26.22.png" alt="截屏2020-06-04 下午8.26.22 " style="zoom:33%;" />
+
+
+
+
+
+<p><img src="/static-analysis-5-md/2020-05-27-054002.jpg"></p>
+<h1 id="Data-Flow-Analysis-Framework-via-Lattice"><a href="#Data-Flow-Analysis-Framework-via-Lattice" class="headerlink" title="Data Flow Analysis Framework via Lattice"></a>Data Flow Analysis Framework via Lattice</h1><p>将前边Lattice形式化的定义应用在<code>Data Flow Analysis</code>上</p>
+<img src="static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%888.39.03.png" alt="截屏2020-06-04 下午8.39.03 " style="zoom:33%;" />
+
+<blockquote>
+<p>通用性的Data Flow Analysis 表示：</p>
+<p>一个数据流分析， 需要根据需求设计以下三个方面</p>
+<p>D:  沿着CFG的数据分析方向</p>
+<p>L:  就是那个值域集合，用<code>Lattice</code> 来表示，实际中，在入口点，要么是并集<code>join </code>,要么是交集<code>meet</code>。(根据safe-approximate决定) （所以龙书用了半格?）</p>
+<p>F：transfer functions， 每一个node都有自己的<code>transfer function</code></p>
+</blockquote>
+<p>例子： reach definition ：</p>
+<ol>
+<li>正向分析, 看到s1, s3的out分别是{a}, {b}, 分别体现在左边流图和右边格上对应的黄色区域。</li>
+<li>Safe-approximate: join并集， 体现在绿色区域，在格上又上升了。</li>
+<li>每个点转移函数后，生成out，在格上又上升了，到达上界。</li>
+</ol>
+<img src="static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%888.42.10.png" alt="截屏2020-06-04 下午8.42.10 " style="zoom:33%;" />
+
+<blockquote>
+<p>may analysis 在格上是往上升的</p>
+</blockquote>
+<p>一句话概括：</p>
+<img src="static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%888.43.36.png" alt="截屏2020-06-04 下午8.43.36 " style="zoom:33%;"/>
+
+
+
+
+
+<h2 id="Review-The-Questions"><a href="#Review-The-Questions" class="headerlink" title="Review The Questions"></a>Review The Questions</h2><img src="static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%888.45.01.png" alt="截屏2020-06-04 下午8.45.01 " style="zoom:30%;" />
+
+<ol>
+<li><p>算法一定能达到不动点吗？(lattice 上单调性问题)</p>
+</li>
+<li><p>如果有不动点，只能有一个动点吗</p>
+</li>
+<li><p>不定点是解吗</p>
+<p>首先回答第一个问题：</p>
+<img src="static-analysis-5-md/image-20210723223615852.png" alt="image-20210723223615852" style="zoom:40%;" />
+
+<p>实际上回答一个lattic函数的单调性问题。</p>
+</li>
+</ol>
+<h1 id="Monotonicity-amp-Fixed-Point-Theorem"><a href="#Monotonicity-amp-Fixed-Point-Theorem" class="headerlink" title="Monotonicity&amp;Fixed-Point Theorem"></a>Monotonicity&amp;Fixed-Point Theorem</h1><p>对于不动点定理的证明， 首先来看函数单调性的定义：</p>
+<img src="static-analysis-5-md/image-20210723224024442.png" alt="image-20210723224024442" style="zoom:50%;" />
+
+
+
+<blockquote>
+<p>一个function在lattice（阈值）上是单调的，就是在域中任取x,y，都能够使得 x&lt;&#x3D;y &#x3D;&gt; f(x)&lt;&#x3D;f(y)。</p>
+</blockquote>
+<p>再来看不动点定理：</p>
+<p>给定一个complete lattice如果：</p>
+<ol>
+<li><p>Lattice上的函数是单调的，</p>
+</li>
+<li><p>L是有限的(一个finite lattice一定是complete lattice; 一个complete lattice不一定是finite lattice)</p>
+<p>那么我们能拿到，function迭代到不动点一定是最小不动点（或最大不动点）。</p>
+<img src="static-analysis-5-md/image-20210724053026118.png" alt="image-20210724053026118" style="zoom:50%;" />
+
+
+
+
+
+<p> 需要证明Fix point是存在的并且是最大(小)的不定点：</p>
+<ol>
+<li>证明不动点存在：</li>
+</ol>
+</li>
+</ol>
+<img src="static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-10%20%E4%B8%8B%E5%8D%888.50.46.png" alt="截屏2020-06-10 下午8.50.46 " style="zoom:50%;" />
+
+
+
+<ul>
+<li>因为f单调，f(bottom)也是lattice上的值，且bottom&lt;&#x3D;f(bottom)。(bottom最小)</li>
+<li>f(bottom) &lt;&#x3D; f(f(bottom)) &#x3D; f^2(bottom)  (x&lt;&#x3D;y, f(x)&lt;&#x3D;f(y))</li>
+<li>迭代…(上升链)</li>
+<li>L是finite，所以肯定存在一个k值，(最差情况下走到top)，当f^k(bottom)&#x3D;f^k+1(bottom)那么就到达了不动点。(因为Lattic是finitie的, 就限制了上升(下降)链是finite的)</li>
+</ul>
+<ol start="2">
+<li>证明Fix Point是最小(大)的:</li>
+</ol>
+<img src="static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-10%20%E4%B8%8B%E5%8D%888.51.04.png" alt="截屏2020-06-10 下午8.51.04 " style="zoom:50%;" />
+
+
+
+<p>假设存存在另外一个不动点x, 使得x &#x3D; f(x) （不动点定义），定义bottom, 我们有bottom&lt;&#x3D;x； </p>
+<p>使用数学归纳法：</p>
+<ul>
+<li><p>初始条件: 因为f是单调的，f(bottom) &lt;&#x3D; f(x)</p>
+</li>
+<li><p>假设f^i(bottom) &lt;&#x3D; f^(x)，那么我们根据monotonic有： f^i+1(bottom) &lt;&#x3D; f^i+1(x).</p>
+</li>
+<li><p>得到结论： f^i(bottom)&lt;&#x3D;f^i(x)</p>
+</li>
+<li><p>因为f^i(bottom)&lt;&#x3D;f^i(x)&#x3D;x, 所以得: f^Fix &#x3D; f^k(bottom) &lt;&#x3D; x(从bottom走到第k次的不动点一定小于不动点x)</p>
+</li>
+</ul>
+<p>将格上的数学证明关联到Iterative Algorithm，就可以证明我们的iterative algorithm是存在不动点且是最小(大)的了：</p>
+<img src="static-analysis-5-md/image-20210724055841844.png" alt="image-20210724055841844" style="zoom:50%;" />
+
+
+
+<p>下节课进行关联…</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2020/05/18/static-analysis-5-md/" data-id="cl1d6sq9l001rilw5axed5m0x" data-title="南大静态分析5(Data Flow Analysis - Foundations 1)" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/pl/" rel="tag">pl</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2020/06/01/PHP-AST/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          (no title)
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2020/05/17/static-analysis-4-2-md/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">南大静态分析-4(Avaliable Expressions Analsis)</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/paper/" rel="tag">paper</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/php/" rel="tag">php</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pl/" rel="tag">pl</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/paper/" style="font-size: 15px;">paper</a> <a href="/tags/php/" style="font-size: 10px;">php</a> <a href="/tags/pl/" style="font-size: 20px;">pl</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/03/">March 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/02/">February 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/01/">January 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/12/">December 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">September 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">August 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">April 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">February 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">January 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2022/03/30/Hello/">Hello</a>
+          </li>
+        
+          <li>
+            <a href="/2022/02/24/web/">Web应用系中注入类漏洞调研</a>
+          </li>
+        
+          <li>
+            <a href="/2022/02/18/data-mining/">data_mining</a>
+          </li>
+        
+          <li>
+            <a href="/2022/02/14/pop/">A Survey about PHP Object Injection</a>
+          </li>
+        
+          <li>
+            <a href="/2022/02/06/logic-machine/">Logic Machine</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2022 iohex<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

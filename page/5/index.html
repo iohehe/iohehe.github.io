@@ -1,0 +1,1354 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>Penlab</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta property="og:type" content="website">
+<meta property="og:title" content="Penlab">
+<meta property="og:url" content="http://example.com/page/5/index.html">
+<meta property="og:site_name" content="Penlab">
+<meta property="og:locale" content="en_US">
+<meta property="article:author" content="iohex">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="Penlab" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+<meta name="generator" content="Hexo 6.1.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Penlab</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main">
+  
+    <article id="post-static-analysis-4" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2020/05/12/static-analysis-4/" class="article-date">
+  <time class="dt-published" datetime="2020-05-12T12:38:44.000Z" itemprop="datePublished">2020-05-12</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2020/05/12/static-analysis-4/">南大静态分析-4(Live Variables Analysis)</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>前言：</p>
+<p><code>reaching definitions</code>, <code>live variables</code>和<code>avaliable expressions</code>  都是可以表示为对一个<code>bit array</code>（ <code>bit map, bit set, bit string, or bit vector</code>）迭代求解。 如<code>reaching definitions</code>, using a bit for a definition position in the program. 因此这一类问题也称 为<code>Bit vector problems</code><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Data-flow_analysis">https://en.wikipedia.org/wiki/Data-flow_analysis</a>。</p>
+<blockquote>
+<p>Live Variables Analysis:  06:10</p>
+<p>Available Expressions Analysis: </p>
+<p>总结： </p>
+</blockquote>
+<h1 id="Live-Variables-Analysis-活跃变量分析"><a href="#Live-Variables-Analysis-活跃变量分析" class="headerlink" title="Live Variables Analysis(活跃变量分析)"></a>Live Variables Analysis(活跃变量分析)</h1><blockquote>
+<p>May analysis</p>
+</blockquote>
+<p>活跃变量分析， 如果一个变量v在程序点p开始的路径里被使用过，那么在这条路径上，变量v就是一个Live Variables。 这种分析常常用作寄存器优化，将那些从某一程序点不活跃的变量(即之后不再使用的变量)，做为寄存器替换对象。</p>
+<img src="static-analysis-4/%E6%88%AA%E5%B1%8F2020-05-14%20%E4%B8%8B%E5%8D%889.29.10.png" alt="截屏2020-05-14 下午9.29.10 z" style="zoom:50%;" />
+
+<blockquote>
+<ol>
+<li>v在路径上被使用过</li>
+<li>v没有被重定义</li>
+</ol>
+</blockquote>
+<h2 id="目标抽象"><a href="#目标抽象" class="headerlink" title="目标抽象"></a>目标抽象</h2><p>关注的抽象应该是<code>live variables</code>，即活跃变量。我们设立一个数据结构来表示程序中所有的变量活跃状态。</p>
+<img src="static-analysis-4/%E6%88%AA%E5%B1%8F2020-05-14%20%E4%B8%8B%E5%8D%889.30.51.png" alt="截屏2020-05-14 下午9.30.51 " style="zoom:50%;" />
+
+<p>比特位表示状态，比如有100个variables，每一个比特位代表一个变量。形成bit vector, 每一个program point上分配一个(bit vectors)。 有了抽象的状态表示，接下来做safe-approximation制定transfer function 和control flow analysis来操作这些状态位。</p>
+<h2 id="方法设计"><a href="#方法设计" class="headerlink" title="方法设计"></a>方法设计</h2><p>我们的程序在流动之后，如何变换我们的标志位，使得我们得到的结果safe?</p>
+<p>即如何设计transfer function和control flow 合并。</p>
+<h3 id="分析方向"><a href="#分析方向" class="headerlink" title="分析方向"></a>分析方向</h3><p>前向分析和后向分析都是可以的， 但是在live variables的分析中， 我没每个program point的bit vector表示的是路径上所有变量在之后是否被用了，如果是forward分析的话， 从entry点开始向下，我们在每一个program point上不能确定每个variable是否在之后的语句中被use了， 此时如果再往下走，发现某一个variable被use了，那么需要向上传播这个消息来通知之前program point此变量在后边被use了。 但是backward的话，从exit开始进入，先找到的是variable的use点，后找definition信息， 因此变量被use了这个信息就可以随着后向数据流propagate, 从而节省了开销。</p>
+<img src="static-analysis-4/%E6%88%AA%E5%B1%8F2020-05-14%20%E4%B8%8B%E5%8D%889.36.52.png" alt="截屏2020-05-14 下午9.36.52 " style="zoom:50%;" />
+
+<h3 id="汇聚点处理"><a href="#汇聚点处理" class="headerlink" title="汇聚点处理"></a>汇聚点处理</h3><p>看这里在BB[P]处有一个<code>v=3</code> 的表达式，BB[B]不知道。而在BB[S1]处用到了<code>v</code>， 在backward中走到BB[B]，BB[S1]和BB[S2]汇合，看图中抽象公式，要处理在merge处的近似，因为是may analysis所以使用Union。(不放过任何一条path)</p>
+<p>然后就是核心的设计Transfer function：</p>
+<img src="static-analysis-4/%E6%88%AA%E5%B1%8F2020-05-15%20%E4%B8%8B%E5%8D%886.51.57.png" alt="截屏2020-05-15 下午6.51.57 " style="zoom:50%;" />
+
+<p>刚才我们说过， 在此数据流分析中， 我们采用backward, <code>v</code>在BB[S1]中被使用了，且在汇合处，我们做union操作，所以得到有<code>OUT[B] = &#123;v&#125;</code>，现在在程序中， 我们要backward过一个条任意语句(假设Baisc Block中只有一条statement,即以单条statement为分析单位)。我们要设计transfer function，得出上出program proint处的IN[B]，即OUT[B]-&gt;IN[B]。</p>
+<img src="static-analysis-4/%E6%88%AA%E5%B1%8F2020-05-15%20%E4%B8%8B%E5%8D%887.00.47.png" alt="截屏2020-05-15 下午7.00.47 " style="zoom:70%;" />
+
+<p>这里有一个场景，现在<code>v=3</code>寄存 器<code>R</code>中待着，经过我们的<code>live</code>分析，如果走过该点，经过我们设计的transfer function，IN[B] &#x3D; { v }， 那么这个值就在寄存器里待着。如果IN[B] &#x3D; {}，那么就把它从寄存器中拿出。因为我们的目的是分析数据流中，变量的<code>live </code>情况，由前面的定义如果BB[P]处的变量v是live的：</p>
+<ol>
+<li>BB[B]中v被使用过？</li>
+<li>BB[B]中v没有被重新定义？</li>
+</ol>
+<img src="static-analysis-4/%E6%88%AA%E5%B1%8F2020-05-15%20%E4%B8%8B%E5%8D%888.00.26.png" alt="截屏2020-05-15 下午8.00.26 " style="zoom:80%;" />
+
+<p>因为我们是在backward分析IN[B]这个<code>program point</code>的状态，来决定<code>v=3</code>是否被寄存器丢掉，即<code>IN[B]</code>这一点的事关<code>v</code>在未来是否会被使用到。看在第一个情况中，与<code>v</code>无关，但是我们知道OUT[B]这一点我们union出了<code>OUT[B]=&#123;v&#125;</code>，因为是<code>backward</code>分析，即接下来<code>v</code>会被使用到(BB[S1]处)。那么这一点中，<code>v</code>没有被重新定义，那么<code>IN[B]=&#123;v&#125;</code></p>
+<img src="static-analysis-4/%E6%88%AA%E5%B1%8F2020-05-15%20%E4%B8%8B%E5%8D%888.09.19.png" alt="截屏2020-05-15 下午8.09.19 " style="zoom:80%;" />
+
+<p>这里面<code>v</code>被使用了，离着<code>v=3</code>更近，这种情况下，即使<code>OUT[B]=&#123;&#125;</code>，也会有<code>IN[B]=&#123;v&#125;</code>。</p>
+<img src="static-analysis-4/%E6%88%AA%E5%B1%8F2020-05-15%20%E4%B8%8B%E5%8D%888.11.14.png" alt="截屏2020-05-15 下午8.11.14 z" style="zoom:80%;" />
+
+<p>这里<code>v=2</code>，v是<code>lval</code>左值，那么这个defition中v被重新定义了，上边<code>v=3</code>就不live了，因为没有被使用过，就被<code>redefine</code>了。此时<code>IN[B]=&#123;&#125;</code>，依据这个状态，从这个<code>program point</code>开始，寄存器中的<code>3</code>可以拿掉了。</p>
+<img src="static-analysis-4/%E6%88%AA%E5%B1%8F2020-05-15%20%E4%B8%8B%E5%8D%888.18.10.png" alt="截屏2020-05-15 下午8.18.10" style="zoom:80%;" />
+
+<p>再想象一下寄存器中的那个3，<code>v=v-1</code>中，右边的表达式是一个使用了寄存器中该值的二元操作。因此在这一时刻，我们需要使用寄存器中的3，那么<code>IN[B]=&#123;v&#125;</code>。</p>
+<img src="static-analysis-4/%E6%88%AA%E5%B1%8F2020-05-15%20%E4%B8%8B%E5%8D%888.21.04.png" alt="截屏2020-05-15 下午8.21.04 " style="zoom:80%;" />
+
+<p>这里case5是先写后读，case6是先读后写。在先写的时候 ，寄存器完全可以舍去<code>3</code> 。因为没有用到，还要重新读，而在case6中，寄存器中的<code>3</code>先被user了一下，所以在被<code>redefine</code>之前，有<code>use</code>，就是<code>live</code>咯。</p>
+<img src="static-analysis-4/%E6%88%AA%E5%B1%8F2020-05-15%20%E4%B8%8B%E5%8D%888.28.22.png" alt="截屏2020-05-15 下午8.28.22 " style="zoom:80%;" />
+
+<p>这里就定义了经过BB时的transfer function。</p>
+<p>设计好了，就开始用算法动起来。</p>
+<img src="static-analysis-4/%E6%88%AA%E5%B1%8F2020-05-15%20%E4%B8%8B%E5%8D%888.31.52.png" alt="截屏2020-05-15 下午8.31.52 " style="zoom:50%;" />
+
+<blockquote>
+<p>这里的定义，我理解的是因为transfer function是从下往上一句一句走的，那么先走到define被删掉了，然后use就又加上了。所以正序来看，先use后define就是live的。</p>
+</blockquote>
+<ul>
+<li><p>INPUT:  CFG</p>
+</li>
+<li><p>OUTPUT: 每一个program  point的标志位的状态</p>
+</li>
+<li><p>METHOD: 第一句的边界条件，因为是backward的，所以是IN[exit]，这里设置是空。（未来没有变量会被用到了）。然后所有BB初始化为空，求到所有的IN[B]不回被change了(反向)。</p>
+</li>
+</ul>
+<img src="static-analysis-4/%E6%88%AA%E5%B1%8F2020-05-15%20%E4%B8%8B%E5%8D%889.22.50.png" alt="截屏2020-05-15 下午9.22.50 " style="zoom:50%;" />
+
+<p>STEP:</p>
+<ol>
+<li>抽象7个变量位7个特位</li>
+<li>分配给每一个program point(IN处)，并初始化为零。</li>
+<li>第一次迭代(backward)开始</li>
+<li>B5: <code>z=2p</code> ，<code>p</code>被use加上，<code>z</code>被redefine删除&#x3D;》0001000</li>
+<li>B3: <code>x= x-3</code>x 先被use后被redfine，需要加上&#x3D;〉1001000</li>
+<li>B4: B4的OUT需要先union一下两个后继节点(successor)的IN，即(IN[B2]+IN[B5])，然后transfer &#x3D;》 0101000</li>
+<li>B2: IN[B4]+IN[B3] &#x3D; 1101000，加m,减y，加k，减m &#x3D;&gt; 1101001</li>
+<li>B1: +q+z-y+p-x&#x3D;&gt;0111001</li>
+</ol>
+<img src="static-analysis-4/%E6%88%AA%E5%B1%8F2020-05-15%20%E4%B8%8B%E5%8D%889.34.54.png" alt="截屏2020-05-15 下午9.34.54 " style="zoom:50%;" />
+
+<ol start="9">
+<li><p>因为上一轮即初始化IN[]都为0，现在变了，依据算法进行第二轮迭代。</p>
+<img src="static-analysis-4/%E6%88%AA%E5%B1%8F2020-05-15%20%E4%B8%8B%E5%8D%889.37.49.png" alt="截屏2020-05-15 下午9.37.49 " style="zoom:50%;" /></li>
+</ol>
+<p>10.第二轮后IN[B4]变了，下一轮：</p>
+<img src="static-analysis-4/%E6%88%AA%E5%B1%8F2020-05-15%20%E4%B8%8B%E5%8D%889.38.29.png" alt="截屏2020-05-15 下午9.38.29 " style="zoom:50%;" />
+
+<ol start="11">
+<li>第三轮没有IN转变。</li>
+</ol>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2020/05/12/static-analysis-4/" data-id="cl1d6sq9i001oilw5dk12b9cy" data-title="南大静态分析-4(Live Variables Analysis)" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/pl/" rel="tag">pl</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-xss-encode" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2020/05/08/xss-encode/" class="article-date">
+  <time class="dt-published" datetime="2020-05-08T09:53:18.000Z" itemprop="datePublished">2020-05-08</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2020/05/08/xss-encode/">XSS编码</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>对xss编码的思考：</p>
+<blockquote>
+<p>一段文本输入，不是字符串就是代码。代码之所以为代码，是因为解析器认识他。</p>
+</blockquote>
+<p>​    </p>
+<p>​    以后端以PHP为例，常用的编码方式是<code>htmlspecialchars($str)</code>，这种方式会将”,&lt;,&gt;等转化成html实体编码，对于PHP来说这是一个文本替换处理。但是输送到了浏览器端，需要解析渲染他，html解析器会将将其转化为<code>实体</code>，就是真的是输出这个符号，而不是解析成html标签。解析器也不会为此发生状态变化。所以一段输入的内容被当作代码执行的关键点就是，关键词能够被解析，即能让解析器发生状态转移。而xss能够触发，需要转移到一个能够调用js解析器的状态。</p>
+<p><img src="/xss-encode/%E6%88%AA%E5%B1%8F2020-05-09%20%E4%B8%8B%E5%8D%8812.03.29.png" alt="截屏2020-05-09 下午12.03.29"></p>
+<p>​    这里的html解析器，让状态机从<code>data</code>转移到<code>tag open</code>所consume的”&lt;”是真正的”&lt;”而不是”&amp;lt;”，所以这时如果有，<code>&lt;a href=&quot;javascrpt: alert(1)&gt;click&lt;/a&gt;</code> 这句话中js被解释的地方显然是javascript:{}中，这个地方如何处理的呢？ 首先看html是否解析他。</p>
+<p><img src="/xss-encode/%E6%88%AA%E5%B1%8F2020-05-09%20%E4%B8%8B%E5%8D%882.54.38.png" alt="截屏2020-05-09 下午2.54.38"> </p>
+<p>将<code>t</code>编码成<code>&amp;#x74;</code>。</p>
+<p><img src="/xss-encode/%E6%88%AA%E5%B1%8F2020-05-09%20%E4%B8%8B%E5%8D%882.56.52.png" alt="截屏2020-05-09 下午2.56.52"></p>
+<p>​    我们看到解析了，成为了<code>alert(1)</code>，点击也可以执行。为什么可以执行，在js被调用解析之前，字符<code>&amp;#x74</code>已经被html解析器解析了，翻译成了<code>t</code>，html解析器知道这个<code>t </code>是实体，不做状态转化。但是js解析器处理起来，没有区别。在js解析器的落点里，我们同样可以用js认识的编码规则。可以使用unicode编码，甚至js内部函数。</p>
+<p><img src="/xss-encode/%E6%88%AA%E5%B1%8F2020-05-09%20%E4%B8%8B%E5%8D%883.11.38.png" alt="截屏2020-05-09 下午3.11.38"></p>
+<p>​    虽然在解析中，也需要遵循解析器本身的规则。如括号，引号等被unicode编码了就不解析(详见参考2)。url解析器也同样的，在<code>&lt;a href=&#123;&#125;&gt;</code>中，因为是一个资源加在动作，所以可以触发url解析器。在url解析器规则中，包含<code>协议名:</code> 不能使用url编码。因此此处不可以将<code>javascript:</code>进行url编码，但是可以html编码。</p>
+<p>​     结合<code>HTML</code>, <code>URL</code>,<code>Javascript</code>三者的解析顺序、编码集、以及编码规则。根据我们输入的落点环境情况，就能够构造出可以”召唤”js解析器不能够绕过安全防护的payload。</p>
+<h2 id="CASE"><a href="#CASE" class="headerlink" title="CASE"></a>CASE</h2><p><img src="/xss-encode/%E6%88%AA%E5%B1%8F2020-05-09%20%E4%B8%8B%E5%8D%884.27.11.png" alt="截屏2020-05-09 下午4.27.11"></p>
+<blockquote>
+<p>规则1 - 属性名不能html编码</p>
+<p>规则2 - javascript:不能url编码</p>
+<p>规则3 - 括号不能unicode编码</p>
+</blockquote>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a target="_blank" rel="noopener" href="https://www.html5rocks.com/zh/tutorials/internals/howbrowserswork/#Types_of_parsers">[1] 解析器</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.attacker-domain.com/2013/04/deep-dive-into-browser-parsing-and-xss.html">[2] https://www.attacker-domain.com/2013/04/deep-dive-into-browser-parsing-and-xss.html</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2020/05/08/xss-encode/" data-id="cl1d6sq9p0026ilw55oxa096z" data-title="XSS编码" class="article-share-link">Share</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-static-analysis-3" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2020/05/05/static-analysis-3/" class="article-date">
+  <time class="dt-published" datetime="2020-05-05T10:08:09.000Z" itemprop="datePublished">2020-05-05</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2020/05/05/static-analysis-3/">南大静态分析-3</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="03-Data-Flow-Analysis-I"><a href="#03-Data-Flow-Analysis-I" class="headerlink" title="03 Data Flow Analysis I"></a>03 Data Flow Analysis I</h1><p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1oE411K79d">课程链接</a></p>
+<blockquote>
+<ol>
+<li><p>Overiew of Data Flow Analysis  12:05</p>
+</li>
+<li><p>Preliminaries of Data Flow Analysis 23:10</p>
+<ol>
+<li>Notations for Transfer Function’s Constraints  </li>
+<li>Notations for Control Flows’s Constraints 34:40</li>
+</ol>
+</li>
+<li><p>Reaching Definitions Analysis 39:10</p>
+<ol>
+<li>Issues Not Covered 41:30</li>
+<li>Reaching Definitions 44:25</li>
+<li>Understanding Reaching Definitions(Transfer Function&amp;Control Flow) 58:00</li>
+<li>Algorithm of Reaching Definitions Analysis 1:04:00</li>
+<li>举个栗子🌰：1:12:00</li>
+</ol>
+</li>
+</ol>
+</blockquote>
+<h1 id="0x01-Data-Flow-Analysis-How-data-flows-on-CFG"><a href="#0x01-Data-Flow-Analysis-How-data-flows-on-CFG" class="headerlink" title="0x01 Data Flow Analysis(How data flows on CFG)"></a>0x01 Data Flow Analysis(How data flows on CFG)</h1><p>数据流分析，描述的是<code>How Data Flows on CFG(数据在控制流上的传递情况)</code>。</p>
+<p>什么样的DATA: <code>application-specific Data</code>。</p>
+<p>Flow：</p>
+<p>即在不同场景的数据流分析需要关注的数据抽象(data abstraction)不同，其安全策略也不同(flow safe-approximation strategies)， 那么根据安全策略，也会制定相应的转化函数(transfer functions)和边(control-flow handlings)。</p>
+<p>Analysis:</p>
+<blockquote>
+<p>May analysis:  outputs information that may be true (over-approximation). 可能的都报出来</p>
+<p>Must analysis: outputs information that must be true (under-approximation). 报出来的必须对</p>
+<p>两者应用于不同场景，都是为了结果是正确的。以结果的正确为目的，称之为safe-approximation。</p>
+</blockquote>
+<img src="static-analysis-3/%E6%88%AA%E5%B1%8F2020-05-09%20%E4%B8%8B%E5%8D%885.10.09.png" alt="截屏2020-05-09 下午5.10.09 " style="zoom:90%;" />
+
+<p>所以对于数据流分析来说：</p>
+<img src="static-analysis-3/image-20210712194843394.png" alt="image-20210712194843394" style="zoom:50%;" />
+
+<p>不同的数据流分析应用， 关注的data就不同，其safe-approximation策略就不同(transfer functions 和control-flow handlings不同)。</p>
+<h2 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h2><img src="static-analysis-3/image-20210714194847170.png" alt="image-20210714194847170" style="zoom:50%;" />
+
+<p>数据流分析就是<code>application-specific Data</code>(不同的数据抽象策略)，如何在CFG上(<code>a program</code>)沿着点(<code>Transfer function</code>)和Edges(<code>control flows</code>)流动的评估(<code>safe-approximation</code>)</p>
+<h1 id="0x02-Prelimiaries-of-Data-Flow-Analysis"><a href="#0x02-Prelimiaries-of-Data-Flow-Analysis" class="headerlink" title="0x02 Prelimiaries of Data Flow Analysis"></a>0x02 Prelimiaries of Data Flow Analysis</h1><h2 id="Input-and-Output-States"><a href="#Input-and-Output-States" class="headerlink" title="Input and Output States"></a>Input and Output States</h2><p>控制流图上无非有三种情形： 顺序、 分支、汇聚。 要在控制流分析数据，需要了然数据在控制流上的传递情况。那么数据如何变化的呢。</p>
+<img src="static-analysis-3/%E6%88%AA%E5%B1%8F2020-05-05%20%E4%B8%8B%E5%8D%888.47.16.png" alt="截屏2020-05-05 下午8.47.16 " style="zoom:50%;" />
+
+<p>一条statement, 执行前的状态是<code>IN[s1]</code>， 执行后的状态是 <code>OUT[s1]</code>。</p>
+<p>顺序执行，s2的input就是s1的output。</p>
+<img src="static-analysis-3/%E6%88%AA%E5%B1%8F2020-05-05%20%E4%B8%8B%E5%8D%888.50.48.png" alt="截屏2020-05-05 下午8.50.48 " style="zoom:50%;" />
+
+
+
+<p>分流、汇聚依然如此，注意汇聚点有一个meet符号<code>^</code>(数据结合)。 这样每一句statement执行前就是<code>input state</code> 执行后就相当于new了一个 <code>output state</code>。而每一个<code>state</code>都与一个<code>program point</code>相关，这里的<code>program point</code>通常指的就是这条statement的上一条(before)和下一条(after)语句。</p>
+<p>根据<code>program point </code>的概念， 可以做如下定义：</p>
+<blockquote>
+<p>In each data-flow analysis application, we associate with every program point a <code>data-flow value</code> that represents an <code>abstraction</code> of the set of all possible <code>program states</code> that can be observed for thatå point.</p>
+</blockquote>
+<p>就是说对每一条statement的前后program point ，会关联一个数据流的值，这个值代表program states 在这一点的所有抽象，即在这一program point上所有可能的出现状态。</p>
+<img src="static-analysis-3/%E6%88%AA%E5%B1%8F2020-05-05%20%E4%B8%8B%E5%8D%889.02.42.png" alt="截屏2020-05-05 下午9.02.42 " style="zoom:50%;" />
+
+<p>拿第一节探测每一个变量的check做例子，要探测每一个program point 上的program states。我们先抽象出我们关注的data， 即变量的符号。 因此将 code中的数据抽象成符号，形成一个值域，即根据应用场景，对数据所有可能的状态做的抽象集(Domain)：</p>
+<img src="static-analysis-3/%E6%88%AA%E5%B1%8F2020-05-05%20%E4%B8%8B%E5%8D%889.06.40.png" alt="截屏2020-05-05 下午9.06.40 " style="zoom:50%;" />
+
+<p>Data-flow Analysis:</p>
+<img src="static-analysis-3/%E6%88%AA%E5%B1%8F2020-05-06%20%E4%B8%8B%E5%8D%888.46.49.png" alt="截屏2020-05-06 下午8.46.49 " style="zoom:50%;" />
+
+<ul>
+<li>Dataflow analysis 就是对程序中所有的statements的input point和output point关联一个dataflow value, 这个solution通过解析一系列的<code>safe-approximation-deriected constraints</code>(约束规则)。约束规则基于：1. semantics of statements（转化函数） 2. flows of control(控制流信息)</li>
+</ul>
+<h2 id="Transfer-Function’s-constraints"><a href="#Transfer-Function’s-constraints" class="headerlink" title="Transfer Function’s constraints"></a>Transfer Function’s constraints</h2><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2020-05-06-124827.png" alt="截屏2020-05-06 下午8.48.18 " style="zoom:50%;" />
+
+<p>如图一个前向分析中， transfer function 的定义就是将In这一program point 的state转化为out点的state。就是上图定义中的第一条，根据抽象的数据，对program point进行状态的转移。</p>
+<img src="static-analysis-3/%E6%88%AA%E5%B1%8F2020-05-06%20%E4%B8%8B%E5%8D%888.50.46.png" alt="截屏2020-05-06 下午8.50.46 " style="zoom:50%;" />
+
+<p>逆向分析，有的分析也会把整个控制流图反着建立， 然后在上边顺着做数据流分析。 正常的逆向数据流分析都是沿着CFG做反方向分析。</p>
+<h2 id="Control-Flow’s-Constraints"><a href="#Control-Flow’s-Constraints" class="headerlink" title="Control Flow’s Constraints"></a>Control Flow’s Constraints</h2><p>程序中的很多statements可以阻止成一个Basic Block， 那么Control Flow’s constraints 就可以分为BB内和BB外。</p>
+<img src="static-analysis-3/%E6%88%AA%E5%B1%8F2020-05-09%20%E4%B8%8B%E5%8D%885.19.56.png" alt="截屏2020-05-09 下午5.19.56 " style="zoom:60%;" />
+
+
+
+<p>Within a BB: 的话没有分支， 那么就是顺序执行，每个stmt的 in就是上一个stmt的out。</p>
+<p>Among BBs: 进入状态是s1的状态， 出状态就是sn的状态。</p>
+<img src="static-analysis-3/%E6%88%AA%E5%B1%8F2020-05-09%20%E4%B8%8B%E5%8D%885.23.31.png" alt="截屏2020-05-09 下午5.23.31 " style="zoom:50%;" />
+
+
+
+<p>定义正向、反向的BBs间的Control Flow’s Constraints。正反各有两条，第一条是定义出口， 正向为例。OUT[B]是出口， fb这个从右往左，依次连接基本块内每一条语句的转换函数(注意transfer functions时从右往左连接)。得到出口处的转化规则fb，以IN[B]为参数即可。而第二条则是定义入口， 入口处分支汇合的情况，因此我们需要^上这些OUT[P]。逆向反着来，同样的原理。</p>
+<h1 id="0x03-Reaching-Definitions-Analysis"><a href="#0x03-Reaching-Definitions-Analysis" class="headerlink" title="0x03 Reaching Definitions Analysis"></a>0x03 Reaching Definitions Analysis</h1><img src="static-analysis-3/%E6%88%AA%E5%B1%8F2020-05-09%20%E4%B8%8B%E5%8D%885.35.26.png" alt="截屏2020-05-09 下午5.35.26 " style="zoom:80%;" />
+
+<p>Reaching Definitions, 即一个definitions在传播路径上能不能reaches到某一点。 </p>
+<p><img src="/static-analysis-3/%E6%88%AA%E5%B1%8F2020-05-09%20%E4%B8%8B%E5%8D%885.34.19.png" alt="截屏2020-05-09 下午5.34.19"></p>
+<p>一条reaching definition满足三点：</p>
+<ol>
+<li>路径上有一个point p, 定义了v</li>
+<li>p有一条路径流向q</li>
+<li>改路径上， v没有被重新定义</li>
+</ol>
+<blockquote>
+<p>Reaching Definitions 是一个may analysis, 定义上没有说must, 那就是over-approximation。</p>
+</blockquote>
+<p>关注的数据是-&gt; definitions</p>
+<img src="static-analysis-3/%E6%88%AA%E5%B1%8F2020-05-09%20%E4%B8%8B%E5%8D%888.04.45.png" alt="截屏2020-05-09 下午8.04.45 " style="zoom:50%;" />
+
+<p>假设程序中有100个definitions，抽象为100个比特位。</p>
+<p>有了抽象，我们就要有每一个program point 的状态规则，设计transfer Function，继而设计control flow。</p>
+<blockquote>
+<p>制定通常先给出一条语句为例,对其进行<code>safe-approximation</code></p>
+</blockquote>
+<p>先看transfer function</p>
+<p><img src="/static-analysis-3/%E6%88%AA%E5%B1%8F2020-05-09%20%E4%B8%8B%E5%8D%888.07.26.png" alt="截屏2020-05-09 下午8.07.26"></p>
+<p>这是一条<code>definition</code>，这句话的语义要从<code>definitnion</code>的角度去看。我们去指定trasferì  function , 使得这一条语句之前的program point状态IN转化为OUT。</p>
+<p><img src="/static-analysis-3/%E6%88%AA%E5%B1%8F2020-05-09%20%E4%B8%8B%E5%8D%888.11.36.png" alt="截屏2020-05-09 下午8.11.36"></p>
+<p>假设这个B块中只有这一条statement， 那么这个B的转化函数就是如上定义。</p>
+<ul>
+<li>“generates” a definition D of variable v</li>
+<li>“kills” all the other definitions in the program that define variable v</li>
+<li>while leaving the remaining incoming definitions unaffected（不kill的）</li>
+</ul>
+<p>举个例子：</p>
+<img src="static-analysis-3/%E6%88%AA%E5%B1%8F2020-05-09%20%E4%B8%8B%E5%8D%888.18.53.png" alt="截屏2020-05-09 下午8.18.53 " style="zoom:50%;" />
+
+ 
+
+<p>B1中有三个definitions, genB1 &#x3D; {d1, d2, d3}。 三个变量i, j, a，那么 killB1 &#x3D; {d4, d5, d6, d7}即是其他定义了i,j,a的地方。以此类推。</p>
+<p>接着再来看Control Flow</p>
+<img src="static-analysis-3/%E6%88%AA%E5%B1%8F2020-05-09%20%E4%B8%8B%E5%8D%888.22.47.png" alt="截屏2020-05-09 下午8.22.47 " style="zoom:50%;" />
+
+<ul>
+<li>因为我们是一个may analysis， 所以用Union 把所有的Path都考虑到。</li>
+<li>顺序执行，因此是predecessor前趋。考虑所有INB的前趋。</li>
+</ul>
+<blockquote>
+<p>一个数据流分析， 有了抽象，制定了transfer function和control flow设计。下一步设计算法</p>
+</blockquote>
+<img src="static-analysis-3/%E6%88%AA%E5%B1%8F2020-05-09%20%E4%B8%8B%E5%8D%889.11.28.png" alt="截屏2020-05-09 下午9.11.28 " style="zoom:60%;" />
+
+<ul>
+<li>问题 ：<ol>
+<li>为什么 OUT[entry] &#x3D; 空 （entry没有statement）</li>
+<li>为什么B\entry （有些算法边界设置有可能不为空（这是一个算法通用模版））</li>
+<li>迭代条件<code>changes to any OUT occur</code> 能停吗？（In不变了，Out也不变了(后说明)）</li>
+</ol>
+</li>
+<li>例子</li>
+</ul>
+<img src="static-analysis-3/%E6%88%AA%E5%B1%8F2020-05-09%20%E4%B8%8B%E5%8D%889.10.53.png" alt="截屏2020-05-09 下午9.10.53 " style="zoom:50%;" />
+
+
+
+<p>第一轮迭代：</p>
+<img src="static-analysis-3/image-20210714204736937.png" alt="image-20210714204736937" style="zoom:50%;" />
+
+<ol>
+<li><p>左上角是我们设计的数据抽象，表示definitions的状态。</p>
+</li>
+<li><p>在每一个out点都会初始化这个状态抽象， 为空</p>
+</li>
+<li><p>左下角是我们的transfer function 形式化描述。 </p>
+</li>
+<li><p>根据transfer function开始第一轮迭代。(合并IN-&gt;加入新的d efinition-&gt;删除其他相同变量definition定义的位置)</p>
+</li>
+<li><p>如果有任何一个OUT变化了，继续迭代</p>
+<img src="static-analysis-3/%E6%88%AA%E5%B1%8F2020-05-09%20%E4%B8%8B%E5%8D%889.28.22.png" alt="截屏2020-05-09 下午9.28.22 " style="zoom:50%;" />
+
+<p>（上一轮OUT即初始化0000 0000）</p>
+</li>
+</ol>
+<p>第二轮迭代：</p>
+   <img src="static-analysis-3/%E6%88%AA%E5%B1%8F2020-05-09%20%E4%B8%8B%E5%8D%889.31.00.png" alt="截屏2020-05-09 下午9.31.00 " style="zoom:50%;" />
+
+<p>可以看到高亮处， B2,B3的OUT变了。所以依据算法，还要迭代。</p>
+<p>第三轮：</p>
+<img src="static-analysis-3/%E6%88%AA%E5%B1%8F2020-05-09%20%E4%B8%8B%E5%8D%889.32.26.png" alt="截屏2020-05-09 下午9.32.26 " style="zoom:50%;" />
+
+<p>OUT没有变，得到结果</p>
+<blockquote>
+<p>输入一样的， 输出也是一样的</p>
+</blockquote>
+<p>所以可以看出： 每一个<code>program point</code>最后都会关联一个<code>data-flow value</code>，这个<code>data-flow value</code>就是在这一点观察到的状态上的<code>抽象</code>。</p>
+<ul>
+<li>Data Abstraction: 一个definition 能否reach</li>
+</ul>
+<p><img src="/static-analysis-3/%E6%88%AA%E5%B1%8F2020-05-09%20%E4%B8%8B%E5%8D%889.35.09.png" alt="截屏2020-05-09 下午9.35.09"></p>
+<p>如何得到这个状态：</p>
+<p><img src="/static-analysis-3/%E6%88%AA%E5%B1%8F2020-05-09%20%E4%B8%8B%E5%8D%889.35.56.png" alt="截屏2020-05-09 下午9.35.56"></p>
+<p>迭代数据流分析就是不停的迭代<code>directed constraints</code>(transfer functin 和 control flow handling)，直到停止找到solutaion。</p>
+<h2 id="算法为什么会停"><a href="#算法为什么会停" class="headerlink" title="算法为什么会停"></a>算法为什么会停</h2><img src="static-analysis-3/%E6%88%AA%E5%B1%8F2020-05-09%20%E4%B8%8B%E5%8D%889.44.19.png" alt="截屏2020-05-09 下午9.44.19 " style="zoom:50%;" />
+
+<p>改算法最重要的部分，就是他的transfer function, 其由四部分组成:</p>
+<ul>
+<li>输入: IN[S]</li>
+<li>输出: OUT[S]</li>
+<li>kill_s</li>
+<li>gen_s</li>
+</ul>
+<p>这里，由于gen和kill都是由statement的性质决定的， 所以statement集合定了，gen和kill的动作就定了。 </p>
+<p>而变化的就是IN和OUT了。 如果一轮迭代中，IN新加入了内容(more facts)，这些新的内容流入S后只有两种结果： 1. 被kill了 2. survivor存活了。 那么存活的内容就会被加入到OUT中。</p>
+<p><code>而OUT，不会变小了</code>, 感觉这是理解的关键，因为如果进入了out, 就证明没有被kill掉，而每一轮kill的都是相同的内容。那么既然这一轮survivor了，那么就不会再被kill掉了。 所以<code>OUT不会缩小， 只会变大</code>。</p>
+<p>那么在迭代数据流中， 每一个<code>OUT都没有变化，算法就停止了</code>， 可以看到OUT就是在格上往上爬，最终一定会到达一个不懂点。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2020/05/05/static-analysis-3/" data-id="cl1d6sq9h001milw5bzis61c7" data-title="南大静态分析-3" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/pl/" rel="tag">pl</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-static-analysis-2" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2020/05/04/static-analysis-2/" class="article-date">
+  <time class="dt-published" datetime="2020-05-04T12:41:53.000Z" itemprop="datePublished">2020-05-04</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2020/05/04/static-analysis-2/">南大静态分析-2</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1zE411s77Z">课程链接</a></p>
+<h1 id="0x01-Compilers-and-Static-Analyzers"><a href="#0x01-Compilers-and-Static-Analyzers" class="headerlink" title="0x01 Compilers and Static Analyzers"></a>0x01 Compilers and Static Analyzers</h1><p>编译器工作原理， 开始贴ppt：</p>
+<img src="static-analysis-2/%E6%88%AA%E5%B1%8F2020-05-04%20%E4%B8%8B%E5%8D%888.53.05.png" alt="截屏2020-05-04 下午8.53.05 " style="zoom:50%;" />
+
+<p>IR之前前端， 之后称后端。 前端是词法、语法、简单的语义检查。 后端是在IR上分析一些高级的程序属性。（其实我觉得编译过程任何一个阶段的输出表示，都可以叫做IR(中间表示)，一般IR指的是编译后段处理的目标内容形式，一般用3AC(三地址码)表示）。</p>
+<h1 id="0x02-AST-vs-IR"><a href="#0x02-AST-vs-IR" class="headerlink" title="0x02 AST vs. IR"></a>0x02 AST vs. IR</h1><p>重点来了， AST 和 IR做为编译过程中两个重要的中间表示，各自有什么意义与区别呢？ 我们继续贴ppt…</p>
+<img src="static-analysis-2/%E6%88%AA%E5%B1%8F2020-05-04%20%E4%B8%8B%E5%8D%888.58.04.png" alt="截屏2020-05-04 下午8.58.04 " style="zoom:50%;" />
+
+
+
+<p>这里提出了几点：</p>
+<p>AST 贴合于上层代码，依赖于语言。 而IR贴近于底层，不依赖语言。 (多种语言可以翻译成同一种3AC?)。还有一个重要特点就是AST缺少控制流信息， 而3AC包含了控制流信息。</p>
+<blockquote>
+<p>Each 4AC contains at most 3 addresses</p>
+<ul>
+<li>Name: a, b</li>
+<li>Constant: 3</li>
+<li>Compiler-generated temporary: t1, t2</li>
+</ul>
+</blockquote>
+<h2 id="常见3AC-三地址码-形式"><a href="#常见3AC-三地址码-形式" class="headerlink" title="常见3AC(三地址码)形式"></a>常见3AC(三地址码)形式</h2><ul>
+<li><p>x &#x3D; y <code>bop</code> z</p>
+</li>
+<li><p>x &#x3D; <code>top</code> y</p>
+</li>
+<li><p>x &#x3D; y</p>
+</li>
+<li><p>goto <code>L</code></p>
+</li>
+<li><p>if x got <code>L</code></p>
+</li>
+<li><p>if x <code>rop</code> y goto L</p>
+</li>
+</ul>
+<p>其中， x, y, z表示地址。 <code>bop</code>是二元运算符或逻辑运算符； <code>uop</code> 是一元操作符；<code>L</code>是地址的label； <code>rop</code> 关系操作符。 <code>goto L</code> 无条件跳转； <code>if...goto L</code>:条件跳转。</p>
+<p>soot介绍略… </p>
+<h1 id="0x03-Static-Single-Assignment-SSA"><a href="#0x03-Static-Single-Assignment-SSA" class="headerlink" title="0x03 Static Single Assignment(SSA)"></a>0x03 Static Single Assignment(SSA)</h1><ul>
+<li>Give each definition a fresh name </li>
+<li>Propagate fresh name to subsequent use</li>
+<li>Ever variable has exactly one definition</li>
+</ul>
+<img src="static-analysis-2/%E6%88%AA%E5%B1%8F2020-05-04%20%E4%B8%8B%E5%8D%889.16.05.png" alt="截屏2020-05-04 下午9.16.05 " style="zoom:50%;" />
+
+
+
+<img src="static-analysis-2/%E6%88%AA%E5%B1%8F2020-05-04%20%E4%B8%8B%E5%8D%889.17.15.png" alt="截屏2020-05-04 下午9.17.15 " style="zoom:50%;" />
+
+<p>每一个variable在不同语句都给一个地址， 在control flow 汇合处就是这个变量的集合。</p>
+<h1 id="0x04-Control-Flow-Analysis"><a href="#0x04-Control-Flow-Analysis" class="headerlink" title="0x04 Control Flow Analysis"></a>0x04 Control Flow Analysis</h1><p>重点来了…</p>
+<p>之前构造了3AC，那么在后端中需要在此之上构建控制流图进行控制流分析。 控制流图中， 每一个节点为一个基本快。</p>
+<h2 id="Basic-Blokcs-BB"><a href="#Basic-Blokcs-BB" class="headerlink" title="Basic Blokcs(BB)"></a>Basic Blokcs(BB)</h2><img src="static-analysis-2/%E6%88%AA%E5%B1%8F2020-05-04%20%E4%B8%8B%E5%8D%889.21.28.png" alt="截屏2020-05-04 下午9.21.28 " style="zoom:50%;" />
+
+<p>一个基本块应该满足，唯一一个<strong>入口</strong>进，唯一一个<strong>出口</strong>出。 </p>
+<blockquote>
+<p>入口必须是第一条指令， 而出口必须是最后一条， 这样最大的块就是一个BB。</p>
+</blockquote>
+<h2 id="构建basic-block"><a href="#构建basic-block" class="headerlink" title="构建basic block"></a>构建basic block</h2><p>按视频给出的算法：</p>
+<p>首先，标出跳转语句的目标</p>
+<img src="static-analysis-2/%E6%88%AA%E5%B1%8F2020-05-04%20%E4%B8%8B%E5%8D%889.32.58.png" alt="截屏2020-05-04 下午9.32.58 " style="zoom:50%;" />
+
+<p>之后，标出紧接着jump之后的指令</p>
+<img src="static-analysis-2/%E6%88%AA%E5%B1%8F2020-05-04%20%E4%B8%8B%E5%8D%889.34.26.png" alt="截屏2020-05-04 下午9.34.26 " style="zoom:50%;" />
+
+<p>找到了所有的leaders之后，构造基本块。</p>
+<img src="static-analysis-2/%E6%88%AA%E5%B1%8F2020-05-04%20%E4%B8%8B%E5%8D%889.36.17.png" alt="截屏2020-05-04 下午9.36.17 " style="zoom:50%;" />
+
+<p>有了基本块， 建立控制流的边。</p>
+<h2 id="构建Control-Flow-Graph-CFG"><a href="#构建Control-Flow-Graph-CFG" class="headerlink" title="构建Control Flow Graph(CFG)"></a>构建Control Flow Graph(CFG)</h2><ol>
+<li><p>There is a conditional or unconditional jump from the end of A to the beginning of B(跳转添边)</p>
+</li>
+<li><p>B immediately follows A in the original order of instructions(依序添边) and A does not end in an unconditional jump(且A块出口并没有无条件跳转)</p>
+</li>
+</ol>
+   <img src="static-analysis-2/%E6%88%AA%E5%B1%8F2020-05-04%20%E4%B8%8B%E5%8D%889.43.32.png" alt="截屏2020-05-04 下午9.43.32 " style="zoom:50%;" />
+
+<ol start="3">
+<li>It is normal to replace the jumps to instruction labels by jumps to basic blocks(很自然的将指令跳转转化为basic block 跳转)</li>
+</ol>
+<img src="static-analysis-2/%E6%88%AA%E5%B1%8F2020-05-04%20%E4%B8%8B%E5%8D%889.47.18.png" alt="截屏2020-05-04 下午9.47.18 " style="zoom:50%;" />
+
+<p>（这里将goto 目标都换成了基本块label）</p>
+<img src="static-analysis-2/%E6%88%AA%E5%B1%8F2020-05-04%20%E4%B8%8B%E5%8D%889.49.11.png" alt="截屏2020-05-04 下午9.49.11 " style="zoom:50%;" />
+
+<p>   加上了CFG的入口和出口，形成一个完整的CFG。</p>
+<blockquote>
+<p> 说明:</p>
+<ul>
+<li>红边有条件跳转， 蓝边无条件</li>
+<li>黑边顺序执行，除无条件goto外都加</li>
+<li>A是B的前驱， B是A的后继</li>
+<li>入口节点加入第一个，指向第一条执行的指令</li>
+</ul>
+</blockquote>
+<h3 id="算法"><a href="#算法" class="headerlink" title="算法"></a>算法</h3><img src="static-analysis-2/image-20211111072257404.png" alt="image-20211111072257404" style="zoom:50%;" />
+
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2020/05/04/static-analysis-2/" data-id="cl1d6sq9g001kilw56klx0iq0" data-title="南大静态分析-2" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/pl/" rel="tag">pl</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-static-analysis-1" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2020/05/03/static-analysis-1/" class="article-date">
+  <time class="dt-published" datetime="2020-05-03T02:43:27.000Z" itemprop="datePublished">2020-05-03</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2020/05/03/static-analysis-1/">南大静态分析-1</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>南京大学软件分析课程，这段时间可以把自己学习的内容总结一下。</p>
+<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1b7411K7P4">课程链接</a></p>
+<h1 id="0x01-PL-and-Static-Analysis"><a href="#0x01-PL-and-Static-Analysis" class="headerlink" title="0x01 PL and Static Analysis"></a>0x01 PL and Static Analysis</h1><blockquote>
+<p>08:05 </p>
+</blockquote>
+<p>开始，剪课件…</p>
+<img src="static-analysis-1/%E6%88%AA%E5%B1%8F2020-05-03%20%E4%B8%8A%E5%8D%8810.50.11.png" alt="截屏2020-05-03 上午10.50.11 " style="zoom:50%;" />
+
+
+
+<p>背景：将PL分了三个领域。 程序分析属于PL的应用领域。</p>
+<ul>
+<li>在语言的框架下谈到程序分析就是静态分析。</li>
+</ul>
+<h1 id="0x02-Why-We-Need-Static-Analysis"><a href="#0x02-Why-We-Need-Static-Analysis" class="headerlink" title="0x02 Why We Need Static Analysis"></a>0x02 Why We Need Static Analysis</h1><blockquote>
+<p>17:40</p>
+</blockquote>
+<p>应用背景:</p>
+<ol>
+<li><p>Program Reliability</p>
+</li>
+<li><p>Program Security</p>
+</li>
+<li><p>Compiler Optimization</p>
+</li>
+<li><p>Program Understanding</p>
+</li>
+</ol>
+<ul>
+<li><p>静态分析是在编译时刻完成了对程序的分析</p>
+</li>
+<li><p>更深入地理解编程语言的语法、语义</p>
+</li>
+<li><p>写出更加可靠、更安全、更高效的程序</p>
+</li>
+</ul>
+<blockquote>
+<p>这一块自己也觉得之前写代码，感觉用不上自己学的理论知识。学了一些编译原理尤其是静态分析内容后，感觉把理论和实践打通了。再加上操作系统和组成原理。 写代码的时候逐渐知道编译器在干什么， 操作系统在干什么， 硬件在干什么…</p>
+</blockquote>
+<h1 id="0x03-Static-Analysis"><a href="#0x03-Static-Analysis" class="headerlink" title="0x03 Static Analysis"></a>0x03 Static Analysis</h1><blockquote>
+<p>35:40</p>
+</blockquote>
+<p>正式开始了…</p>
+<ul>
+<li>静态分析： 在运行一个程序之前， 通过静态分析，了解程序一些行为和特征，</li>
+</ul>
+<img src="static-analysis-1/%E6%88%AA%E5%B1%8F2020-05-03%20%E4%B8%8A%E5%8D%8811.36.35.png" alt="截屏2020-05-03 上午11.36.35 " style="zoom:50%;" />
+
+<p>Truth是我们需要的结果机， 包含了所有可能的分析结果</p>
+<ul>
+<li>Sound：Overapproximate， 包含了所有的Truth</li>
+<li>Complete: Underapproximate,  在Truth</li>
+</ul>
+<blockquote>
+<p>比如找洞， Truth是所有的洞， 而Complete是Truth的子集， 报出来的没有假的(无误报)。而Sound是包含了所有的Truth，但是会有误报。(这是设计时的目标方向， 实际使用时，大部分工具，既有误报，又有漏报)</p>
+</blockquote>
+<p>我们的目标是设计一个<code>useful static analysis</code>，在上图画一个结果集的圈， 我们需要妥协一方(看应用场景)。 妥协<code>Sound</code>，就是要让Sound妥协， 让Sound缩小，就会造成生漏报(<code>false negatives</code>)，这种分析是<code>Compromise soundness</code>。</p>
+<p> 同样的， 妥协<code>Complete</code>， 就是要不产生误报(<code>false positives</code>)。 这种分析是<code>Compromise completeness</code>的。</p>
+<p>这两种设计方案随目的不同，在需要的场景下，都算是<code>useful static analysis</code>。</p>
+<img src="static-analysis-1/%E6%88%AA%E5%B1%8F2020-05-03%20%E4%B8%8B%E5%8D%8812.06.37.png" alt="截屏2020-05-03 下午12.06.37 " style="zoom:50%;" />
+
+   
+
+
+
+<ul>
+<li><p>Soundness is <code>critical</code>  to a collection of import(static analysis) applications such as commpiler optimization and program verification.(编译优化和程序验证soundness尤为重要)</p>
+<p>这里说一个静态分析，soundness是重要的，也就是complete妥协。可以产生误报， 可以不那么准确。 </p>
+<p>也就是说sound的分析会包含分析中所有的情形。(全面之后才能得到正确的结论)</p>
+<blockquote>
+<p>从静态分析角度， sound就可以理解为正确的</p>
+</blockquote>
+<blockquote>
+<p>Static Analysis: ensure(or get close to) soundness, while making good trade-offs between analysis precision and analysis speed.(在保证正确性的前提下，做精度和速度的平衡) </p>
+</blockquote>
+<h1 id="0x04-Example-about-Static-Analysis"><a href="#0x04-Example-about-Static-Analysis" class="headerlink" title="0x04 Example about Static Analysis"></a>0x04 Example about Static Analysis</h1></li>
+</ul>
+<blockquote>
+<p>71:00</p>
+<p>Two Words to Conclude Static Analysis: Abstraction+ Over-approximation</p>
+</blockquote>
+<img src="static-analysis-1/%E6%88%AA%E5%B1%8F2020-05-03%20%E4%B8%8B%E5%8D%888.36.59.png" alt="截屏2020-05-03 下午8.36.59 " style="zoom:50%;" />
+
+<p>一个check, 探测每一个变量的符号。</p>
+<ol>
+<li>Abstraction： 将真实值转化为抽象值(abstract values)</li>
+</ol>
+<img src="static-analysis-1/%E6%88%AA%E5%B1%8F2020-05-03%20%E4%B8%8B%E5%8D%888.39.29.png" alt="截屏2020-05-03 下午8.39.29 " style="zoom:50%;" />
+
+
+
+<ol start="2">
+<li>Over-approximation: Transfer Functions</li>
+</ol>
+<ul>
+<li><p>Transfer Functions define how to evaluate different program statements on abstract values.(对每一个语句的抽象值制定转化规则)</p>
+</li>
+<li><p>Transfer functions are defined according to “analysis problem” and the “semantics” of different program statements.（根据分析目标和每一句话的语义制定转移函数）</p>
+</li>
+</ul>
+  <img src="static-analysis-1/%E6%88%AA%E5%B1%8F2020-05-03%20%E4%B8%8B%E5%8D%888.49.08.png" alt="截屏2020-05-03 下午8.49.08 " style="zoom:50%;" />
+
+<p>现在，有了抽象值， 有了转化函数， 可以进行静态分析。</p>
+<img src="static-analysis-1/%E6%88%AA%E5%B1%8F2020-05-03%20%E4%B8%8B%E5%8D%888.52.07.png" alt="截屏2020-05-03 下午8.52.07 " style="zoom:50%;" />
+
+<p>其中， a可正可负，p 中y做索引错， q中a做索引， 保证soundness， 可能错。</p>
+<ul>
+<li><p>c 除零错误</p>
+</li>
+<li><p>p negative array index</p>
+</li>
+<li><p>q 误报</p>
+</li>
+</ul>
+<p>为了保证soundness，要求所有控制流的汇聚的点，都需要做merge。 Flow-Merge作为默认的一种Over-approximation方式。 </p>
+<img src="static-analysis-1/%E6%88%AA%E5%B1%8F2020-05-03%20%E4%B8%8B%E5%8D%889.00.38.png" alt="截屏2020-05-03 下午9.00.38 " style="zoom:50%;" />
+
+<blockquote>
+<p>每一个语句， 与control flow 构成了真正的程序。 将两者抽象，就讲整个程序抽象了。</p>
+</blockquote>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2020/05/03/static-analysis-1/" data-id="cl1d6sq9g001jilw5f47326yt" data-title="南大静态分析-1" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/pl/" rel="tag">pl</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-python_cluster_hi" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2020/01/04/python_cluster_hi/" class="article-date">
+  <time class="dt-published" datetime="2020-01-03T16:00:00.000Z" itemprop="datePublished">2020-01-04</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2020/01/04/python_cluster_hi/">python层次聚类学习</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="0x00-层次聚类描述"><a href="#0x00-层次聚类描述" class="headerlink" title="0x00 层次聚类描述"></a>0x00 层次聚类描述</h1><ol>
+<li>首把每一个样本点看作是一个cluster, 一开始有k个cluster</li>
+<li>根据算法，聚合距离最近的两个cluster，形成k-1个cluster</li>
+<li>循环直至一个最大的cluster形成</li>
+<li>形成一张树状图区分不同的clusters</li>
+</ol>
+<h1 id="0x02-准备数据集"><a href="#0x02-准备数据集" class="headerlink" title="0x02 准备数据集"></a>0x02 准备数据集</h1><h2 id="命名规则"><a href="#命名规则" class="headerlink" title="命名规则"></a>命名规则</h2><ul>
+<li>X - 实验样本</li>
+<li>n - 样本数量</li>
+<li>m - 样本特征数量</li>
+<li>Z - 集群关系数组</li>
+<li>k - 集群数量</li>
+</ul>
+<h2 id="生成实验样本"><a href="#生成实验样本" class="headerlink" title="生成实验样本"></a>生成实验样本</h2><p>矩阵X.shape &#x3D;&#x3D; (n, m)，现在我有十个随机点：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"></span><br><span class="line">X = np.array([[<span class="number">5</span>,<span class="number">3</span>],</span><br><span class="line">    [<span class="number">10</span>,<span class="number">15</span>],</span><br><span class="line">    [<span class="number">15</span>,<span class="number">12</span>],</span><br><span class="line">    [<span class="number">24</span>,<span class="number">10</span>],</span><br><span class="line">    [<span class="number">30</span>,<span class="number">30</span>],</span><br><span class="line">    [<span class="number">85</span>,<span class="number">70</span>],</span><br><span class="line">    [<span class="number">71</span>,<span class="number">80</span>],</span><br><span class="line">    [<span class="number">60</span>,<span class="number">78</span>],</span><br><span class="line">    [<span class="number">70</span>,<span class="number">55</span>],</span><br><span class="line">    [<span class="number">80</span>,<span class="number">91</span>],])</span><br><span class="line"></span><br><span class="line">labels = <span class="built_in">range</span>(<span class="number">1</span>, <span class="number">11</span>)</span><br><span class="line">plt.figure(figsize=(<span class="number">10</span>, <span class="number">7</span>))</span><br><span class="line">plt.subplots_adjust(bottom=<span class="number">0.1</span>)</span><br><span class="line">plt.scatter(X[: ,<span class="number">0</span>], X[: ,<span class="number">1</span>], label=<span class="string">&#x27;True Position&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> label, x, y <span class="keyword">in</span> <span class="built_in">zip</span>(labels, X[:, <span class="number">0</span>], X[:, <span class="number">1</span>]):</span><br><span class="line">    plt.annotate(</span><br><span class="line">        label,</span><br><span class="line">        xy=(x, y), xytext=(-<span class="number">3</span>, <span class="number">3</span>),</span><br><span class="line">        textcoords=<span class="string">&#x27;offset points&#x27;</span>, ha=<span class="string">&#x27;right&#x27;</span>, va=<span class="string">&#x27;bottom&#x27;</span>)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+<p>![](&#x2F;media&#x2F;python_cluster_hi&#x2F;2020-01-04-屏幕快照 2020-01-04 下午5.11.02.png)</p>
+<h1 id="0x02-进行层次聚类"><a href="#0x02-进行层次聚类" class="headerlink" title="0x02 进行层次聚类"></a>0x02 进行层次聚类</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Z = linkage(X, method=<span class="string">&#x27;ward&#x27;</span>) <span class="comment">#average, single, complete...</span></span><br></pre></td></tr></table></figure>
+
+<p>method选择一个 距离算法。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"><span class="keyword">from</span> scipy.cluster.hierarchy <span class="keyword">import</span> dendrogram, linkage</span><br><span class="line"></span><br><span class="line">X = np.array([[<span class="number">5</span>,<span class="number">3</span>],</span><br><span class="line">    [<span class="number">10</span>,<span class="number">15</span>],</span><br><span class="line">    [<span class="number">15</span>,<span class="number">12</span>],</span><br><span class="line">    [<span class="number">24</span>,<span class="number">10</span>],</span><br><span class="line">    [<span class="number">30</span>,<span class="number">30</span>],</span><br><span class="line">    [<span class="number">85</span>,<span class="number">70</span>],</span><br><span class="line">    [<span class="number">71</span>,<span class="number">80</span>],</span><br><span class="line">    [<span class="number">60</span>,<span class="number">78</span>],</span><br><span class="line">    [<span class="number">70</span>,<span class="number">55</span>],</span><br><span class="line">    [<span class="number">80</span>,<span class="number">91</span>],])</span><br><span class="line"></span><br><span class="line">Z = linkage(X, method=<span class="string">&#x27;ward&#x27;</span>)</span><br><span class="line"><span class="built_in">print</span>(Z)</span><br></pre></td></tr></table></figure>
+
+<p>打印粗来：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[[  1.           2.           5.83095189   2.        ]</span><br><span class="line"> [  6.           7.          11.18033989   2.        ]</span><br><span class="line"> [  3.          10.          13.88044188   3.        ]</span><br><span class="line"> [  0.          12.          17.98147195   4.        ]</span><br><span class="line"> [  5.           8.          21.21320344   2.        ]</span><br><span class="line"> [  9.          11.          21.73323108   3.        ]</span><br><span class="line"> [  4.          13.          32.79634126   5.        ]</span><br><span class="line"> [ 14.          15.          33.64322616   5.        ]</span><br><span class="line"> [ 16.          17.         185.44001726  10.        ]]</span><br></pre></td></tr></table></figure>
+
+<p>  每一行是[idx, idx2, dist,  sample_count]可以看到是本来， 第一行就是对应层次聚类的第一步， 每一个点作为一个cluster, 其中1号点和2号点是聚类最近，为5.83…，于是这两个点在此步骤聚成了一个cluster, 有两个样本点。现在有<code>k-1</code>个cluster。然后第二步…。</p>
+<p>  看到第3步中，开始出现9号以外的点。此算法中，任何<code>idx&gt;=len(X)</code>的下标指向<code>Z[idx-len(X)]</code>中建立的集群。</p>
+<p>  也就是说，10代表着第<code>Z[10-10]</code>也就是<code>Z[0]</code>第一步聚成的cluster与3进行合并。也就是X[[1,2,3]]</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">print</span> X[[<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>]]</span><br><span class="line"><span class="comment">#=&gt; output:</span></span><br><span class="line">[[<span class="number">10</span> <span class="number">15</span>]</span><br><span class="line"> [<span class="number">15</span> <span class="number">12</span>]</span><br><span class="line"> [<span class="number">24</span> <span class="number">10</span>]]</span><br></pre></td></tr></table></figure>
+
+<p>单看他们的坐标点应该是挺近，看图：</p>
+<p>![](&#x2F;media&#x2F;python_cluster_hi&#x2F;2020-01-04-屏幕快照 2020-01-04 下午5.31.25.png)</p>
+<p>挺近…</p>
+<p>代码：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"><span class="keyword">from</span> scipy.cluster.hierarchy <span class="keyword">import</span> dendrogram, linkage</span><br><span class="line"></span><br><span class="line">X = np.array([[<span class="number">5</span>,<span class="number">3</span>],</span><br><span class="line">    [<span class="number">10</span>,<span class="number">15</span>],</span><br><span class="line">    [<span class="number">15</span>,<span class="number">12</span>],</span><br><span class="line">    [<span class="number">24</span>,<span class="number">10</span>],</span><br><span class="line">    [<span class="number">30</span>,<span class="number">30</span>],</span><br><span class="line">    [<span class="number">85</span>,<span class="number">70</span>],</span><br><span class="line">    [<span class="number">71</span>,<span class="number">80</span>],</span><br><span class="line">    [<span class="number">60</span>,<span class="number">78</span>],</span><br><span class="line">    [<span class="number">70</span>,<span class="number">55</span>],</span><br><span class="line">    [<span class="number">80</span>,<span class="number">91</span>],])</span><br><span class="line"></span><br><span class="line">labels = <span class="built_in">range</span>(<span class="number">0</span>, <span class="number">10</span>)</span><br><span class="line">idx = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>]</span><br><span class="line">plt.figure(figsize=(<span class="number">10</span>, <span class="number">7</span>))</span><br><span class="line">plt.subplots_adjust(bottom=<span class="number">0.1</span>)</span><br><span class="line">plt.scatter(X[: ,<span class="number">0</span>], X[: ,<span class="number">1</span>], label=<span class="string">&#x27;True Position&#x27;</span>)</span><br><span class="line">plt.scatter(X[idx,<span class="number">0</span>], X[idx,<span class="number">1</span>], label=<span class="string">&#x27;True Position&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> label, x, y <span class="keyword">in</span> <span class="built_in">zip</span>(labels, X[:, <span class="number">0</span>], X[:, <span class="number">1</span>]):</span><br><span class="line">    plt.annotate(</span><br><span class="line">        label,</span><br><span class="line">        xy=(x, y), xytext=(-<span class="number">3</span>, <span class="number">3</span>),</span><br><span class="line">        textcoords=<span class="string">&#x27;offset points&#x27;</span>, ha=<span class="string">&#x27;right&#x27;</span>, va=<span class="string">&#x27;bottom&#x27;</span>)</span><br><span class="line">plt.show()</span><br><span class="line"></span><br><span class="line">Z = linkage(X, method=<span class="string">&#x27;ward&#x27;</span>)</span><br><span class="line"><span class="built_in">print</span>(X[[<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>]])</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h1 id="0x03-树状结构图（Dendrograms）"><a href="#0x03-树状结构图（Dendrograms）" class="headerlink" title="0x03 树状结构图（Dendrograms）"></a>0x03 树状结构图（Dendrograms）</h1><p>​    </p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"><span class="keyword">from</span> scipy.cluster.hierarchy <span class="keyword">import</span> dendrogram, linkage</span><br><span class="line"></span><br><span class="line">X = np.array([[<span class="number">5</span>,<span class="number">3</span>],</span><br><span class="line">    [<span class="number">10</span>,<span class="number">15</span>],</span><br><span class="line">    [<span class="number">15</span>,<span class="number">12</span>],</span><br><span class="line">    [<span class="number">24</span>,<span class="number">10</span>],</span><br><span class="line">    [<span class="number">30</span>,<span class="number">30</span>],</span><br><span class="line">    [<span class="number">85</span>,<span class="number">70</span>],</span><br><span class="line">    [<span class="number">71</span>,<span class="number">80</span>],</span><br><span class="line">    [<span class="number">60</span>,<span class="number">78</span>],</span><br><span class="line">    [<span class="number">70</span>,<span class="number">55</span>],</span><br><span class="line">    [<span class="number">80</span>,<span class="number">91</span>],])</span><br><span class="line"></span><br><span class="line">linked = linkage(X, <span class="string">&#x27;single&#x27;</span>)</span><br><span class="line"></span><br><span class="line">labelList = <span class="built_in">range</span>(<span class="number">0</span>, <span class="number">10</span>)</span><br><span class="line"></span><br><span class="line">plt.figure(figsize=(<span class="number">10</span>, <span class="number">7</span>))</span><br><span class="line">dendrogram(linked,</span><br><span class="line">            orientation=<span class="string">&#x27;top&#x27;</span>,</span><br><span class="line">            labels=labelList,</span><br><span class="line">            distance_sort=<span class="string">&#x27;descending&#x27;</span>,</span><br><span class="line">            show_leaf_counts=<span class="literal">True</span>)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+
+
+<p>![](&#x2F;media&#x2F;python_cluster_hi&#x2F;2020-01-04-屏幕快照 2020-01-04 下午5.11.02.png)</p>
+<p>对就是这个图，让我们先，从下往上捋一捋。横坐标就是特征嘛，纵坐标看那个连接位置，就是他们聚在一起时候的值，这里好像根据的是<code>欧几里得距离</code>…再看我们聚类时的第一步:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[  1.           2.           5.83095189   2.        ]</span><br></pre></td></tr></table></figure>
+
+<p>所以说第1，2个点聚的最低，聚集起来的位置大概是5.8…。依次向上，最终聚成一个cluster。</p>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a target="_blank" rel="noopener" href="https://haojunsui.github.io/2016/07/16/scipy-hac/">[1] 利用 SciPy 实现层次聚类</a></p>
+<p><a target="_blank" rel="noopener" href="https://stackabuse.com/hierarchical-clustering-with-python-and-scikit-learn/">[2] Hierarchical Clustering with Python and Scikit-Learn</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2020/01/04/python_cluster_hi/" data-id="cl1d6sq9d001bilw57my55jch" data-title="python层次聚类学习" class="article-share-link">Share</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-burp_ex_1" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2019/12/28/burp_ex_1/" class="article-date">
+  <time class="dt-published" datetime="2019-12-27T16:00:00.000Z" itemprop="datePublished">2019-12-28</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2019/12/28/burp_ex_1/">burp插件入门</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="0x01-java项目"><a href="#0x01-java项目" class="headerlink" title="0x01 java项目"></a>0x01 java项目</h1><p>学习了一下burp插件的入门， 参考：</p>
+<p><a target="_blank" rel="noopener" href="https://support.portswigger.net/customer/portal/questions/17285859-how-to-deploy-an-extension">https://support.portswigger.net/customer/portal/questions/17285859-how-to-deploy-an-extension</a></p>
+<p>首先第一个坑是那堆接口， 自己之前没怎么写过java，所以这次，也没写…</p>
+<p>找到官方提供的接口下载下来：</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/PortSwigger/burp-extender-api">https://github.com/PortSwigger/burp-extender-api</a></p>
+<p>然后新建一个java项目，名字随便起一个，然后新建一个叫burp的package把所有接口都拷进去，参考：</p>
+<p><a target="_blank" rel="noopener" href="https://portswigger.net/burp/extender/writing-your-first-burp-suite-extension">https://portswigger.net/burp/extender/writing-your-first-burp-suite-extension</a></p>
+<p>然后我直接在burp包下创建了一个<code>BurpExtender.class</code>的类，用的就是最简单的那个官方例子的代码：</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/PortSwigger/example-hello-world/blob/master/java/BurpExtender.java">https://github.com/PortSwigger/example-hello-world/blob/master/java/BurpExtender.java</a></p>
+<p>所以，一行代码没写:&gt;</p>
+<h1 id="0x02-导成jar包"><a href="#0x02-导成jar包" class="headerlink" title="0x02 导成jar包"></a>0x02 导成jar包</h1><p>这个也一顿折腾，我使用的是intellij，首先打开file下的<code>Project Structure</code>，点开加号，<code>Artifacts</code>-&gt;<code>JAR</code>-&gt;<code>From modules ...</code></p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1gjb3663nlmj30hz0bbq55.jpg" alt="屏幕快照 2019-12-28 下午5.01.40"></p>
+<p>这里的<code>Main Class</code>我任性地随便选了一个main，然后下边<code>META-INF/MANIFEST.MF</code>也生成路径了，（虽然还不是很懂</p>
+<p><img src="/burp_ex_1/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202019-12-28%20%E4%B8%8B%E5%8D%885.04.37.png" alt="屏幕快照 2019-12-28 下午5.04.37"></p>
+<p>然后选择<code>build</code>里的<code>Build Artifacts</code>-&gt;<code>Build</code>一般就生成一个<code>out</code>文件夹有一个工程同名jar包，导入burpSuite即可。(注意是Build Artifacts)</p>
+<p><img src="/burp_ex_1/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202019-12-28%20%E4%B8%8B%E5%8D%885.08.17.png" alt="屏幕快照 2019-12-28 下午5.08.17"></p>
+<p>对了，接口文件好像可以直接从burp里获得？</p>
+<p>代码： </p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">package burp;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.<span class="property">io</span>.<span class="property">PrintWriter</span>;</span><br><span class="line"></span><br><span class="line">public <span class="keyword">class</span> <span class="title class_">BurpExtender</span> implements <span class="title class_">IBurpExtender</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">//</span></span><br><span class="line">    <span class="comment">// implement IBurpExtender</span></span><br><span class="line">    <span class="comment">//</span></span><br><span class="line">    </span><br><span class="line">    @<span class="title class_">Override</span></span><br><span class="line">    public <span class="keyword">void</span> <span class="title function_">registerExtenderCallbacks</span>(<span class="params">IBurpExtenderCallbacks callbacks</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// set our extension name</span></span><br><span class="line">        callbacks.<span class="title function_">setExtensionName</span>(<span class="string">&quot;Hello world extension&quot;</span>);</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// obtain our output and error streams</span></span><br><span class="line">        <span class="title class_">PrintWriter</span> stdout = <span class="keyword">new</span> <span class="title class_">PrintWriter</span>(callbacks.<span class="title function_">getStdout</span>(), <span class="literal">true</span>);</span><br><span class="line">        <span class="title class_">PrintWriter</span> stderr = <span class="keyword">new</span> <span class="title class_">PrintWriter</span>(callbacks.<span class="title function_">getStderr</span>(), <span class="literal">true</span>);</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// write a message to our output stream</span></span><br><span class="line">        stdout.<span class="title function_">println</span>(<span class="string">&quot;Hello output&quot;</span>);</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// write a message to our error stream</span></span><br><span class="line">        stderr.<span class="title function_">println</span>(<span class="string">&quot;Hello errors&quot;</span>);</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// write a message to the Burp alerts tab</span></span><br><span class="line">        callbacks.<span class="title function_">issueAlert</span>(<span class="string">&quot;Hello alerts&quot;</span>);</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// throw an exception that will appear in our error stream</span></span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">RuntimeException</span>(<span class="string">&quot;Hello exceptions&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+<h1 id="JMenu"><a href="#JMenu" class="headerlink" title="JMenu"></a>JMenu</h1><p>拿来一个基本代码：</p>
+ <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">package burp;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> javax.<span class="property">swing</span>.*;</span><br><span class="line"><span class="keyword">import</span> java.<span class="property">util</span>.<span class="property">ArrayList</span>;</span><br><span class="line"><span class="keyword">import</span> java.<span class="property">util</span>.<span class="property">List</span>;</span><br><span class="line"></span><br><span class="line">public <span class="keyword">class</span> <span class="title class_">BurpExtender</span> implements <span class="title class_">IBurpExtender</span>, <span class="title class_">IContextMenuFactory</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">//</span></span><br><span class="line">    <span class="comment">// implement IBurpExtender</span></span><br><span class="line">    <span class="comment">//</span></span><br><span class="line"></span><br><span class="line">    @<span class="title class_">Override</span></span><br><span class="line">    public <span class="keyword">void</span> <span class="title function_">registerExtenderCallbacks</span>(<span class="params">IBurpExtenderCallbacks callbacks</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// set our extension name</span></span><br><span class="line">        callbacks.<span class="title function_">setExtensionName</span>(<span class="string">&quot;JMenu Test&quot;</span>);</span><br><span class="line">        callbacks.<span class="title function_">registerContextMenuFactory</span>(<span class="variable language_">this</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @<span class="title class_">Override</span></span><br><span class="line">    public <span class="title class_">List</span>&lt;<span class="title class_">JMenuItem</span>&gt; <span class="title function_">createMenuItems</span>(<span class="params">IContextMenuInvocation invocation</span>) &#123;</span><br><span class="line">        <span class="title class_">List</span>&lt;<span class="title class_">JMenuItem</span>&gt; jMenuItemList = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;&gt;();  <span class="comment">// create JMenuItemList</span></span><br><span class="line">        <span class="title class_">JMenu</span> jMenu = <span class="keyword">new</span> <span class="title class_">JMenu</span>(<span class="string">&quot;My JMenus&quot;</span>);    <span class="comment">// title</span></span><br><span class="line">        <span class="title class_">JMenuItem</span> jMenuItem1 = <span class="keyword">new</span> <span class="title class_">JMenuItem</span>(<span class="string">&quot;My JMenu 1&quot;</span>);   <span class="comment">// 第一个选项</span></span><br><span class="line">        <span class="title class_">JMenuItem</span> jMenuItem2 = <span class="keyword">new</span> <span class="title class_">JMenuItem</span>(<span class="string">&quot;My JMenu 2&quot;</span>);   <span class="comment">// 第二个选项</span></span><br><span class="line">        jMenu.<span class="title function_">add</span>(jMenuItem1);</span><br><span class="line">        jMenu.<span class="title function_">add</span>(jMenuItem2);</span><br><span class="line">        jMenuItemList.<span class="title function_">add</span>(jMenu);</span><br><span class="line">        <span class="keyword">return</span> jMenuItemList;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p><img src="/burp_ex_1/%E6%88%AA%E5%B1%8F2020-10-02%20%E4%B8%8B%E5%8D%885.16.57.png" alt="截屏2020-10-02 下午5.16.57"></p>
+<p>java swing编程，创造一个JMenu。</p>
+<h1 id="JFrame"><a href="#JFrame" class="headerlink" title="JFrame"></a>JFrame</h1><p>在其中一个选项中添加单击事件：</p>
+  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">@<span class="title class_">Override</span></span><br><span class="line">public <span class="title class_">List</span>&lt;<span class="title class_">JMenuItem</span>&gt; <span class="title function_">createMenuItems</span>(<span class="params">IContextMenuInvocation invocation</span>) &#123;</span><br><span class="line">    <span class="title class_">List</span>&lt;<span class="title class_">JMenuItem</span>&gt; menu = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;<span class="title class_">JMenuItem</span>&gt;();</span><br><span class="line">    <span class="title class_">JMenu</span> main = <span class="keyword">new</span> <span class="title class_">JMenu</span>(<span class="string">&quot;JMenu Test&quot;</span>);</span><br><span class="line">    <span class="title class_">JMenuItem</span> item = <span class="keyword">new</span> <span class="title class_">JMenuItem</span>(<span class="string">&quot;My JMenu 1&quot;</span>);</span><br><span class="line">    main.<span class="title function_">add</span>(item);</span><br><span class="line">    menu.<span class="title function_">add</span>(main);</span><br><span class="line"></span><br><span class="line">    item.<span class="title function_">addActionListener</span>(e -&gt; &#123;</span><br><span class="line">        <span class="title class_">JFrame</span> frame = <span class="keyword">new</span> <span class="title class_">JFrame</span>(<span class="string">&quot;JFrame Text&quot;</span>);  <span class="comment">//创建JFrame</span></span><br><span class="line">        <span class="title class_">JTextArea</span> _text = <span class="keyword">new</span> <span class="title class_">JTextArea</span>(<span class="string">&quot;Hello World&quot;</span>); <span class="comment">//创建JTextArea</span></span><br><span class="line">        _text.<span class="title function_">setEditable</span>(<span class="literal">false</span>);</span><br><span class="line"></span><br><span class="line">        frame.<span class="title function_">add</span>(_text);  <span class="comment">//插入文本</span></span><br><span class="line">        frame.<span class="title function_">setSize</span>(<span class="number">600</span>, <span class="number">600</span>);</span><br><span class="line">        frame.<span class="title function_">setVisible</span>(<span class="literal">true</span>);</span><br><span class="line">        frame.<span class="title function_">setDefaultCloseOperation</span>(<span class="title class_">JFrame</span>.<span class="property">DISPOSE_ON_CLOSE</span>);</span><br><span class="line">    &#125;);</span><br><span class="line">    <span class="keyword">return</span> menu;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/burp_ex_1/%E6%88%AA%E5%B1%8F2020-10-02%20%E4%B8%8B%E5%8D%885.47.54.png" alt="截屏2020-10-02 下午5.47.54"></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2019/12/28/burp_ex_1/" data-id="cl1d6sq95000milw55iwag32d" data-title="burp插件入门" class="article-share-link">Share</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-tp5-container" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2019/12/05/tp5-container/" class="article-date">
+  <time class="dt-published" datetime="2019-12-04T16:00:00.000Z" itemprop="datePublished">2019-12-05</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2019/12/05/tp5-container/">tp5学习-容器</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="0x01-基础设计模式"><a href="#0x01-基础设计模式" class="headerlink" title="0x01 基础设计模式"></a>0x01 基础设计模式</h1><p> 参考<a target="_blank" rel="noopener" href="https://www.kancloud.cn/webjust/php_patterns/324646">大话PHP设计模式</a> 。</p>
+<h2 id="单例模式"><a href="#单例模式" class="headerlink" title="单例模式"></a>单例模式</h2><p>单例模式就是只有一个实例化存在。</p>
+<ul>
+<li>拥有一个构造函数，并且为private</li>
+<li>拥有一个静态成员变量用来保持类的实例</li>
+<li>拥有一个访问这个实例的静态方法</li>
+</ul>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">test_instance</span></span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">static</span> <span class="variable">$is_instance</span> = <span class="literal">null</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">            <span class="keyword">echo</span> <span class="string">&quot;new a instance&quot;</span>;</span><br><span class="line">            <span class="keyword">echo</span> <span class="string">&quot;&lt;br /&gt;&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">static</span> <span class="function"><span class="keyword">function</span> <span class="title">isInstance</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="built_in">self</span>::<span class="variable">$is_instance</span>===<span class="literal">null</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="built_in">self</span>::<span class="variable">$is_instance</span> = <span class="keyword">new</span> <span class="title function_ invoke__">test_instance</span>();</span><br><span class="line">            <span class="keyword">return</span> <span class="built_in">self</span>::<span class="variable">$is_instance</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">        &#123;</span><br><span class="line">           <span class="keyword">return</span> <span class="built_in">self</span>::<span class="variable">$is_instance</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 这里不能 new了， 要访问公共静态方法new实例进$is_instance</span></span><br><span class="line"><span class="variable">$a</span> = test_instance::<span class="title function_ invoke__">isInstance</span>();</span><br><span class="line"><span class="variable">$b</span> = test_instance::<span class="title function_ invoke__">isInstance</span>();</span><br><span class="line"><span class="variable">$c</span> = test_instance::<span class="title function_ invoke__">isInstance</span>();</span><br></pre></td></tr></table></figure>
+
+<p>这是后只能访问一次构造函数，因此只有一个实例。这里的实例化方法<code>isInstance</code>和标量<code>$is_instance</code>都要是静态方法。(为了防止实例化，<code>isInstance</code>静态方法，这时候要用<code>$is_instance</code>也是没有被实例化的静态方法)。</p>
+<h2 id="工厂模式"><a href="#工厂模式" class="headerlink" title="工厂模式"></a>工厂模式</h2><p>如果一个类名进行了修改， 使用工厂模式不用把每一处的new都修改， 而是直接修改工厂方法即可。作为一个统一的调度。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Factory</span></span>&#123;</span><br><span class="line">  <span class="built_in">static</span> <span class="function"><span class="keyword">function</span> <span class="title">createDatabase</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="variable">$db</span> = <span class="keyword">new</span> <span class="title class_">Database</span>();</span><br><span class="line">    <span class="keyword">return</span> <span class="variable">$db</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># $db = new Database();</span></span><br><span class="line"><span class="variable">$db</span> = <span class="title function_ invoke__">createDatabase</span>();</span><br></pre></td></tr></table></figure>
+
+<p>引入了工厂模式，我们不需要在业务层去修改代码了。这样有利于整个软件框架稳定，比如在model层调用不同的Driver实例化。使用工厂模式只要在工厂中选择想使用的数据库Driver就可以实现切换。</p>
+<p>思想就是业务层不用new具体的类了，而是调用统一接口。由接口new并返回。工厂模式是许多高级模式里惯用的模式，如注册树模式。</p>
+<h2 id="注册树模式"><a href="#注册树模式" class="headerlink" title="注册树模式"></a>注册树模式</h2><ul>
+<li><p>注册树模式通过将对象实例注册到一棵全局的对象树上， 需要的时候从对象树上采摘下来使用。</p>
+<p>一个软件的底层有许多不同的类库， 在业务层， 我们要调用这些类库的使用。  这些底层类很乱不便于管理，这里就使用注册树模式，便于管理。（类似于配置函数生成的配置静态变量,这种操作应用于类上）</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">regTree</span></span>&#123;</span><br><span class="line">  <span class="comment">//注册树池子</span></span><br><span class="line">  <span class="keyword">protected</span> <span class="built_in">static</span> <span class="variable">$objects</span> = <span class="literal">null</span>;</span><br><span class="line">  </span><br><span class="line">  <span class="comment">//挂载</span></span><br><span class="line">  <span class="keyword">public</span> <span class="built_in">static</span> <span class="function"><span class="keyword">function</span> <span class="title">_set</span>(<span class="params"><span class="variable">$key</span>, <span class="variable">$object</span></span>)</span>&#123;</span><br><span class="line">    <span class="built_in">self</span>::<span class="variable">$objects</span>[<span class="variable">$key</span>] = <span class="variable">$object</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="comment">//获取</span></span><br><span class="line">  <span class="keyword">public</span> <span class="built_in">static</span> <span class="function"><span class="keyword">function</span> <span class="title">_get</span>(<span class="params"><span class="variable">$key</span>,</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!<span class="keyword">isset</span>(<span class="built_in">self</span>::<span class="variable">$objects</span>[<span class="variable">$key</span>]))</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="built_in">self</span>::<span class="variable">$objects</span>[<span class="variable">$keys</span>] = <span class="keyword">new</span> <span class="variable">$key</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">self</span>::<span class="variable">$objects</span>[<span class="variable">$key</span>];</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="comment">//注销</span></span><br><span class="line">  <span class="keyword">public</span> <span class="built_in">static</span> <span class="function"><span class="keyword">function</span> <span class="title">_unset</span>(<span class="params"><span class="variable">$key</span></span>)</span>&#123;</span><br><span class="line">   				<span class="keyword">unset</span>(<span class="built_in">self</span>::<span class="variable">$objects</span>[<span class="variable">$key</span>]); </span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>此时我们需要使用底层函数的时候就不需要去new了，而是像读配置一样，去注册树这个<code>配置数组</code>中去读。</p>
+<p>set:</p>
+<p><code>$a =new target(); </code></p>
+<p><code>regTree::_set(&#39;target&#39;, $a);</code></p>
+<p>get: </p>
+<p><code>$target = regTree::_get(&#39;target&#39;);</code></p>
+</li>
+</ul>
+<p>简单的思想，大概就是这样了。。。</p>
+<h1 id="0x02-容器"><a href="#0x02-容器" class="headerlink" title="0x02 容器"></a>0x02 容器</h1><p>TP5的容器类位于<code>think/thinkphp/librarythink/Container.php</code></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> <span class="title">ArrayAccess</span>;</span><br><span class="line"><span class="keyword">use</span> <span class="title">ArrayIterator</span>;</span><br><span class="line"><span class="keyword">use</span> <span class="title">Closure</span>;</span><br><span class="line"><span class="keyword">use</span> <span class="title">Countable</span>;</span><br><span class="line"><span class="keyword">use</span> <span class="title">InvalidArgumentException</span>;</span><br><span class="line"><span class="keyword">use</span> <span class="title">IteratorAggregate</span>;</span><br><span class="line"><span class="keyword">use</span> <span class="title">ReflectionClass</span>;</span><br><span class="line"><span class="keyword">use</span> <span class="title">ReflectionException</span>;</span><br><span class="line"><span class="keyword">use</span> <span class="title">ReflectionFunction</span>;</span><br><span class="line"><span class="keyword">use</span> <span class="title">ReflectionMethod</span>;</span><br><span class="line"><span class="keyword">use</span> <span class="title">think</span>\<span class="title">exception</span>\<span class="title">ClassNotFoundException</span>;</span><br></pre></td></tr></table></figure>
+
+<p>这里可以看出使用了反射机制。还使用了一堆PHP的内置接口。</p>
+<p>看类声明：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Container</span> <span class="keyword">implements</span> <span class="title">ArrayAccess</span>, <span class="title">IteratorAggregate</span>, <span class="title">Countable</span></span></span><br></pre></td></tr></table></figure>
+
+
+
+<ul>
+<li><code>ArrayAccess</code>: 像数组一样使用对象</li>
+<li><code>IteratorAggregat</code>: 聚合式的迭代器</li>
+<li><code>Countable</code>: 用来统计对象中某个元素的个数</li>
+</ul>
+<p>往下：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 容器对象实例</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@var</span> Container</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">protected</span> <span class="built_in">static</span> <span class="variable">$instance</span>;</span><br><span class="line">   <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 容器中的对象实例</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@var</span> array</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">protected</span> <span class="variable">$instances</span> = [];</span><br></pre></td></tr></table></figure>
+
+<p>一看就像个单例模式，注册树的套路。</p>
+<p>往下：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">   * 容器绑定标识</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@var</span> array</span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="keyword">protected</span> <span class="variable">$bind</span> = [</span><br><span class="line">      <span class="string">&#x27;app&#x27;</span>                   =&gt; <span class="title class_">App</span>::<span class="variable language_">class</span>,</span><br><span class="line">      <span class="string">&#x27;build&#x27;</span>                 =&gt; <span class="title class_">Build</span>::<span class="variable language_">class</span>,</span><br><span class="line">      <span class="string">&#x27;cache&#x27;</span>                 =&gt; <span class="title class_">Cache</span>::<span class="variable language_">class</span>,</span><br><span class="line">      <span class="string">&#x27;config&#x27;</span>                =&gt; <span class="title class_">Config</span>::<span class="variable language_">class</span>,</span><br><span class="line">      <span class="string">&#x27;cookie&#x27;</span>                =&gt; <span class="title class_">Cookie</span>::<span class="variable language_">class</span>,</span><br><span class="line">      <span class="string">&#x27;debug&#x27;</span>                 =&gt; <span class="title class_">Debug</span>::<span class="variable language_">class</span>,</span><br><span class="line">      <span class="string">&#x27;env&#x27;</span>                   =&gt; <span class="title class_">Env</span>::<span class="variable language_">class</span>,</span><br><span class="line">      <span class="string">&#x27;hook&#x27;</span>                  =&gt; <span class="title class_">Hook</span>::<span class="variable language_">class</span>,</span><br><span class="line">      <span class="string">&#x27;lang&#x27;</span>                  =&gt; <span class="title class_">Lang</span>::<span class="variable language_">class</span>,</span><br><span class="line">      <span class="string">&#x27;log&#x27;</span>                   =&gt; <span class="title class_">Log</span>::<span class="variable language_">class</span>,</span><br><span class="line">      <span class="string">&#x27;middleware&#x27;</span>            =&gt; <span class="title class_">Middleware</span>::<span class="variable language_">class</span>,</span><br><span class="line">      <span class="string">&#x27;request&#x27;</span>               =&gt; <span class="title class_">Request</span>::<span class="variable language_">class</span>,</span><br><span class="line">      <span class="string">&#x27;response&#x27;</span>              =&gt; <span class="title class_">Response</span>::<span class="variable language_">class</span>,</span><br><span class="line">      <span class="string">&#x27;route&#x27;</span>                 =&gt; <span class="title class_">Route</span>::<span class="variable language_">class</span>,</span><br><span class="line">      <span class="string">&#x27;session&#x27;</span>               =&gt; <span class="title class_">Session</span>::<span class="variable language_">class</span>,</span><br><span class="line">      <span class="string">&#x27;template&#x27;</span>              =&gt; <span class="title class_">Template</span>::<span class="variable language_">class</span>,</span><br><span class="line">      <span class="string">&#x27;url&#x27;</span>                   =&gt; <span class="title class_">Url</span>::<span class="variable language_">class</span>,</span><br><span class="line">      <span class="string">&#x27;validate&#x27;</span>              =&gt; <span class="title class_">Validate</span>::<span class="variable language_">class</span>,</span><br><span class="line">      <span class="string">&#x27;view&#x27;</span>                  =&gt; <span class="title class_">View</span>::<span class="variable language_">class</span>,</span><br><span class="line">      <span class="string">&#x27;rule_name&#x27;</span>             =&gt; route<span class="title class_">\RuleName</span>::<span class="variable language_">class</span>,</span><br><span class="line">      <span class="comment">// 接口依赖注入</span></span><br><span class="line">      <span class="string">&#x27;think\LoggerInterface&#x27;</span> =&gt; <span class="title class_">Log</span>::<span class="variable language_">class</span>,</span><br><span class="line">  ];</span><br></pre></td></tr></table></figure>
+
+<p>一个映射关系， 为容器标识别名。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 容器标识别名</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@var</span> array</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">protected</span> <span class="variable">$name</span> = [];</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>看入口文件：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="title class_">Container</span>::<span class="title function_ invoke__">get</span>(<span class="string">&#x27;app&#x27;</span>)-&gt;<span class="title function_ invoke__">path</span>(<span class="keyword">__DIR__</span> . <span class="string">&#x27;/application/&#x27;</span>)-&gt;<span class="title function_ invoke__">initialize</span>();</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>这个地方就是静态调用<code>Container</code>里的get方法：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 获取容器中的对象实例</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@access</span> public</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span>  string        $abstract       类名或者标识</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span>  array|true    $vars           变量</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span>  bool          $newInstance    是否每次创建新的实例</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> object</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="built_in">static</span> <span class="function"><span class="keyword">function</span> <span class="title">get</span>(<span class="params"><span class="variable">$abstract</span>, <span class="variable">$vars</span> = [], <span class="variable">$newInstance</span> = <span class="literal">false</span></span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">static</span>::<span class="title function_ invoke__">getInstance</span>()-&gt;<span class="title function_ invoke__">make</span>(<span class="variable">$abstract</span>, <span class="variable">$vars</span>, <span class="variable">$newInstance</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>看第一个参数， 传入以后，调用单例模式得到一个容器对象， 然后调用make方法。重点环节：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">    * 创建类的实例</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@access</span> public</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@param</span>  string        $abstract       类名或者标识</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@param</span>  array|true    $vars           变量</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@param</span>  bool          $newInstance    是否每次创建新的实例</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@return</span> object</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">   <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">make</span>(<span class="params"><span class="variable">$abstract</span>, <span class="variable">$vars</span> = [], <span class="variable">$newInstance</span> = <span class="literal">false</span></span>)</span></span><br><span class="line"><span class="function">   </span>&#123;</span><br><span class="line">       <span class="keyword">if</span> (<span class="literal">true</span> === <span class="variable">$vars</span>) &#123;</span><br><span class="line">           <span class="comment">// 总是创建新的实例化对象</span></span><br><span class="line">           <span class="variable">$newInstance</span> = <span class="literal">true</span>;</span><br><span class="line">           <span class="variable">$vars</span>        = [];</span><br><span class="line">       &#125;</span><br><span class="line">     </span><br><span class="line">       <span class="variable">$abstract</span> = <span class="keyword">isset</span>(<span class="variable language_">$this</span>-&gt;name[<span class="variable">$abstract</span>]) ? <span class="variable language_">$this</span>-&gt;name[<span class="variable">$abstract</span>] : <span class="variable">$abstract</span>;</span><br><span class="line">			<span class="comment">#! 从注册树上找，🈶️就返回注册树上的对象。</span></span><br><span class="line">       <span class="keyword">if</span> (<span class="keyword">isset</span>(<span class="variable language_">$this</span>-&gt;instances[<span class="variable">$abstract</span>]) &amp;&amp; !<span class="variable">$newInstance</span>) &#123;</span><br><span class="line">           <span class="keyword">return</span> <span class="variable language_">$this</span>-&gt;instances[<span class="variable">$abstract</span>];</span><br><span class="line">       &#125;</span><br><span class="line">			<span class="comment">#！标示里有没有$abstract </span></span><br><span class="line">       <span class="keyword">if</span> (<span class="keyword">isset</span>(<span class="variable language_">$this</span>-&gt;bind[<span class="variable">$abstract</span>])) &#123;</span><br><span class="line">           <span class="variable">$concrete</span> = <span class="variable language_">$this</span>-&gt;bind[<span class="variable">$abstract</span>];</span><br><span class="line">					<span class="comment">#! 判断是否是闭包方法</span></span><br><span class="line">           <span class="keyword">if</span> (<span class="variable">$concrete</span> <span class="keyword">instanceof</span> <span class="built_in">Closure</span>) &#123;</span><br><span class="line">             <span class="comment">#! 这里通过反射机制执行函数</span></span><br><span class="line">               <span class="variable">$object</span> = <span class="variable language_">$this</span>-&gt;<span class="title function_ invoke__">invokeFunction</span>(<span class="variable">$concrete</span>, <span class="variable">$vars</span>);</span><br><span class="line">           &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">               <span class="comment">#！ 再次调用`make`方法，传入的$concrete是对象的具体位置了。</span></span><br><span class="line">               <span class="variable language_">$this</span>-&gt;name[<span class="variable">$abstract</span>] = <span class="variable">$concrete</span>;</span><br><span class="line">               <span class="keyword">return</span> <span class="variable language_">$this</span>-&gt;<span class="title function_ invoke__">make</span>(<span class="variable">$concrete</span>, <span class="variable">$vars</span>, <span class="variable">$newInstance</span>);</span><br><span class="line">           &#125;</span><br><span class="line">       &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">         	<span class="comment">#！ 核心， 反射调用实例</span></span><br><span class="line">           <span class="variable">$object</span> = <span class="variable language_">$this</span>-&gt;<span class="title function_ invoke__">invokeClass</span>(<span class="variable">$abstract</span>, <span class="variable">$vars</span>);</span><br><span class="line">       &#125;</span><br><span class="line"></span><br><span class="line">       <span class="keyword">if</span> (!<span class="variable">$newInstance</span>) &#123;</span><br><span class="line">           <span class="comment">#！挂载注册树</span></span><br><span class="line">           <span class="variable language_">$this</span>-&gt;instances[<span class="variable">$abstract</span>] = <span class="variable">$object</span>;</span><br><span class="line">       &#125;</span><br><span class="line"></span><br><span class="line">       <span class="keyword">return</span> <span class="variable">$object</span>;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+<p>看类反射的具体逻辑：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 调用反射执行类的实例化 支持依赖注入</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@access</span> public</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span>  string    $class 类名</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span>  array     $vars  参数</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> mixed</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">invokeClass</span>(<span class="params"><span class="variable">$class</span>, <span class="variable">$vars</span> = []</span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="comment">#！ 反射一个类</span></span><br><span class="line">        <span class="variable">$reflect</span> = <span class="keyword">new</span> <span class="title class_">ReflectionClass</span>(<span class="variable">$class</span>);</span><br><span class="line">        <span class="comment">#！ 类中如果有&#x27;__make&#x27;方法</span></span><br><span class="line">        <span class="keyword">if</span> (<span class="variable">$reflect</span>-&gt;<span class="title function_ invoke__">hasMethod</span>(<span class="string">&#x27;__make&#x27;</span>)) &#123;</span><br><span class="line">            <span class="variable">$method</span> = <span class="keyword">new</span> <span class="title class_">ReflectionMethod</span>(<span class="variable">$class</span>, <span class="string">&#x27;__make&#x27;</span>);</span><br><span class="line">		<span class="comment">#！&#x27;__make&#x27;方法是public且static</span></span><br><span class="line">            <span class="keyword">if</span> (<span class="variable">$method</span>-&gt;<span class="title function_ invoke__">isPublic</span>() &amp;&amp; <span class="variable">$method</span>-&gt;<span class="title function_ invoke__">isStatic</span>()) &#123;</span><br><span class="line">                <span class="comment">#！ 绑定参数， 实例化</span></span><br><span class="line">                <span class="variable">$args</span> = <span class="variable language_">$this</span>-&gt;<span class="title function_ invoke__">bindParams</span>(<span class="variable">$method</span>, <span class="variable">$vars</span>);</span><br><span class="line">                <span class="keyword">return</span> <span class="variable">$method</span>-&gt;<span class="title function_ invoke__">invokeArgs</span>(<span class="literal">null</span>, <span class="variable">$args</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      </span><br><span class="line">		<span class="comment">#! 类中是不是有构造函数，$vars就是传入容器的第二个参数(参数数组)</span></span><br><span class="line">        <span class="variable">$constructor</span> = <span class="variable">$reflect</span>-&gt;<span class="title function_ invoke__">getConstructor</span>();</span><br><span class="line"></span><br><span class="line">        <span class="variable">$args</span> = <span class="variable">$constructor</span> ? <span class="variable language_">$this</span>-&gt;<span class="title function_ invoke__">bindParams</span>(<span class="variable">$constructor</span>, <span class="variable">$vars</span>) : [];</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> <span class="variable">$reflect</span>-&gt;<span class="title function_ invoke__">newInstanceArgs</span>(<span class="variable">$args</span>);</span><br><span class="line"></span><br><span class="line">    &#125; <span class="keyword">catch</span> (ReflectionException <span class="variable">$e</span>) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">ClassNotFoundException</span>(<span class="string">&#x27;class not exists: &#x27;</span> . <span class="variable">$class</span>, <span class="variable">$class</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2019/12/05/tp5-container/" data-id="cl1d6sq9n0023ilw51i9vfvvw" data-title="tp5学习-容器" class="article-share-link">Share</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-php_file_vul" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2019/11/08/php_file_vul/" class="article-date">
+  <time class="dt-published" datetime="2019-11-07T16:00:00.000Z" itemprop="datePublished">2019-11-08</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2019/11/08/php_file_vul/">PHP文件操作漏洞总结</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="0x01-文件包含漏洞"><a href="#0x01-文件包含漏洞" class="headerlink" title="0x01 文件包含漏洞"></a>0x01 文件包含漏洞</h1><p><code> include()</code>、<code>include_once()</code>、<code>require()</code>、<code>require_once()</code>均有可能造成文件包含漏洞，其中前两者在遇到错误时仍会向下执行，而后两者在报错后直接退出程序。 </p>
+<p>当执行者四个函数时，可无视文件类型，直接当作php脚本来执行。(只要能让php 解析器识别出来是php代码文本就成)。</p>
+<h2 id="文件包含截断"><a href="#文件包含截断" class="headerlink" title="文件包含截断"></a>文件包含截断</h2><p>有些包含可能文件路径里设置了前后缀不可控，这时候需要截断。其中前缀主要采用url编码,绕过对<code>../</code>的限制，后缀主要采用截断的方式。</p>
+<h2 id="00截断"><a href="#00截断" class="headerlink" title="00截断"></a>00截断</h2><p>(C语言中一些字符串处理时，用0字节(\x00)作为字符串结束符？)</p>
+<p>00截断需要满足两个条件：</p>
+<ul>
+<li>php版本小于5.3.4</li>
+<li>magic_quotes_gpc&#x3D;off</li>
+</ul>
+<p>如wechall上的<a target="_blank" rel="noopener" href="http://www.wechall.net/challenge/training/php/lfi/up/index.php">这道LFI</a>，</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">###############################</span></span><br><span class="line"><span class="comment">### Here is your exploit :) ###</span></span><br><span class="line"><span class="comment">###############################</span></span><br><span class="line"><span class="variable">$code</span> = <span class="string">&#x27;$filename = \&#x27;pages/\&#x27;.(isset($_GET[&quot;file&quot;])?$_GET[&quot;file&quot;]:&quot;welcome&quot;).\&#x27;.html\&#x27;;&#x27;</span>;</span><br><span class="line"><span class="variable">$code_emulate_pnb</span> = <span class="string">&#x27;$filename = Common::substrUntil($filename, &quot;\\0&quot;);&#x27;</span>; <span class="comment"># Emulate Poison Null Byte for PHP&gt;=5.3.4</span></span><br><span class="line"><span class="variable">$code2</span> = <span class="string">&#x27;include $filename;&#x27;</span>;</span><br><span class="line"><span class="comment">### End of exploit ###</span></span><br><span class="line">...</span><br><span class="line"><span class="keyword">if</span> (<span class="title function_ invoke__">lfiIsSafeDir</span>(<span class="variable">$filename</span>) === <span class="literal">true</span>) &#123; <span class="keyword">eval</span>(<span class="variable">$code2</span>); &#125; <span class="comment"># Eval the second line, when safe.</span></span><br><span class="line">...</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">lfiIsSafeDir</span>(<span class="params"><span class="variable">$filename</span></span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">        <span class="variable">$valid</span> = <span class="keyword">array</span>(</span><br><span class="line">                <span class="string">&#x27;pages&#x27;</span>,</span><br><span class="line">                <span class="string">&#x27;pages/../..&#x27;</span>,</span><br><span class="line">                <span class="string">&#x27;pages/..&#x27;</span>,</span><br><span class="line">        );</span><br><span class="line">        <span class="variable">$d</span> = <span class="title function_ invoke__">dirname</span>(<span class="variable">$filename</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="title function_ invoke__">in_array</span>(<span class="variable">$d</span>, <span class="variable">$valid</span>, <span class="literal">true</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>虽然我觉得这并不是一个太好的例子…这里比较奇葩，在$filename&#x3D;pages&#x2F;[可控].html，soultion.php和index.php差了一层，然而构造的时候内部又拼接了一层<code>pages</code>所以payload:</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">../../solution.php%00</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h2 id="x2F-截断"><a href="#x2F-截断" class="headerlink" title=".&#x2F;截断"></a>.&#x2F;截断</h2><p>“.”或者 “&#x2F;“截断，在一定的长度时将被截断。win系统和nix</p>
+<ul>
+<li>目录字符串， windows下256个字节，Linux下4096个字节回答道最大值。最大长度之后的字符将被丢弃。</li>
+</ul>
+<h2 id="伪截断"><a href="#伪截断" class="headerlink" title="伪截断"></a>伪截断</h2><p>远程包含里，URL里”?”或者”#”号后为参数不为资源一部分。如提交“action&#x3D;<a target="_blank" rel="noopener" href="http://www.penlab.me/shell.php?%E2%80%9D%EF%BC%8C%E8%BF%99%E9%87%8C%E7%9A%84%E2%80%9C%EF%BC%9F%E2%80%9D%E5%AE%9E%E7%8E%B0%E4%BA%86%E4%BC%AA%E6%88%AA%E6%96%AD%E3%80%82">http://www.penlab.me/shell.php?”，这里的“？”实现了伪截断。</a></p>
+<hr>
+<h2 id="0x02-总结"><a href="#0x02-总结" class="headerlink" title="0x02 总结"></a>0x02 总结</h2><p>文件包含拿的是“脚本”，文件读取拿的是“数据”，因此不具有执行权。如果统一看作”资源”，那么这些资源又可以分为远程和本地，其中本地资源通过路径来访问，而远程的需要使用URL来访问之。远程文件包含需要开启<code>allow_url_include = On</code>（&gt;&#x3D;5.2 Off）和<code>allow_url_fopen=On</code>(默认On)。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2019/11/08/php_file_vul/" data-id="cl1d6sq9a0011ilw50b0thc20" data-title="PHP文件操作漏洞总结" class="article-share-link">Share</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-php_source" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2019/11/05/php_source/" class="article-date">
+  <time class="dt-published" datetime="2019-11-04T16:00:00.000Z" itemprop="datePublished">2019-11-05</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2019/11/05/php_source/">PHP数据传入点分析</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p><img src="/php_source/%E6%88%AA%E5%B1%8F2020-06-06%20%E4%B8%8A%E5%8D%888.28.40.png" alt="截屏2020-06-06 上午8.28.40"></p>
+<h1 id="0x01-globals输入"><a href="#0x01-globals输入" class="headerlink" title="0x01 globals输入"></a>0x01 globals输入</h1><p>  用户操作一个web站点通常需要传入变量，变量“污染”了代码，造成注入问题。用户的输入的数据大致可分为有结构(数组)和无结构两种(字符串，NULL)。</p>
+<h2 id="GPC输入"><a href="#GPC输入" class="headerlink" title="GPC输入"></a>GPC输入</h2><ul>
+<li>最常见的方式， 用户输入的内容直接赋给一个变量：</li>
+</ul>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 取值赋给变量</span></span><br><span class="line"><span class="variable">$var</span> = <span class="variable">$_GET</span>[<span class="string">&#x27;value&#x27;</span>];</span><br><span class="line"></span><br><span class="line"><span class="comment">// 名值皆赋给变量</span></span><br><span class="line"><span class="keyword">foreach</span>(<span class="variable">$_GET</span> <span class="keyword">as</span> <span class="variable">$k</span>=&gt;<span class="variable">$v</span>)</span><br><span class="line">&#123;</span><br><span class="line">   <span class="variable">$name</span> = <span class="variable">$k</span>;</span><br><span class="line">   <span class="variable">$var</span> = <span class="variable">$v</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<ul>
+<li>通过处理数组的方法污染变量，如extract：</li>
+</ul>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//extract ( array &amp;$array [, int $flags = EXTR_OVERWRITE [, string $prefix = NULL ]] ) : int</span></span><br><span class="line"><span class="title function_ invoke__">extract</span>(<span class="variable">$_GET</span>);</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>import_request_variables</li>
+</ul>
+<p>​       <a target="_blank" rel="noopener" href="https://www.php.net/manual/zh/function.import-request-variables.php">php.net</a>原文中说明，将 GET／POST／Cookie 变量导入到全局作用域中。如果你禁止了 <a target="_blank" rel="noopener" href="https://www.php.net/manual/zh/ini.core.php#ini.register-globals">register_globals</a>，但又想用到一些全局变量，那么此函数就很有用。(<code>register_globals</code>是PHP的一个特性。)</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//?xss=666 =&gt; 666</span></span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="variable">$xss</span> = <span class="number">123</span>;</span><br><span class="line"><span class="title function_ invoke__">import_request_variables</span>(<span class="string">&#x27;G&#x27;</span>);</span><br><span class="line"><span class="keyword">echo</span> <span class="variable">$xss</span>;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>但是这个特性已经在php5.4.0移除。</p>
+<ul>
+<li>$_REQUEST</li>
+</ul>
+<p>​      $_REQUEST中也可包含<code>GPC</code>的内容，在注册后，数组是独立的处理起来互不影响，如果过滤其中一个而没有过滤另一个就有可能造成绕过：</p>
+<p><img src="/php_source/panda.png" alt="屏幕快照 2019-11-05 下午3.59.00"></p>
+<p>​                                                                                  (POEM-RIPS SECURITY CALENDAR 2017 )</p>
+<h1 id="0x02-SERVER输入"><a href="#0x02-SERVER输入" class="headerlink" title="0x02 SERVER输入"></a>0x02 SERVER输入</h1><p>如通过<code>$_SERVER[&#39;REQUEST_URI&#39;]</code>或<code>$_SERVER[&#39;QUERY_STRING&#39;]</code>。真实案例(<a target="_blank" rel="noopener" href="https://bugs.leavesongs.com/php/%E8%B4%B7%E9%BD%90%E4%B9%90%E7%B3%BB%E7%BB%9F%E6%9C%80%E6%96%B0%E7%89%88sql%E6%B3%A8%E5%85%A5%EF%BC%88%E6%97%A0%E9%9C%80%E7%99%BB%E5%BD%95%E7%BB%95%E8%BF%87waf%E5%8F%AFunion-select%E8%B7%A8%E8%A1%A8%E6%9F%A5%E8%AF%A2%EF%BC%89/">贷齐乐系统最新版SQL注入（无需登录绕过WAF可union select跨表查询）</a>)</p>
+<ul>
+<li><p>parse_str</p>
+<p>此函数解析字符串中的<code>QUERY STRING</code> 如果没有设置第二个变量<code>result</code>则可能导致变量覆盖。</p>
+<p>函数原型：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="title function_ invoke__">parse_str</span> ( <span class="keyword">string</span> <span class="variable">$encoded_string</span> [, <span class="keyword">array</span> &amp;<span class="variable">$result</span> ] ) : <span class="keyword">void</span></span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//?xss=666 =&gt; 666</span></span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="variable">$xss</span>= <span class="number">123</span>;</span><br><span class="line"><span class="title function_ invoke__">parse_str</span>(<span class="variable">$_SERVER</span>[<span class="string">&#x27;QUERY_STRING&#x27;</span>])</span><br><span class="line"><span class="keyword">echo</span> <span class="variable">$xss</span>;</span><br></pre></td></tr></table></figure>
+
+
+</li>
+<li><p>mb_parse_str</p>
+<p>与parse_str类似，解析 GET&#x2F;POST&#x2F;COOKIE 数据并设置全局变量</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//?xss=666 =&gt; 666</span></span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="variable">$xss</span> = <span class="number">123</span>;</span><br><span class="line"><span class="title function_ invoke__">mb_parse_str</span>(<span class="variable">$_SERVER</span>[<span class="string">&#x27;QUERY_STRING&#x27;</span>] );</span><br><span class="line"><span class="keyword">echo</span> <span class="variable">$xss</span>;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+<h1 id="0x03-其他"><a href="#0x03-其他" class="headerlink" title="0x03 其他"></a>0x03 其他</h1><ul>
+<li>getenv()得到变量</li>
+<li>$HTTP_RAW_POST_DATA与PHP输入、输出流</li>
+</ul>
+<h1 id="案例分析"><a href="#案例分析" class="headerlink" title="案例分析"></a>案例分析</h1><p>让我们看一下，脚本实际如何在用户请求中提取信息。</p>
+<h2 id="thinkPHP5"><a href="#thinkPHP5" class="headerlink" title="thinkPHP5"></a>thinkPHP5</h2><p>获取某个get变量</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="title class_">Reuqest</span>::<span class="title function_ invoke__">instance</span>()-&gt;<span class="title function_ invoke__">get</span>(<span class="string">&#x27;name&#x27;</span>);</span><br></pre></td></tr></table></figure>
+
+<p>定位到get方法：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 设置获取GET参数</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@access</span> public</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span>  mixed         $name 变量名</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span>  mixed         $default 默认值</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span>  string|array  $filter 过滤方法</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> mixed</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">get</span>(<span class="params"><span class="variable">$name</span> = <span class="string">&#x27;&#x27;</span>, <span class="variable">$default</span> = <span class="literal">null</span>, <span class="variable">$filter</span> = <span class="string">&#x27;&#x27;</span></span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">empty</span>(<span class="variable language_">$this</span>-&gt;get)) &#123;</span><br><span class="line">        <span class="variable language_">$this</span>-&gt;get = <span class="variable">$_GET</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (<span class="title function_ invoke__">is_array</span>(<span class="variable">$name</span>)) &#123;</span><br><span class="line">        <span class="variable language_">$this</span>-&gt;param      = [];</span><br><span class="line">        <span class="keyword">return</span> <span class="variable language_">$this</span>-&gt;get = <span class="title function_ invoke__">array_merge</span>(<span class="variable">$this</span>-&gt;get, <span class="variable">$name</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="variable language_">$this</span>-&gt;<span class="title function_ invoke__">input</span>(<span class="variable">$this</span>-&gt;get, <span class="variable">$name</span>, <span class="variable">$default</span>, <span class="variable">$filter</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们想从请求中拿$_GET[‘name’]的值， $_GET的值被统一收集到了$this-&gt;get这个field中来。 在return时，从$this-&gt;input中取值。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">  * 获取变量 支持过滤和默认值</span></span><br><span class="line"><span class="comment">  * <span class="doctag">@access</span> public</span></span><br><span class="line"><span class="comment">  * <span class="doctag">@param</span>  array         $data 数据源</span></span><br><span class="line"><span class="comment">  * <span class="doctag">@param</span>  string|false  $name 字段名</span></span><br><span class="line"><span class="comment">  * <span class="doctag">@param</span>  mixed         $default 默认值</span></span><br><span class="line"><span class="comment">  * <span class="doctag">@param</span>  string|array  $filter 过滤函数</span></span><br><span class="line"><span class="comment">  * <span class="doctag">@return</span> mixed</span></span><br><span class="line"><span class="comment">  */</span></span><br><span class="line"> <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">input</span>(<span class="params"><span class="variable">$data</span> = [], <span class="variable">$name</span> = <span class="string">&#x27;&#x27;</span>, <span class="variable">$default</span> = <span class="literal">null</span>, <span class="variable">$filter</span> = <span class="string">&#x27;&#x27;</span></span>)</span></span><br><span class="line"><span class="function"> </span>&#123;</span><br><span class="line">     <span class="keyword">if</span> (<span class="literal">false</span> === <span class="variable">$name</span>) &#123;</span><br><span class="line">         <span class="comment">// 获取原始数据</span></span><br><span class="line">         <span class="keyword">return</span> <span class="variable">$data</span>;</span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line">     <span class="variable">$name</span> = (<span class="keyword">string</span>) <span class="variable">$name</span>;</span><br><span class="line">     <span class="keyword">if</span> (<span class="string">&#x27;&#x27;</span> != <span class="variable">$name</span>) &#123;</span><br><span class="line">         <span class="comment">// 解析name</span></span><br><span class="line">         <span class="keyword">if</span> (<span class="title function_ invoke__">strpos</span>(<span class="variable">$name</span>, <span class="string">&#x27;/&#x27;</span>)) &#123;</span><br><span class="line">             <span class="keyword">list</span>(<span class="variable">$name</span>, <span class="variable">$type</span>) = <span class="title function_ invoke__">explode</span>(<span class="string">&#x27;/&#x27;</span>, <span class="variable">$name</span>);</span><br><span class="line">         &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">             <span class="variable">$type</span> = <span class="string">&#x27;s&#x27;</span>;</span><br><span class="line">         &#125;</span><br><span class="line">         <span class="comment">// 按.拆分成多维数组进行判断</span></span><br><span class="line">         <span class="keyword">foreach</span> (<span class="title function_ invoke__">explode</span>(<span class="string">&#x27;.&#x27;</span>, <span class="variable">$name</span>) <span class="keyword">as</span> <span class="variable">$val</span>) &#123;</span><br><span class="line">             <span class="keyword">if</span> (<span class="keyword">isset</span>(<span class="variable">$data</span>[<span class="variable">$val</span>])) &#123;</span><br><span class="line">                 <span class="variable">$data</span> = <span class="variable">$data</span>[<span class="variable">$val</span>];</span><br><span class="line">             &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                 <span class="comment">// 无输入数据，返回默认值</span></span><br><span class="line">                 <span class="keyword">return</span> <span class="variable">$default</span>;</span><br><span class="line">             &#125;</span><br><span class="line">         &#125;</span><br><span class="line">         <span class="keyword">if</span> (<span class="title function_ invoke__">is_object</span>(<span class="variable">$data</span>)) &#123;</span><br><span class="line">             <span class="keyword">return</span> <span class="variable">$data</span>;</span><br><span class="line">         &#125;</span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line">     <span class="comment">// 解析过滤器</span></span><br><span class="line">     <span class="variable">$filter</span> = <span class="variable language_">$this</span>-&gt;<span class="title function_ invoke__">getFilter</span>(<span class="variable">$filter</span>, <span class="variable">$default</span>);</span><br><span class="line"></span><br><span class="line">     <span class="keyword">if</span> (<span class="title function_ invoke__">is_array</span>(<span class="variable">$data</span>)) &#123;</span><br><span class="line">         <span class="title function_ invoke__">array_walk_recursive</span>(<span class="variable">$data</span>, [<span class="variable">$this</span>, <span class="string">&#x27;filterValue&#x27;</span>], <span class="variable">$filter</span>);</span><br><span class="line">         <span class="title function_ invoke__">reset</span>(<span class="variable">$data</span>);</span><br><span class="line">     &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">         <span class="variable language_">$this</span>-&gt;<span class="title function_ invoke__">filterValue</span>(<span class="variable">$data</span>, <span class="variable">$name</span>, <span class="variable">$filter</span>);</span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line">     <span class="keyword">if</span> (<span class="keyword">isset</span>(<span class="variable">$type</span>) &amp;&amp; <span class="variable">$data</span> !== <span class="variable">$default</span>) &#123;</span><br><span class="line">         <span class="comment">// 强制类型转换</span></span><br><span class="line">         <span class="variable language_">$this</span>-&gt;<span class="title function_ invoke__">typeCast</span>(<span class="variable">$data</span>, <span class="variable">$type</span>);</span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line">     <span class="keyword">return</span> <span class="variable">$data</span>;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+
+<p>一个比较的输入封装， 有默认输出、数组处理， 过滤选择、类型转化等部分。(这里的$filter可控的话就是那个漏洞了)</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2019/11/05/php_source/" data-id="cl1d6sq9b0014ilw59slwasb9" data-title="PHP数据传入点分析" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/php/" rel="tag">php</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+
+
+  <nav id="page-nav">
+    
+    <a class="extend prev" rel="prev" href="/page/4/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="page-number current">5</span><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/6/">Next &raquo;</a>
+  </nav>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/paper/" rel="tag">paper</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/php/" rel="tag">php</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pl/" rel="tag">pl</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/paper/" style="font-size: 15px;">paper</a> <a href="/tags/php/" style="font-size: 10px;">php</a> <a href="/tags/pl/" style="font-size: 20px;">pl</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/03/">March 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/02/">February 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/01/">January 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/12/">December 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">September 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">August 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">April 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">February 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">January 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2022/03/30/Hello/">Hello</a>
+          </li>
+        
+          <li>
+            <a href="/2022/02/24/web/">Web应用系中注入类漏洞调研</a>
+          </li>
+        
+          <li>
+            <a href="/2022/02/18/data-mining/">data_mining</a>
+          </li>
+        
+          <li>
+            <a href="/2022/02/14/pop/">A Survey about PHP Object Injection</a>
+          </li>
+        
+          <li>
+            <a href="/2022/02/06/logic-machine/">Logic Machine</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2022 iohex<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

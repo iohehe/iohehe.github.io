@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>Program Analysis An Appetizer读书笔记： 第一章 | Penlab</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="本书在结构上如上图所示：本书没有使用任何具体的程序语言， 而是使用作者设计的两套prototypical programming languages, based on Guarded Commands and a subset of C，即上图A和B。  第一章：  介绍了basic model of program graphs 第二章和第三章： 介绍了基本的过程内程序分析： 四个经典的bi">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Program Analysis An Appetizer读书笔记： 第一章">
+<meta property="og:url" content="http://example.com/2021/07/07/PAAA-1/index.html">
+<meta property="og:site_name" content="Penlab">
+<meta property="og:description" content="本书在结构上如上图所示：本书没有使用任何具体的程序语言， 而是使用作者设计的两套prototypical programming languages, based on Guarded Commands and a subset of C，即上图A和B。  第一章：  介绍了basic model of program graphs 第二章和第三章： 介绍了基本的过程内程序分析： 四个经典的bi">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/PAAA-1/image-20210707182952591.png">
+<meta property="og:image" content="http://example.com/PAAA-1/image-20210707184040462.png">
+<meta property="og:image" content="http://example.com/PAAA-1/image-20210707191056485.png">
+<meta property="og:image" content="http://example.com/PAAA-1/image-20210712124107530.png">
+<meta property="og:image" content="http://example.com/PAAA-1/image-20210712124309441.png">
+<meta property="og:image" content="http://example.com/PAAA-1/image-20210712124532326.png">
+<meta property="og:image" content="http://example.com/PAAA-1/image-20210712124914015.png">
+<meta property="og:image" content="http://example.com/PAAA-1/image-20210712125206806.png">
+<meta property="og:image" content="http://example.com/PAAA-1/image-20210712125353559.png">
+<meta property="og:image" content="http://example.com/PAAA-1/image-20210712125532398.png">
+<meta property="og:image" content="http://example.com/PAAA-1/image-20210712125836056.png">
+<meta property="og:image" content="http://example.com/PAAA-1/image-20210712125828401.png">
+<meta property="og:image" content="http://example.com/2021/07/07/PAAA-1/PAAA-1/image-20210713123451105.png">
+<meta property="og:image" content="http://example.com/2021/07/07/PAAA-1/PAAA-1/image-20210713123516499.png">
+<meta property="og:image" content="http://example.com/2021/07/07/PAAA-1/PAAA-1/image-20210713123810628.png">
+<meta property="og:image" content="http://example.com/2021/07/07/PAAA-1/PAAA-1/image-20210713123840735.png">
+<meta property="article:published_time" content="2021-07-07T10:29:06.000Z">
+<meta property="article:modified_time" content="2022-03-30T06:25:22.904Z">
+<meta property="article:author" content="iohex">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/PAAA-1/image-20210707182952591.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Penlab" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+<meta name="generator" content="Hexo 6.1.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Penlab</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-PAAA-1" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2021/07/07/PAAA-1/" class="article-date">
+  <time class="dt-published" datetime="2021-07-07T10:29:06.000Z" itemprop="datePublished">2021-07-07</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      Program Analysis An Appetizer读书笔记： 第一章
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p><img src="/PAAA-1/image-20210707182952591.png" alt="image-20210707182952591"></p>
+<p>本书在结构上如上图所示：本书没有使用任何具体的程序语言， 而是使用作者设计的两套prototypical programming languages, based on Guarded Commands and a subset of C，即上图A和B。</p>
+<ul>
+<li>第一章：  介绍了basic model of program graphs</li>
+<li>第二章和第三章： 介绍了基本的过程内程序分析： 四个经典的bit-vector analyses, monotone framework。</li>
+</ul>
+<h1 id="第一章：-Programs-as-Graphs"><a href="#第一章：-Programs-as-Graphs" class="headerlink" title="第一章： Programs as Graphs"></a>第一章： Programs as Graphs</h1><p><img src="/PAAA-1/image-20210707184040462.png" alt="image-20210707184040462"></p>
+<p>Figure 1.1 的有向图表示了一个程序图， 其中有五个点，定点表示了<code>initial node</code>, 最右边的叶子节点是<code>final node</code>。 q1, q2, q3 是三个<code>additional nodes</code>。</p>
+<p>边上的label是该边相关的<code>actions</code> ， 构成了程序的语义。 可以看出这个程序是在迭代的计算阶乘。</p>
+<h2 id="1-1-Actions"><a href="#1-1-Actions" class="headerlink" title="1.1 Actions"></a>1.1 Actions</h2><p>根据上面所描述的， 程序图的边上的actions代表了程序的语义。 </p>
+<p><img src="/PAAA-1/image-20210707191056485.png" alt="image-20210707191056485"></p>
+<p>以上是对每一个action的形式化的描述：首先看第一个第一式子中有七种可能， </p>
+<ul>
+<li><p>Assign: 分别是变量或数组赋值，</p>
+</li>
+<li><p>Input: 从channel或文件读取的数据赋值给变量或数组，</p>
+</li>
+<li><p>Output: 将数据写入channle或文件</p>
+</li>
+<li><p>Boolean</p>
+</li>
+<li><p>skip</p>
+</li>
+</ul>
+<p>其中a代表一个算数表达式， b代表一个布尔表达式， 也给出了定义。</p>
+<h2 id="1-2-Memories"><a href="#1-2-Memories" class="headerlink" title="1.2 Memories"></a>1.2 Memories</h2><p>Memory is in order to describe the meaning of the actions. There are three kinds of components we should consider: </p>
+<ol>
+<li><code>Variables</code>: The values of the variables</li>
+<li><code>Arrays</code>:  The contents of the arrays</li>
+<li><code>Channels</code>: The data available  on the Channels.</li>
+</ol>
+<ul>
+<li><p>Variables: The values of the variables are modelled by a mapping:<br>$$<br>\sigma_v: Var \rightarrow Int<br>$$<br><code>Var</code> is a finite set of variables that we are interesting; and the set called <code>the domain of the mapping</code>.</p>
+<p>This mapping can determines the value of each variable. </p>
+<p><img src="/PAAA-1/image-20210712124107530.png" alt="image-20210712124107530"></p>
+</li>
+</ul>
+<p>The Figure 1.2 shows a memory:<br>$$<br>\sigma: {x,y} \rightarrow Int<br>$$</p>
+<p><img src="/PAAA-1/image-20210712124309441.png" alt="image-20210712124309441"></p>
+<p>The Figuare 1.3 shows an update of the memory by assignment, and it can be represented by:</p>
+<p><img src="/PAAA-1/image-20210712124532326.png" alt="image-20210712124532326"></p>
+<ul>
+<li><p>Arrays. The values of arrays are modelled by a mapping:<br>$$<br>\sigma_A: Arr \rightarrow Int^*<br>$$</p>
+<p>Arr is a set of interesting array names;</p>
+<p>Int* denotes lists of values.</p>
+<p><img src="/PAAA-1/image-20210712124914015.png" alt="image-20210712124914015"></p>
+</li>
+</ul>
+<p>Figure 1.4 shows a memory of two Arrays <code>A</code> (length 3)and <code>B</code>(length 4).</p>
+<p><img src="/PAAA-1/image-20210712125206806.png" alt="image-20210712125206806"> </p>
+<p>We can update memory in the <code>Figure 1.5</code> <img src="/PAAA-1/image-20210712125353559.png" alt="image-20210712125353559"></p>
+<ul>
+<li>Channels.<br>$$<br>\sigma_c: Chan \rightarrow Int^*<br>$$</li>
+</ul>
+<p>Chan is a finite set of channel names:</p>
+<p><img src="/PAAA-1/image-20210712125532398.png" alt="image-20210712125532398"></p>
+<p><img src="/PAAA-1/image-20210712125836056.png" alt="image-20210712125836056"></p>
+<p><img src="/PAAA-1/image-20210712125828401.png" alt="image-20210712125828401"></p>
+<h2 id="1-3-Semantics"><a href="#1-3-Semantics" class="headerlink" title="1.3 Semantics"></a>1.3 Semantics</h2><p>the semantics of the actions is about how to determine the values of the arithmetic expressions using the memories and how to determine the truth values of the boolean expressions&#x2F;</p>
+<ul>
+<li><p>Arthmetic expressions.</p>
+</li>
+<li><p>Boolean expressions.</p>
+</li>
+<li><p>Actions</p>
+</li>
+</ul>
+<h2 id="1-4-Program-Graphs"><a href="#1-4-Program-Graphs" class="headerlink" title="1.4 Program Graphs"></a>1.4 Program Graphs</h2><img src="PAAA-1/image-20210713123451105.png" alt="image-20210713123451105" style="zoom:60%;" />
+
+<img src="PAAA-1/image-20210713123516499.png" alt="image-20210713123516499" style="zoom:60%;" />
+
+<p>The definition of the program graph is a graph includes a set of  nodes like q_start and q_end, and it has a set of directed edges <code>labelled by actions</code>.</p>
+<img src="PAAA-1/image-20210713123810628.png" alt="image-20210713123810628" style="zoom:60%;" />
+
+<img src="PAAA-1/image-20210713123840735.png" alt="image-20210713123840735" style="zoom:60%;" />
+
+
+
+
+
+<h2 id="1-5-Execution-Sequences"><a href="#1-5-Execution-Sequences" class="headerlink" title="1.5 Execution Sequences"></a>1.5 Execution Sequences</h2><h2 id="1-6-The-Nature-of-Approximation"><a href="#1-6-The-Nature-of-Approximation" class="headerlink" title="1.6 The Nature of Approximation"></a>1.6 The Nature of Approximation</h2>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2021/07/07/PAAA-1/" data-id="cl1d6sq90000bilw5fqx8es6t" data-title="Program Analysis An Appetizer读书笔记： 第一章" class="article-share-link">Share</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2021/07/07/ml-2021-1/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          台大深度学习2021-1
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2021/04/21/dynamic-tech/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">All You Ever Wanted to Know About Dynamic Taint Analysis and Forward Symbolic Execution</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/paper/" rel="tag">paper</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/php/" rel="tag">php</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pl/" rel="tag">pl</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/paper/" style="font-size: 15px;">paper</a> <a href="/tags/php/" style="font-size: 10px;">php</a> <a href="/tags/pl/" style="font-size: 20px;">pl</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/03/">March 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/02/">February 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/01/">January 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/12/">December 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">September 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">August 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">April 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">February 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">January 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2022/03/30/Hello/">Hello</a>
+          </li>
+        
+          <li>
+            <a href="/2022/02/24/web/">Web应用系中注入类漏洞调研</a>
+          </li>
+        
+          <li>
+            <a href="/2022/02/18/data-mining/">data_mining</a>
+          </li>
+        
+          <li>
+            <a href="/2022/02/14/pop/">A Survey about PHP Object Injection</a>
+          </li>
+        
+          <li>
+            <a href="/2022/02/06/logic-machine/">Logic Machine</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2022 iohex<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

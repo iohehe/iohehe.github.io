@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>pointer_analysis | Penlab</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="以南大视频课件为主   Motivation  Introduction to Pointer Analysis 06:50  Pointer Analysis and Alias Analysis 14:50 Application of Pointer Analysis 17:20   Key Factors of Pointer Analysis 19:15  Heap Abstratio">
+<meta property="og:type" content="article">
+<meta property="og:title" content="pointer_analysis">
+<meta property="og:url" content="http://example.com/2021/12/15/pointer-analysis/index.html">
+<meta property="og:site_name" content="Penlab">
+<meta property="og:description" content="以南大视频课件为主   Motivation  Introduction to Pointer Analysis 06:50  Pointer Analysis and Alias Analysis 14:50 Application of Pointer Analysis 17:20   Key Factors of Pointer Analysis 19:15  Heap Abstratio">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/2021/12/15/pointer-analysis/img/image-20211215193741664.png">
+<meta property="og:image" content="http://example.com/2021/12/15/pointer-analysis/img/image-20211215201557399.png">
+<meta property="og:image" content="http://example.com/img/image-20211215202037637.png">
+<meta property="og:image" content="http://example.com/img/image-20211215203219981.png">
+<meta property="og:image" content="http://example.com/img/image-20211215203935009.png">
+<meta property="og:image" content="http://example.com/2021/12/15/pointer-analysis/img/image-20211215204252197.png">
+<meta property="og:image" content="http://example.com/2021/12/15/pointer-analysis/img/image-20211215204816102.png">
+<meta property="og:image" content="http://example.com/2021/12/15/pointer-analysis/img/image-20211215205000523.png">
+<meta property="og:image" content="http://example.com/img/image-20211216194745810.png">
+<meta property="article:published_time" content="2021-12-15T09:57:35.000Z">
+<meta property="article:modified_time" content="2022-03-30T06:25:22.764Z">
+<meta property="article:author" content="iohex">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2021/12/15/pointer-analysis/img/image-20211215193741664.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Penlab" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+<meta name="generator" content="Hexo 6.1.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Penlab</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-pointer-analysis" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2021/12/15/pointer-analysis/" class="article-date">
+  <time class="dt-published" datetime="2021-12-15T09:57:35.000Z" itemprop="datePublished">2021-12-15</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      pointer_analysis
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>以南大视频课件为主</p>
+</blockquote>
+<ol>
+<li><p>Motivation</p>
+</li>
+<li><p>Introduction to Pointer Analysis 06:50</p>
+<ul>
+<li>Pointer Analysis and Alias Analysis 14:50</li>
+<li>Application of Pointer Analysis 17:20</li>
+</ul>
+</li>
+<li><p>Key Factors of Pointer Analysis 19:15</p>
+<ul>
+<li>Heap Abstration 21:30</li>
+<li>Context Sensitivity 27:40</li>
+<li>Flow Sensitivity 32:30</li>
+<li>Analysis Scope 45:40</li>
+<li>Pointer Analysis in This Course 52:20  –&gt; 60:20</li>
+</ul>
+</li>
+<li><p>Concerned Statements 64:50</p>
+</li>
+<li><p>Conclusion&amp;下节课内容 77:00</p>
+</li>
+</ol>
+<h1 id="指针分析"><a href="#指针分析" class="headerlink" title="指针分析"></a>指针分析</h1><blockquote>
+<p>南大小课堂开课啦～</p>
+</blockquote>
+<h2 id="Problem-of-CHA"><a href="#Problem-of-CHA" class="headerlink" title="Problem of CHA"></a>Problem of CHA</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> <span class="title function_">foo</span><span class="params">()</span> &#123;</span><br><span class="line">  <span class="type">Number</span> <span class="variable">n</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">One</span>();</span><br><span class="line">  <span class="type">int</span> <span class="variable">x</span> <span class="operator">=</span> n.get();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">interface</span> <span class="title class_">Number</span> &#123;</span><br><span class="line">  <span class="type">int</span> <span class="title function_">get</span><span class="params">()</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Zero</span> <span class="keyword">implements</span> <span class="title class_">Number</span> &#123;</span><br><span class="line">  <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">get</span><span class="params">()</span> &#123; <span class="keyword">return</span> <span class="number">0</span>; &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">One</span> <span class="keyword">implements</span> <span class="title class_">Number</span> &#123;</span><br><span class="line">  <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">get</span><span class="params">()</span> &#123; <span class="keyword">return</span> <span class="number">1</span>; &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Two</span> <span class="keyword">implements</span> <span class="title class_">Number</span> &#123;</span><br><span class="line">  <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">get</span><span class="params">()</span> &#123;<span class="keyword">return</span> <span class="number">2</span>;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在这个例子中，很显然object n，new的是一个One。 </p>
+<p>因此返回1。</p>
+<blockquote>
+<p>如果按照CHA, 那么X就是根据变量类型(Number)来解， 而Number有三个子类。因此此时x指向3个值(0, 1, 2)</p>
+</blockquote>
+<p>一句话，CHA看不到object的声明类型。</p>
+<p>因此在做常量传播的时候，我们的CHA方法就会拿到两个假值(0,2)，此时的结果就是NAC(不精确)。</p>
+<p>而做指针分析， 故名思义，就是知道n指向哪个object。</p>
+<blockquote>
+<p>一个 class在new 的时候， 会做如下事情： 在内存中构造一个object, 运行构造函数，并使用n指向这个object, 因此这里的n就等同与一个指向object地址的指针。</p>
+</blockquote>
+<p>这个例子中，指针分析可以知道n指向<code>new One</code>这个唯一对象。然后构造调用图(对new One做dispatch)， 得到唯一一个get方法。  </p>
+<hr>
+<h2 id="指针分析介绍"><a href="#指针分析介绍" class="headerlink" title="指针分析介绍"></a>指针分析介绍</h2><h3 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h3><p>指针分析可以看作一个基础的静态分析， 他回答的问题是程序中每个指针可以指向那些地址。</p>
+<p>对于OO语言 来说，指针分析回答的是一个变量(或者field)可以指向哪些object(may analysis)。</p>
+<blockquote>
+<p>Answer: Which <strong>object</strong> a <strong>pointer</strong> can point to?</p>
+</blockquote>
+<p>Let’s explain it by an analysis process:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> <span class="title function_">foo</span><span class="params">()</span> &#123;</span><br><span class="line">  <span class="type">A</span> <span class="variable">a</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">A</span>();</span><br><span class="line">  <span class="type">B</span> <span class="variable">x</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">B</span>();</span><br><span class="line">  a.setB(x);</span><br><span class="line">  <span class="type">B</span> <span class="variable">y</span> <span class="operator">=</span> a.getB();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">A</span> &#123;</span><br><span class="line">  B b;</span><br><span class="line">  <span class="keyword">void</span> <span class="title function_">setB</span><span class="params">(B b)</span> &#123;</span><br><span class="line">    <span class="built_in">this</span>.b = b;</span><br><span class="line">  &#125;</span><br><span class="line">  B <span class="title function_">getB</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">this</span>.b;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>本例子中，类A 是类B的容器，并提供了get, set方法。 在foo()方法中，独立的new了A和B。 而变量a是<code>new A</code>的指针，变量x是<code>new B</code>的指针。 之后，a调用 setB方法将<code>new B()</code>，store进了<code>new A()</code>。接着又声明了变量y，通过getB方法获取了<code>new B</code>（指向，没 new）。</p>
+<img src="img/image-20211215193741664.png" alt="image-20211215193741664" style="zoom:50%;" />
+
+<blockquote>
+<p>很datalog </p>
+</blockquote>
+<h2 id="Key-Factors-of-Pointer-Analysis"><a href="#Key-Factors-of-Pointer-Analysis" class="headerlink" title="Key Factors of Pointer Analysis"></a>Key Factors of Pointer Analysis</h2><h3 id="Allocation-Site-Abstraction"><a href="#Allocation-Site-Abstraction" class="headerlink" title="Allocation-Site Abstraction"></a>Allocation-Site Abstraction</h3><h3 id="Context-Sensitivity"><a href="#Context-Sensitivity" class="headerlink" title="Context Sensitivity"></a>Context Sensitivity</h3><blockquote>
+<p>How to model calling contexts? </p>
+</blockquote>
+<p>上下文敏感，在指针分析中，如何对调用上下文进行建模。</p>
+<p><code>上下文</code>这个概念有点抽象。就是一个过程调用另一个过程时工作栈上的状态(好像更抽象了)。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Test</span> &#123;</span><br><span class="line">  <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">foo</span><span class="params">(<span class="type">int</span> p)</span> &#123;</span><br><span class="line"> 		<span class="keyword">if</span> (p == <span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">  </span><br><span class="line"><span class="keyword">void</span> <span class="title function_">foo</span><span class="params">()</span> &#123;</span><br><span class="line">  	<span class="type">Test</span> <span class="variable">a</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Test</span>();</span><br><span class="line">    <span class="type">Test</span> <span class="variable">b</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Test</span>();</span><br><span class="line">    <span class="type">int</span> <span class="variable">x</span> <span class="operator">=</span> <span class="number">1</span>;</span><br><span class="line">    <span class="type">boolean</span> <span class="variable">test_a</span> <span class="operator">=</span> a.foo(x);</span><br><span class="line">  	x = <span class="number">2</span>;	</span><br><span class="line">  	<span class="type">boolean</span> <span class="variable">test_b</span> <span class="operator">=</span> b.foo(x);</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<p>对于上下文敏感，对于同一个方法，他有多个上下文，么个上下文分别分析一次</p>
+<img src="img/image-20211215201557399.png" alt="image-20211215201557399" style="zoom:80%;" />
+
+<p>这里有两个上下文，就会有两个不同的分析。</p>
+<p>对于上下文不敏感：</p>
+<p><img src="/img/image-20211215202037637.png" alt="image-20211215202037637"></p>
+<p>方法foo()只分析一次。 汇合上下文可能会丢失精度。</p>
+<blockquote>
+<p>向下文敏感技术是一个重要技术，他能很大程度提高分析精度</p>
+</blockquote>
+<h3 id="Flow-Sensitivity"><a href="#Flow-Sensitivity" class="headerlink" title="Flow Sensitivity"></a>Flow Sensitivity</h3><blockquote>
+<p>How to model control flow?</p>
+</blockquote>
+<p>因为同样的语句，如果顺序不同可能结果就不一样</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> a = <span class="number">1</span>;</span><br><span class="line"><span class="type">int</span> b = <span class="number">2</span>;</span><br><span class="line">a = b;</span><br><span class="line"><span class="type">int</span> c;</span><br><span class="line">c = b-a;</span><br><span class="line">c = a-b;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>在程序的每一个点,都维护着一个映射(状态)。 每一条语句，都存着数据流到达这一点的数据流信息</p>
+<p>在指针分析中要做的流敏感，就要让每一个指针维持一个指向关系集合：</p>
+<p><img src="/img/image-20211215203219981.png" alt="image-20211215203219981"></p>
+<p>在这个图片中， 可以看到变量c指向了<code>new C</code>, 经过Allocation-site Abstraction后就是o1</p>
+<blockquote>
+<p>c-&gt;{o1}</p>
+</blockquote>
+<p>然后第二句对一个字面量<code>&quot;x&quot;</code>进行了store操作，符号c.f也就是<code>o1.f</code>。</p>
+<p>第三句中<code>s = c.f</code>把o1.f取出来塞给了s。</p>
+<p>到了第四句<code>o1.f</code>更新了。</p>
+<p>人为的去审计当然是指影响<code>o1.f</code>了，因为顺序执行,<code>s</code>的赋值语句已经被执行过了。</p>
+<p>但是在流不敏感的情况下， 分析程序只知道: <code>s = o1.f</code>，至于在<code>程序流</code>的哪个位置上是不管的。</p>
+<p>因此在第四行： </p>
+<ul>
+<li>流敏感:  s-&gt;{“x”}, o1.f-&gt;{“y”}</li>
+</ul>
+<p><img src="/img/image-20211215203935009.png" alt="image-20211215203935009"></p>
+<ul>
+<li><p>流不敏感：</p>
+<p>把程序当成无序集合， 将所有的控制流信息忽略掉。</p>
+<p>因此在整个程序中，流不敏感<code>只维护一个指针集</code></p>
+</li>
+</ul>
+<img src="img/image-20211215204252197.png" alt="image-20211215204252197" style="zoom:67%;" />
+
+<p>所有只维护一个map, 记录程序在运行期间所有指向的对象。</p>
+<p>注意由于流不敏感的分析忽略了控制流信息，因此为了保证分析结果是<code>safe</code>的，在分析到s指向o1.f后，就要把程序中所有o1.f map的对象全部传给s(保守期间)。</p>
+<blockquote>
+<p>! 目前没有证据在JAVA上Flow Sensitive 对 Flow Senisitive 精确许多</p>
+</blockquote>
+<h3 id="Analysis-Scope"><a href="#Analysis-Scope" class="headerlink" title="Analysis Scope"></a>Analysis Scope</h3><blockquote>
+<p>Which parts of program should be analyzed?</p>
+</blockquote>
+<ul>
+<li><p>全程序分析(Whole-program)</p>
+</li>
+<li><p>按需分析(Demand-driven)</p>
+</li>
+</ul>
+<img src="img/image-20211215204816102.png" alt="image-20211215204816102" style="zoom:80%;" />
+
+<p>对于如下例子:</p>
+<img src="img/image-20211215205000523.png" alt="image-20211215205000523" style="zoom:67%;" />
+
+<p>如果我们只想知道程序中第5行的call graph,那么我们只需要对变量z做指针分析就可以了。</p>
+<blockquote>
+<p>z-&gt;{o4}</p>
+</blockquote>
+<blockquote>
+<p> 有时候按需分析不一定比全程序块，可能设计大量冗余计算。</p>
+</blockquote>
+<hr>
+<h2 id="What-Do-We-Analyze"><a href="#What-Do-We-Analyze" class="headerlink" title="What Do We Analyze?"></a>What Do We Analyze?</h2><p>以下是语句不会修改指针指向的语句：</p>
+<p><del>if else</del></p>
+<p><del>switch case</del></p>
+<p><del>for&#x2F;while&#x2F;do…while</del></p>
+<p><del>break&#x2F;continue</del></p>
+<p>…</p>
+<p>Java当中有哪些指针：</p>
+<ul>
+<li>Local variable: x (数量最多)</li>
+<li>Static field: C.f (与处理variable类似，有文献看作是global field)</li>
+<li>Instance field: x.f (instance field是将x.f的组合看作一个指针，也是需要重点分析)</li>
+<li>Array element: array[i]</li>
+</ul>
+<p>对于数组， 静态分析的通用做法是建模成只有一个field的object</p>
+<blockquote>
+<p> Ignore indexes. Modeled as an object(pointed by array) with a <code>single field</code>, say arr, which may point to any value stored in array.</p>
+</blockquote>
+<p><img src="/img/image-20211216194745810.png" alt="image-20211216194745810"></p>
+<p>在右边的指针分析中，注意array在声明时new 无长度信息， 因为将array看作一个object, 包含唯一的field arr. 对所有下标(无视下标)都看作对这个field进行store。</p>
+<p>所以，指针分析基本上就是围绕以下五条语句：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">x = <span class="keyword">new</span> <span class="title class_">T</span>()   <span class="comment">// New </span></span><br><span class="line">x = y <span class="comment">// Assign</span></span><br><span class="line">x.f = y <span class="comment">// Store</span></span><br><span class="line">y = x.f <span class="comment">// Load  </span></span><br><span class="line">r = x.k(a, ...)  <span class="comment">// Call </span></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="使用三地址码简化分析"><a href="#使用三地址码简化分析" class="headerlink" title="使用三地址码简化分析"></a>使用三地址码简化分析</h3><blockquote>
+<p>Complex memory-accesses will be converted to <code>three-address code</code> by introducing temporary variables</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">x.f.g.h = y;</span><br><span class="line">t1 = x.f;</span><br><span class="line">t2 = t1.g;</span><br><span class="line">t2.h = y;</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2021/12/15/pointer-analysis/" data-id="cl1d6sq9c0018ilw5h66tetbs" data-title="pointer_analysis" class="article-share-link">Share</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2021/12/25/why/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          我为什么很少写安全相关的东西
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2021/09/26/pla-dataflow/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Founddation Data Flow Analysis</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/paper/" rel="tag">paper</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/php/" rel="tag">php</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pl/" rel="tag">pl</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/paper/" style="font-size: 15px;">paper</a> <a href="/tags/php/" style="font-size: 10px;">php</a> <a href="/tags/pl/" style="font-size: 20px;">pl</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/03/">March 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/02/">February 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/01/">January 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/12/">December 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">September 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">August 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">April 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">February 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">January 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2022/03/30/Hello/">Hello</a>
+          </li>
+        
+          <li>
+            <a href="/2022/02/24/web/">Web应用系中注入类漏洞调研</a>
+          </li>
+        
+          <li>
+            <a href="/2022/02/18/data-mining/">data_mining</a>
+          </li>
+        
+          <li>
+            <a href="/2022/02/14/pop/">A Survey about PHP Object Injection</a>
+          </li>
+        
+          <li>
+            <a href="/2022/02/06/logic-machine/">Logic Machine</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2022 iohex<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>
