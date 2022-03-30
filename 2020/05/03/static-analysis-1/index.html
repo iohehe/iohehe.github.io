@@ -13,20 +13,20 @@
 <meta property="og:site_name" content="Penlab">
 <meta property="og:description" content="南京大学软件分析课程，这段时间可以把自己学习的内容总结一下。 课程链接 0x01 PL and Static Analysis 08:05   开始，剪课件…     背景：将PL分了三个领域。 程序分析属于PL的应用领域。  在语言的框架下谈到程序分析就是静态分析。  0x02 Why We Need Static Analysis 17:40  应用背景:  Program Reliabili">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://example.com/2020/05/03/static-analysis-1/static-analysis-1/%E6%88%AA%E5%B1%8F2020-05-03%20%E4%B8%8A%E5%8D%8810.50.11.png">
-<meta property="og:image" content="http://example.com/2020/05/03/static-analysis-1/static-analysis-1/%E6%88%AA%E5%B1%8F2020-05-03%20%E4%B8%8A%E5%8D%8811.36.35.png">
-<meta property="og:image" content="http://example.com/2020/05/03/static-analysis-1/static-analysis-1/%E6%88%AA%E5%B1%8F2020-05-03%20%E4%B8%8B%E5%8D%8812.06.37.png">
-<meta property="og:image" content="http://example.com/2020/05/03/static-analysis-1/static-analysis-1/%E6%88%AA%E5%B1%8F2020-05-03%20%E4%B8%8B%E5%8D%888.36.59.png">
-<meta property="og:image" content="http://example.com/2020/05/03/static-analysis-1/static-analysis-1/%E6%88%AA%E5%B1%8F2020-05-03%20%E4%B8%8B%E5%8D%888.39.29.png">
-<meta property="og:image" content="http://example.com/2020/05/03/static-analysis-1/static-analysis-1/%E6%88%AA%E5%B1%8F2020-05-03%20%E4%B8%8B%E5%8D%888.49.08.png">
-<meta property="og:image" content="http://example.com/2020/05/03/static-analysis-1/static-analysis-1/%E6%88%AA%E5%B1%8F2020-05-03%20%E4%B8%8B%E5%8D%888.52.07.png">
+<meta property="og:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125057.png">
+<meta property="og:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125101.png">
+<meta property="og:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125104.png">
+<meta property="og:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125113.png">
+<meta property="og:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125117.png">
+<meta property="og:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125122.png">
+<meta property="og:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125125.png">
 <meta property="og:image" content="http://example.com/2020/05/03/static-analysis-1/static-analysis-1/%E6%88%AA%E5%B1%8F2020-05-03%20%E4%B8%8B%E5%8D%889.00.38.png">
 <meta property="article:published_time" content="2020-05-03T02:43:27.000Z">
-<meta property="article:modified_time" content="2022-03-30T06:25:22.431Z">
+<meta property="article:modified_time" content="2022-03-30T12:51:31.416Z">
 <meta property="article:author" content="iohex">
 <meta property="article:tag" content="pl">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/2020/05/03/static-analysis-1/static-analysis-1/%E6%88%AA%E5%B1%8F2020-05-03%20%E4%B8%8A%E5%8D%8810.50.11.png">
+<meta name="twitter:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125057.png">
   
     <link rel="alternate" href="/atom.xml" title="Penlab" type="application/atom+xml">
   
@@ -111,7 +111,7 @@
 <p>08:05 </p>
 </blockquote>
 <p>开始，剪课件…</p>
-<img src="static-analysis-1/%E6%88%AA%E5%B1%8F2020-05-03%20%E4%B8%8A%E5%8D%8810.50.11.png" alt="截屏2020-05-03 上午10.50.11 " style="zoom:50%;" />
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125057.png" alt="截屏2020-05-03 上午10.50.11 " style="zoom:50%;" />
 
 
 
@@ -151,7 +151,7 @@
 <ul>
 <li>静态分析： 在运行一个程序之前， 通过静态分析，了解程序一些行为和特征，</li>
 </ul>
-<img src="static-analysis-1/%E6%88%AA%E5%B1%8F2020-05-03%20%E4%B8%8A%E5%8D%8811.36.35.png" alt="截屏2020-05-03 上午11.36.35 " style="zoom:50%;" />
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125101.png" alt="截屏2020-05-03 上午11.36.35 " style="zoom:50%;" />
 
 <p>Truth是我们需要的结果机， 包含了所有可能的分析结果</p>
 <ul>
@@ -164,7 +164,7 @@
 <p>我们的目标是设计一个<code>useful static analysis</code>，在上图画一个结果集的圈， 我们需要妥协一方(看应用场景)。 妥协<code>Sound</code>，就是要让Sound妥协， 让Sound缩小，就会造成生漏报(<code>false negatives</code>)，这种分析是<code>Compromise soundness</code>。</p>
 <p> 同样的， 妥协<code>Complete</code>， 就是要不产生误报(<code>false positives</code>)。 这种分析是<code>Compromise completeness</code>的。</p>
 <p>这两种设计方案随目的不同，在需要的场景下，都算是<code>useful static analysis</code>。</p>
-<img src="static-analysis-1/%E6%88%AA%E5%B1%8F2020-05-03%20%E4%B8%8B%E5%8D%8812.06.37.png" alt="截屏2020-05-03 下午12.06.37 " style="zoom:50%;" />
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125104.png" alt="截屏2020-05-03 下午12.06.37 " style="zoom:50%;" />
 
    
 
@@ -186,13 +186,13 @@
 <p>71:00</p>
 <p>Two Words to Conclude Static Analysis: Abstraction+ Over-approximation</p>
 </blockquote>
-<img src="static-analysis-1/%E6%88%AA%E5%B1%8F2020-05-03%20%E4%B8%8B%E5%8D%888.36.59.png" alt="截屏2020-05-03 下午8.36.59 " style="zoom:50%;" />
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125113.png" alt="截屏2020-05-03 下午8.36.59 " style="zoom:50%;" />
 
 <p>一个check, 探测每一个变量的符号。</p>
 <ol>
 <li>Abstraction： 将真实值转化为抽象值(abstract values)</li>
 </ol>
-<img src="static-analysis-1/%E6%88%AA%E5%B1%8F2020-05-03%20%E4%B8%8B%E5%8D%888.39.29.png" alt="截屏2020-05-03 下午8.39.29 " style="zoom:50%;" />
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125117.png" alt="截屏2020-05-03 下午8.39.29 " style="zoom:50%;" />
 
 
 
@@ -205,10 +205,10 @@
 <li><p>Transfer functions are defined according to “analysis problem” and the “semantics” of different program statements.（根据分析目标和每一句话的语义制定转移函数）</p>
 </li>
 </ul>
-  <img src="static-analysis-1/%E6%88%AA%E5%B1%8F2020-05-03%20%E4%B8%8B%E5%8D%888.49.08.png" alt="截屏2020-05-03 下午8.49.08 " style="zoom:50%;" />
+  <img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125122.png" alt="截屏2020-05-03 下午8.49.08 " style="zoom:50%;" />
 
 <p>现在，有了抽象值， 有了转化函数， 可以进行静态分析。</p>
-<img src="static-analysis-1/%E6%88%AA%E5%B1%8F2020-05-03%20%E4%B8%8B%E5%8D%888.52.07.png" alt="截屏2020-05-03 下午8.52.07 " style="zoom:50%;" />
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125125.png" alt="截屏2020-05-03 下午8.52.07 " style="zoom:50%;" />
 
 <p>其中， a可正可负，p 中y做索引错， q中a做索引， 保证soundness， 可能错。</p>
 <ul>
@@ -229,7 +229,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2020/05/03/static-analysis-1/" data-id="cl1d6yih7001hkjw568iv0mej" data-title="南大静态分析-1" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2020/05/03/static-analysis-1/" data-id="cl1dky4ne0017n7w50h5r4ktl" data-title="南大静态分析-1" class="article-share-link">Share</a>
       
       
       
@@ -292,7 +292,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/02/">February 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/01/">January 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/12/">December 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">September 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">August 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">April 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">February 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">January 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/02/">February 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/01/">January 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/12/">December 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">September 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">August 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">April 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">February 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">January 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li></ul>
     </div>
   </div>
 
@@ -313,15 +313,15 @@
           </li>
         
           <li>
-            <a href="/2022/02/14/pop/">A Survey about PHP Object Injection</a>
-          </li>
-        
-          <li>
             <a href="/2022/02/06/logic-machine/">Logic Machine</a>
           </li>
         
           <li>
-            <a href="/2022/01/26/fuz/">Fuzzing</a>
+            <a href="/2022/01/26/fuz/">Fuzzing(TODO)</a>
+          </li>
+        
+          <li>
+            <a href="/2022/01/01/bayes/">信念传播(Belief propagation)</a>
           </li>
         
       </ul>

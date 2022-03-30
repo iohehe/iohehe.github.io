@@ -13,27 +13,27 @@
 <meta property="og:site_name" content="Penlab">
 <meta property="og:description" content="此文为编译原理(龙书)9.6章， 补充南大重续分析第6节之后。 1. 支配结点定义支配结点Dominators, 即支配结点， 如果从一段程序的entry point 到结点n的所有路径， 都经过结点m，那么我们就可以说m支配n，记为 m dom n 支配结点性质：  reflexive: a dom a （每个结点支配本身，不过为了区分的本身的支配结点也可以叫strict dom） transi">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://example.com/2020/12/06/loops/loops/image-20201208181751573.png">
-<meta property="og:image" content="http://example.com/2020/12/06/loops/loops/image-20201208182015843.png">
-<meta property="og:image" content="http://example.com/2020/12/06/loops/loops/%E6%88%AA%E5%B1%8F2020-05-17%20%E4%B8%8B%E5%8D%889.56.10.png">
-<meta property="og:image" content="http://example.com/2020/12/06/loops/loops/image-20201206101945309.png">
-<meta property="og:image" content="http://example.com/2020/12/06/loops/loops/%E6%88%AA%E5%B1%8F2020-08-13%20%E4%B8%8A%E5%8D%888.54.34.png">
-<meta property="og:image" content="http://example.com/2020/12/06/loops/loops/image-20201206102844236.png">
-<meta property="og:image" content="http://example.com/2020/12/06/loops/loops/image-20201206104654556.png">
-<meta property="og:image" content="http://example.com/2020/12/06/loops/loops/image-20201206113136795.png">
-<meta property="og:image" content="http://example.com/2020/12/06/loops/loops/image-20201207105042417.png">
-<meta property="og:image" content="http://example.com/2020/12/06/loops/loops/image-20201207105419198.png">
-<meta property="og:image" content="http://example.com/2020/12/06/loops/loops/image-20201207105454286.png">
-<meta property="og:image" content="http://example.com/loops/image-20201208100007943.png">
-<meta property="og:image" content="http://example.com/loops/image-20201208174753377.png">
-<meta property="og:image" content="http://example.com/2020/12/06/loops/loops/image-20201208204910207.png">
-<meta property="og:image" content="http://example.com/2020/12/06/loops/loops/image-20201208205823633.png">
-<meta property="og:image" content="http://example.com/2020/12/06/loops/loops/image-20201208211513630.png">
+<meta property="og:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125517.png">
+<meta property="og:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125520.png">
+<meta property="og:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125523.png">
+<meta property="og:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125527.png">
+<meta property="og:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125530.png">
+<meta property="og:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125533.png">
+<meta property="og:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125536.png">
+<meta property="og:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125539.png">
+<meta property="og:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125542.png">
+<meta property="og:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125545.png">
+<meta property="og:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125549.png">
+<meta property="og:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125552.png">
+<meta property="og:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125600.png">
+<meta property="og:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125611.png">
+<meta property="og:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125617.png">
+<meta property="og:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125622.png">
 <meta property="article:published_time" content="2020-12-06T01:07:21.000Z">
-<meta property="article:modified_time" content="2022-03-30T06:25:22.477Z">
+<meta property="article:modified_time" content="2022-03-30T12:56:25.217Z">
 <meta property="article:author" content="iohex">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/2020/12/06/loops/loops/image-20201208181751573.png">
+<meta name="twitter:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125517.png">
   
     <link rel="alternate" href="/atom.xml" title="Penlab" type="application/atom+xml">
   
@@ -123,10 +123,10 @@
 <h3 id="直接支配结点"><a href="#直接支配结点" class="headerlink" title="直接支配结点"></a>直接支配结点</h3><p>此外， 在到达一个结点的支配路径上的最后一个结点，记为<code>直接支配结点（immediate dominator）</code>， 如果一个结点记为n，他的直接支配结点记为m<code>(m idom n)</code>。在n的支配路径上，当支配结点不是自身时，支配节点d一定也支配m。 </p>
 <p>为啥要强调直接支配呢？要看我们表示流图中支配关系的数据结构： 支配树</p>
 <h3 id="支配树"><a href="#支配树" class="headerlink" title="支配树"></a>支配树</h3><p>首先，手工来找每一个支配结点的支配对象。此处我们的入口结点是1号结点， 我们可以看到，1号结点支配所有结点， 而2号结点在1号结点的分支上，下层所有结点都可以从3号结点到达， 因此2号结点仅支配它自身(任何结点都支配自身)。 如图，以此类推。如此生成一颗支配结点树。</p>
-<img src="loops/image-20201208181751573.png" alt="image-20201208181751573 " style="zoom:20%;" />
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125517.png" alt="image-20201208181751573 " style="zoom:20%;" />
 
 <p>这颗树上，入口为程序根结点，每个结点支配它的后代结点：</p>
-<img src="loops/image-20201208182015843.png" alt="image-20201208182015843 " style="zoom:30%;" />
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125520.png" alt="image-20201208182015843 " style="zoom:30%;" />
 
 <p>生成树的性质：</p>
 <ul>
@@ -144,7 +144,7 @@
 <p>也就是说，n的一个前驱结点如果要是称为n的支配结点d，那么必须支配到达n点的所有前驱。因此他表示成的数据结构也就是一棵树(回溯祖先只有一条路经)。</p>
 <p>比如上面的程序流图中，4到8点之间有5，6，7三个点， 4号结点同时支配5,6,7,因此4号结点支配8号结点；而5号结点到8号结点之间有7号结点， 5号结点并不支配7号结点(他只支配本身)， 因此5号结点并不能支配8号结点。</p>
 <p>好算法原理介绍完了，接下来我们设计这个程序分析。</p>
-<img src="loops/%E6%88%AA%E5%B1%8F2020-05-17%20%E4%B8%8B%E5%8D%889.56.10.png" alt="截屏2020-05-17 下午9.56.10 " style="zoom:80%;" />
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125523.png" alt="截屏2020-05-17 下午9.56.10 " style="zoom:80%;" />
 
 <p>对照这张表，分析次算法。</p>
 <ul>
@@ -163,18 +163,18 @@
 <li><p>在merge处(程序数据的合并点)我们取交集。</p>
 </li>
 </ul>
-<img src="loops/image-20201206101945309.png" alt="image-20201206101945309 " style="zoom:67%;" />
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125527.png" alt="image-20201206101945309 " style="zoom:67%;" />
 
 <p>这个算法的Transfer function和之前的-kill +gen的不同， 需要注意。</p>
 <p>拿来那张Must分析的图：</p>
-<img src="loops/%E6%88%AA%E5%B1%8F2020-08-13%20%E4%B8%8A%E5%8D%888.54.34.png" alt="截屏2020-08-13 上午8.54.34 " style="zoom:67%;" />
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125530.png" alt="截屏2020-08-13 上午8.54.34 " style="zoom:67%;" />
 
 <p>初始时所有前驱点都是支配结点，然后将这个集合不断缩小知道最大不动点，求最大下界。</p>
 <p>因此我们的Iterative Algorithm有：</p>
-<img src="loops/image-20201206102844236.png" alt="image-20201206102844236 " style="zoom:50%;" />
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125533.png" alt="image-20201206102844236 " style="zoom:50%;" />
 
 <p>来看具体的例子：</p>
-<img src="loops/image-20201206104654556.png" alt="image-20201206104654556 " style="zoom:50%;" />
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125536.png" alt="image-20201206104654556 " style="zoom:50%;" />
 
 <p>D(n)是所有结点的支配结点的集合。</p>
 <p>D(1)是入口结点， 支配结点就是它本身。</p>
@@ -184,23 +184,24 @@
 <p>因为我们的OUT[B]&#x3D;IN[B]union本身，我们看第一次迭代后，其实已经达到了不动点。比如D(3)在第二次迭代时，D(1)是恒不变的，D(2)就是不变的。此时D(4) &#x3D; {1,3,4}, D(8) &#x3D; {1,3,4,7,8} 他们的并集一定是小于等于4的结点集合,即{1,3,4}，而只要有前驱1,2在，那么支配结点的并集就一定是小于3的。(不考虑环路)</p>
 <p>如果不考虑环路了， 那么在无环图上，根据支配结点的性质， <code>除了入口结点，每一个结点都有唯一的直接支配结点</code>。再比如4号结点，有3和7两个入边，要证明停止， 我们就要证明7号的支配结点一定包含{1,3}而不会再包含2，那么算法就停止了。也就是说只计算一次，路径中的所有支配结点都出现了，不会再添加其他的了。如果再添加了2，即{1,2,3}那么程序中到达4就会有两条路经，1，3，4和1，2，3，4。</p>
 <p>如此一来， 算法变成了：</p>
-<img src="loops/image-20201206113136795.png" alt="image-20201206113136795 " style="zoom:50%;" />
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125539.png" alt="image-20201206113136795 " style="zoom:50%;" />
 
 <p>没有了while循环。</p>
 <h1 id="2-深度优先生成树"><a href="#2-深度优先生成树" class="headerlink" title="2. 深度优先生成树"></a>2. 深度优先生成树</h1><p>我们需要分析循环XD，现在，我们根据支配路径分析算法， 得到了生成树，也就是说得到了流图上每一个点的支配路径信息。而实际控制流图所走的路径中间夹杂着支配结点之外的结点。此外，要在流图中刻画循环，我们需要知道流图中什么时候前进，什么时候回退了。这些信息需要生成一个深度优先生成树来提供。</p>
-<img src="loops/image-20201207105042417.png" alt="image-20201207105042417 " style="zoom:70%;" />
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125542.png" alt="image-20201207105042417 " style="zoom:70%;" />
 
 <p>要在流图上进行深度优先搜索所得到的序列: 1,2,3,4,5,6,7,8,9,10 。我们可以生成深度优先生成树， 这棵树的后序遍历序列(10,9,8,7,6,5,4,3,2,1)之反就是我们所需的序列。</p>
 <p>实现这个算法：</p>
-<img src="loops/image-20201207105419198.png" alt="image-20201207105419198 " style="zoom:30%;" />
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125545.png" alt="image-20201207105419198 " style="zoom:30%;" />
 
 <p>具体算法：</p>
-<img src="loops/image-20201207105454286.png" alt="image-20201207105454286 " style="zoom:60%;" />
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125549.png" alt="image-20201207105454286 " style="zoom:60%;" />
 
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#coding=utf-8</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">dfst</span></span><br><span class="line"><span class="string">～～～～</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line">_visit = <span class="built_in">set</span>()</span><br><span class="line"></span><br><span class="line">_graph = &#123;</span><br><span class="line">        <span class="number">1</span>: [<span class="number">3</span>, <span class="number">2</span>],</span><br><span class="line">        <span class="number">2</span>: [<span class="number">3</span>],</span><br><span class="line">        <span class="number">3</span>: [<span class="number">4</span>],</span><br><span class="line">        <span class="number">4</span>: [<span class="number">3</span>, <span class="number">6</span>, <span class="number">5</span>],</span><br><span class="line">        <span class="number">5</span>: [<span class="number">7</span>],</span><br><span class="line">        <span class="number">6</span>: [<span class="number">7</span>],</span><br><span class="line">        <span class="number">7</span>: [<span class="number">4</span>, <span class="number">8</span>],</span><br><span class="line">        <span class="number">8</span>: [<span class="number">10</span>, <span class="number">9</span>],</span><br><span class="line">        <span class="number">9</span>: [<span class="number">1</span>],</span><br><span class="line">        <span class="number">10</span>: [<span class="number">7</span>]</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">_c = <span class="built_in">len</span>(_graph)</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">search</span>(<span class="params">n</span>):</span><br><span class="line">    _visit.add(n)</span><br><span class="line">    <span class="built_in">print</span>(n)</span><br><span class="line">    <span class="keyword">for</span> s <span class="keyword">in</span> _graph[n]:</span><br><span class="line">        <span class="keyword">if</span> s <span class="keyword">not</span> <span class="keyword">in</span> _visit:</span><br><span class="line">            search(s)</span><br><span class="line">    <span class="keyword">global</span> _c</span><br><span class="line">    _c = _c -<span class="number">1</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;_c = &#123;&#125;&quot;</span>.<span class="built_in">format</span>(_c))</span><br><span class="line"></span><br><span class="line">search(<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">output=&gt;</span><br><span class="line"><span class="number">1</span></span><br><span class="line"><span class="number">3</span></span><br><span class="line"><span class="number">4</span></span><br><span class="line"><span class="number">6</span></span><br><span class="line"><span class="number">7</span></span><br><span class="line"><span class="number">8</span></span><br><span class="line"><span class="number">10</span></span><br><span class="line">_c=<span class="number">9</span></span><br><span class="line"><span class="number">9</span></span><br><span class="line">_c=<span class="number">8</span></span><br><span class="line">_c=<span class="number">7</span></span><br><span class="line">_c=<span class="number">6</span></span><br><span class="line">_c=<span class="number">5</span></span><br><span class="line"><span class="number">5</span></span><br><span class="line">_c=<span class="number">4</span></span><br><span class="line">_c=<span class="number">3</span></span><br><span class="line">_c=<span class="number">2</span></span><br><span class="line"><span class="number">2</span></span><br><span class="line">_c=<span class="number">1</span></span><br><span class="line">_c=<span class="number">0</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
 <p>如此一来可以看到：</p>
-<p><img src="/loops/image-20201208100007943.png" alt="image-20201208100007943"></p>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125552.png" alt="image-20201208100007943" style="zoom:50%;" />
+
 <p>图中流图的边可以分为三种：</p>
 <p>1） 实线边，即深度优先生成树算法生成的边，也就是<code>前进边(Advancing edge)</code>，这些边推进流图向下执行。</p>
 <ol start="2">
@@ -209,7 +210,8 @@
 <p>3）另外一些虚线边(5-&gt;7, 2-&gt;3)，这些边互相都不为祖先。也即是<code>交叉边(cross edge)</code>。</p>
 <h1 id="3-自然循环"><a href="#3-自然循环" class="headerlink" title="3. 自然循环"></a>3. 自然循环</h1><h2 id="回边"><a href="#回边" class="headerlink" title="回边"></a>回边</h2><p>给了一个流图， 要对循环进行分析。首先，我们定义了支配结点这一二元关系。然后通过直接支配结点，我们构建了一颗深度优先生成树，在这颗树上，顶点就是程序入口点，边就是直接支配关系，所有的路径就是所有的支配路径。有了这层关系，我们在树上不上了虚边，在后退边中，我们现在定义一种回边。这种回边一定是后退边(但是后退边不一定是回边)。回边的定义是这样的如果1 dom 9  现在有一条边，他的头是9，尾是1那么也就是说尾支配了头，这就是一条回边。</p>
 <p>上边说了，后退边不一定是回边，如：</p>
-<p><img src="/loops/image-20201208174753377.png" alt="image-20201208174753377"></p>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125600.png" alt="image-20201208174753377" style="zoom:60%;" />
+
 <p>这是鲸书第七章的一个例子。从流图a中我们可以看到c和d的流形成一个环路， 但是他生成的任意一种深度优先生成树(或de在前或c在前)。都有一条后退边，指向一个他的非支配结点。</p>
 <blockquote>
 <p>因为我们在第一步计算了一个结点的所有支配对象，在第二步计算出了流图的深度优先生成树。那么我们就可以拿到所有支配路径，以及支配路径上所有结点的支配结点信息。通过生成树，我们就可以知道流图上那一些边是后退边，通过支配结点的计算，我们就可以知道后退边指向的是不是支配他的结点，从而判断一条后退边是不是回边。</p>
@@ -219,12 +221,12 @@
 <li>必须具有一个唯一的入口结点， 称为循环头(header)。</li>
 <li>具有一条进入循环头的回边。</li>
 </ul>
-<img src="loops/image-20201208204910207.png" alt="image-20201208204910207 " style="zoom:30%;" />
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125611.png" alt="image-20201208204910207 " style="zoom:30%;" />
 
 <p>在此图中可以看到， 在流图中找自然循环， 首先，找出所有回边。</p>
 <p>然后如4-3: 这歌循环中3号结点为循环头，找到所有不经过3而到达4的结点：</p>
 <p>4， 5，6，7，8，10。 然后再加上循环头3就是这个自然循环的组成。</p>
-<h3 id="构造一条回边的自然循环："><a href="#构造一条回边的自然循环：" class="headerlink" title="构造一条回边的自然循环："></a>构造一条回边的自然循环：</h3><img src="loops/image-20201208205823633.png" alt="image-20201208205823633 " style="zoom:33%;" /> 
+<h3 id="构造一条回边的自然循环："><a href="#构造一条回边的自然循环：" class="headerlink" title="构造一条回边的自然循环："></a>构造一条回边的自然循环：</h3><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125617.png" alt="image-20201208205823633 " style="zoom:33%;" /> 
 
 <p>算法说明一下，注意两点，一是n初始的时候已经在Loop中了， 二是找的是栈顶指针的前驱，弹出后，有前驱再压栈。比如还是在4-3的自然循环中，我们第一次循环压入了4， 然后找到了前驱m&#x3D;[3,8], 3是循环头不过if, 因此8被压栈；下一轮8出栈，7入栈；再一轮7出栈，5、6、10入栈。。。</p>
 <blockquote>
@@ -235,14 +237,14 @@
 <li>一个循环不包含其他循环称为最内层循环(innermost loop)&#x2F;同理流图中包含所有循环的是最外循环</li>
 <li>下图中包含同一个循环头，很难说哪一个是最内循环(可能是循环中的if…else)，因此合并循环</li>
 </ul>
-<img src="loops/image-20201208211513630.png" alt="image-20201208211513630 " style="zoom:30%;" />
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125622.png" alt="image-20201208211513630 " style="zoom:30%;" />
 
 <h1 id="后记：-循环优化"><a href="#后记：-循环优化" class="headerlink" title="后记： 循环优化"></a>后记： 循环优化</h1><p>补充虎书第18章循环优化的内容</p>
 <h2 id="Loop-nest-Tree"><a href="#Loop-nest-Tree" class="headerlink" title="Loop-nest Tree"></a>Loop-nest Tree</h2>
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2020/12/06/loops/" data-id="cl1d6yih0000ukjw53bwo6049" data-title="程序分析之Loops in Flow Graphs" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2020/12/06/loops/" data-id="cl1dky4n9000qn7w546lz5uzl" data-title="程序分析之Loops in Flow Graphs" class="article-share-link">Share</a>
       
       
       
@@ -303,7 +305,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/02/">February 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/01/">January 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/12/">December 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">September 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">August 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">April 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">February 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">January 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/02/">February 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/01/">January 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/12/">December 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">September 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">August 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">April 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">February 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">January 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li></ul>
     </div>
   </div>
 
@@ -324,15 +326,15 @@
           </li>
         
           <li>
-            <a href="/2022/02/14/pop/">A Survey about PHP Object Injection</a>
-          </li>
-        
-          <li>
             <a href="/2022/02/06/logic-machine/">Logic Machine</a>
           </li>
         
           <li>
-            <a href="/2022/01/26/fuz/">Fuzzing</a>
+            <a href="/2022/01/26/fuz/">Fuzzing(TODO)</a>
+          </li>
+        
+          <li>
+            <a href="/2022/01/01/bayes/">信念传播(Belief propagation)</a>
           </li>
         
       </ul>

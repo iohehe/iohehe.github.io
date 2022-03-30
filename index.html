@@ -124,7 +124,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2022/02/24/web/" data-id="cl1d6yihd0022kjw5h87x849i" data-title="Web应用系中注入类漏洞调研" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2022/02/24/web/" data-id="cl1dky4nk001sn7w526coeic8" data-title="Web应用系中注入类漏洞调研" class="article-share-link">Share</a>
       
       
       
@@ -170,12 +170,15 @@
 <h2 id="数据收集-Data-Collection"><a href="#数据收集-Data-Collection" class="headerlink" title="数据收集(Data Collection)"></a>数据收集(Data Collection)</h2><p><a target="_blank" rel="noopener" href="https://arxiv.org/pdf/1811.03402.pdf">相关文献</a></p>
 <p>数据收集的目标是构成目标数据集</p>
 <p>针对目标系统，数据的收集大致分为：获取数据、标注数据、数据质量优化。<br>看一张总图：</p>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-02-18-022624.png"></p>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125846.png" style="zoom:67%;" />
+
 <p>paper给出的一个分析流程:</p>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-02-18-022924.png"></p>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125852.png" style="zoom:67%;" />
+
 <p>先从section2</p>
 <h3 id="获取数据"><a href="#获取数据" class="headerlink" title="获取数据"></a>获取数据</h3><p>从流程上将就是section2中的内容回答三个问题:<br>    - Have enough data?  有足够数据进入下一步标注<br>    - Are there external datasets? 如果有差不多的数据集就去搜集并修改<br>    - Have data generation method? 想办法生成数据。</p>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-02-18-023846.png"></p>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-02-18-023846.png" style="zoom:50%;" />
+
 <p>从三个角度的技术分析： </p>
 <h4 id="Data-Discovery-从外部获取已有数据集，方法"><a href="#Data-Discovery-从外部获取已有数据集，方法" class="headerlink" title="Data Discovery: 从外部获取已有数据集，方法"></a><strong>Data Discovery</strong>: 从外部获取已有数据集，方法</h4><p>Data Discovery 通常有两步：<br>1.找已经共享标注好的数据集(Data Sharing)，可以去许多的共享平台(如DataHub, kaggle)寻找之前工作整理好的数据集。也可以去CKAN， Quandl， DataMarket等购买。Google Fusion Tables也是一个数据云端管理整合平台，也可以去寻找。</p>
 <ol start="2">
@@ -185,53 +188,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2022/02/18/data-mining/" data-id="cl1d6yigx000nkjw51tr0eijw" data-title="data_mining" class="article-share-link">Share</a>
-      
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-pop" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2022/02/14/pop/" class="article-date">
-  <time class="dt-published" datetime="2022-02-14T01:14:50.000Z" itemprop="datePublished">2022-02-14</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2022/02/14/pop/">A Survey about PHP Object Injection</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <h1 id="Intro"><a href="#Intro" class="headerlink" title="Intro"></a>Intro</h1><p>This article will discuss PHP object injection, which is a very famous and popular security vulnerability in the PHP language.<br>Each programming language has its own methods to serialize the structure data like object or array in memory, and these data can be stored as a JSON format or a string in the hardware.<br>PHP is usually used <code>searialize()</code> to searialize arries and objects, and used <code>unseralize()</code> to recover them.<br>Although finding a user-control <code>unserialize()</code> method is not a vulnerability, if this point can jump to some real sinks like <code>echo</code> or <code>system</code>, we can trigger some other security vulnerabilities.<br>So there are three steps for an attacker to exploit such a vulnerability: </p>
-<ol>
-<li>find the user-control serialization point, just like the <code>unserialize()</code></li>
-<li>analysis where you can jump by controlling the property of objects, which is called property-object programming</li>
-<li>using these pop chains to construct the object payload</li>
-</ol>
-<p>Now we introduce some works in the following phases.</p>
-<h1 id="RIPS"><a href="#RIPS" class="headerlink" title="RIPS"></a>RIPS</h1><p>In 2014[1], the RIPS presented a static analysis method to detect PHP Object Injection. RIPS is a famous PHP static analysis tool to find security vunlnerabilities, which is based on the Xie’s work[2].<br>In order to let RIPS support POI(PHP Object Inject) detection, the key static analysis techniques are <code>inter produral</code>, <code>field sensitive</code>, <code>object sensitive</code>. We can use these technqiques to analysis relevant OOP features. But it is not enough, in order to create POP chains, we must support the <code>magic method sensitive</code> senstive to analyze the jump between the gadgets.<br>In total, there are two kinds of <code>magic method</code>, one is context-independent, and another one is context-dependent. The methods <code>__destruct()</code> and <code>__wakeup()</code> are context-independent. </p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://example.com/2022/02/14/pop/" data-id="cl1d6yih40017kjw55eud3kc6" data-title="A Survey about PHP Object Injection" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2022/02/18/data-mining/" data-id="cl1dky4n5000in7w5hogqhlif" data-title="data_mining" class="article-share-link">Share</a>
       
       
       
@@ -270,7 +227,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2022/02/06/logic-machine/" data-id="cl1d6yigz000tkjw5gabyf3ck" data-title="Logic Machine" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2022/02/06/logic-machine/" data-id="cl1dky4n8000pn7w51c63cqvv" data-title="Logic Machine" class="article-share-link">Share</a>
       
       
       
@@ -296,7 +253,7 @@
         
   
     <h1 itemprop="name">
-      <a class="p-name article-title" href="/2022/01/26/fuz/">Fuzzing</a>
+      <a class="p-name article-title" href="/2022/01/26/fuz/">Fuzzing(TODO)</a>
     </h1>
   
 
@@ -324,121 +281,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2022/01/26/fuz/" data-id="cl1d6yigz000skjw5b6fh0vc8" data-title="Fuzzing" class="article-share-link">Share</a>
-      
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-sklearn" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2022/01/15/sklearn/" class="article-date">
-  <time class="dt-published" datetime="2022-01-15T06:38:47.000Z" itemprop="datePublished">2022-01-15</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2022/01/15/sklearn/">scikit库使用</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <h1 id="算法选择"><a href="#算法选择" class="headerlink" title="算法选择"></a>算法选择</h1><p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-01-15-064202.jpg"></p>
-<p>一开始做机器学习，选择算法是一比较难的事请，上图是scikit-learn给出的<code>Choosing the right estimator</code>。</p>
-<h2 id="你的样本数量"><a href="#你的样本数量" class="headerlink" title="你的样本数量"></a>你的样本数量</h2><ul>
-<li>首先你的样本数量是否大于50，否则bye-bye。</li>
-</ul>
-<h2 id="是否是分类任务"><a href="#是否是分类任务" class="headerlink" title="是否是分类任务"></a>是否是分类任务</h2><ul>
-<li>然后看是否是一个分类任务，是的话进入<code>classification</code>和<code>clustering</code>中选</li>
-<li>不是分类任务进入<code>regression</code>和<code>dimensionality reduction</code>中选</li>
-</ul>
-<h2 id="分类任务-你的数据是否有标签"><a href="#分类任务-你的数据是否有标签" class="headerlink" title="[分类任务] 你的数据是否有标签"></a>[分类任务] 你的数据是否有标签</h2><ul>
-<li>没有进入<code>clustering</code>, 有进入<code>classification</code><h2 id="非分类任务-你的数据"><a href="#非分类任务-你的数据" class="headerlink" title="[非分类任务] 你的数据"></a>[非分类任务] 你的数据</h2></li>
-</ul>
-<table>
-<thead>
-<tr>
-<th>机器学习</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>Header</td>
-<td>Title</td>
-</tr>
-<tr>
-<td>Paragraph</td>
-<td>Text</td>
-</tr>
-</tbody></table>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://example.com/2022/01/15/sklearn/" data-id="cl1d6yih6001ekjw5hmu8cd35" data-title="scikit库使用" class="article-share-link">Share</a>
-      
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-ml-2021-3" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2022/01/02/ml-2021-3/" class="article-date">
-  <time class="dt-published" datetime="2022-01-02T08:52:46.000Z" itemprop="datePublished">2022-01-02</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2022/01/02/ml-2021-3/">台大深度学习2021-3</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <img src="img/image-20220102170201302.png" alt="image-20220102170201302" style="zoom:50%;" />
-
-<ol>
-<li><p>先检查training data的loss</p>
-<blockquote>
-<p>如果training data的loss很大，显然在训练集上也没有学好。</p>
-</blockquote>
-</li>
-<li></li>
-</ol>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://example.com/2022/01/02/ml-2021-3/" data-id="cl1d6yih1000xkjw57ewy7brl" data-title="台大深度学习2021-3" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2022/01/26/fuz/" data-id="cl1dky4n8000on7w53l4j13fy" data-title="Fuzzing(TODO)" class="article-share-link">Share</a>
       
       
       
@@ -485,14 +328,14 @@
 <p>贝叶斯网络常常用作是医疗诊断，语言识别等专家系统。</p>
 <h3 id="链式规则"><a href="#链式规则" class="headerlink" title="链式规则"></a>链式规则</h3><p>对于一两个随机变量$X$, $Y$,为了找到他们的联合分布，我们可以定义如下条件概率:<br>$$<br>P(X,Y)&#x3D;P(X|Y)\cdot P(Y)<br>$$<br>如果有多个随机变量$X_1…X_n$的话:<br>$$<br>P(X_n,…,X_1) &#x3D; P(Xn|X_{n-1},…,X_1)\cdot P(X_{n-1},….,X_1)<br>$$<br>其中可以继续拆分，如(n&#x3D;4):<br>$$<br>P(X_4, X_3, X_2, X_1) &#x3D; P(X_4|X_3,X_2,X_1)\cdot P(X_3, X_2, X_1)<br>&#x3D; P(X_4|X_3,X_2,X_1)\cdot P(X_3|X_2,X_1)\cdot P(X_2, X_1) &#x3D;…<br>$$<br>通过公式进行抽象就是过程:<br>$$<br>P \Bigg( \bigcap_{k&#x3D;1}^nX_k \Bigg) &#x3D; \prod_{k&#x3D;1}^nP\Bigg(X_k\Bigg| \bigcap_{j&#x3D;1}^{k&#x3D;1}X_j \Bigg)<br>$$</p>
 <h3 id="贝叶斯网络"><a href="#贝叶斯网络" class="headerlink" title="贝叶斯网络"></a>贝叶斯网络</h3><p>比如下图贝叶斯网络：</p>
-<p><img src="/img/image-20220101161019281.png" alt="image-20220101161019281"></p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125418.png" alt="image-20220101161019281"></p>
 <p>给定一个关键词”Asia”</p>
 <h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a target="_blank" rel="noopener" href="https://longaspire.github.io/blog/%E5%9B%A0%E5%AD%90%E5%9B%BE%E4%BB%8B%E7%BB%8D/">https://longaspire.github.io/blog/%E5%9B%A0%E5%AD%90%E5%9B%BE%E4%BB%8B%E7%BB%8D/</a></p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2022/01/01/bayes/" data-id="cl1d6yigv000gkjw53rk996e4" data-title="信念传播(Belief propagation)" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2022/01/01/bayes/" data-id="cl1dky4n4000fn7w5axh05sdw" data-title="信念传播(Belief propagation)" class="article-share-link">Share</a>
       
       
       
@@ -594,7 +437,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2021/12/31/org/" data-id="cl1d6yih1000ykjw5c4nyfp45" data-title="org使用入门" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2021/12/31/org/" data-id="cl1dky4n9000rn7w5fhzxcylg" data-title="org使用入门" class="article-share-link">Share</a>
       
       
       
@@ -669,7 +512,295 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2021/12/30/datalog/" data-id="cl1d6yigx000okjw5cb2c6zib" data-title="datalog" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2021/12/30/datalog/" data-id="cl1dky4n7000ln7w56yyqe131" data-title="datalog" class="article-share-link">Share</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-why" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2021/12/25/why/" class="article-date">
+  <time class="dt-published" datetime="2021-12-25T05:07:30.000Z" itemprop="datePublished">2021-12-25</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2021/12/25/why/">我为什么很少写安全相关的东西</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>我的专业方向是安全，但是我一般很少写安全相关的东西。 这对我来说依然是一件很矛盾的事情， 为什么呢？</p>
+<p>就像一个锁匠，他交给一个陌生人开锁，在不了解这个人的情况下，不确定他学会不会去干坏事。 </p>
+<p>最近搭了一台服务器，好多exp打来。这些人的exp很可能是从某位师傅文章里直接拿来的。所以我写的安全工具，目前也没有放到网上过。 但是话又说回来了，不交流怎么进步呢，毕竟我从各种师傅那里学了很多，这对我来说实属矛盾。</p>
+<p>我接触wooyun的时候，始终没拿邀请码。当时也能挖到一些洞，但是有一次我看到某大学的一个sql注入漏洞被<code>厂商积极忽略</code>，我极其反感这种态度。我拿那个洞去试了一下，根本就没有修。 我的目的是让网络世界更安全，为什么要把别人的东西给你让你公开？后来国内有了各种SRC, 还有一些平台保护措施比较好了，然而我也我不到洞了，师傅们都tql ；）。</p>
+<p>有时候想想，自己玩安全真的有种自嗨的感觉，但是做喜欢的事，锦衣夜行有如何？</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2021/12/25/why/" data-id="cl1dky4nk001tn7w55tal4zbl" data-title="我为什么很少写安全相关的东西" class="article-share-link">Share</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-pointer-analysis" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2021/12/15/pointer-analysis/" class="article-date">
+  <time class="dt-published" datetime="2021-12-15T09:57:35.000Z" itemprop="datePublished">2021-12-15</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2021/12/15/pointer-analysis/">pointer_analysis</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>以南大视频课件为主</p>
+</blockquote>
+<ol>
+<li><p>Motivation</p>
+</li>
+<li><p>Introduction to Pointer Analysis 06:50</p>
+<ul>
+<li>Pointer Analysis and Alias Analysis 14:50</li>
+<li>Application of Pointer Analysis 17:20</li>
+</ul>
+</li>
+<li><p>Key Factors of Pointer Analysis 19:15</p>
+<ul>
+<li>Heap Abstration 21:30</li>
+<li>Context Sensitivity 27:40</li>
+<li>Flow Sensitivity 32:30</li>
+<li>Analysis Scope 45:40</li>
+<li>Pointer Analysis in This Course 52:20  –&gt; 60:20</li>
+</ul>
+</li>
+<li><p>Concerned Statements 64:50</p>
+</li>
+<li><p>Conclusion&amp;下节课内容 77:00</p>
+</li>
+</ol>
+<h1 id="指针分析"><a href="#指针分析" class="headerlink" title="指针分析"></a>指针分析</h1><blockquote>
+<p>南大小课堂开课啦～</p>
+</blockquote>
+<h2 id="Problem-of-CHA"><a href="#Problem-of-CHA" class="headerlink" title="Problem of CHA"></a>Problem of CHA</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> <span class="title function_">foo</span><span class="params">()</span> &#123;</span><br><span class="line">  <span class="type">Number</span> <span class="variable">n</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">One</span>();</span><br><span class="line">  <span class="type">int</span> <span class="variable">x</span> <span class="operator">=</span> n.get();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">interface</span> <span class="title class_">Number</span> &#123;</span><br><span class="line">  <span class="type">int</span> <span class="title function_">get</span><span class="params">()</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Zero</span> <span class="keyword">implements</span> <span class="title class_">Number</span> &#123;</span><br><span class="line">  <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">get</span><span class="params">()</span> &#123; <span class="keyword">return</span> <span class="number">0</span>; &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">One</span> <span class="keyword">implements</span> <span class="title class_">Number</span> &#123;</span><br><span class="line">  <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">get</span><span class="params">()</span> &#123; <span class="keyword">return</span> <span class="number">1</span>; &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Two</span> <span class="keyword">implements</span> <span class="title class_">Number</span> &#123;</span><br><span class="line">  <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">get</span><span class="params">()</span> &#123;<span class="keyword">return</span> <span class="number">2</span>;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在这个例子中，很显然object n，new的是一个One。 </p>
+<p>因此返回1。</p>
+<blockquote>
+<p>如果按照CHA, 那么X就是根据变量类型(Number)来解， 而Number有三个子类。因此此时x指向3个值(0, 1, 2)</p>
+</blockquote>
+<p>一句话，CHA看不到object的声明类型。</p>
+<p>因此在做常量传播的时候，我们的CHA方法就会拿到两个假值(0,2)，此时的结果就是NAC(不精确)。</p>
+<p>而做指针分析， 故名思义，就是知道n指向哪个object。</p>
+<blockquote>
+<p>一个 class在new 的时候， 会做如下事情： 在内存中构造一个object, 运行构造函数，并使用n指向这个object, 因此这里的n就等同与一个指向object地址的指针。</p>
+</blockquote>
+<p>这个例子中，指针分析可以知道n指向<code>new One</code>这个唯一对象。然后构造调用图(对new One做dispatch)， 得到唯一一个get方法。  </p>
+<hr>
+<h2 id="指针分析介绍"><a href="#指针分析介绍" class="headerlink" title="指针分析介绍"></a>指针分析介绍</h2><h3 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h3><p>指针分析可以看作一个基础的静态分析， 他回答的问题是程序中每个指针可以指向那些地址。</p>
+<p>对于OO语言 来说，指针分析回答的是一个变量(或者field)可以指向哪些object(may analysis)。</p>
+<blockquote>
+<p>Answer: Which <strong>object</strong> a <strong>pointer</strong> can point to?</p>
+</blockquote>
+<p>Let’s explain it by an analysis process:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> <span class="title function_">foo</span><span class="params">()</span> &#123;</span><br><span class="line">  <span class="type">A</span> <span class="variable">a</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">A</span>();</span><br><span class="line">  <span class="type">B</span> <span class="variable">x</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">B</span>();</span><br><span class="line">  a.setB(x);</span><br><span class="line">  <span class="type">B</span> <span class="variable">y</span> <span class="operator">=</span> a.getB();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">A</span> &#123;</span><br><span class="line">  B b;</span><br><span class="line">  <span class="keyword">void</span> <span class="title function_">setB</span><span class="params">(B b)</span> &#123;</span><br><span class="line">    <span class="built_in">this</span>.b = b;</span><br><span class="line">  &#125;</span><br><span class="line">  B <span class="title function_">getB</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">this</span>.b;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>本例子中，类A 是类B的容器，并提供了get, set方法。 在foo()方法中，独立的new了A和B。 而变量a是<code>new A</code>的指针，变量x是<code>new B</code>的指针。 之后，a调用 setB方法将<code>new B()</code>，store进了<code>new A()</code>。接着又声明了变量y，通过getB方法获取了<code>new B</code>（指向，没 new）。</p>
+<img src="img/image-20211215193741664.png" alt="image-20211215193741664" style="zoom:50%;" />
+
+<blockquote>
+<p>很datalog </p>
+</blockquote>
+<h2 id="Key-Factors-of-Pointer-Analysis"><a href="#Key-Factors-of-Pointer-Analysis" class="headerlink" title="Key Factors of Pointer Analysis"></a>Key Factors of Pointer Analysis</h2><h3 id="Allocation-Site-Abstraction"><a href="#Allocation-Site-Abstraction" class="headerlink" title="Allocation-Site Abstraction"></a>Allocation-Site Abstraction</h3><h3 id="Context-Sensitivity"><a href="#Context-Sensitivity" class="headerlink" title="Context Sensitivity"></a>Context Sensitivity</h3><blockquote>
+<p>How to model calling contexts? </p>
+</blockquote>
+<p>上下文敏感，在指针分析中，如何对调用上下文进行建模。</p>
+<p><code>上下文</code>这个概念有点抽象。就是一个过程调用另一个过程时工作栈上的状态(好像更抽象了)。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Test</span> &#123;</span><br><span class="line">  <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">foo</span><span class="params">(<span class="type">int</span> p)</span> &#123;</span><br><span class="line"> 		<span class="keyword">if</span> (p == <span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">  </span><br><span class="line"><span class="keyword">void</span> <span class="title function_">foo</span><span class="params">()</span> &#123;</span><br><span class="line">  	<span class="type">Test</span> <span class="variable">a</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Test</span>();</span><br><span class="line">    <span class="type">Test</span> <span class="variable">b</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Test</span>();</span><br><span class="line">    <span class="type">int</span> <span class="variable">x</span> <span class="operator">=</span> <span class="number">1</span>;</span><br><span class="line">    <span class="type">boolean</span> <span class="variable">test_a</span> <span class="operator">=</span> a.foo(x);</span><br><span class="line">  	x = <span class="number">2</span>;	</span><br><span class="line">  	<span class="type">boolean</span> <span class="variable">test_b</span> <span class="operator">=</span> b.foo(x);</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<p>对于上下文敏感，对于同一个方法，他有多个上下文，么个上下文分别分析一次</p>
+<img src="img/image-20211215201557399.png" alt="image-20211215201557399" style="zoom:80%;" />
+
+<p>这里有两个上下文，就会有两个不同的分析。</p>
+<p>对于上下文不敏感：</p>
+<p><img src="/img/image-20211215202037637.png" alt="image-20211215202037637"></p>
+<p>方法foo()只分析一次。 汇合上下文可能会丢失精度。</p>
+<blockquote>
+<p>向下文敏感技术是一个重要技术，他能很大程度提高分析精度</p>
+</blockquote>
+<h3 id="Flow-Sensitivity"><a href="#Flow-Sensitivity" class="headerlink" title="Flow Sensitivity"></a>Flow Sensitivity</h3><blockquote>
+<p>How to model control flow?</p>
+</blockquote>
+<p>因为同样的语句，如果顺序不同可能结果就不一样</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> a = <span class="number">1</span>;</span><br><span class="line"><span class="type">int</span> b = <span class="number">2</span>;</span><br><span class="line">a = b;</span><br><span class="line"><span class="type">int</span> c;</span><br><span class="line">c = b-a;</span><br><span class="line">c = a-b;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>在程序的每一个点,都维护着一个映射(状态)。 每一条语句，都存着数据流到达这一点的数据流信息</p>
+<p>在指针分析中要做的流敏感，就要让每一个指针维持一个指向关系集合：</p>
+<p><img src="/img/image-20211215203219981.png" alt="image-20211215203219981"></p>
+<p>在这个图片中， 可以看到变量c指向了<code>new C</code>, 经过Allocation-site Abstraction后就是o1</p>
+<blockquote>
+<p>c-&gt;{o1}</p>
+</blockquote>
+<p>然后第二句对一个字面量<code>&quot;x&quot;</code>进行了store操作，符号c.f也就是<code>o1.f</code>。</p>
+<p>第三句中<code>s = c.f</code>把o1.f取出来塞给了s。</p>
+<p>到了第四句<code>o1.f</code>更新了。</p>
+<p>人为的去审计当然是指影响<code>o1.f</code>了，因为顺序执行,<code>s</code>的赋值语句已经被执行过了。</p>
+<p>但是在流不敏感的情况下， 分析程序只知道: <code>s = o1.f</code>，至于在<code>程序流</code>的哪个位置上是不管的。</p>
+<p>因此在第四行： </p>
+<ul>
+<li>流敏感:  s-&gt;{“x”}, o1.f-&gt;{“y”}</li>
+</ul>
+<p><img src="/img/image-20211215203935009.png" alt="image-20211215203935009"></p>
+<ul>
+<li><p>流不敏感：</p>
+<p>把程序当成无序集合， 将所有的控制流信息忽略掉。</p>
+<p>因此在整个程序中，流不敏感<code>只维护一个指针集</code></p>
+</li>
+</ul>
+<img src="img/image-20211215204252197.png" alt="image-20211215204252197" style="zoom:67%;" />
+
+<p>所有只维护一个map, 记录程序在运行期间所有指向的对象。</p>
+<p>注意由于流不敏感的分析忽略了控制流信息，因此为了保证分析结果是<code>safe</code>的，在分析到s指向o1.f后，就要把程序中所有o1.f map的对象全部传给s(保守期间)。</p>
+<blockquote>
+<p>! 目前没有证据在JAVA上Flow Sensitive 对 Flow Senisitive 精确许多</p>
+</blockquote>
+<h3 id="Analysis-Scope"><a href="#Analysis-Scope" class="headerlink" title="Analysis Scope"></a>Analysis Scope</h3><blockquote>
+<p>Which parts of program should be analyzed?</p>
+</blockquote>
+<ul>
+<li><p>全程序分析(Whole-program)</p>
+</li>
+<li><p>按需分析(Demand-driven)</p>
+</li>
+</ul>
+<img src="img/image-20211215204816102.png" alt="image-20211215204816102" style="zoom:80%;" />
+
+<p>对于如下例子:</p>
+<img src="img/image-20211215205000523.png" alt="image-20211215205000523" style="zoom:67%;" />
+
+<p>如果我们只想知道程序中第5行的call graph,那么我们只需要对变量z做指针分析就可以了。</p>
+<blockquote>
+<p>z-&gt;{o4}</p>
+</blockquote>
+<blockquote>
+<p> 有时候按需分析不一定比全程序块，可能设计大量冗余计算。</p>
+</blockquote>
+<hr>
+<h2 id="What-Do-We-Analyze"><a href="#What-Do-We-Analyze" class="headerlink" title="What Do We Analyze?"></a>What Do We Analyze?</h2><p>以下是语句不会修改指针指向的语句：</p>
+<p><del>if else</del></p>
+<p><del>switch case</del></p>
+<p><del>for&#x2F;while&#x2F;do…while</del></p>
+<p><del>break&#x2F;continue</del></p>
+<p>…</p>
+<p>Java当中有哪些指针：</p>
+<ul>
+<li>Local variable: x (数量最多)</li>
+<li>Static field: C.f (与处理variable类似，有文献看作是global field)</li>
+<li>Instance field: x.f (instance field是将x.f的组合看作一个指针，也是需要重点分析)</li>
+<li>Array element: array[i]</li>
+</ul>
+<p>对于数组， 静态分析的通用做法是建模成只有一个field的object</p>
+<blockquote>
+<p> Ignore indexes. Modeled as an object(pointed by array) with a <code>single field</code>, say arr, which may point to any value stored in array.</p>
+</blockquote>
+<p><img src="/img/image-20211216194745810.png" alt="image-20211216194745810"></p>
+<p>在右边的指针分析中，注意array在声明时new 无长度信息， 因为将array看作一个object, 包含唯一的field arr. 对所有下标(无视下标)都看作对这个field进行store。</p>
+<p>所以，指针分析基本上就是围绕以下五条语句：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">x = <span class="keyword">new</span> <span class="title class_">T</span>()   <span class="comment">// New </span></span><br><span class="line">x = y <span class="comment">// Assign</span></span><br><span class="line">x.f = y <span class="comment">// Store</span></span><br><span class="line">y = x.f <span class="comment">// Load  </span></span><br><span class="line">r = x.k(a, ...)  <span class="comment">// Call </span></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="使用三地址码简化分析"><a href="#使用三地址码简化分析" class="headerlink" title="使用三地址码简化分析"></a>使用三地址码简化分析</h3><blockquote>
+<p>Complex memory-accesses will be converted to <code>three-address code</code> by introducing temporary variables</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">x.f.g.h = y;</span><br><span class="line">t1 = x.f;</span><br><span class="line">t2 = t1.g;</span><br><span class="line">t2.h = y;</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2021/12/15/pointer-analysis/" data-id="cl1dky4nb000zn7w548sk9r73" data-title="pointer_analysis" class="article-share-link">Share</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-freedo" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2021/09/18/freedo/" class="article-date">
+  <time class="dt-published" datetime="2021-09-18T14:56:57.000Z" itemprop="datePublished">2021-09-18</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2021/09/18/freedo/">论自由</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>  我觉得我比谁都热爱自由， 但是这事最不能比较， 因为一旦有比较， 其实你就不自由了。</p>
+<p>  我不喜欢被任何组织约束，这一点不得不承认克氏对我影响很深。 他的”中观”思想，能够让我保持在一种不加任何评判的观察者状态。我觉得这是一件很科学的事情，最近发现其实很多学科的”科学”根基并不牢靠，或者说并没有彻底弄清楚。 但是很多上层的“赛先生”们无比执着科学这件事情，这本身就不科学，如果不能从已知中解脱，从一个客观(或者说中观)的角度去观察问题，就不科学。</p>
+<p>  我本身也有许多问题要改正，比如成家这件事情。 我一想到自己会被”束缚”就浑身不自在。 但是最近突然觉得享受一个家庭带来的温馨欢乐其实也不错。 :)</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2021/09/18/freedo/" data-id="cl1dky4n7000nn7w520ugcpz7" data-title="论自由" class="article-share-link">Share</a>
       
       
       
@@ -685,7 +816,7 @@
 
   <nav id="page-nav">
     
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
   </nav>
 
 </section>
@@ -718,7 +849,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/02/">February 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/01/">January 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/12/">December 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">September 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">August 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">April 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">February 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">January 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/02/">February 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/01/">January 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/12/">December 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">September 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">August 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">April 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">February 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">January 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li></ul>
     </div>
   </div>
 
@@ -739,15 +870,15 @@
           </li>
         
           <li>
-            <a href="/2022/02/14/pop/">A Survey about PHP Object Injection</a>
-          </li>
-        
-          <li>
             <a href="/2022/02/06/logic-machine/">Logic Machine</a>
           </li>
         
           <li>
-            <a href="/2022/01/26/fuz/">Fuzzing</a>
+            <a href="/2022/01/26/fuz/">Fuzzing(TODO)</a>
+          </li>
+        
+          <li>
+            <a href="/2022/01/01/bayes/">信念传播(Belief propagation)</a>
           </li>
         
       </ul>

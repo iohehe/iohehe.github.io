@@ -71,446 +71,6 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-why" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2021/12/25/why/" class="article-date">
-  <time class="dt-published" datetime="2021-12-25T05:07:30.000Z" itemprop="datePublished">2021-12-25</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2021/12/25/why/">我为什么很少写安全相关的东西</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>我的专业方向是安全，但是我一般很少写安全相关的东西。 这对我来说依然是一件很矛盾的事情， 为什么呢？</p>
-<p>就像一个锁匠，他交给一个陌生人开锁，在不了解这个人的情况下，不确定他学会不会去干坏事。 </p>
-<p>最近搭了一台服务器，好多exp打来。这些人的exp很可能是从某位师傅文章里直接拿来的。所以我写的安全工具，目前也没有放到网上过。 但是话又说回来了，不交流怎么进步呢，毕竟我从各种师傅那里学了很多，这对我来说实属矛盾。</p>
-<p>我接触wooyun的时候，始终没拿邀请码。当时也能挖到一些洞，但是有一次我看到某大学的一个sql注入漏洞被<code>厂商积极忽略</code>，我极其反感这种态度。我拿那个洞去试了一下，根本就没有修。 我的目的是让网络世界更安全，为什么要把别人的东西给你让你公开？后来国内有了各种SRC, 还有一些平台保护措施比较好了，然而我也我不到洞了，师傅们都tql ；）。</p>
-<p>有时候想想，自己玩安全真的有种自嗨的感觉，但是做喜欢的事，锦衣夜行有如何？</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://example.com/2021/12/25/why/" data-id="cl1d6yihd0023kjw5glx31n6j" data-title="我为什么很少写安全相关的东西" class="article-share-link">Share</a>
-      
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-pointer-analysis" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2021/12/15/pointer-analysis/" class="article-date">
-  <time class="dt-published" datetime="2021-12-15T09:57:35.000Z" itemprop="datePublished">2021-12-15</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2021/12/15/pointer-analysis/">pointer_analysis</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <blockquote>
-<p>以南大视频课件为主</p>
-</blockquote>
-<ol>
-<li><p>Motivation</p>
-</li>
-<li><p>Introduction to Pointer Analysis 06:50</p>
-<ul>
-<li>Pointer Analysis and Alias Analysis 14:50</li>
-<li>Application of Pointer Analysis 17:20</li>
-</ul>
-</li>
-<li><p>Key Factors of Pointer Analysis 19:15</p>
-<ul>
-<li>Heap Abstration 21:30</li>
-<li>Context Sensitivity 27:40</li>
-<li>Flow Sensitivity 32:30</li>
-<li>Analysis Scope 45:40</li>
-<li>Pointer Analysis in This Course 52:20  –&gt; 60:20</li>
-</ul>
-</li>
-<li><p>Concerned Statements 64:50</p>
-</li>
-<li><p>Conclusion&amp;下节课内容 77:00</p>
-</li>
-</ol>
-<h1 id="指针分析"><a href="#指针分析" class="headerlink" title="指针分析"></a>指针分析</h1><blockquote>
-<p>南大小课堂开课啦～</p>
-</blockquote>
-<h2 id="Problem-of-CHA"><a href="#Problem-of-CHA" class="headerlink" title="Problem of CHA"></a>Problem of CHA</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> <span class="title function_">foo</span><span class="params">()</span> &#123;</span><br><span class="line">  <span class="type">Number</span> <span class="variable">n</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">One</span>();</span><br><span class="line">  <span class="type">int</span> <span class="variable">x</span> <span class="operator">=</span> n.get();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">interface</span> <span class="title class_">Number</span> &#123;</span><br><span class="line">  <span class="type">int</span> <span class="title function_">get</span><span class="params">()</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Zero</span> <span class="keyword">implements</span> <span class="title class_">Number</span> &#123;</span><br><span class="line">  <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">get</span><span class="params">()</span> &#123; <span class="keyword">return</span> <span class="number">0</span>; &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">One</span> <span class="keyword">implements</span> <span class="title class_">Number</span> &#123;</span><br><span class="line">  <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">get</span><span class="params">()</span> &#123; <span class="keyword">return</span> <span class="number">1</span>; &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Two</span> <span class="keyword">implements</span> <span class="title class_">Number</span> &#123;</span><br><span class="line">  <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">get</span><span class="params">()</span> &#123;<span class="keyword">return</span> <span class="number">2</span>;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>在这个例子中，很显然object n，new的是一个One。 </p>
-<p>因此返回1。</p>
-<blockquote>
-<p>如果按照CHA, 那么X就是根据变量类型(Number)来解， 而Number有三个子类。因此此时x指向3个值(0, 1, 2)</p>
-</blockquote>
-<p>一句话，CHA看不到object的声明类型。</p>
-<p>因此在做常量传播的时候，我们的CHA方法就会拿到两个假值(0,2)，此时的结果就是NAC(不精确)。</p>
-<p>而做指针分析， 故名思义，就是知道n指向哪个object。</p>
-<blockquote>
-<p>一个 class在new 的时候， 会做如下事情： 在内存中构造一个object, 运行构造函数，并使用n指向这个object, 因此这里的n就等同与一个指向object地址的指针。</p>
-</blockquote>
-<p>这个例子中，指针分析可以知道n指向<code>new One</code>这个唯一对象。然后构造调用图(对new One做dispatch)， 得到唯一一个get方法。  </p>
-<hr>
-<h2 id="指针分析介绍"><a href="#指针分析介绍" class="headerlink" title="指针分析介绍"></a>指针分析介绍</h2><h3 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h3><p>指针分析可以看作一个基础的静态分析， 他回答的问题是程序中每个指针可以指向那些地址。</p>
-<p>对于OO语言 来说，指针分析回答的是一个变量(或者field)可以指向哪些object(may analysis)。</p>
-<blockquote>
-<p>Answer: Which <strong>object</strong> a <strong>pointer</strong> can point to?</p>
-</blockquote>
-<p>Let’s explain it by an analysis process:</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> <span class="title function_">foo</span><span class="params">()</span> &#123;</span><br><span class="line">  <span class="type">A</span> <span class="variable">a</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">A</span>();</span><br><span class="line">  <span class="type">B</span> <span class="variable">x</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">B</span>();</span><br><span class="line">  a.setB(x);</span><br><span class="line">  <span class="type">B</span> <span class="variable">y</span> <span class="operator">=</span> a.getB();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">A</span> &#123;</span><br><span class="line">  B b;</span><br><span class="line">  <span class="keyword">void</span> <span class="title function_">setB</span><span class="params">(B b)</span> &#123;</span><br><span class="line">    <span class="built_in">this</span>.b = b;</span><br><span class="line">  &#125;</span><br><span class="line">  B <span class="title function_">getB</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">this</span>.b;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>本例子中，类A 是类B的容器，并提供了get, set方法。 在foo()方法中，独立的new了A和B。 而变量a是<code>new A</code>的指针，变量x是<code>new B</code>的指针。 之后，a调用 setB方法将<code>new B()</code>，store进了<code>new A()</code>。接着又声明了变量y，通过getB方法获取了<code>new B</code>（指向，没 new）。</p>
-<img src="img/image-20211215193741664.png" alt="image-20211215193741664" style="zoom:50%;" />
-
-<blockquote>
-<p>很datalog </p>
-</blockquote>
-<h2 id="Key-Factors-of-Pointer-Analysis"><a href="#Key-Factors-of-Pointer-Analysis" class="headerlink" title="Key Factors of Pointer Analysis"></a>Key Factors of Pointer Analysis</h2><h3 id="Allocation-Site-Abstraction"><a href="#Allocation-Site-Abstraction" class="headerlink" title="Allocation-Site Abstraction"></a>Allocation-Site Abstraction</h3><h3 id="Context-Sensitivity"><a href="#Context-Sensitivity" class="headerlink" title="Context Sensitivity"></a>Context Sensitivity</h3><blockquote>
-<p>How to model calling contexts? </p>
-</blockquote>
-<p>上下文敏感，在指针分析中，如何对调用上下文进行建模。</p>
-<p><code>上下文</code>这个概念有点抽象。就是一个过程调用另一个过程时工作栈上的状态(好像更抽象了)。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Test</span> &#123;</span><br><span class="line">  <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">foo</span><span class="params">(<span class="type">int</span> p)</span> &#123;</span><br><span class="line"> 		<span class="keyword">if</span> (p == <span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">  </span><br><span class="line"><span class="keyword">void</span> <span class="title function_">foo</span><span class="params">()</span> &#123;</span><br><span class="line">  	<span class="type">Test</span> <span class="variable">a</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Test</span>();</span><br><span class="line">    <span class="type">Test</span> <span class="variable">b</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Test</span>();</span><br><span class="line">    <span class="type">int</span> <span class="variable">x</span> <span class="operator">=</span> <span class="number">1</span>;</span><br><span class="line">    <span class="type">boolean</span> <span class="variable">test_a</span> <span class="operator">=</span> a.foo(x);</span><br><span class="line">  	x = <span class="number">2</span>;	</span><br><span class="line">  	<span class="type">boolean</span> <span class="variable">test_b</span> <span class="operator">=</span> b.foo(x);</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-
-
-<p>对于上下文敏感，对于同一个方法，他有多个上下文，么个上下文分别分析一次</p>
-<img src="img/image-20211215201557399.png" alt="image-20211215201557399" style="zoom:80%;" />
-
-<p>这里有两个上下文，就会有两个不同的分析。</p>
-<p>对于上下文不敏感：</p>
-<p><img src="/img/image-20211215202037637.png" alt="image-20211215202037637"></p>
-<p>方法foo()只分析一次。 汇合上下文可能会丢失精度。</p>
-<blockquote>
-<p>向下文敏感技术是一个重要技术，他能很大程度提高分析精度</p>
-</blockquote>
-<h3 id="Flow-Sensitivity"><a href="#Flow-Sensitivity" class="headerlink" title="Flow Sensitivity"></a>Flow Sensitivity</h3><blockquote>
-<p>How to model control flow?</p>
-</blockquote>
-<p>因为同样的语句，如果顺序不同可能结果就不一样</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> a = <span class="number">1</span>;</span><br><span class="line"><span class="type">int</span> b = <span class="number">2</span>;</span><br><span class="line">a = b;</span><br><span class="line"><span class="type">int</span> c;</span><br><span class="line">c = b-a;</span><br><span class="line">c = a-b;</span><br></pre></td></tr></table></figure>
-
-
-
-<p>在程序的每一个点,都维护着一个映射(状态)。 每一条语句，都存着数据流到达这一点的数据流信息</p>
-<p>在指针分析中要做的流敏感，就要让每一个指针维持一个指向关系集合：</p>
-<p><img src="/img/image-20211215203219981.png" alt="image-20211215203219981"></p>
-<p>在这个图片中， 可以看到变量c指向了<code>new C</code>, 经过Allocation-site Abstraction后就是o1</p>
-<blockquote>
-<p>c-&gt;{o1}</p>
-</blockquote>
-<p>然后第二句对一个字面量<code>&quot;x&quot;</code>进行了store操作，符号c.f也就是<code>o1.f</code>。</p>
-<p>第三句中<code>s = c.f</code>把o1.f取出来塞给了s。</p>
-<p>到了第四句<code>o1.f</code>更新了。</p>
-<p>人为的去审计当然是指影响<code>o1.f</code>了，因为顺序执行,<code>s</code>的赋值语句已经被执行过了。</p>
-<p>但是在流不敏感的情况下， 分析程序只知道: <code>s = o1.f</code>，至于在<code>程序流</code>的哪个位置上是不管的。</p>
-<p>因此在第四行： </p>
-<ul>
-<li>流敏感:  s-&gt;{“x”}, o1.f-&gt;{“y”}</li>
-</ul>
-<p><img src="/img/image-20211215203935009.png" alt="image-20211215203935009"></p>
-<ul>
-<li><p>流不敏感：</p>
-<p>把程序当成无序集合， 将所有的控制流信息忽略掉。</p>
-<p>因此在整个程序中，流不敏感<code>只维护一个指针集</code></p>
-</li>
-</ul>
-<img src="img/image-20211215204252197.png" alt="image-20211215204252197" style="zoom:67%;" />
-
-<p>所有只维护一个map, 记录程序在运行期间所有指向的对象。</p>
-<p>注意由于流不敏感的分析忽略了控制流信息，因此为了保证分析结果是<code>safe</code>的，在分析到s指向o1.f后，就要把程序中所有o1.f map的对象全部传给s(保守期间)。</p>
-<blockquote>
-<p>! 目前没有证据在JAVA上Flow Sensitive 对 Flow Senisitive 精确许多</p>
-</blockquote>
-<h3 id="Analysis-Scope"><a href="#Analysis-Scope" class="headerlink" title="Analysis Scope"></a>Analysis Scope</h3><blockquote>
-<p>Which parts of program should be analyzed?</p>
-</blockquote>
-<ul>
-<li><p>全程序分析(Whole-program)</p>
-</li>
-<li><p>按需分析(Demand-driven)</p>
-</li>
-</ul>
-<img src="img/image-20211215204816102.png" alt="image-20211215204816102" style="zoom:80%;" />
-
-<p>对于如下例子:</p>
-<img src="img/image-20211215205000523.png" alt="image-20211215205000523" style="zoom:67%;" />
-
-<p>如果我们只想知道程序中第5行的call graph,那么我们只需要对变量z做指针分析就可以了。</p>
-<blockquote>
-<p>z-&gt;{o4}</p>
-</blockquote>
-<blockquote>
-<p> 有时候按需分析不一定比全程序块，可能设计大量冗余计算。</p>
-</blockquote>
-<hr>
-<h2 id="What-Do-We-Analyze"><a href="#What-Do-We-Analyze" class="headerlink" title="What Do We Analyze?"></a>What Do We Analyze?</h2><p>以下是语句不会修改指针指向的语句：</p>
-<p><del>if else</del></p>
-<p><del>switch case</del></p>
-<p><del>for&#x2F;while&#x2F;do…while</del></p>
-<p><del>break&#x2F;continue</del></p>
-<p>…</p>
-<p>Java当中有哪些指针：</p>
-<ul>
-<li>Local variable: x (数量最多)</li>
-<li>Static field: C.f (与处理variable类似，有文献看作是global field)</li>
-<li>Instance field: x.f (instance field是将x.f的组合看作一个指针，也是需要重点分析)</li>
-<li>Array element: array[i]</li>
-</ul>
-<p>对于数组， 静态分析的通用做法是建模成只有一个field的object</p>
-<blockquote>
-<p> Ignore indexes. Modeled as an object(pointed by array) with a <code>single field</code>, say arr, which may point to any value stored in array.</p>
-</blockquote>
-<p><img src="/img/image-20211216194745810.png" alt="image-20211216194745810"></p>
-<p>在右边的指针分析中，注意array在声明时new 无长度信息， 因为将array看作一个object, 包含唯一的field arr. 对所有下标(无视下标)都看作对这个field进行store。</p>
-<p>所以，指针分析基本上就是围绕以下五条语句：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">x = <span class="keyword">new</span> <span class="title class_">T</span>()   <span class="comment">// New </span></span><br><span class="line">x = y <span class="comment">// Assign</span></span><br><span class="line">x.f = y <span class="comment">// Store</span></span><br><span class="line">y = x.f <span class="comment">// Load  </span></span><br><span class="line">r = x.k(a, ...)  <span class="comment">// Call </span></span><br></pre></td></tr></table></figure>
-
-
-
-<h3 id="使用三地址码简化分析"><a href="#使用三地址码简化分析" class="headerlink" title="使用三地址码简化分析"></a>使用三地址码简化分析</h3><blockquote>
-<p>Complex memory-accesses will be converted to <code>three-address code</code> by introducing temporary variables</p>
-</blockquote>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">x.f.g.h = y;</span><br><span class="line">t1 = x.f;</span><br><span class="line">t2 = t1.g;</span><br><span class="line">t2.h = y;</span><br></pre></td></tr></table></figure>
-
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://example.com/2021/12/15/pointer-analysis/" data-id="cl1d6yih40016kjw5fr89bw8u" data-title="pointer_analysis" class="article-share-link">Share</a>
-      
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-pla-dataflow" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2021/09/26/pla-dataflow/" class="article-date">
-  <time class="dt-published" datetime="2021-09-26T11:22:19.000Z" itemprop="datePublished">2021-09-26</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2021/09/26/pla-dataflow/">Founddation Data Flow Analysis</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <h2 id="Data-Flow-Analysis-on-Control-Flow-Graph"><a href="#Data-Flow-Analysis-on-Control-Flow-Graph" class="headerlink" title="Data Flow Analysis on Control Flow Graph"></a>Data Flow Analysis on Control Flow Graph</h2><img src="pla-dataflow/image-20210926192419749.png" alt="image-20210926192419749" />
-
-
-
-<ul>
-<li><p>Any given node in the <code>control flow graph</code> takes some amouts of data, and then possibly join these amounts of data</p>
-</li>
-<li><p>Then applies a function(so called <code>transfer function</code>) that generate the output data.</p>
-</li>
-<li><p>In_b(<strong>in of b</strong>):  descripting the information that is avaliable when we enter the basic block b</p>
-</li>
-<li><p>ou_b(<strong>out of b</strong> ): using out of b as the information that we have been at the end of  the particular b.</p>
-</li>
-<li><p>Join of b: as the function that takes all the incomming data and merges that into in of b.</p>
-<hr>
-<h2 id="Characterising-Data-Flow-Analyses"><a href="#Characterising-Data-Flow-Analyses" class="headerlink" title="Characterising Data Flow Analyses"></a>Characterising Data Flow Analyses</h2></li>
-</ul>
-<p><img src="/pla-dataflow/image-20210927181647849.png" alt="image-20210927181647849"></p>
-<ul>
-<li>data flow analyses can be a <strong>Forward</strong> analyses or can also be a <strong>backward</strong> anslyses</li>
-<li>we. can confirm some sort of domains-some set of values we care about-something we want to collect, we called it <strong>L</strong></li>
-<li>transfer of b,  is simply going to be mapping from this analyses into the other analysis domain.</li>
-<li>the join function is the function that takes two results of analysis domain merging them together into one result.</li>
-</ul>
-<p>We require a couple of properties to ensure the termination(L, trans, join)</p>
-<p><img src="/pla-dataflow/image-20210927184108229.png" alt="image-20210927184108229"></p>
-<p>To motivate that, let’s look at an example </p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://example.com/2021/09/26/pla-dataflow/" data-id="cl1d6yih30015kjw59n1oateg" data-title="Founddation Data Flow Analysis" class="article-share-link">Share</a>
-      
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-freedo" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2021/09/18/freedo/" class="article-date">
-  <time class="dt-published" datetime="2021-09-18T14:56:57.000Z" itemprop="datePublished">2021-09-18</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2021/09/18/freedo/">论自由</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>  我觉得我比谁都热爱自由， 但是这事最不能比较， 因为一旦有比较， 其实你就不自由了。</p>
-<p>  我不喜欢被任何组织约束，这一点不得不承认克氏对我影响很深。 他的”中观”思想，能够让我保持在一种不加任何评判的观察者状态。我觉得这是一件很科学的事情，最近发现其实很多学科的”科学”根基并不牢靠，或者说并没有彻底弄清楚。 但是很多上层的“赛先生”们无比执着科学这件事情，这本身就不科学，如果不能从已知中解脱，从一个客观(或者说中观)的角度去观察问题，就不科学。</p>
-<p>  我本身也有许多问题要改正，比如成家这件事情。 我一想到自己会被”束缚”就浑身不自在。 但是最近突然觉得享受一个家庭带来的温馨欢乐其实也不错。 :)</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://example.com/2021/09/18/freedo/" data-id="cl1d6yigz000rkjw5hn5ndv1c" data-title="论自由" class="article-share-link">Share</a>
-      
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-black-widow" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2021/08/29/black-widow/" class="article-date">
-  <time class="dt-published" datetime="2021-08-29T12:20:59.000Z" itemprop="datePublished">2021-08-29</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2021/08/29/black-widow/">Black Widow</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <h2 id="0x01-Intro"><a href="#0x01-Intro" class="headerlink" title="0x01  Intro"></a>0x01  Intro</h2><p>As the title shown that the black Widow is a blackbox data-driven web scanning. </p>
-<p>This paper is  in S&amp;P 2021, to find XSS in web applications.</p>
-<h2 id="0x02-Challenges"><a href="#0x02-Challenges" class="headerlink" title="0x02 Challenges"></a>0x02 Challenges</h2><p>The challenge of web application scanning mainly has three items:</p>
-<ul>
-<li><p><strong>Navigation:</strong> Navigation is a question how can we cover the application contents as more as possible. A web application has a lot of methods to create new content, such as links, form submissions, javascript events.  So the first order of the blackbox web scanning is navigation modeling. (Op: <em>it is a question about space</em>)</p>
-</li>
-<li><p><strong>Traversing:</strong> Traversing is about how to handle complex workflows in the application. The events have some trigger sequences. For example, if there is a vulnerability on the picture comment place, at first, we must need to upload a picture before.(Op: <em>it is a question about line</em>) </p>
-</li>
-<li><p><strong>Inter-state Dependencis:</strong> This is about where we look for our payload in the web application. For instance, when we submit some data as admin, the content may output in other pages. So how to build the inter-state dependencis is a crucial point to build a strong scanner.(Op: <em>it is a question about point</em>)</p>
-</li>
-</ul>
-<h2 id="0x03-Previous"><a href="#0x03-Previous" class="headerlink" title="0x03 Previous"></a>0x03 Previous</h2><p>Black Widow compared with three tools: <em>jAk</em>,<em>Enemy of the State</em>, and <em>Ligre</em>. To address the above challenges, the author found that these tools are just imporving one of these methods in isolation. </p>
-<ul>
-<li><p><em>JAk</em> focused on exploring client-side events.(It can find sequences of events that could be exploited by deep-first fashion, but cannot extend across multiple pages)</p>
-</li>
-<li><p><em>Enemy of the State</em> focused on traversing server-side states(traversed with respect to state).</p>
-</li>
-<li><p><em>Ligre</em> used reversed engineering try to identify interestring dependencies, which towards to slove the challenge three.</p>
-</li>
-</ul>
-<h2 id="0x04-Approach"><a href="#0x04-Approach" class="headerlink" title="0x04 Approach"></a>0x04 Approach</h2><p>Black widow’s key idea is to combine the advantages of all of these methods to handle the modern complex web applications.</p>
-<img src="black-widow/image-20210829220127541.png" alt="image-20210829220127541" style="zoom:80%;" />
-
-
-
-<h3 id="Navigation"><a href="#Navigation" class="headerlink" title="Navigation"></a>Navigation</h3><p>To handle navigation,  Black widow treats the <strong>nodes</strong> in the graph as <strong>client-side states</strong> and the <strong>edges</strong> between these nodes are the <strong>action</strong> needed to move between these states. So web applications can be represented as a labeled directed graph. </p>
-<h4 id="a-Model-Construction"><a href="#a-Model-Construction" class="headerlink" title="a) Model Construction"></a>a) Model Construction</h4><p>Black widow start model construction from a initial URL, then retrieves the first webpage and the referenced resources. While execuing the loaded javascript, which extracts the registered Javascript events and add them to the model.</p>
-<p> So the model has two kinds of states, one kind is from page(e.g., URL) and another is from javascript events(e.g., click).</p>
-<p>And there are four types of actions: GET requests, form submissions, iframes and Javascript events.</p>
-<h4 id="b-Extraction-of-Actions"><a href="#b-Extraction-of-Actions" class="headerlink" title="b) Extraction of Actions"></a>b) Extraction of Actions</h4><p>Black widow uses dynamic analysis approach, monitioring for call to browser APIs to register JavaScript events and modification of the DOM treee to insert tags such as forms and ahchors.</p>
-<ul>
-<li>use <em>JAK</em>‘s library to handle event registration hooking before loading a page.</li>
-<li>Monitor DOM Modification to detect updates to the page(rescan the page).</li>
-</ul>
-<h4 id="C-Infinite-Crawls"><a href="#C-Infinite-Crawls" class="headerlink" title="C) Infinite Crawls"></a>C) Infinite Crawls</h4><p>To avoid infinite crawls:</p>
-<ul>
-<li>a set of heuristics that determine when two pages or two actions are similar.</li>
-<li>a hard limit to the maximum number of “similar” actions.</li>
-</ul>
-<h3 id="Traversal"><a href="#Traversal" class="headerlink" title="Traversal"></a>Traversal</h3><blockquote>
-<p>Traversal is describing which order actions should be performed and when to perform possibly state-changing actions.</p>
-</blockquote>
-<p>As we can  seen in the above figure, the blue line is a process of traverse we pick unvisited edge from the navigation graph in the order they were added.</p>
-<img src="black-widow/image-20210929165046202.png" alt="image-20210929165046202 " style="zoom:80%;" />
-
-<p>This is the function of traverse, the parameter is the edge(including: url, form, event, iframe).</p>
-<p>if the current edge has a previous edge, we would iterator it and check the <code>safe</code> edge, <code>safe</code> means user can visit direct, in this work, it is just the GET method. If the edge meet safe, the loop will break and create a new navigate object which init with workflow.</p>
-<p>So, in total, the goal of traversal is finding the action chains on the navigation graph.</p>
-<h3 id="Inter-sate-Dependencies"><a href="#Inter-sate-Dependencies" class="headerlink" title="Inter-sate Dependencies"></a>Inter-sate Dependencies</h3><p><img src="/black-widow/image-20210929165457363.png" alt="image-20210929165457363"></p>
-<h3 id="Dynamic-XSS-detection"><a href="#Dynamic-XSS-detection" class="headerlink" title="Dynamic XSS detection"></a>Dynamic XSS detection</h3>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://example.com/2021/08/29/black-widow/" data-id="cl1d6yigv000ikjw5b0e22382" data-title="Black Widow" class="article-share-link">Share</a>
-      
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
     <article id="post-exp" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
     <a href="/2021/08/16/exp/" class="article-date">
@@ -546,96 +106,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2021/08/16/exp/" data-id="cl1d6yigy000qkjw52tc590tn" data-title="教训与感悟" class="article-share-link">Share</a>
-      
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-ml-2021-2" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2021/07/15/ml-2021-2/" class="article-date">
-  <time class="dt-published" datetime="2021-07-15T12:15:15.000Z" itemprop="datePublished">2021-07-15</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2021/07/15/ml-2021-2/">台大深度学习2021-2</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p><a target="_blank" rel="noopener" href="https://speech.ee.ntu.edu.tw/~hylee/ml/ml2021-course-data/regression%20(v16).pdf">Slides</a></p>
-<p>Linear models are tooo simple, we need more sophisticated modes.</p>
-<p>也许实际情况下， 我们要找的model不是一个线性函数。</p>
-<img src="ml-2021-2/image-20210715204517964.png" alt="image-20210715204517964" style="zoom:67%;" />
-
-<p>linear models 在这种情况下就cover不了实际情况(红线)，这种限制就叫做<code>Model Bias</code>。</p>
-<p>如何表示一个更复杂的model：</p>
-<img src="ml-2021-2/image-20210715204805102.png" alt="image-20210715204805102" style="zoom:50%;" />
-
-<p>红色的function就可以表示为常量(constant)+蓝色function的集合。 以0表示常量位置，即初始值。 通过1，2，3三个蓝色function的叠加，每个蓝色function会影响红色的斜率变化。 </p>
-<blockquote>
-<p>由很多线段组成的curves, 称为piecewise linear curves</p>
-</blockquote>
-<p>Piecewise  linear curves 可以由常数加上一堆蓝色function组成， 如果curves的转折点越多需要的蓝色function就越多。</p>
-<img src="ml-2021-2/image-20210715205221020.png" alt="image-20210715205221020" style="zoom:50%;" />
-
-
-
-<p>如果是<code>continuous curve</code> 可以在其上取点连起来，构成piecewise linear curves, 所以：</p>
-<p>我们可以用piecewise linear curve 逼近任何的曲线， 又可以用蓝色的function去组合出piecewise linear curve:</p>
-<img src="ml-2021-2/image-20210715205439712.png" alt="image-20210715205439712" style="zoom:50%;" />
-
-<p>那么接下来的重点问题是， 如何表示蓝色function?</p>
-<img src="ml-2021-2/image-20210715205608267.png" alt="image-20210715205608267" style="zoom:50%;" />
-
-<p>在这里，一种思路是使用<code>sigmoid function</code>去近似地刻画蓝色function。<br>$$<br>y &#x3D; c\frac{1}{1+e^{-(b+wx_1)}}<br>$$</p>
-<p>这个function的x1趋近于无穷大， 就收敛在高度为c的地放；x1趋近于无穷小的时候就接近于零，因此就构成了上图中蓝色虚线的形状(Sigmoid)。</p>
-<p>现在有了sigmoid function, 我们就可以用它来逼近蓝色实现function（<code>hard sigmoid</code>）。</p>
-<p>如何趋近呢？ 就需要调整各个参数(<code>b</code>, <code>w</code>, <code>c</code>)：</p>
-<img src="ml-2021-2/image-20210715210255445.png" alt="image-20210715210255445" style="zoom:50%;" />
-
-<ul>
-<li>w: Change slopes,  改坡度</li>
-<li>b: shift, 左右移动</li>
-<li>c: Change height ,改高度</li>
-</ul>
-<p>因此我可以通过改参数制造出不同的sigmoid function, 把这些sigmoid function叠起来以后，我们就可以逼近不同的Piecewise Linear的function， 然后用这些Piecewise的function 来近似各种不同的 Continuous的functions（妙啊）。</p>
-<img src="ml-2021-2/image-20210802061142900.png" alt="image-20210802061142900" style="zoom:50%;" />
-
-
-
-<p>如上图所示， 我们就有三个不同的function(0为常数量)，其公式为:<br>$$<br>y &#x3D; b + \sum_ic_isigmod(b_i+w_ix_1)<br>$$<br>其中b 是constant, 1,2,3是有斜度的三个sigmod函数，我们对其求和。</p>
-<blockquote>
-<p> 总结： 本来是liner model: <code>y=b+wx1</code>, 他有非常大的限制， 叫做model bias。 因此我们可以写一个更有弹性的有未知参数的function来降低model bias(上式)。</p>
-</blockquote>
-<img src="ml-2021-2/image-20210802061606287.png" alt="image-20210802061606287" style="zoom:50%;" />
-
-
-
-
-
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://example.com/2021/07/15/ml-2021-2/" data-id="cl1d6yih0000wkjw57soi37fa" data-title="台大深度学习2021-2" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2021/08/16/exp/" data-id="cl1dky4n7000mn7w5g09i6fpi" data-title="教训与感悟" class="article-share-link">Share</a>
       
       
       
@@ -698,98 +169,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2021/07/12/reaching-definitions/" data-id="cl1d6yih5001bkjw5ggqchkt2" data-title="reaching_definitions" class="article-share-link">Share</a>
-      
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-CSAPP-5" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2021/07/09/CSAPP-5/" class="article-date">
-  <time class="dt-published" datetime="2021-07-09T10:37:17.000Z" itemprop="datePublished">2021-07-09</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2021/07/09/CSAPP-5/">Machine-Level Programming 1 - Basics</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>重刷，顺便练英文</p>
-<ol>
-<li><p>C, assembly, machine code</p>
-</li>
-<li><p>Assembly Basics: Registers, opeerands, move</p>
-</li>
-<li><p>Arithmetic &amp; logical operations</p>
-</li>
-</ol>
-<ul>
-<li><p>X86:</p>
-<blockquote>
-<p>X86 is sort of a colloquial term for intel processors, as the first one was called the 8086, and then 8286, 8386.. So called x86.</p>
-</blockquote>
-<img src="CSAPP-5/image-20210709191919855.png" alt="image-20210709191919855" style="zoom:40%;" /></li>
-</ul>
-<ul>
-<li><p>broadwell model</p>
-<img src="CSAPP-5/image-20210709192517170.png" alt="image-20210709192517170" style="zoom:60%;" /></li>
-</ul>
-<p>4 cores a serious standard desktop model, eight first a server class machine.</p>
-<h2 id="0x01-C-assembly-machine-code"><a href="#0x01-C-assembly-machine-code" class="headerlink" title="0x01 C, assembly, machine code"></a>0x01 C, assembly, machine code</h2><ul>
-<li>Arhchitecture(ISA: instruction set architecture)</li>
-</ul>
-<p>The hardware design people have figured out all kinds of ways to implement instructions. Some of them are fast but take a lot of hardware, some are contrary. So they managed to create this abstraction that’s called the <code>instruction set architecure</code>, which is what the target of a <code>compile</code> should be.</p>
-<ul>
-<li><p>Microachitecture: Implementation of the architecture(about hardware)</p>
-</li>
-<li><p>Code Forms:</p>
-<ul>
-<li>Machine Code: The byte-level programs that a processor executes</li>
-<li>Assembly Code: A text representation of machine code</li>
-</ul>
-</li>
-</ul>
-<p>So,You can think of from instruction set point of view: </p>
-<ul>
-<li>Example ISAs: <ul>
-<li>Intel: x86, IA32, Itanium, x86-64</li>
-<li>ARM:  used in almost all mobile phones</li>
-</ul>
-</li>
-</ul>
-<h3 id="Assembly-x2F-Machine-Code-View"><a href="#Assembly-x2F-Machine-Code-View" class="headerlink" title="Assembly&#x2F;Machine Code View"></a>Assembly&#x2F;Machine Code View</h3><img src="CSAPP-5/image-20210709194510894.png" alt="image-20210709194510894" style="zoom:60%;" />
-
-<img src="CSAPP-5/image-20210709195524486.png" alt="image-20210709195524486 " style="zoom:50%;" />
-
-<p>There are some visible parts of the instruction of the machine state; then you can examine and test and operate on and you must in fact.  In particular, there are some sort of program counters to tell you what address is the instructino that you are going to execute next, where is the localtion memroy. </p>
-<p>And then there is a set of registers which are part of that the programmer actually makes use of, and you actually give then by name as specifically. </p>
-<p>The other set of states (just a few bits of states ) that talked about what are the results of some recent instructions, where they did it produce a value of 0, did it produce a negative or a positive value.</p>
-<p>So that is the sort of the processor and the the other part of is the memory.</p>
-<p>The memory is what you can think of  logically as just an <code>array of bytes</code>. That’s what the machine level programmer sees. It’s actually kind of a ficition in different ways as I mentioned before. There is sort of a collaboration between the operating system and the hardware. What we call <code>vitual memory</code> to make it looks like each program running on the process has its own independent <code>array of bytes</code> that it can acces.</p>
-<h3 id="Turning-C-into-Object-Code"><a href="#Turning-C-into-Object-Code" class="headerlink" title="Turning C into Object Code"></a>Turning C into Object Code</h3><p><img src="/CSAPP-5/image-20210709200927134.png" alt="image-20210709200927134"></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://example.com/2021/07/09/CSAPP-5/" data-id="cl1d6yign0003kjw518wz7dfb" data-title="Machine-Level Programming 1 - Basics" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2021/07/12/reaching-definitions/" data-id="cl1dky4nc0011n7w5fe6v7um1" data-title="reaching_definitions" class="article-share-link">Share</a>
       
       
       
@@ -964,7 +344,1018 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2021/07/07/ml-2021-1/" data-id="cl1d6yih0000vkjw5gyutfer4" data-title="台大深度学习2021-1" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2021/07/07/ml-2021-1/" data-id="cl1dky4n9000sn7w5ft3e9tws" data-title="台大深度学习2021-1" class="article-share-link">Share</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-PAAA-1" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2021/07/07/PAAA-1/" class="article-date">
+  <time class="dt-published" datetime="2021-07-07T10:29:06.000Z" itemprop="datePublished">2021-07-07</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2021/07/07/PAAA-1/">Program Analysis An Appetizer读书笔记： 第一章</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p><img src="/PAAA-1/image-20210707182952591.png" alt="image-20210707182952591"></p>
+<p>本书在结构上如上图所示：本书没有使用任何具体的程序语言， 而是使用作者设计的两套prototypical programming languages, based on Guarded Commands and a subset of C，即上图A和B。</p>
+<ul>
+<li>第一章：  介绍了basic model of program graphs</li>
+<li>第二章和第三章： 介绍了基本的过程内程序分析： 四个经典的bit-vector analyses, monotone framework。</li>
+</ul>
+<h1 id="第一章：-Programs-as-Graphs"><a href="#第一章：-Programs-as-Graphs" class="headerlink" title="第一章： Programs as Graphs"></a>第一章： Programs as Graphs</h1><p><img src="/PAAA-1/image-20210707184040462.png" alt="image-20210707184040462"></p>
+<p>Figure 1.1 的有向图表示了一个程序图， 其中有五个点，定点表示了<code>initial node</code>, 最右边的叶子节点是<code>final node</code>。 q1, q2, q3 是三个<code>additional nodes</code>。</p>
+<p>边上的label是该边相关的<code>actions</code> ， 构成了程序的语义。 可以看出这个程序是在迭代的计算阶乘。</p>
+<h2 id="1-1-Actions"><a href="#1-1-Actions" class="headerlink" title="1.1 Actions"></a>1.1 Actions</h2><p>根据上面所描述的， 程序图的边上的actions代表了程序的语义。 </p>
+<p><img src="/PAAA-1/image-20210707191056485.png" alt="image-20210707191056485"></p>
+<p>以上是对每一个action的形式化的描述：首先看第一个第一式子中有七种可能， </p>
+<ul>
+<li><p>Assign: 分别是变量或数组赋值，</p>
+</li>
+<li><p>Input: 从channel或文件读取的数据赋值给变量或数组，</p>
+</li>
+<li><p>Output: 将数据写入channle或文件</p>
+</li>
+<li><p>Boolean</p>
+</li>
+<li><p>skip</p>
+</li>
+</ul>
+<p>其中a代表一个算数表达式， b代表一个布尔表达式， 也给出了定义。</p>
+<h2 id="1-2-Memories"><a href="#1-2-Memories" class="headerlink" title="1.2 Memories"></a>1.2 Memories</h2><p>Memory is in order to describe the meaning of the actions. There are three kinds of components we should consider: </p>
+<ol>
+<li><code>Variables</code>: The values of the variables</li>
+<li><code>Arrays</code>:  The contents of the arrays</li>
+<li><code>Channels</code>: The data available  on the Channels.</li>
+</ol>
+<ul>
+<li><p>Variables: The values of the variables are modelled by a mapping:<br>$$<br>\sigma_v: Var \rightarrow Int<br>$$<br><code>Var</code> is a finite set of variables that we are interesting; and the set called <code>the domain of the mapping</code>.</p>
+<p>This mapping can determines the value of each variable. </p>
+<p><img src="/PAAA-1/image-20210712124107530.png" alt="image-20210712124107530"></p>
+</li>
+</ul>
+<p>The Figure 1.2 shows a memory:<br>$$<br>\sigma: {x,y} \rightarrow Int<br>$$</p>
+<p><img src="/PAAA-1/image-20210712124309441.png" alt="image-20210712124309441"></p>
+<p>The Figuare 1.3 shows an update of the memory by assignment, and it can be represented by:</p>
+<p><img src="/PAAA-1/image-20210712124532326.png" alt="image-20210712124532326"></p>
+<ul>
+<li><p>Arrays. The values of arrays are modelled by a mapping:<br>$$<br>\sigma_A: Arr \rightarrow Int^*<br>$$</p>
+<p>Arr is a set of interesting array names;</p>
+<p>Int* denotes lists of values.</p>
+<p><img src="/PAAA-1/image-20210712124914015.png" alt="image-20210712124914015"></p>
+</li>
+</ul>
+<p>Figure 1.4 shows a memory of two Arrays <code>A</code> (length 3)and <code>B</code>(length 4).</p>
+<p><img src="/PAAA-1/image-20210712125206806.png" alt="image-20210712125206806"> </p>
+<p>We can update memory in the <code>Figure 1.5</code> <img src="/PAAA-1/image-20210712125353559.png" alt="image-20210712125353559"></p>
+<ul>
+<li>Channels.<br>$$<br>\sigma_c: Chan \rightarrow Int^*<br>$$</li>
+</ul>
+<p>Chan is a finite set of channel names:</p>
+<p><img src="/PAAA-1/image-20210712125532398.png" alt="image-20210712125532398"></p>
+<p><img src="/PAAA-1/image-20210712125836056.png" alt="image-20210712125836056"></p>
+<p><img src="/PAAA-1/image-20210712125828401.png" alt="image-20210712125828401"></p>
+<h2 id="1-3-Semantics"><a href="#1-3-Semantics" class="headerlink" title="1.3 Semantics"></a>1.3 Semantics</h2><p>the semantics of the actions is about how to determine the values of the arithmetic expressions using the memories and how to determine the truth values of the boolean expressions&#x2F;</p>
+<ul>
+<li><p>Arthmetic expressions.</p>
+</li>
+<li><p>Boolean expressions.</p>
+</li>
+<li><p>Actions</p>
+</li>
+</ul>
+<h2 id="1-4-Program-Graphs"><a href="#1-4-Program-Graphs" class="headerlink" title="1.4 Program Graphs"></a>1.4 Program Graphs</h2><img src="PAAA-1/image-20210713123451105.png" alt="image-20210713123451105" style="zoom:60%;" />
+
+<img src="PAAA-1/image-20210713123516499.png" alt="image-20210713123516499" style="zoom:60%;" />
+
+<p>The definition of the program graph is a graph includes a set of  nodes like q_start and q_end, and it has a set of directed edges <code>labelled by actions</code>.</p>
+<img src="PAAA-1/image-20210713123810628.png" alt="image-20210713123810628" style="zoom:60%;" />
+
+<img src="PAAA-1/image-20210713123840735.png" alt="image-20210713123840735" style="zoom:60%;" />
+
+
+
+
+
+<h2 id="1-5-Execution-Sequences"><a href="#1-5-Execution-Sequences" class="headerlink" title="1.5 Execution Sequences"></a>1.5 Execution Sequences</h2><h2 id="1-6-The-Nature-of-Approximation"><a href="#1-6-The-Nature-of-Approximation" class="headerlink" title="1.6 The Nature of Approximation"></a>1.6 The Nature of Approximation</h2>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2021/07/07/PAAA-1/" data-id="cl1dky4n00007n7w5bxr53lzs" data-title="Program Analysis An Appetizer读书笔记： 第一章" class="article-share-link">Share</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-xss-patterns" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2021/04/07/xss-patterns/" class="article-date">
+  <time class="dt-published" datetime="2021-04-07T08:06:34.000Z" itemprop="datePublished">2021-04-07</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2021/04/07/xss-patterns/">xss patterns</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>There are some source code patterns for XSS I should cover</p>
+<h2 id="1-unserialize"><a href="#1-unserialize" class="headerlink" title="1. unserialize"></a>1. unserialize</h2><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="variable">$tainted</span> = <span class="variable">$_GET</span>[<span class="string">&#x27;input&#x27;</span>];</span><br><span class="line"><span class="variable">$arr</span> = <span class="title function_ invoke__">unserialize</span>(<span class="variable">$tainted</span>);</span><br><span class="line"><span class="keyword">echo</span>(<span class="variable">$arr</span>[<span class="string">&#x27;foo&#x27;</span>]);</span><br><span class="line"><span class="meta">?&gt;</span></span><br><span class="line">  </span><br><span class="line">---</span><br><span class="line">exploit localhost:<span class="number">9000</span>/vuln.php/?input=a:<span class="number">1</span>:&#123;s:<span class="number">3</span>:<span class="string">&quot;foo&quot;</span>;s:<span class="number">26</span>:<span class="string">&quot;&lt;script&gt;alert(1);&lt;/script&gt;&quot;</span>;&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="2-String-function-call"><a href="#2-String-function-call" class="headerlink" title="2. String function call"></a>2. String function call</h2><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getParam</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="variable">$_GET</span>[<span class="string">&#x27;input&#x27;</span>];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="variable">$funcName</span> = <span class="string">&#x27;getParam&#x27;</span>;</span><br><span class="line"><span class="variable">$tainted</span> = <span class="variable">$funcName</span>();</span><br><span class="line"><span class="keyword">echo</span>(<span class="variable">$tainted</span>);</span><br><span class="line"><span class="meta">?&gt;</span></span><br><span class="line"></span><br><span class="line">---</span><br><span class="line">exploit localhost:<span class="number">9000</span>/vuln.php/?input=&lt;script&gt;<span class="title function_ invoke__">alert</span>(<span class="number">1</span>);&lt;/script&gt;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="3-call-user-func"><a href="#3-call-user-func" class="headerlink" title="3. call_user_func"></a>3. call_user_func</h2><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getParam</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="variable">$_GET</span>[<span class="string">&#x27;input&#x27;</span>];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="variable">$tainted</span> = <span class="title function_ invoke__">call_user_func</span>(<span class="string">&#x27;getParam&#x27;</span>);</span><br><span class="line"><span class="keyword">echo</span>(<span class="variable">$tainted</span>);</span><br><span class="line"></span><br><span class="line">---</span><br><span class="line">exploit localhost:<span class="number">9000</span>/vuln.php/?input=&lt;script&gt;<span class="title function_ invoke__">alert</span>(<span class="number">1</span>);&lt;/script&gt;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="4-call-user-func-array"><a href="#4-call-user-func-array" class="headerlink" title="4. call_user_func_array"></a>4. call_user_func_array</h2><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getParam</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="variable">$_GET</span>[<span class="string">&#x27;input&#x27;</span>];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="variable">$array</span> = [];</span><br><span class="line"></span><br><span class="line"><span class="variable">$tainted</span> = <span class="title function_ invoke__">call_user_func_array</span>(<span class="string">&#x27;getParam&#x27;</span>, <span class="variable">$array</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">echo</span>(<span class="variable">$tainted</span>);</span><br><span class="line"></span><br><span class="line">---</span><br><span class="line">  exploit localhost:<span class="number">9000</span>/vuln.php/?input=&lt;script&gt;<span class="title function_ invoke__">alert</span>(<span class="number">1</span>);&lt;/script&gt;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="5-xml-template"><a href="#5-xml-template" class="headerlink" title="5. xml template"></a>5. xml template</h2><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">vul.php</span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="variable">$tainted</span> = <span class="variable">$_GET</span>[<span class="string">&#x27;tainted&#x27;</span>];</span><br><span class="line"></span><br><span class="line"><span class="variable">$output</span> = <span class="string">&#x27;&#x27;</span>;</span><br><span class="line"><span class="variable">$title</span> = <span class="string">&#x27;target&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment"># template</span></span><br><span class="line"><span class="variable">$template_xml</span> = <span class="title function_ invoke__">simplexml_load_file</span>(<span class="string">&quot;template.xml&quot;</span>);</span><br><span class="line"><span class="variable">$res</span> = <span class="variable">$template_xml</span>-&gt;<span class="title function_ invoke__">xpath</span>(<span class="string">&quot;//template[@name=&#x27;<span class="subst">&#123;$title&#125;</span>&#x27;]&quot;</span>)[<span class="number">0</span>];</span><br><span class="line"><span class="variable">$str</span> = <span class="string">&quot;\$output .= \&quot;&quot;</span>.<span class="variable">$res</span>.<span class="string">&quot;\&quot;;&quot;</span>;</span><br><span class="line"><span class="keyword">eval</span>(<span class="variable">$str</span>); <span class="comment"># critical unsanitized data into a eval function!</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#output</span></span><br><span class="line"><span class="title function_ invoke__">print_r</span>(<span class="variable">$output</span>);</span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br><span class="line"></span><br><span class="line">  ---</span><br><span class="line">template.xml</span><br><span class="line">  </span><br><span class="line"><span class="meta">&lt;?</span>xml version=<span class="string">&quot;1.0&quot;</span> encoding=<span class="string">&quot;UTF-8&quot;</span><span class="meta">?&gt;</span></span><br><span class="line">&lt;theme name=<span class="string">&quot;MyBB Master Style&quot;</span> version=<span class="string">&quot;1600&quot;</span>&gt;</span><br><span class="line"></span><br><span class="line">&lt;template name=<span class="string">&quot;target&quot;</span> version=<span class="string">&quot;123&quot;</span>&gt;&lt;![CDATA[</span><br><span class="line">&lt;h1&gt;<span class="variable">$tainted</span>&lt;/h1&gt;</span><br><span class="line">]]&gt;&lt;/template&gt;</span><br><span class="line">&lt;/theme&gt;</span><br><span class="line">  </span><br><span class="line"> ---</span><br><span class="line">  exploit localhost:<span class="number">9000</span>/vuln.php/?tainted=&lt;script&gt;<span class="title function_ invoke__">altert</span>(<span class="number">1</span>);&lt;/script&gt;</span><br><span class="line"> </span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h2 id="6-ob-template"><a href="#6-ob-template" class="headerlink" title="6. ob template"></a>6. ob template</h2><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">vuln.php</span><br><span class="line">  <span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="variable">$id</span> = <span class="variable">$_GET</span>[<span class="string">&#x27;id&#x27;</span>];</span><br><span class="line"></span><br><span class="line"><span class="title function_ invoke__">ob_start</span>();</span><br><span class="line"><span class="keyword">include</span>( <span class="string">&#x27;template.php&#x27;</span> ); </span><br><span class="line"><span class="variable">$data</span> = <span class="title function_ invoke__">ob_get_contents</span>();</span><br><span class="line">@<span class="title function_ invoke__">ob_end_clean</span>();</span><br><span class="line"></span><br><span class="line"><span class="keyword">print</span>(<span class="variable">$data</span>);</span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br><span class="line">  ---</span><br><span class="line">  template.php</span><br><span class="line">  &lt;h1&gt; example &lt;/h1&gt;</span><br><span class="line"></span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="keyword">echo</span> <span class="variable">$id</span>;</span><br><span class="line"><span class="meta">?&gt;</span></span><br><span class="line">  ---</span><br><span class="line">  exploit localhost:<span class="number">9000</span>/vuln.php?id=&lt;script&gt;<span class="title function_ invoke__">alert</span>(<span class="number">1</span>);&lt;/script&gt;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="7-PHP-SELF"><a href="#7-PHP-SELF" class="headerlink" title="7. PHP_SELF"></a>7. PHP_SELF</h2><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="variable">$tainted</span> = <span class="variable">$_SERVER</span>[<span class="string">&#x27;PHP_SELF&#x27;</span>];</span><br><span class="line"><span class="keyword">echo</span>(<span class="variable">$tainted</span>);</span><br><span class="line"><span class="meta">?&gt;</span></span><br><span class="line">  ---</span><br><span class="line">  exploit localhost:<span class="number">9000</span>/vuln.php/&lt;script&gt;<span class="title function_ invoke__">alert</span>(<span class="number">1</span>)&lt;/script&gt;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h2 id="8-FOREACH"><a href="#8-FOREACH" class="headerlink" title="8. FOREACH"></a>8. FOREACH</h2><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">foreach</span> (<span class="variable">$_GET</span> <span class="keyword">as</span> <span class="variable">$key</span> =&gt; <span class="variable">$value</span>)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">echo</span> <span class="variable">$value</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br><span class="line">  ---</span><br><span class="line">  exploit localhost:<span class="number">9000</span>/vuln.php/?input=&lt;script&gt;<span class="title function_ invoke__">alert</span>(<span class="number">1</span>);&lt;/script&gt;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h2 id="9-COOKIE"><a href="#9-COOKIE" class="headerlink" title="9. COOKIE"></a>9. COOKIE</h2><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="variable">$tainted</span> = <span class="variable">$_COOKIE</span>[<span class="string">&#x27;input&#x27;</span>];</span><br><span class="line"><span class="keyword">echo</span> <span class="variable">$tainted</span>;</span><br><span class="line"><span class="meta">?&gt;</span></span><br><span class="line">  ---</span><br><span class="line">  exploit curl <span class="string">&#x27;http://localhost:9000/vuln.php&#x27;</span> --cookie <span class="string">&quot;input=&lt;/script&gt; &lt;script&gt; alert(1) &lt;/script&gt;&quot;</span></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h2 id="10-print-r"><a href="#10-print-r" class="headerlink" title="10. print_r"></a>10. print_r</h2><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span> <span class="meta">?&gt;</span></span><br><span class="line">[<span class="meta">&lt;?php</span></span><br><span class="line"><span class="variable">$pId</span> = <span class="string">&quot;0&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="variable">$pId</span>=<span class="variable">$_GET</span>[<span class="string">&#x27;id&#x27;</span>];</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="title function_ invoke__">print_r</span>( <span class="variable">$pId</span> );</span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span>]</span><br><span class="line">  </span><br><span class="line">  ---</span><br><span class="line">  exploit localhost:<span class="number">9000</span>/vuln.php?id=&lt;script&gt;<span class="title function_ invoke__">alert</span>(<span class="number">1</span>);&lt;/script&gt;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h2 id="11-Singleton（单例模式）"><a href="#11-Singleton（单例模式）" class="headerlink" title="11. Singleton（单例模式）"></a>11. Singleton（单例模式）</h2><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="keyword">require_once</span>(<span class="string">&#x27;singleton.php&#x27;</span>);</span><br><span class="line"><span class="title class_">Singleton</span>::<span class="title function_ invoke__">getInstance</span>()-&gt;<span class="title function_ invoke__">setParam</span>(<span class="variable">$_GET</span>[<span class="string">&#x27;input&#x27;</span>]);</span><br><span class="line"><span class="keyword">echo</span>(<span class="title class_">Singleton</span>::<span class="title function_ invoke__">getInstance</span>()-&gt;<span class="title function_ invoke__">getParam</span>());</span><br><span class="line"><span class="meta">?&gt;</span></span><br><span class="line">  </span><br><span class="line">  singleton.php</span><br><span class="line">  <span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Singleton</span></span>&#123;</span><br><span class="line">    <span class="keyword">protected</span> <span class="variable">$variable</span> = <span class="string">&#x27;&#x27;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment"># from: https://de.wikibooks.org/wiki/Websiteentwicklung:_PHP:_Muster_Singleton</span></span><br><span class="line">    <span class="keyword">protected</span> <span class="built_in">static</span> <span class="variable">$_instance</span> = <span class="literal">null</span>;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">    * clone</span></span><br><span class="line"><span class="comment">    *</span></span><br><span class="line"><span class="comment">    * Kopieren der Instanz von aussen ebenfalls verbieten</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">   <span class="keyword">protected</span> <span class="function"><span class="keyword">function</span> <span class="title">__clone</span>(<span class="params"></span>) </span>&#123;&#125;</span><br><span class="line">   </span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * constructor</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * externe Instanzierung verbieten</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">protected</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params"></span>) </span>&#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">static</span> <span class="function"><span class="keyword">function</span> <span class="title">getInstance</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="literal">null</span> === <span class="built_in">self</span>::<span class="variable">$_instance</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="built_in">self</span>::<span class="variable">$_instance</span> = <span class="keyword">new</span> <span class="built_in">self</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">self</span>::<span class="variable">$_instance</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">setParam</span>(<span class="params"><span class="variable">$par</span></span>)</span>&#123;</span><br><span class="line">        <span class="variable language_">$this</span>-&gt;variable = <span class="variable">$par</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">getParam</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="variable language_">$this</span>-&gt;variable;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br><span class="line">  </span><br><span class="line">  ---</span><br><span class="line">  exploit localhost:<span class="number">9000</span>/vuln.php/?input=&lt;script&gt;<span class="title function_ invoke__">alert</span>(<span class="number">1</span>);&lt;/script&gt;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h2 id="12-type-validation"><a href="#12-type-validation" class="headerlink" title="12. type validation"></a>12. type validation</h2><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="variable">$tainted</span> = <span class="variable">$_GET</span>[<span class="string">&#x27;tainted&#x27;</span>];</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (!<span class="title function_ invoke__">is_numeric</span>(<span class="variable">$tainted</span>))</span><br><span class="line">&#123;</span><br><span class="line">    <span class="variable">$tainted</span>=<span class="string">&quot;&quot;</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">echo</span> <span class="variable">$tainted</span>;</span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="13-string-replace-escape"><a href="#13-string-replace-escape" class="headerlink" title="13. string replace escape"></a>13. string replace escape</h2><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="variable">$tainted</span> = <span class="variable">$_GET</span>[<span class="string">&#x27;tainted&#x27;</span>];</span><br><span class="line"></span><br><span class="line"><span class="variable">$tainted</span> = <span class="title function_ invoke__">preg_replace</span>(<span class="string">&quot;/[^a-zA-Z]/&quot;</span>, <span class="string">&quot;&quot;</span>, <span class="variable">$tainted</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">echo</span> <span class="variable">$tainted</span>;</span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="14-build-in-sanitize"><a href="#14-build-in-sanitize" class="headerlink" title="14. build-in sanitize"></a>14. build-in sanitize</h2><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="variable">$tainted</span> = <span class="title function_ invoke__">htmlspecialchars</span>(<span class="variable">$_GET</span>[<span class="string">&#x27;tainted&#x27;</span>]);</span><br><span class="line"></span><br><span class="line"><span class="keyword">echo</span> <span class="variable">$tainted</span>;</span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br><span class="line">  </span><br></pre></td></tr></table></figure>
+
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="variable">$tainted</span> = <span class="title function_ invoke__">htmlentities</span>(<span class="variable">$_GET</span>[<span class="string">&#x27;tainted&#x27;</span>]);</span><br><span class="line"></span><br><span class="line"><span class="keyword">echo</span> <span class="variable">$tainted</span>;</span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h2 id="15-vendor-sanitize"><a href="#15-vendor-sanitize" class="headerlink" title="15. vendor sanitize"></a>15. vendor sanitize</h2><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="variable">$tainted</span> = <span class="variable">$_GET</span>[<span class="string">&#x27;tainted&#x27;</span>];</span><br><span class="line"></span><br><span class="line"><span class="keyword">require_once</span> <span class="string">&#x27;htmlpurifier/HTMLPurifier.auto.php&#x27;</span>;</span><br><span class="line"><span class="variable">$config</span> = <span class="title class_">HTMLPurifier_Config</span>::<span class="title function_ invoke__">createDefault</span>();</span><br><span class="line"><span class="variable">$config</span>-&gt;<span class="title function_ invoke__">set</span>(<span class="string">&#x27;HTML.Allowed&#x27;</span>, <span class="string">&#x27;b,strong,i,em,u,a[href|title],ul,ol,li,p[style],br,span[style]&#x27;</span>);</span><br><span class="line"><span class="variable">$config</span>-&gt;<span class="title function_ invoke__">set</span>(<span class="string">&#x27;CSS.AllowedProperties&#x27;</span>, <span class="string">&#x27;font,font-size,font-weight,font-style,font-family,text-decoration,padding-left,color,background-color,text-align&#x27;</span>);</span><br><span class="line"><span class="variable">$purifier</span> = <span class="keyword">new</span> <span class="title class_">HTMLPurifier</span>(<span class="variable">$config</span>);</span><br><span class="line"><span class="variable">$tainted</span> = <span class="variable">$purifier</span>-&gt;<span class="title function_ invoke__">purify</span>(<span class="variable">$tainted</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">echo</span> <span class="variable">$tainted</span>;</span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="16-List"><a href="#16-List" class="headerlink" title="16. List"></a>16. List</h2><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="variable">$arr</span> = <span class="keyword">array</span>(<span class="string">&#x27;useless&#x27;</span>, <span class="variable">$_GET</span>[<span class="string">&#x27;input&#x27;</span>] );</span><br><span class="line">[<span class="variable">$useless</span>, <span class="variable">$tainted</span>]= <span class="variable">$arr</span>; </span><br><span class="line"><span class="keyword">echo</span>(<span class="variable">$tainted</span>);</span><br><span class="line"></span><br><span class="line">---</span><br><span class="line">  exploit localhost:<span class="number">9000</span>/vuln.php/?input=&lt;script&gt;<span class="title function_ invoke__">alert</span>(<span class="number">1</span>);&lt;/script&gt;</span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="17-return-by-reference"><a href="#17-return-by-reference" class="headerlink" title="17. return_by_reference"></a>17. return_by_reference</h2><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getParam</span>(<span class="params">&amp;<span class="variable">$ref</span></span>)</span>&#123;</span><br><span class="line">    <span class="variable">$ref</span> = <span class="variable">$_GET</span>[<span class="string">&#x27;input&#x27;</span>];</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="variable">$tainted</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>( <span class="title function_ invoke__">getParam</span>(<span class="variable">$tainted</span>))&#123;</span><br><span class="line">    <span class="keyword">echo</span>(<span class="variable">$tainted</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br><span class="line">  </span><br><span class="line">---</span><br><span class="line">  exploit localhost:<span class="number">9000</span>/vuln.php/?input=&lt;script&gt;<span class="title function_ invoke__">alert</span>(<span class="number">1</span>);&lt;/script&gt;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="18-global"><a href="#18-global" class="headerlink" title="18. global"></a>18. global</h2><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">source.php</span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">  <span class="variable">$global_var</span> = <span class="variable">$_GET</span>[<span class="string">&#x27;input&#x27;</span>];</span><br><span class="line"><span class="meta">?&gt;</span></span><br><span class="line">vul.php  </span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="keyword">require_once</span>(<span class="string">&#x27;source.php&#x27;</span>);</span><br><span class="line"><span class="keyword">echo</span>(<span class="variable">$global_var</span>);</span><br><span class="line"><span class="meta">?&gt;</span></span><br><span class="line"></span><br><span class="line">---</span><br><span class="line">  exploit localhost:<span class="number">9000</span>/vuln.php/?input=&lt;script&gt;<span class="title function_ invoke__">alert</span>(<span class="number">1</span>);&lt;/script&gt;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getParam</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="keyword">global</span> <span class="variable">$var</span>;</span><br><span class="line">    <span class="variable">$var</span> = <span class="variable">$_GET</span>[<span class="string">&#x27;input&#x27;</span>];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">printGlobal</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="keyword">global</span> <span class="variable">$var</span>;</span><br><span class="line">    <span class="keyword">echo</span> <span class="variable">$var</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="title function_ invoke__">getParam</span>();</span><br><span class="line"><span class="title function_ invoke__">printGlobal</span>();</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="19-Field"><a href="#19-Field" class="headerlink" title="19. Field"></a>19. Field</h2><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">vuln.php</span><br><span class="line">  <span class="meta">&lt;?php</span></span><br><span class="line"><span class="keyword">require_once</span>(<span class="string">&#x27;classassignment.php&#x27;</span>);</span><br><span class="line"><span class="variable">$foo</span> = <span class="keyword">new</span> <span class="title class_">Foo</span>();</span><br><span class="line"><span class="variable">$foo</span>-&gt;<span class="title function_ invoke__">setParam</span>(<span class="string">&#x27;variable&#x27;</span>, <span class="variable">$_GET</span>[<span class="string">&#x27;input&#x27;</span>]);</span><br><span class="line"><span class="keyword">echo</span>(<span class="variable">$foo</span>-&gt;<span class="title function_ invoke__">getParam</span>());</span><br><span class="line"><span class="meta">?&gt;</span></span><br><span class="line">  </span><br><span class="line">classassignment.php</span><br><span class="line">  <span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Foo</span></span>&#123;</span><br><span class="line">    <span class="keyword">protected</span> <span class="variable">$variable</span> = <span class="string">&#x27;&#x27;</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">setParam</span>(<span class="params"><span class="variable">$variableName</span>, <span class="variable">$par</span></span>)</span>&#123;</span><br><span class="line">        <span class="variable language_">$this</span>-&gt;<span class="variable">$variableName</span> = <span class="variable">$par</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">getParam</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="variable language_">$this</span>-&gt;variable;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br><span class="line">  </span><br><span class="line">  ---</span><br><span class="line">  exploit localhost:<span class="number">9000</span>/vuln.php/?input=&lt;script&gt;<span class="title function_ invoke__">alert</span>(<span class="number">1</span>);&lt;/script&gt;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2021/04/07/xss-patterns/" data-id="cl1dky4nl001vn7w55j7p9rv6" data-title="xss patterns" class="article-share-link">Share</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-static-sum" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2021/03/17/static-sum/" class="article-date">
+  <time class="dt-published" datetime="2021-03-17T00:52:56.000Z" itemprop="datePublished">2021-03-17</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2021/03/17/static-sum/">静态分析之殇</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="0x00-前言"><a href="#0x00-前言" class="headerlink" title="0x00 前言"></a>0x00 前言</h1><p>计算机高级语言带来了软件开发的便利性， 其解决的问题是：如何使用更接近人类的交流方式与机器进行交流。 因此不可或缺的是一个从人类阅读的语言到机器阅读的语言之间的一个桥梁。 这个转化过程叫做编译。 在编译过程中，从信息的高级语言形式，到机器码形式我们可以看到还有几层中间语言：AST, IR…其实汇编语言就很像机器语言了，可以看成他的一层壳。但是语义还不是很方便人类提取，高级语言解决了这个问题。 再看高级语言往汇编去的路上。 有AST， 为什么要有这一层，我想，因为AST是一种将语法结构化的数据结构。 而高级语言和机器语言是给人和机器去看的， 而中间语言是要被处理的。 而计算机处理一种信息最方便的方式就是将他结构化，对信息中的每一个最小单元进行定位。 而树状结构是层级的，方便与遍历token之间的关系，从而检查语法， 解析语义。 但是程序是用来执行的， 他是一种强逻辑性语言，没有歧义。 因此程序中每一条执行流都是明确的。 而如果要分析程序中的控制流， 和数据流等，AST这种结构就不太合适了。一个是因为，流分析往往是以基本块为单位的，基本块的最小单位是一条statement，而一条statement表示成AST树状结构很复杂， 也没有必要(这样就成了在树上画图，结构会很复杂，见属性图)。对于流分析，这种statement展开是没有必要的，而此时,AST也要向汇编码汇聚，所以我猜这样才出现了IR。</p>
+<p>可以把软件分析分作两个阶段：1. Complie 阶段和2. Run-time阶段，在compile的分析都是静态阶段， 此时，程序还没有产生Activation Records。</p>
+<h1 id="0x01-流"><a href="#0x01-流" class="headerlink" title="0x01 流"></a>0x01 流</h1><p>静态分析， 就是自动化的去分析程序的流。 我们常见的流有一个过程内的控制流和数据流，以及过程间的调用。这些流会在程序中构造一张张的图。 控制流图， 数据流图， 调用图， 类图…。每一张图对应一种不同的层级关系或者功能。有几点需要注意：</p>
+<ol>
+<li><p>控制流图唯一，数据流图不唯一。 控制流图往往取决于AST结构。 AST结构定了，控制流图就定了(这里我觉得我可能 有误解)。而数据流图会对分析的目的不同而不同，可以正向构建也可以后向构建。只要目的达成， 就有意义。通常过程内的流图，叫做CFG, 而过程间的(加上Call Graph)的大流图，叫做ICFG</p>
+</li>
+<li><p>常见的数据流分析问题有reache definition, live variable和available expression。</p>
+</li>
+</ol>
+<h1 id="0x02-问题"><a href="#0x02-问题" class="headerlink" title="0x02 问题"></a>0x02 问题</h1><h2 id="敏感问题"><a href="#敏感问题" class="headerlink" title="敏感问题"></a>敏感问题</h2><p>其实有各种各样的敏感问题，就是指的静态分析不能cover所有情况而引起的误报。</p>
+<h3 id="流敏感"><a href="#流敏感" class="headerlink" title="流敏感"></a>流敏感</h3><p>流敏感， 指的是一个程序的执行流上，每条语句上相同的变量可能是不同的。 这是静态下所不能覆盖所有情况的(理论上)，比如一个变量初始化声明后被外部输入影响了，静态怎确定？所以纯静态只能做到相对的减少这些误报。实现流敏感一般是需要基于控制流图。</p>
+<h3 id="路径敏感"><a href="#路径敏感" class="headerlink" title="路径敏感"></a>路径敏感</h3><p>路径敏感，是指对执行流上的分支的， 程序实际会走那条路径，纯静态在理论上也是不能确定所有情况的。</p>
+<h3 id="上下文敏感"><a href="#上下文敏感" class="headerlink" title="上下文敏感"></a>上下文敏感</h3><p>上下文是过程间的调用， 一个过程被调用，在不同的调用点(call site)其返回值也不同。</p>
+<h3 id="Field-x2F-Index-敏感"><a href="#Field-x2F-Index-敏感" class="headerlink" title="Field&#x2F;Index 敏感"></a>Field&#x2F;Index 敏感</h3><p>一个复合数组， 在理论上是可以无穷维度的， 因此静态怎么去分析？ 传统的静态分析做法是， 将数组标识符看作一个变量， 而不考虑下标的影响。(静态分析解决此类问题也可以叫数组敏感哈(随便你怎么叫))</p>
+<ul>
+<li><p>field敏感问题:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">Foo</span> <span class="variable">foo</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Foo</span>();</span><br><span class="line">foo.ParamA = GetUserInput();</span><br><span class="line">foo.ParamB = String.Empty;</span><br><span class="line">            </span><br><span class="line">Execute(foo.ParamB);</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Foo</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> string ParamA;</span><br><span class="line">    <span class="keyword">public</span> string ParamB;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>source点，和sink点不是一个field</p>
+</li>
+<li><p>index敏感问题：</p>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">string [] myArray = <span class="keyword">new</span> <span class="title class_">string</span>[len];</span><br><span class="line">myArray[<span class="number">0</span>] = GetUserInput();</span><br><span class="line">myArray[<span class="number">1</span>] = String.Empty;</span><br><span class="line">Execute(myArray[<span class="number">1</span>]); </span><br></pre></td></tr></table></figure>
+
+<p>数组敏感中可以看到user_input传到了索引0中，而执行的是下标1的元素。</p>
+<h3 id="Object-敏感"><a href="#Object-敏感" class="headerlink" title="Object 敏感"></a>Object 敏感</h3><p>字段这种存储在object上的内容，他的生存周期不是一个函数栈， 因此他可以经由不同函数操作。实现字段敏感可使用安德森算法(流不敏感，上下文不敏感)先做个指针分析，找到每个object指针指向的内容(提高指针分析的精度对后续精度的提升目前来看可能不大)。</p>
+<p>解决各种敏感问题，常见的思路，一个在每个program point 建立记录信息，这是静态思路。 还有就是动静结合的方式。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">Foo</span> <span class="variable">foo1</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Foo</span>();</span><br><span class="line">foo1.ParamA = GetUserInput();</span><br><span class="line"><span class="type">Foo</span> <span class="variable">foo2</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Foo</span>();</span><br><span class="line">foo2.ParamA = String.Empty;</span><br><span class="line">Execute(foo2.ParamA); </span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Foo</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> string ParamA;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h2 id="动态问题"><a href="#动态问题" class="headerlink" title="动态问题"></a>动态问题</h2><h2 id="调用"><a href="#调用" class="headerlink" title="调用"></a>调用</h2><p>一个数据被传到一个过程中，理论上， 是可以抛出去无限层的， 每一层的返回值都不一定包含原来的信息了。因此静态很难确定， 通常的做法也是去限定层数。</p>
+<h2 id="循环问题"><a href="#循环问题" class="headerlink" title="循环问题"></a>循环问题</h2><p>对于循环和递归，理论上，是可以有无限层的， 这也导致了，很难确定，一个变量的具体值。 对于循环，对于不同分析，需要不同考虑，比如污点分析， 可能不需要考虑回边情况。 因为循环的回边，如果没有因外的话，是回到了前必经节点，也就是说， 对信息流传播不会有影响，因为不会引入新的节点(至少我现在是这么想)。</p>
+<p>对于递归，要做全程序分析，是不得不处理的，同循环一样，去掉自己到自己的调用边，还有的处理方式是， 在调用点建summary（啊呀具体我忘了，之后补充）。 </p>
+<h2 id="指针分析与动态特性"><a href="#指针分析与动态特性" class="headerlink" title="指针分析与动态特性"></a>指针分析与动态特性</h2><p>这是大问题， 在java中，指针分析加反射就够受的了。 在脚本语言中， 还有各种动态特性(具体可以看RIPS14年NDSS那一篇built-in函数建模的)。这个， 再议～</p>
+<h1 id="0x03-web安全"><a href="#0x03-web安全" class="headerlink" title="0x03 web安全"></a>0x03 web安全</h1><p>这一张的题目起的比较大，这里指的其实是信息流安全， 就是web中的信息流漏洞，如各种漏洞。通常静态使用污点分析的方式去做。</p>
+<h2 id="数据流分析"><a href="#数据流分析" class="headerlink" title="数据流分析"></a>数据流分析</h2><h2 id="前后向"><a href="#前后向" class="headerlink" title="前后向"></a>前后向</h2><p>作为一种数据流分析，没有标准， 前向和后向流分析都可以。后向分析，有时候可以排除路径爆炸，但是后向很难知道数据边上具体传的是啥。</p>
+<h2 id="算法"><a href="#算法" class="headerlink" title="算法"></a>算法</h2><p>通常使用的是迭代数据流算法，即在控制流上对program point进行数据流推算，然后迭代收敛，到达不定点。</p>
+<p>图可达性算法， 将数据流做成有向图结构，在图上作分析。[2002 Mohen]</p>
+<h2 id="CHECK"><a href="#CHECK" class="headerlink" title="CHECK"></a>CHECK</h2><p>除了污点分析自身的各种敏感问题，和静态分析很难cover的复合结构和调用问题》 还有各种CHECK的检查问题。</p>
+<p>在我看来， CHECK可以分为两大类： validation和sanitization。 validation就是通过分支，将不安全的输入引导一个敏感函数不可达的分支中。 而sanitization就是通过对用户输入变形， 从而让威胁失去意义。 sanitization通常有很多叫法，一般的，在输入端做的叫sanitization, 而在输入数据走完逻辑后输出的地方叫做escaping，  反正意思都是一样就是转译。</p>
+<p>不论是validation还是sanitization都要有规则， 其中都可以用黑白名单实现。而sanitization中除了黑白名单规则，还可以进行编码，如htmlspecialchars, htmlenities，将敏感符号转义成html实体编码。</p>
+<p>还有一种通常叫cast, 就是强制类型转换(int)$a。 </p>
+<p>以上是对数据流进行直接check， 还有间接check。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">  <span class="variable">$action</span> = <span class="variable">$_GET</span>[<span class="string">&#x27;action&#x27;</span>];</span><br><span class="line"><span class="keyword">switch</span>(<span class="variable">$action</span>)</span><br><span class="line">  <span class="keyword">case</span> <span class="string">&quot;login&quot;</span>:</span><br><span class="line">					<span class="keyword">echo</span> <span class="variable">$action</span>;</span><br><span class="line">					<span class="keyword">break</span>;</span><br><span class="line">  <span class="keyword">case</span> <span class="string">&quot;logout&quot;</span>:</span><br><span class="line">					<span class="keyword">echo</span> <span class="variable">$action</span>;</span><br><span class="line">					<span class="keyword">break</span></span><br><span class="line">  <span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>如这个简易的路由。 这时看起来并没有显示的安全检测， 但是其实是隐式的限制，数据是在一个指定的域里才可以进入危险分支。</p>
+<p>再如，用户输入必须在数据库中存在， 才能进入危险分支， 这种在web非常常见。</p>
+<p>最后就是一些用户身份验证， 和表单验证。 这些常常在路径中截断控制流。 因此我们做静态分析时，很难达到一个精准的状态。</p>
+<h2 id="触发"><a href="#触发" class="headerlink" title="触发"></a>触发</h2><p>静态分析到了漏洞， 不行，不一定能出发， 这也是很多扫描器和AGE工具比静态分析工具好使的原因。 在触发环节， 你可能要满足各种验证条件和访问顺序才能把控制流引过了， 且污点数据依旧有效，这具有很大的不确定性。</p>
+<p>在web中，要达到这一点，需要考虑：</p>
+<ol>
+<li>资源加载问题， 通常对于PHP这一种脚本语言， 加载代码是自动化的。 而且现在的代码通常是结构化mvc，实现自动化加载，总之。你要找到你的污点信息流在客户端的操作入口。需要分析路由(多入口web能相对简单一些)。</li>
+<li>函数可达性， 确定资源被加载了， 就要进入该过程。</li>
+<li>块可达性， 确定信息流入口的基本块是可达的。</li>
+</ol>
+<h3 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h3><p><a target="_blank" rel="noopener" href="https://medium.com/swlh/sensitivities-in-static-code-analysis-3cab7b07dea">https://medium.com/swlh/sensitivities-in-static-code-analysis-3cab7b07dea</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2021/03/17/static-sum/" data-id="cl1dky4ni001kn7w54i0nhi4x" data-title="静态分析之殇" class="article-share-link">Share</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-soundiness" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2021/02/02/soundiness/" class="article-date">
+  <time class="dt-published" datetime="2021-02-02T00:37:44.000Z" itemprop="datePublished">2021-02-02</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2021/02/02/soundiness/">soundiness</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="0x01-从soundness到soundiness"><a href="#0x01-从soundness到soundiness" class="headerlink" title="0x01 从soundness到soundiness"></a>0x01 从soundness到soundiness</h1><blockquote>
+<p>The typical reasons for such choices are engineering compromises: implementers of such tools are well aware of how they could handle complex language features soundly (e.g., by assuming that a complex language feature can exhibit any behavior), but do not do so because this would make the analysis unscalable or imprecise to the point of being useless. Therefore, the dominant practice is one of treating soundness as an engineering choice.[1]</p>
+</blockquote>
+<p>目前，所有的静态分析工具都希望他们的工具能覆盖所有的情况(soundness), but现在的程序结构越来越复杂…势必有很多问题，是当前静态分析技术无法解决的(称之为Hard Language Feature)。</p>
+<p>首先， 我们来看什么是soundness</p>
+<blockquote>
+<h2 id="Soundness"><a href="#Soundness" class="headerlink" title="Soundness"></a>Soundness</h2><p>Conservative approximation: the analysis captures all program behaviors, or the analysis result all possible executions of the program.</p>
+</blockquote>
+<p>这里的Conservative其实就是Over, 可以看到理想的soundness理论上分析处出实际程序运行时所有的路径和情形。</p>
+<p>然而，无论是当前学术界和工业界都无法达到soundness。但是这些文章或技术一般都不会说自己是unsoundness的，因为通常unsoundness是故意的忽略掉分析一些行为，以达到更高效率的目的。 而这一些技术是想soundness的，但是又无法达到理想的soundness，在这种情形下，这些文章就会产生一些误导。 如一些分析工具，文章说的很好， 但是实际用起来有很多的情况cover不了导致大量误报造成结果直接不可用…</p>
+<p>在想sound，sound不了。我又不是unsound的，这种情况下，就产生了soundy分析的概念。15年提出[2]的，呼吁将这一类分析结果，是soundiness的。</p>
+<p><img src="/soundiness/truthiness.png" alt="truthiness"></p>
+<h1 id="0x02-hard-language-features"><a href="#0x02-hard-language-features" class="headerlink" title="0x02 hard language features"></a>0x02 hard language features</h1><p>几乎所有现代语言中，都有一些对于静态分析来比较hard 的点：</p>
+<p><img src="/soundiness/image-20210202094033999.png" alt="image-20210202094033999"></p>
+<h2 id="Java-Reflection"><a href="#Java-Reflection" class="headerlink" title="Java Reflection"></a>Java Reflection</h2><p>以反射为例：</p>
+<p><img src="/soundiness/image-20210202094244020.png" alt="image-20210202094244020"></p>
+<p>反射的提出为了使得软件架构低耦合，高复用的目的。 如MVC框架中，框架要和web程序解耦，就需要通过反射去调用控制器中的方法，而不是改框架调用控制器。</p>
+<p>在Java中， 反射使用的是对Class, method, field分别生成Metaobject, 然后使用这些metaobject来调用反射API接口来动态的达到静态调用效果。</p>
+<p>反射是很重要的， 那么，如何静态分析呢？05年的APLAS提出了<code>String Constant analysis + Pointer Analysis</code>。</p>
+<p>他们的工作， 他是通过字符串常量分析+指针分析去分析的。直观理解就是通过指针分析定位到每个metaobject的定义处，然后做字符串常量分析，去全文匹配到目标的位置。 但是问题是， 这种只能cover发射中的触发参数写在程序中的。 但是如果string value不存在， 何如？</p>
+<blockquote>
+<ul>
+<li>Configuration files (配置文件输入)</li>
+<li>Internet. (网络输入)</li>
+<li>Command lines (命令行输入)</li>
+<li>Complex string manipulations (复杂的字符串解析)</li>
+<li>Dynamically generated (动态生成)</li>
+<li>Encrypted (加密的，需要解码)</li>
+</ul>
+</blockquote>
+<p>(插一句， 在静态安全分析中，字符串输入当作标识符真的是一大难题，感觉处理好了字符串输入，就能处理好许多静态安全问题)</p>
+<p>(而我觉得目前来说，之所以大部分的漏洞都是通过手工和fuzz得到，就是因为静态分析不能cover许许多多问题)</p>
+<p>这个工作的问题可以总结为： 名字不知道，啥也不知道。</p>
+<p>在14年ECOOP, 南大李樾和谭添老师做了一个工作[4] (膜)，他们的方法 <code>Type Inference+String analysis+Pointer Analysis</code></p>
+<p>他们的方法为：生时不可解， 用时亦可推。</p>
+<p><img src="/soundiness/image-20210202113047743.png" alt="image-20210202113047743"></p>
+<p>通过反射使用点，结合java强大的类型系统，去推到这个方法的线索(如有几个参数， 这些参数是什么类型)[5]。</p>
+<p>目前解决这些问题还是使用动态方式比较通用，如[6]去跑java的测试用例，得到的信息供给静态分析使用， 此类工作(Assisted by Dynamic Analysis)快，准。但是soundness做的不够好。</p>
+<h2 id="Native-Code"><a href="#Native-Code" class="headerlink" title="Native Code"></a>Native Code</h2><p>Native Code 是另外一种hard analysis的情况。 核心就是一种跨语言的调用，如何去静态分析。</p>
+<p><img src="/soundiness/image-20210202114600176.png" alt="image-20210202114600176"></p>
+<p>Java中提供了native关键字去声明调用JNI(Java Native Interface), 他是一套java调用底层平台c&#x2F;c++功能的接口， 没有函数体。实现逻辑在c&#x2F;c++中。这种机制能够使JVM同本地的动态链接库进行交互。</p>
+<p><img src="/soundiness/image-20210202114857543.png" alt="image-20210202114857543"></p>
+<p>那么这种跨语言，如何去做程序分析呢？</p>
+<p>现在通常分析器通常去进行手工建模(Manually models the critical native code)…</p>
+<p><img src="/soundiness/image-20210202115838235.png" alt="image-20210202115838235"></p>
+<p>这里是对调用c&#x2F;c++中的arraycopy进行手工建模成java逻辑， 然后转化为三地址码。</p>
+<p>最近的工作[7] (ISSTA2020), 有直接在二进制上分析跨语言的调用。</p>
+<h1 id="reference"><a href="#reference" class="headerlink" title="reference"></a>reference</h1><p><a target="_blank" rel="noopener" href="http://soundiness.org/#Introduction">[1] http://soundiness.org/#Introduction</a></p>
+<p><a target="_blank" rel="noopener" href="https://dl.acm.org/doi/10.1145/2644805">[2] https://dl.acm.org/doi/10.1145/2644805</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.semanticscholar.org/paper/Reflection-Analysis-for-Java-Livshits-Whaley/aa15b4f072b5d9f8f72b41b39c060ee5b5fb2807">[3] https://www.semanticscholar.org/paper/Reflection-Analysis-for-Java-Livshits-Whaley/aa15b4f072b5d9f8f72b41b39c060ee5b5fb2807</a></p>
+<p><a target="_blank" rel="noopener" href="https://yuleisui.github.io/publications/ecoop14.pdf">[4] https://yuleisui.github.io/publications/ecoop14.pdf</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.semanticscholar.org/paper/Understanding-and-Analyzing-Java-Reflection-Li-Tan/3e358882af7a2e782fdb02c0ccf260f00728aff0">[5] https://www.semanticscholar.org/paper/Understanding-and-Analyzing-Java-Reflection-Li-Tan/3e358882af7a2e782fdb02c0ccf260f00728aff0 </a></p>
+<p><a target="_blank" rel="noopener" href="https://www.semanticscholar.org/paper/Taming-reflection%3A-Aiding-static-analysis-in-the-of-Bodden-Sewe/1753d3e97fdbe7799b9625cb873b77eef506a608">[6] https://www.semanticscholar.org/paper/Taming-reflection%3A-Aiding-static-analysis-in-the-of-Bodden-Sewe/1753d3e97fdbe7799b9625cb873b77eef506a608</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.semanticscholar.org/paper/Identifying-Java-calls-in-native-code-via-binary-Fourtounis-Triantafyllou/8da9ef89f6b211193e2376a7d289f6b087f7cb5c">[7] https://www.semanticscholar.org/paper/Identifying-Java-calls-in-native-code-via-binary-Fourtounis-Triantafyllou/8da9ef89f6b211193e2376a7d289f6b087f7cb5c</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2021/02/02/soundiness/" data-id="cl1dky4ne0016n7w5d7g44heg" data-title="soundiness" class="article-share-link">Share</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-security" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2021/01/15/security/" class="article-date">
+  <time class="dt-published" datetime="2021-01-15T01:14:26.000Z" itemprop="datePublished">2021-01-15</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2021/01/15/security/">安全性分析</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>这是我<del>最后一次</del>抄ppt了(认真脸)</p>
+<h1 id="0x01-安全"><a href="#0x01-安全" class="headerlink" title="0x01 安全"></a>0x01 安全</h1><p>信息安全基本功，(完整性、保密性、可用性)…</p>
+<p>首先讨论一个基本问题，什么是安全：</p>
+<blockquote>
+<p>Achieving some goals in the presence of adversaries</p>
+<p>在有敌人的情况下仍要达到某个特殊目标</p>
+</blockquote>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEgy1gmru5lf4ghj306006hq2u.jpg"></p>
+<p>在cyber世界， 我们的坏人不言而喻， 我们的目标保护我们的计算机系统在有坏人的情况下还能正常运行，而且数据不会泄露。</p>
+<p><img src="/debreach/image-20210118143612640.png" alt="image-20210118143612640"></p>
+<p><img src="/debreach/image-20210118143702213.png" alt="image-20210118143702213"></p>
+<p>我们来关注注入问题和信息泄露问题，为啥呢？ 因为他们属于一大类问题： 信息流的问题。</p>
+<h1 id="0x02-信息流安全"><a href="#0x02-信息流安全" class="headerlink" title="0x02 信息流安全"></a>0x02 信息流安全</h1><p><img src="/debreach/image-20210118143903537.png" alt="image-20210118143903537"></p>
+<p>在一个wechat登录界面中， 密码是一个敏感信息， 合法的信息流动是将密码从客户端流到服务器(可信赖一方)。</p>
+<p>如果敏感信息流到了怀仁手上，是我们不想要的。</p>
+<p>如何保护保护信息呢？</p>
+<p>最常用的手段是访问控制(Access Control), 应用程序需要有授权才能访问一个信息， 它关心的是信息任何被访问。 但是信息一旦被访问， 如何操作就不在其管辖范围。</p>
+<p>而信息流安全(Information Flow Security), 会追踪信息的流动， 保证程序以安全的方式处理这些信息。 关注的是信息是如何传播的， 在端到端之间的信息流动中保证数据的安全。</p>
+<p>所以说一个实际的信息系统，想要保护信息安全，就既要有访问控制机制，又要有信息流安全检查[1]。</p>
+<h2 id="什么是信息流"><a href="#什么是信息流" class="headerlink" title="什么是信息流"></a>什么是信息流</h2><blockquote>
+<p> Information flow: if the information in variable x is transferred to variable y, then there is information flow x-&gt;y [2]</p>
+</blockquote>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-124711.png" alt="image-20210118145110826"></p>
+<p>信息载体(变量x)，传入了y, 这就是系统中的一个信息流动。</p>
+<h2 id="信息流和Security结合"><a href="#信息流和Security结合" class="headerlink" title="信息流和Security结合"></a>信息流和Security结合</h2><p>要考虑信息流和安全结合起来， 需要考虑两点， 第一我们就要给信息流的载体，变量进行一个安全分级， 第二点我们需要在安全等级的基础上制定信息流动的策略。</p>
+<h3 id="Security-Levels"><a href="#Security-Levels" class="headerlink" title="Security Levels"></a>Security Levels</h3><p>最简单说是将变量分为两级:</p>
+<ol>
+<li><p>H, meaning <code>high</code> security, secret information (秘密信息)</p>
+</li>
+<li><p>L, meaning <code>low</code>security, public observable information (系统以外可已观测到的)</p>
+<p><img src="/debreach/image-20210118145706312.png" alt="image-20210118145706312"></p>
+</li>
+</ol>
+<p>以上代码 broadcast(l)就是可以被广播出去的信息， h就是不能被信息系统之外不允许被观测到的。</p>
+<p>这种安全等级可以抽象为格来表述的[3]。</p>
+<p><img src="/debreach/image-20210118150635775.png" alt="image-20210118150635775"></p>
+<p>格可以很复杂， 而且它可能不是线性上升的。</p>
+<p><img src="/debreach/image-20210118150709113.png" alt="image-20210118150709113"></p>
+<p>现在有了安全等级分类， 下一步就是制定策略</p>
+<h3 id="Information-Flow-Policy"><a href="#Information-Flow-Policy" class="headerlink" title="Information Flow Policy"></a>Information Flow Policy</h3><p>信息流安全策略是限制这个信息流如何在不同安全等级中进行流动的。这里介绍一种不干涉策略(Noninterreference policy)[4]， 他的思想是： </p>
+<blockquote>
+<p> 高安全等级的变量不能影响到信息流中地安全等级的变量。就是说你不能够在信息可观测的底安全等级变量中，观测到高安全等级信息。</p>
+</blockquote>
+<p><img src="/debreach/image-20210118151455095.png" alt="image-20210118151455095"></p>
+<p>嗯…</p>
+<p><img src="/debreach/image-20210118151610860.png" alt="image-20210118151610860"></p>
+<p>看这些例子， 总之，高密集变量不能赋值给地密级遍历中。</p>
+<p><img src="/debreach/image-20210118151657627.png" alt="image-20210118151657627"></p>
+<p>就是保证格上始终是按照边上升的</p>
+<p><img src="/debreach/image-20210118151733378.png" alt="image-20210118151733378"></p>
+<h1 id="0x03-Confidentiality-保密性-and-Integrity-完整性"><a href="#0x03-Confidentiality-保密性-and-Integrity-完整性" class="headerlink" title="0x03 Confidentiality(保密性) and Integrity(完整性)"></a>0x03 Confidentiality(保密性) and Integrity(完整性)</h1><p>从信息泄露的角度讲，需要阻止的信息流是从高到低， 但是完整性与保密性正好相反， 他要阻止的是从低安全流向高安全从而破坏高安全信息的完整性[5]。</p>
+<p><img src="/debreach/image-20210118152255244.png" alt="image-20210118152255244"></p>
+<p>完整性涵盖了一大类漏洞，如注入漏洞, 注入漏洞…还是注入漏洞。</p>
+<p><img src="/debreach/image-20210118152448073.png" alt="image-20210118152448073"></p>
+<p>从而可见， 保密性和完整性是信息流安全中的一体两面。 如此， 我们可以用一种手段解决这两种问题。</p>
+<h2 id="扩展安全性概念"><a href="#扩展安全性概念" class="headerlink" title="扩展安全性概念"></a>扩展安全性概念</h2><p>完整性要保证数据在信息系统中的准确性(accuracy)、完全性(completeness)、一致性(consistency)</p>
+<ul>
+<li><p>Accuracy </p>
+<p>可信的关键数据应该不被污染(操作才能正常， 如信息流安全中的各种注入)</p>
+</li>
+<li><p>Completeness</p>
+<p>数据库应该存储所有完整的数据</p>
+</li>
+<li><p>Consistency</p>
+<p>文件传输系统发送方和接收方内容必须一致。</p>
+</li>
+</ul>
+<p>完整性需要保证整个系统运行是正确的。</p>
+<h1 id="0x04-显式流-Explicit-Flows-和隐藏信道-Covert-Channels"><a href="#0x04-显式流-Explicit-Flows-和隐藏信道-Covert-Channels" class="headerlink" title="0x04 显式流(Explicit Flows)和隐藏信道(Covert Channels)"></a>0x04 显式流(Explicit Flows)和隐藏信道(Covert Channels)</h1><p>该部分讨论了信息流中，信息的传播方式，所有的流都是显示传播的吗(沿数据流图传播)。 当然还有侧信道(隐藏信道)或者隐式流。</p>
+<p><img src="/debreach/image-20210118153545945.png" alt="image-20210118153545945"></p>
+<p>控制流可以被敏感信息影响， 通过控制流的方式去泄漏信息。</p>
+<p><img src="/debreach/image-20210118160246443.png" alt="image-20210118160246443"></p>
+<p>以上例子是一些隐藏信道[6]。</p>
+<ul>
+<li><p>Implicit flows:  隐式流， 不是为了传递信息，仍然能够利用控制信息传递出敏感信息。</p>
+</li>
+<li><p>Termination channels： 终止信息， 通过程序是否终止传递敏感信息</p>
+</li>
+<li><p>Timing channels: 时间通道，根据运行时间的区别，获得隐藏信息</p>
+</li>
+<li><p>Exceptions: 通过异常泄露数据</p>
+<p>…</p>
+</li>
+<li><p><img src="/debreach/image-20210118160625484.png" alt="image-20210118160625484"></p>
+</li>
+</ul>
+<p>虽然隐式流比较难以发现， 但是隐藏信道泄露出的数据往往是有限的。</p>
+<h1 id="0x05-Taint-Analysis"><a href="#0x05-Taint-Analysis" class="headerlink" title="0x05 Taint Analysis"></a>0x05 Taint Analysis</h1><p>污点分析是目前大量使用的信息流安全问题的分析方法。</p>
+<p>思路：将数据分为两类， 其中将关注的一类数据打上标记，关注这些数据的传播。</p>
+<h2 id="source"><a href="#source" class="headerlink" title="source"></a>source</h2><p>污点数据的源头， 污点数据的来源往往是某些特定方法的返回值。</p>
+<h2 id="sink"><a href="#sink" class="headerlink" title="sink"></a>sink</h2><p>污点分析关心的是，从source打上标记的污点数据，是否会流向特殊的sink。</p>
+<p><img src="/debreach/image-20210118161205249.png" alt="image-20210118161205249"></p>
+<p>两个例子：</p>
+<p><img src="/debreach/image-20210118161501315.png" alt="image-20210118161501315"></p>
+<h2 id="Taint-and-Pointer-Analysis-Together"><a href="#Taint-and-Pointer-Analysis-Together" class="headerlink" title="Taint and Pointer Analysis, Together"></a>Taint and Pointer Analysis, Together</h2><p>2017年的P&#x2F;Taint论文正式提出要将指针分析和污点分析结合起来[7]。</p>
+<p>污点分析本质上是追踪程序中的污点数据， 而指针分析的本质上是跟踪程序中的抽象对象如何在程序中流动。</p>
+<p>那么我们就可以看作一类问题：</p>
+<ul>
+<li>Treat tainted data as (artificial) objects                                 —&gt; 将污点数据看作一类特殊的object</li>
+<li>Treats source as allocation sites(of tainted data)                —&gt; 将source看作是敏感数据的allocation site</li>
+<li>Leverages pointer analysis to propagate tainted data.     —-&gt; 借助指针分析追踪污点数据</li>
+</ul>
+<p>那么通过上下文不敏感指针分析为例，来改造成一个污点分析。</p>
+<h2 id="Define"><a href="#Define" class="headerlink" title="Define"></a>Define</h2><ol>
+<li><p>Domain: </p>
+<p><img src="/debreach/image-20210118162349114.png" alt="image-20210118162349114"></p>
+</li>
+</ol>
+<p>在指针分析的Domain(varibales, Fields, Objects)的基础上加入一类Tainted data。 （ti表示来自于程序中call site i中的数据）</p>
+<p>(可以右边图中看到原先指针分析中的All objects(堆上的object), 现在分为两类，tainted data也看作一个T字头的objects。。。)</p>
+<ol start="2">
+<li><p>Inputs:</p>
+<ul>
+<li><p>Source: 一类方法关注他的return </p>
+</li>
+<li><p>Sink:   另一类方法， 关注他的参数中是否传入了taint</p>
+</li>
+</ul>
+</li>
+<li><p>Outputs:</p>
+<ul>
+<li>TaintFlows: 输出一个集合， 元素是&lt;ti, m&gt;这个pairs, 表示在call site i处会有一个污点数据t,将流到sink方法m当中。</li>
+</ul>
+</li>
+</ol>
+<h2 id="Rules"><a href="#Rules" class="headerlink" title="Rules"></a>Rules</h2><p> 污点分析借助指针分析做的，</p>
+<h1 id="0x06-使用Datalog实现污点分析操作"><a href="#0x06-使用Datalog实现污点分析操作" class="headerlink" title="0x06 使用Datalog实现污点分析操作"></a>0x06 使用Datalog实现污点分析操作</h1><h2 id="Datalog"><a href="#Datalog" class="headerlink" title="Datalog"></a>Datalog</h2><p><img src="/security/image-20210126115602820.png" alt="image-20210126115602820"></p>
+<p>简单说一下Datalog是一门逻辑声明式编程语言，他的操作元素是一系列的谓词(predicate)，为此中是一个一个的fact。最初输入的谓词叫做EDB, 而推出来的是IDB。而对于谓词逻辑推导叫做Rules，Rules左边是头部，通过一个一个的原子操作(包含relational和arithmetic)复合逻辑运算(逗号是与，还有或非)得到头部(头部可以是多个谓词)。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">//  symbol declare</span><br><span class="line">.type P &lt;: symbol</span><br><span class="line">.type A &lt;: number</span><br><span class="line"></span><br><span class="line">// EDB predict</span><br><span class="line">.decl Age(person: P, age: A)</span><br><span class="line"></span><br><span class="line">// facts</span><br><span class="line">Age(&quot;Xiaoming&quot;, 18).</span><br><span class="line">Age(&quot;Xiaohong&quot;, 23).</span><br><span class="line">Age(&quot;Alan&quot;, 16).</span><br><span class="line">Age(&quot;Abao&quot;, 31).</span><br><span class="line"></span><br><span class="line">// IDB predict</span><br><span class="line">.decl Audlt(person: P, age: A) output</span><br><span class="line"></span><br><span class="line">// rules</span><br><span class="line">Audlt(person, age) :- Age(person, age), age&gt;=18.</span><br></pre></td></tr></table></figure>
+
+
+
+<p>上文就是使用souffle实现的图示的datalog关系，可以看到灰常的直观，那么他的输出IDB为：</p>
+<p><img src="/security/image-20210126120329197.png" alt="image-20210126120329197"></p>
+<p>以为datalog支持谓词推出自己的facts(递归)， 因此支持很多复杂的操作， 如指针分析：</p>
+<p><img src="/security/image-20210126120426056.png" alt="image-20210126120426056"></p>
+<p>如上是一个简单的过程内指针分析, 它的推导出的内容：</p>
+<p><img src="/security/image-20210126120514215.png" alt="image-20210126120514215"></p>
+<p><img src="/security/image-20210126120520304.png" alt="image-20210126120520304"></p>
+<p>看和表中是一毛一样。</p>
+<p>然后再演示一个过程间的：</p>
+<p><img src="/security/image-20210126141708850.png" alt="image-20210126141708850"></p>
+<p>目标代码中，为了处理第五行里的call, 需要4个东西：</p>
+<ol>
+<li><p>Dispatch： </p>
+<p>EDB需要增加</p>
+<ul>
+<li>VCall(l:S, x:V, k:M) 记录l点的call方法k, x接收</li>
+<li>Dispatch(o:O, k:M, m:M) 记录Dispatch到的方法</li>
+<li>ThisVar(m:M, this:V) 记录方法中的this</li>
+</ul>
+<p>IDB需要增加</p>
+<ul>
+<li>CallGraph(l:S, m:M), l点的call</li>
+<li>Reachable(m:M), 记录可达方法</li>
+</ul>
+</li>
+<li><p>传参数</p>
+<p>EDB增加：</p>
+<ul>
+<li>Argument(l:S, i:N, a:V), l点的调用的实参列表</li>
+<li>Parameter(m:M, i:N, p:V), 形参列表</li>
+</ul>
+</li>
+<li><p>传返回值</p>
+<p>EDB增加:</p>
+<p>MethodReturn(m:M, ret:V), 方法的return </p>
+<p>CallReturn(l:S, r:V), 接受返回值</p>
+<p><img src="/security/image-20210126170849123.png" alt="image-20210126170849123"></p>
+</li>
+</ol>
+<p>污点分析还需要改点。</p>
+<p><img src="/security/image-20210126171038704.png" alt="image-20210126171038704"></p>
+<p><img src="/security/image-20210126171054264.png" alt="image-20210126171054264"></p>
+<h1 id="reference"><a href="#reference" class="headerlink" title="reference"></a>reference</h1><p>[1] A practical system needs both access and flow control to satisfy all security requirements. – D.Denning, 1976</p>
+<p>[2] Dorothy E.Denning and Peter J.Denning, “Certification of Programs for Secure Information Flow”. CACM 1977</p>
+<p>[3] Dorothy E.Denning, “A Lattice Model of Secure Information Flow”. CACM 1976</p>
+<p>[4] J.A. Goguen and J.Meseguer, “Security policies and security models”. S&amp;P 1982</p>
+<p>[5] Ken Biba, “<em>Integrity Considerations for Secure Computer Systems</em>”. Technical Report, ESD-TR-76-372, USAF Electronic Systems Division, Bed-ford, MA, 1977.</p>
+<p>[6] <em>Butler W. Lampson, “</em>A Note on the Confinement Problem*”. CACM 1973.</p>
+<p>[7] <em>Neville Grech and Yannis Smaragdakis, “</em>P&#x2F;Taint: Unified Points-to and Taint Analysis*”. OOPSLA 2017.</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2021/01/15/security/" data-id="cl1dky4nd0014n7w51ldud3i5" data-title="安全性分析" class="article-share-link">Share</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-cha" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2021/01/02/cha/" class="article-date">
+  <time class="dt-published" datetime="2021-01-01T23:01:39.000Z" itemprop="datePublished">2021-01-02</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2021/01/02/cha/">CHA</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>资料： <a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1GQ4y1T7zm?from=search&amp;seid=7528278619420042576">https://www.bilibili.com/video/BV1GQ4y1T7zm?from=search&amp;seid=7528278619420042576</a></p>
+<blockquote>
+<p>01:30 Motivation</p>
+<p>04:40 Call Graph Construction(CHA)</p>
+<p>65:40 Interprocedural Control-Flow Graph</p>
+<p>71:45 Interprocedural Data-Flow Analysis</p>
+</blockquote>
+<h1 id="Problem-of-Intraprocedural-Analysis"><a href="#Problem-of-Intraprocedural-Analysis" class="headerlink" title="Problem of Intraprocedural Analysis"></a>Problem of Intraprocedural Analysis</h1><p>过程内的常量传播过于保守， 造成结果的不准确</p>
+<img src="cha/image-20210102095211276.png" alt="image-20210102095211276" style="zoom:40%;" />
+
+<p>如上所示，对于一个常量传播:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> <span class="title function_">foo</span><span class="params">()</span> &#123;</span><br><span class="line">  <span class="type">int</span> <span class="variable">n</span> <span class="operator">=</span> ten();  <span class="comment">// 返回一个常量10</span></span><br><span class="line">  addOne(<span class="number">42</span>); <span class="comment">// 传出一个常量42</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">ten</span><span class="params">()</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="number">10</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">addOne</span><span class="params">(<span class="type">int</span> x)</span> &#123;</span><br><span class="line">  <span class="type">int</span> <span class="variable">y</span> <span class="operator">=</span> x + <span class="number">1</span>;  <span class="comment">// y值本程序中是确定的，但是只做过程内分析是不确定的。</span></span><br><span class="line">  <span class="keyword">return</span> y;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>涉及到过程间方法调用的元素： 1. Call site(实参) 2. function decl(形参) 。</p>
+<p>实际上，在分析foo的时候n就是10, 在分析addOne的时候x就是42,y就是43，但是过程内分析的时候，是不知道过程外的信息的，因此这里就是NAC。</p>
+<p>在传统的过程内分析中，都是保守的假设(safe-approximation)。 </p>
+<img src="cha/image-20210102095421699.png" alt="image-20210102095421699" style="zoom:60%;" />
+
+<p>在过程间分析时，作为caller, foo就可以通过return边得到n的值。</p>
+<p>作为callee, addOne就可以通过call边得到x和y的值。(caller得return, callee得实参)。</p>
+<p>这样就可以弥补过程内数据流分析过度假设造成精度的丢失。 </p>
+<p>做过程间分析需要的信息有： </p>
+<ol>
+<li>构造call graph</li>
+<li>根据call graph，构造ICFG（过程间控制流图）</li>
+<li>IDFG（过程间数据流分析）</li>
+</ol>
+<h1 id="Call-Graph"><a href="#Call-Graph" class="headerlink" title="Call Graph"></a>Call Graph</h1><p>为了过程间分析， 引入了call graph。</p>
+<img src="cha/image-20210102100152715.png" alt="image-20210102100152715" style="zoom:20%;" />
+
+<blockquote>
+<p>本图foo函数作为caller，call了bar和baz, bar又调用了baz。</p>
+</blockquote>
+<p>重要程度不言而喻（要有过程间的控制流边，就先要建立call graph边那(所有跨函数分析的基础)）</p>
+<h2 id="构造CG"><a href="#构造CG" class="headerlink" title="构造CG"></a>构造CG</h2><img src="cha/image-20210102100255628.png" alt="image-20210102100255628" style="zoom:30%;" />
+
+
+
+<p>蓝色为精度指标， 绿色为速度指标。 这里介绍CHA。</p>
+<p>首先看下java中函数调用方法。</p>
+<p><img src="/cha/image-20210102100409591.png" alt="image-20210102100409591"></p>
+<ul>
+<li><p>static call: 静态调用（有点像非oo的function call）</p>
+</li>
+<li><p>Special call:  </p>
+<ul>
+<li>如： </li>
+<li><ol>
+<li>调用构造函数 </li>
+<li>调用类自己的私有的实例方法</li>
+<li>调用父类中的实例方法</li>
+</ol>
+</li>
+</ul>
+</li>
+<li><p>Virtual call:  其他调用实例方法(大部分的oo调用，用来实现__多态__特性)</p>
+</li>
+</ul>
+<p>static call和special call的目标方法只有一个， 比较好处理的。 关键是处理virtual call。</p>
+<p>在程序中，某一个程序点在其运行时Receiving objects的不同，可能调用不同的目标方法，所以由于__多态__的原因(polymorphism), 一个virtual call在运行期间调用的method可能是__大于一个__的(<code>运行时才能决定，取决于运行时的具体reciving object</code>)。</p>
+<blockquote>
+<p>所以对于OO语言， 如何处理virtual call 是构造call graph的关键所在</p>
+</blockquote>
+<h2 id="Method-Dispatch-of-Virtual-Calls"><a href="#Method-Dispatch-of-Virtual-Calls" class="headerlink" title="Method Dispatch of Virtual Calls"></a>Method Dispatch of Virtual Calls</h2><p> 在处理virtual call中， 一个关键的步骤就是<code>method dispatch</code>。</p>
+<p>__Dispatch__在过程间分析中比较重要的一个概念。</p>
+<img src="cha/image-20210102101028005.png" alt="image-20210102101028005" style="zoom:30%;" />
+
+
+
+<p>在程序运行时， call site调用 virtual call, 要去解这个方法需要两个关键：</p>
+<ol>
+<li>Receiver object 的具体类型。（右边例子里变量o指向的对象的具体类型）</li>
+<li>Call site处方法的具体签名。(右边的例子里为foo(…))</li>
+</ol>
+<p>动态的时候去求解这个virtual call的过程也叫做<code>method dispatch</code></p>
+<p>通过一个signature可以确定唯一的一个方法：</p>
+<p><img src="/cha/image-20210102102131163.png" alt="image-20210102102131163"></p>
+<ul>
+<li>Class type: 类名</li>
+<li>Method name: 方法名</li>
+<li>Descriptor： 由两部分构成： 1.返回值类型 2. 参数类型</li>
+</ul>
+<p><img src="/cha/image-20210102102936695.png" alt="image-20210102102936695"></p>
+<p>定义一个函数Dispatch， 这个函数模拟了动态时dispatch一个virtual call的具体过程。他的输入就是c(receiver object 的类型)， m(call si te这一点方法的签名)。</p>
+<p>dispatch函数的目的是找到一个能够被调用的方法， 必须是一个具体的有方法体的方法，所以返回的必须是一个非抽象的方法。</p>
+<ol>
+<li><p>首先在c类中找是否有这样一个非抽象方法m’, </p>
+</li>
+<li><p>如果c没有，就去找c的所有父类c’(注意，是找父类)，直到找到目标方法m’。</p>
+</li>
+</ol>
+<p><img src="/cha/image-20210102103447307.png" alt="image-20210102103447307"></p>
+<p> 这个例子中有ABC三个类，如果dispatch中x.foo()这个call site的两个元素：1. x:  receiver object的具体类型是 B(因为它指向 new B()这个类), 2. Foo()这个call site的签名： &lt;B: void foo() &gt; 。所以首先回到B类中进行dispatch, B类中没有foo方法， 就去父类A中去找。</p>
+<p>y.foo()中就是C的foo方法, 因为他的dispatch函数中，c是receiver object 指向的new C() 类型， 而且内部有一个foo方法供m匹配上。</p>
+<h1 id="CHA-Class-Hierarchy-Analysis"><a href="#CHA-Class-Hierarchy-Analysis" class="headerlink" title="CHA(Class Hierarchy Analysis)"></a>CHA(Class Hierarchy Analysis)</h1><h2 id="Dispatch"><a href="#Dispatch" class="headerlink" title="Dispatch"></a>Dispatch</h2><p><img src="/cha/image-20210102105706369.png" alt="image-20210102105706369"></p>
+<p>CHA是用来解整个程序call graph的一方法， 他需要知道整个程序的class以及继承信息。 核心思想是对于一个virtual call， 基于这个virtual call的声明类型(不是recevier的具体类型)，以及receiver variable a。</p>
+<p><img src="/cha/image-20210102110314592.png" alt="image-20210102110314592"></p>
+<p>核心思想是给定一个receiver variable a, 他可能会指向他的类型下的所有子类型(即本身)。</p>
+<p>来看CHA的算法：</p>
+<p><img src="/cha/image-20210103195541252.png" alt="image-20210103195541252"></p>
+<p>CS： call site, 即调用点</p>
+<p>T:  target methods，返回的目标方法</p>
+<p>m: 目标方法的签名</p>
+<p>有三个分支， 分别处理<code>static call</code>, <code>special call</code>和<code>virtual call</code></p>
+<ol>
+<li><p>static call: 静态调用直接放入</p>
+</li>
+<li><p>Special call: special call有三种： 父类方法(super), 构造方法和似有方法</p>
+<p>其中父类方法比较特殊，需要Dispatch(cm,m) cm指的是方法m的类型(不是声明类型，A c &#x3D; new C(), 从C类找)。</p>
+</li>
+<li><p>Virtual call: </p>
+<p><img src="/cha/image-20210103200229662.png" alt="image-20210103200229662"></p>
+</li>
+</ol>
+<p>注意这里不是唯一的了， 所以使add 目标调用点的声明类型开始找所有符合方法签名m的本类或子类中的c’。</p>
+<p><img src="/cha/image-20210103200405069.png" alt="image-20210103200405069"></p>
+<p>注意三点：</p>
+<ol>
+<li>从本类以及子类中找所有的foo方法</li>
+<li>其中包含dispatch, 如果本类中没有foo, 回望父类中找，因此Resolve(b.foo())中B无foo(),因此dispatch到了A.foo()。</li>
+<li>和new B()无关(尽管new B()中不能调c.foo(), d.foo())，还是根据variable b的声明类(即B类)去找。</li>
+</ol>
+<h2 id="通过CHA构建Call-Graph"><a href="#通过CHA构建Call-Graph" class="headerlink" title="通过CHA构建Call Graph"></a>通过CHA构建Call Graph</h2><p><img src="/cha/image-20210103201000619.png" alt="image-20210103201000619"></p>
+<p>从入口方法开始，没遇到一个可达方法，去解目标方法，得到新的方法后，再去解新的方法的可达方法。。。知道算法停止，得到call grap:</p>
+<p><img src="/cha/image-20210103201150287.png" alt="image-20210103201150287"></p>
+<p>三个数据结构：</p>
+<ul>
+<li>WL: worklist , 需要被处理的目标方法， 开始只有入口方法。</li>
+<li>CG: Call graph, 存调用变。</li>
+<li>RM:  可达方法，一个方法进入RM说明已经分析过了。</li>
+</ul>
+<p>算法：</p>
+<p>一个大的While循环。以起初main方法为例，首先将main方法从worklist中取出来，如果main方法不在RM中说明没有分析过， 进入call graph分析过程， 从main方法中找到所有的call site, 对每一个call site进行单个call site结点的CHA resolve(cs)得到该call site所有可能的target method, 对于每一个target method m’, 将其在call graph中与main方法中对应的call site相连(cs-&gt;m’), 并将这些target method标记为可达method(add m’ to WL), 此时main方法加入到RM里了，之后不会再被重复分析。(每次分析的目标方法:remove m from WL, add m to RM)。</p>
+<p><img src="/cha/image-20210103202612835.png" alt="image-20210103202612835"></p>
+<p>虚线是call graph其中C.m()并无调用关系。 此时WL&#x3D;[]，构造完成，其中橙色的是每一个需要分析的method, 从中去找每一个call site（如B.bar()这个函数体为空，因此无任何call site), 找到所有call site, 对每个call site进行CHA 的resolve，得到调用边放入(cg，即虚线关系)，新增加的method放入WL（如果和RM重复就不分析了，因为已经分析过了）。</p>
+<h1 id="Interprocedural-Contrl-Flow-Graph"><a href="#Interprocedural-Contrl-Flow-Graph" class="headerlink" title="Interprocedural Contrl-Flow Graph"></a>Interprocedural Contrl-Flow Graph</h1><p><img src="/cha/image-20210103203046532.png" alt="image-20210103203046532"></p>
+<p>ICFG就是在过程内的CFG的过程加上一堆call site的调用边和返回边连接起来。</p>
+<p><img src="/cha/image-20210103203135345.png" alt="image-20210103203135345"></p>
+<p><img src="/cha/image-20210103210513165.png" alt="image-20210103210513165"></p>
+<h1 id="Interprocedural-Data-Flow-Graph"><a href="#Interprocedural-Data-Flow-Graph" class="headerlink" title="Interprocedural Data-Flow Graph"></a>Interprocedural Data-Flow Graph</h1><p>在ICFG的基础上进行常量传播为例</p>
+<p><img src="/cha/image-20210103210615560.png" alt="image-20210103210615560"></p>
+<p>这里的转移函数除了node上的， 还需要加上边上的x&#x3D;val(a)的参数传递以及b&#x3D;val(y)的return传递，而加上那一条实现边(黄色标注)是为了传播a中的常量，如果没有这条边a的内容就会从过程外传到c&#x3D;b-3这很不科学。</p>
+<p><img src="/cha/image-20210103211000777.png" alt="image-20210103211000777"></p>
+<p>还有一点要注意就是，如下b&#x3D;ten()需要把b从过程内的常量传播中移除，这样b&#x3D;10传到下一条stmt，不然b&#x3D;7传下来的话就是NAC。</p>
+<p>O了。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2021/01/02/cha/" data-id="cl1dky4n5000hn7w5hghc42x7" data-title="CHA" class="article-share-link">Share</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-loops" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2020/12/06/loops/" class="article-date">
+  <time class="dt-published" datetime="2020-12-06T01:07:21.000Z" itemprop="datePublished">2020-12-06</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2020/12/06/loops/">程序分析之Loops in Flow Graphs</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>此文为编译原理(龙书)9.6章， 补充南大重续分析第6节之后。</p>
+<h1 id="1-支配结点"><a href="#1-支配结点" class="headerlink" title="1. 支配结点"></a>1. 支配结点</h1><h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h2><h3 id="支配结点"><a href="#支配结点" class="headerlink" title="支配结点"></a>支配结点</h3><p>Dominators, 即支配结点， 如果从一段程序的entry point 到结点n的所有路径， 都经过结点m，那么我们就可以说m支配n，<code>记为 m dom n</code></p>
+<p>支配结点性质：</p>
+<ul>
+<li>reflexive: a dom a （每个结点支配本身，不过为了区分的本身的支配结点也可以叫strict dom）</li>
+<li>transitive:  a dom b and b dom c &#x3D;&gt; a dom c (具有传递性)</li>
+<li>antisymmetric:  a dom b and b dom a &#x3D;&gt; a&#x3D;&#x3D;b</li>
+</ul>
+<h3 id="直接支配结点"><a href="#直接支配结点" class="headerlink" title="直接支配结点"></a>直接支配结点</h3><p>此外， 在到达一个结点的支配路径上的最后一个结点，记为<code>直接支配结点（immediate dominator）</code>， 如果一个结点记为n，他的直接支配结点记为m<code>(m idom n)</code>。在n的支配路径上，当支配结点不是自身时，支配节点d一定也支配m。 </p>
+<p>为啥要强调直接支配呢？要看我们表示流图中支配关系的数据结构： 支配树</p>
+<h3 id="支配树"><a href="#支配树" class="headerlink" title="支配树"></a>支配树</h3><p>首先，手工来找每一个支配结点的支配对象。此处我们的入口结点是1号结点， 我们可以看到，1号结点支配所有结点， 而2号结点在1号结点的分支上，下层所有结点都可以从3号结点到达， 因此2号结点仅支配它自身(任何结点都支配自身)。 如图，以此类推。如此生成一颗支配结点树。</p>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125517.png" alt="image-20201208181751573 " style="zoom:20%;" />
+
+<p>这颗树上，入口为程序根结点，每个结点支配它的后代结点：</p>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125520.png" alt="image-20201208182015843 " style="zoom:30%;" />
+
+<p>生成树的性质：</p>
+<ul>
+<li><p>顶点： 程序入口点</p>
+</li>
+<li><p>边： 直接支配结点</p>
+</li>
+<li><p>路径： 所有支配路径</p>
+</li>
+</ul>
+<h2 id="支配路径分析算法"><a href="#支配路径分析算法" class="headerlink" title="支配路径分析算法"></a>支配路径分析算法</h2><p>要设计一个算法，来求出一段程序中每个结点的支配路径。 那么整个算法的思想如下：</p>
+<blockquote>
+<p>如果p1,p2,p3….pk是结点n的所有前驱， 并且d不等于n,  那么当且仅当每个d dom pi时(pi为每个p)，d dom n。</p>
+</blockquote>
+<p>也就是说，n的一个前驱结点如果要是称为n的支配结点d，那么必须支配到达n点的所有前驱。因此他表示成的数据结构也就是一棵树(回溯祖先只有一条路经)。</p>
+<p>比如上面的程序流图中，4到8点之间有5，6，7三个点， 4号结点同时支配5,6,7,因此4号结点支配8号结点；而5号结点到8号结点之间有7号结点， 5号结点并不支配7号结点(他只支配本身)， 因此5号结点并不能支配8号结点。</p>
+<p>好算法原理介绍完了，接下来我们设计这个程序分析。</p>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125523.png" alt="截屏2020-05-17 下午9.56.10 " style="zoom:80%;" />
+
+<p>对照这张表，分析次算法。</p>
+<ul>
+<li><p>Domain: 基于抽象的数据集， 应该选择所有点</p>
+</li>
+<li><p>Direction: 求每个程序点的支配路径，Forwards更直观</p>
+</li>
+<li><p>May&#x2F;Must: 为了保证我们的分析结果safe，那么这应该是一个must-approximation，以确保支配路径的唯一性。</p>
+</li>
+<li><p>Boundary: 边界条件，由于是前向的，Must分析， 那么程序的边界应该是OUT[entry]， 从上到下，而初始应该不是空集，而是本结点为支配结点(入口结点是所有结点的支配结点)，即OUT[entry] &#x3D; {entry}</p>
+</li>
+<li><p>Initialization: 因为Meet是交运算，每个程序结点的初始化应该是所有路径OUT[B]&#x3D;N(假设所有结点都是他的支配结点)</p>
+</li>
+<li><p>Transfer funciton: 每个基本块内的转移函数，因为是前向分析，所以转移函数应该IN[B]union上本身{B}。F(x) &#x3D; xU{B}</p>
+</li>
+<li><p>在merge处(程序数据的合并点)我们取交集。</p>
+</li>
+</ul>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125527.png" alt="image-20201206101945309 " style="zoom:67%;" />
+
+<p>这个算法的Transfer function和之前的-kill +gen的不同， 需要注意。</p>
+<p>拿来那张Must分析的图：</p>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125530.png" alt="截屏2020-08-13 上午8.54.34 " style="zoom:67%;" />
+
+<p>初始时所有前驱点都是支配结点，然后将这个集合不断缩小知道最大不动点，求最大下界。</p>
+<p>因此我们的Iterative Algorithm有：</p>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125533.png" alt="image-20201206102844236 " style="zoom:50%;" />
+
+<p>来看具体的例子：</p>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125536.png" alt="image-20201206104654556 " style="zoom:50%;" />
+
+<p>D(n)是所有结点的支配结点的集合。</p>
+<p>D(1)是入口结点， 支配结点就是它本身。</p>
+<p>D(2)中的转移函数回吧IN[B]即D(1)union上自身{2} &#x3D;&gt; {1,2}</p>
+<p>D(3)同理， 转移函数{3}unionIN[B]，这里的IN[B]是有四条边， 根据merge取并集，我们有D(1)nD(2)nD(4)nD(8)因为4，8没有分析，所以他们的OUT[B]都是初始值，所有点。因此D3 &#x3D; {1,3}。</p>
+<p>停止条件：</p>
+<p>因为我们的OUT[B]&#x3D;IN[B]union本身，我们看第一次迭代后，其实已经达到了不动点。比如D(3)在第二次迭代时，D(1)是恒不变的，D(2)就是不变的。此时D(4) &#x3D; {1,3,4}, D(8) &#x3D; {1,3,4,7,8} 他们的并集一定是小于等于4的结点集合,即{1,3,4}，而只要有前驱1,2在，那么支配结点的并集就一定是小于3的。(不考虑环路)</p>
+<p>如果不考虑环路了， 那么在无环图上，根据支配结点的性质， <code>除了入口结点，每一个结点都有唯一的直接支配结点</code>。再比如4号结点，有3和7两个入边，要证明停止， 我们就要证明7号的支配结点一定包含{1,3}而不会再包含2，那么算法就停止了。也就是说只计算一次，路径中的所有支配结点都出现了，不会再添加其他的了。如果再添加了2，即{1,2,3}那么程序中到达4就会有两条路经，1，3，4和1，2，3，4。</p>
+<p>如此一来， 算法变成了：</p>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125539.png" alt="image-20201206113136795 " style="zoom:50%;" />
+
+<p>没有了while循环。</p>
+<h1 id="2-深度优先生成树"><a href="#2-深度优先生成树" class="headerlink" title="2. 深度优先生成树"></a>2. 深度优先生成树</h1><p>我们需要分析循环XD，现在，我们根据支配路径分析算法， 得到了生成树，也就是说得到了流图上每一个点的支配路径信息。而实际控制流图所走的路径中间夹杂着支配结点之外的结点。此外，要在流图中刻画循环，我们需要知道流图中什么时候前进，什么时候回退了。这些信息需要生成一个深度优先生成树来提供。</p>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125542.png" alt="image-20201207105042417 " style="zoom:70%;" />
+
+<p>要在流图上进行深度优先搜索所得到的序列: 1,2,3,4,5,6,7,8,9,10 。我们可以生成深度优先生成树， 这棵树的后序遍历序列(10,9,8,7,6,5,4,3,2,1)之反就是我们所需的序列。</p>
+<p>实现这个算法：</p>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125545.png" alt="image-20201207105419198 " style="zoom:30%;" />
+
+<p>具体算法：</p>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125549.png" alt="image-20201207105454286 " style="zoom:60%;" />
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#coding=utf-8</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">dfst</span></span><br><span class="line"><span class="string">～～～～</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line">_visit = <span class="built_in">set</span>()</span><br><span class="line"></span><br><span class="line">_graph = &#123;</span><br><span class="line">        <span class="number">1</span>: [<span class="number">3</span>, <span class="number">2</span>],</span><br><span class="line">        <span class="number">2</span>: [<span class="number">3</span>],</span><br><span class="line">        <span class="number">3</span>: [<span class="number">4</span>],</span><br><span class="line">        <span class="number">4</span>: [<span class="number">3</span>, <span class="number">6</span>, <span class="number">5</span>],</span><br><span class="line">        <span class="number">5</span>: [<span class="number">7</span>],</span><br><span class="line">        <span class="number">6</span>: [<span class="number">7</span>],</span><br><span class="line">        <span class="number">7</span>: [<span class="number">4</span>, <span class="number">8</span>],</span><br><span class="line">        <span class="number">8</span>: [<span class="number">10</span>, <span class="number">9</span>],</span><br><span class="line">        <span class="number">9</span>: [<span class="number">1</span>],</span><br><span class="line">        <span class="number">10</span>: [<span class="number">7</span>]</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">_c = <span class="built_in">len</span>(_graph)</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">search</span>(<span class="params">n</span>):</span><br><span class="line">    _visit.add(n)</span><br><span class="line">    <span class="built_in">print</span>(n)</span><br><span class="line">    <span class="keyword">for</span> s <span class="keyword">in</span> _graph[n]:</span><br><span class="line">        <span class="keyword">if</span> s <span class="keyword">not</span> <span class="keyword">in</span> _visit:</span><br><span class="line">            search(s)</span><br><span class="line">    <span class="keyword">global</span> _c</span><br><span class="line">    _c = _c -<span class="number">1</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;_c = &#123;&#125;&quot;</span>.<span class="built_in">format</span>(_c))</span><br><span class="line"></span><br><span class="line">search(<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">output=&gt;</span><br><span class="line"><span class="number">1</span></span><br><span class="line"><span class="number">3</span></span><br><span class="line"><span class="number">4</span></span><br><span class="line"><span class="number">6</span></span><br><span class="line"><span class="number">7</span></span><br><span class="line"><span class="number">8</span></span><br><span class="line"><span class="number">10</span></span><br><span class="line">_c=<span class="number">9</span></span><br><span class="line"><span class="number">9</span></span><br><span class="line">_c=<span class="number">8</span></span><br><span class="line">_c=<span class="number">7</span></span><br><span class="line">_c=<span class="number">6</span></span><br><span class="line">_c=<span class="number">5</span></span><br><span class="line"><span class="number">5</span></span><br><span class="line">_c=<span class="number">4</span></span><br><span class="line">_c=<span class="number">3</span></span><br><span class="line">_c=<span class="number">2</span></span><br><span class="line"><span class="number">2</span></span><br><span class="line">_c=<span class="number">1</span></span><br><span class="line">_c=<span class="number">0</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>如此一来可以看到：</p>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125552.png" alt="image-20201208100007943" style="zoom:50%;" />
+
+<p>图中流图的边可以分为三种：</p>
+<p>1） 实线边，即深度优先生成树算法生成的边，也就是<code>前进边(Advancing edge)</code>，这些边推进流图向下执行。</p>
+<ol start="2">
+<li>虚线边中从子节点指向其祖先的，也就是<code>后退边(Retreating edge)</code>，这些边指向上层。</li>
+</ol>
+<p>3）另外一些虚线边(5-&gt;7, 2-&gt;3)，这些边互相都不为祖先。也即是<code>交叉边(cross edge)</code>。</p>
+<h1 id="3-自然循环"><a href="#3-自然循环" class="headerlink" title="3. 自然循环"></a>3. 自然循环</h1><h2 id="回边"><a href="#回边" class="headerlink" title="回边"></a>回边</h2><p>给了一个流图， 要对循环进行分析。首先，我们定义了支配结点这一二元关系。然后通过直接支配结点，我们构建了一颗深度优先生成树，在这颗树上，顶点就是程序入口点，边就是直接支配关系，所有的路径就是所有的支配路径。有了这层关系，我们在树上不上了虚边，在后退边中，我们现在定义一种回边。这种回边一定是后退边(但是后退边不一定是回边)。回边的定义是这样的如果1 dom 9  现在有一条边，他的头是9，尾是1那么也就是说尾支配了头，这就是一条回边。</p>
+<p>上边说了，后退边不一定是回边，如：</p>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125600.png" alt="image-20201208174753377" style="zoom:60%;" />
+
+<p>这是鲸书第七章的一个例子。从流图a中我们可以看到c和d的流形成一个环路， 但是他生成的任意一种深度优先生成树(或de在前或c在前)。都有一条后退边，指向一个他的非支配结点。</p>
+<blockquote>
+<p>因为我们在第一步计算了一个结点的所有支配对象，在第二步计算出了流图的深度优先生成树。那么我们就可以拿到所有支配路径，以及支配路径上所有结点的支配结点信息。通过生成树，我们就可以知道流图上那一些边是后退边，通过支配结点的计算，我们就可以知道后退边指向的是不是支配他的结点，从而判断一条后退边是不是回边。</p>
+</blockquote>
+<h2 id="自然循环"><a href="#自然循环" class="headerlink" title="自然循环"></a>自然循环</h2><p>如果一个流图中，他的每一种深度优先生成树中所有后退边都是回边，那么这张流图就是 <code>可规约的（reducible）</code>，此时他每一种遍历情况下生成的深度优先生成树的所有后退边的集合，都是相同的。</p>
+<h3 id="自然循环定义："><a href="#自然循环定义：" class="headerlink" title="自然循环定义："></a>自然循环定义：</h3><ul>
+<li>必须具有一个唯一的入口结点， 称为循环头(header)。</li>
+<li>具有一条进入循环头的回边。</li>
+</ul>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125611.png" alt="image-20201208204910207 " style="zoom:30%;" />
+
+<p>在此图中可以看到， 在流图中找自然循环， 首先，找出所有回边。</p>
+<p>然后如4-3: 这歌循环中3号结点为循环头，找到所有不经过3而到达4的结点：</p>
+<p>4， 5，6，7，8，10。 然后再加上循环头3就是这个自然循环的组成。</p>
+<h3 id="构造一条回边的自然循环："><a href="#构造一条回边的自然循环：" class="headerlink" title="构造一条回边的自然循环："></a>构造一条回边的自然循环：</h3><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125617.png" alt="image-20201208205823633 " style="zoom:33%;" /> 
+
+<p>算法说明一下，注意两点，一是n初始的时候已经在Loop中了， 二是找的是栈顶指针的前驱，弹出后，有前驱再压栈。比如还是在4-3的自然循环中，我们第一次循环压入了4， 然后找到了前驱m&#x3D;[3,8], 3是循环头不过if, 因此8被压栈；下一轮8出栈，7入栈；再一轮7出栈，5、6、10入栈。。。</p>
+<blockquote>
+<p>所以说这里就是以循环头为上界进行一个流图的反向深度遍历。</p>
+</blockquote>
+<h3 id="自然循环性质"><a href="#自然循环性质" class="headerlink" title="自然循环性质"></a>自然循环性质</h3><ul>
+<li>除非两个循环有相同的循环头， 否则他们要不分离，要么嵌套。</li>
+<li>一个循环不包含其他循环称为最内层循环(innermost loop)&#x2F;同理流图中包含所有循环的是最外循环</li>
+<li>下图中包含同一个循环头，很难说哪一个是最内循环(可能是循环中的if…else)，因此合并循环</li>
+</ul>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125622.png" alt="image-20201208211513630 " style="zoom:30%;" />
+
+<h1 id="后记：-循环优化"><a href="#后记：-循环优化" class="headerlink" title="后记： 循环优化"></a>后记： 循环优化</h1><p>补充虎书第18章循环优化的内容</p>
+<h2 id="Loop-nest-Tree"><a href="#Loop-nest-Tree" class="headerlink" title="Loop-nest Tree"></a>Loop-nest Tree</h2>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2020/12/06/loops/" data-id="cl1dky4n9000qn7w546lz5uzl" data-title="程序分析之Loops in Flow Graphs" class="article-share-link">Share</a>
       
       
       
@@ -980,7 +1371,7 @@
 
   <nav id="page-nav">
     
-    <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/3/">Next &raquo;</a>
+    <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><a class="extend next" rel="next" href="/page/3/">Next &raquo;</a>
   </nav>
 
 </section>
@@ -1013,7 +1404,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/02/">February 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/01/">January 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/12/">December 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">September 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">August 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">April 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">February 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">January 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/02/">February 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/01/">January 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/12/">December 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">September 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">August 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">April 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">February 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">January 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li></ul>
     </div>
   </div>
 
@@ -1034,15 +1425,15 @@
           </li>
         
           <li>
-            <a href="/2022/02/14/pop/">A Survey about PHP Object Injection</a>
-          </li>
-        
-          <li>
             <a href="/2022/02/06/logic-machine/">Logic Machine</a>
           </li>
         
           <li>
-            <a href="/2022/01/26/fuz/">Fuzzing</a>
+            <a href="/2022/01/26/fuz/">Fuzzing(TODO)</a>
+          </li>
+        
+          <li>
+            <a href="/2022/01/01/bayes/">信念传播(Belief propagation)</a>
           </li>
         
       </ul>
