@@ -6,16 +6,16 @@
   
   <title>Penlab</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="description" content="放在这，没事儿了我就总结几个 1 child nodesAST_VAR 1$var    AST_ECHO 2 child nodesAST_CALL 函数调用点   1$a &#x3D; foo(&amp;#x27;a&amp;#x27;);   child0:  ARG_LIST - 参数列表  child1:  调用函数名  AST_DIM 数组引用   1$a &#x3D; foo[&amp;#x27;a&amp;#x27;];     c">
+  <meta name="description" content="放在这，没事儿了我就总结几个 1 child nodesAST_VAR 1$var    AST_ECHO      2 child nodesAST_CALL 函数调用点      1$a &#x3D; foo(&amp;#x27;a&amp;#x27;);   child0:  ARG_LIST - 参数列表  child1:  调用函数名  AST_DIM 数组引用    1$a &#x3D; foo[&amp;#x27;a&amp;#x27">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Penlab">
 <meta property="og:url" content="http://example.com/2020/06/01/PHP-AST/index.html">
 <meta property="og:site_name" content="Penlab">
-<meta property="og:description" content="放在这，没事儿了我就总结几个 1 child nodesAST_VAR 1$var    AST_ECHO 2 child nodesAST_CALL 函数调用点   1$a &#x3D; foo(&amp;#x27;a&amp;#x27;);   child0:  ARG_LIST - 参数列表  child1:  调用函数名  AST_DIM 数组引用   1$a &#x3D; foo[&amp;#x27;a&amp;#x27;];     c">
+<meta property="og:description" content="放在这，没事儿了我就总结几个 1 child nodesAST_VAR 1$var    AST_ECHO      2 child nodesAST_CALL 函数调用点      1$a &#x3D; foo(&amp;#x27;a&amp;#x27;);   child0:  ARG_LIST - 参数列表  child1:  调用函数名  AST_DIM 数组引用    1$a &#x3D; foo[&amp;#x27;a&amp;#x27">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://example.com/PHP-AST/%E6%88%AA%E5%B1%8F2020-07-14%20%E4%B8%8B%E5%8D%884.07.05.png">
-<meta property="og:image" content="http://example.com/PHP-AST/%E6%88%AA%E5%B1%8F2020-07-27%20%E4%B8%8B%E5%8D%883.42.44.png">
-<meta property="og:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2020-06-29-123106.png">
+<meta property="og:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044304.png">
+<meta property="og:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044306.png">
+<meta property="og:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044310.png">
 <meta property="og:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2020-06-29-123109.png">
 <meta property="og:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2020-06-29-123113.png">
 <meta property="og:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2020-06-29-123116.png">
@@ -23,20 +23,20 @@
 <meta property="og:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2020-07-14-085207.png">
 <meta property="og:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2020-07-14-090810.png">
 <meta property="og:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2020-07-14-090953.png">
-<meta property="og:image" content="http://example.com/PHP-AST/%E6%88%AA%E5%B1%8F2020-07-27%20%E4%B8%8B%E5%8D%889.26.11.png">
+<meta property="og:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044347.png">
 <meta property="og:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2020-06-29-123118.png">
 <meta property="og:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2020-06-29-123122.png">
 <meta property="og:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2020-06-29-123125.png">
 <meta property="og:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2020-06-29-123130.png">
 <meta property="og:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2020-06-29-123134.png">
-<meta property="og:image" content="http://example.com/PHP-AST/%E6%88%AA%E5%B1%8F2020-07-27%20%E4%B8%8B%E5%8D%889.26.11-5856522.png">
+<meta property="og:image" content="http://example.com/2020/06/01/PHP-AST/PHP-AST/%E6%88%AA%E5%B1%8F2020-07-27%20%E4%B8%8B%E5%8D%889.26.11-5856522.png">
 <meta property="og:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2020-07-14-093758.png">
 <meta property="og:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2020-07-14-093754.png">
 <meta property="article:published_time" content="2020-05-31T16:00:00.000Z">
-<meta property="article:modified_time" content="2022-03-30T06:25:22.906Z">
+<meta property="article:modified_time" content="2022-03-31T04:44:26.609Z">
 <meta property="article:author" content="iohex">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/PHP-AST/%E6%88%AA%E5%B1%8F2020-07-14%20%E4%B8%8B%E5%8D%884.07.05.png">
+<meta name="twitter:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044304.png">
   
     <link rel="alternate" href="/atom.xml" title="Penlab" type="application/atom+xml">
   
@@ -68,6 +68,10 @@
       <h1 id="logo-wrap">
         <a href="/" id="logo">Penlab</a>
       </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">注入的艺术</a>
+        </h2>
       
     </div>
     <div id="header-inner" class="inner">
@@ -106,16 +110,24 @@
     <div class="e-content article-entry" itemprop="articleBody">
       
         <p>放在这，没事儿了我就总结几个</p>
-<h1 id="1-child-nodes"><a href="#1-child-nodes" class="headerlink" title="1 child nodes"></a>1 child nodes</h1><h2 id="AST-VAR"><a href="#AST-VAR" class="headerlink" title="AST_VAR"></a>AST_VAR</h2><p><img src="/PHP-AST/%E6%88%AA%E5%B1%8F2020-07-14%20%E4%B8%8B%E5%8D%884.07.05.png" alt="截屏2020-07-14 下午4.07.05"></p>
+<h1 id="1-child-nodes"><a href="#1-child-nodes" class="headerlink" title="1 child nodes"></a>1 child nodes</h1><h2 id="AST-VAR"><a href="#AST-VAR" class="headerlink" title="AST_VAR"></a>AST_VAR</h2><p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044304.png" alt="截屏2020-07-14 下午4.07.05"></p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$var</span></span><br></pre></td></tr></table></figure>
 
 
 
-<h2 id="AST-ECHO"><a href="#AST-ECHO" class="headerlink" title="AST_ECHO"></a>AST_ECHO</h2><p><img src="/PHP-AST/%E6%88%AA%E5%B1%8F2020-07-27%20%E4%B8%8B%E5%8D%883.42.44.png" alt="截屏2020-07-27 下午3.42.44"></p>
+<h2 id="AST-ECHO"><a href="#AST-ECHO" class="headerlink" title="AST_ECHO"></a>AST_ECHO</h2><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044306.png" alt="截屏2020-07-27 下午3.42.44" style="zoom:50%;" />
+
+
+
+
+
 <h1 id="2-child-nodes"><a href="#2-child-nodes" class="headerlink" title="2 child nodes"></a>2 child nodes</h1><h2 id="AST-CALL"><a href="#AST-CALL" class="headerlink" title="AST_CALL"></a>AST_CALL</h2><blockquote>
 <p>函数调用点</p>
 </blockquote>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2020-06-29-123106.png" alt="截屏2020-06-01 下午5.41.28"></p>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044310.png" alt="截屏2020-06-01 下午5.41.28" style="zoom:50%;" />
+
+
+
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$a</span> = <span class="title function_ invoke__">foo</span>(<span class="string">&#x27;a&#x27;</span>);</span><br></pre></td></tr></table></figure>
 
 <ul>
@@ -125,7 +137,8 @@
 <h2 id="AST-DIM"><a href="#AST-DIM" class="headerlink" title="AST_DIM"></a>AST_DIM</h2><blockquote>
 <p>数组引用</p>
 </blockquote>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2020-06-29-123109.png" alt="截屏2020-06-01 下午5.48.46"></p>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2020-06-29-123109.png" alt="截屏2020-06-01 下午5.48.46" style="zoom:50%;" />
+
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$a</span> = foo[<span class="string">&#x27;a&#x27;</span>];</span><br></pre></td></tr></table></figure>
 
 
@@ -137,7 +150,8 @@
 <h2 id="ZEND-AST-PROP"><a href="#ZEND-AST-PROP" class="headerlink" title="ZEND_AST_PROP"></a>ZEND_AST_PROP</h2><blockquote>
 <p>属性调用</p>
 </blockquote>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2020-06-29-123113.png" alt="截屏2020-06-20 下午4.39.26"></p>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2020-06-29-123113.png" alt="截屏2020-06-20 下午4.39.26" style="zoom:67%;" />
+
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$obj</span>-&gt;val;</span><br></pre></td></tr></table></figure>
 
 
@@ -146,7 +160,8 @@
 <li>child0: objetct_name</li>
 <li>child1: attr</li>
 </ul>
-<h2 id="ZEND-AST-WHILE"><a href="#ZEND-AST-WHILE" class="headerlink" title="ZEND_AST_WHILE"></a>ZEND_AST_WHILE</h2><p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2020-06-29-123116.png" alt="截屏2020-06-20 下午4.42.05"></p>
+<h2 id="ZEND-AST-WHILE"><a href="#ZEND-AST-WHILE" class="headerlink" title="ZEND_AST_WHILE"></a>ZEND_AST_WHILE</h2><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2020-06-29-123116.png" alt="截屏2020-06-20 下午4.42.05" style="zoom:67%;" />
+
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span>(<span class="variable">$a</span>==<span class="number">1</span>)&#123;</span><br><span class="line">  [stmt_list]...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 
@@ -158,7 +173,10 @@
 <h2 id="AST-IF-ELEMET"><a href="#AST-IF-ELEMET" class="headerlink" title="AST_IF_ELEMET"></a>AST_IF_ELEMET</h2><blockquote>
 <p>区别于AST_IF</p>
 </blockquote>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2020-07-14-083801.png" alt="截屏2020-07-14 下午4.37.36"></p>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2020-07-14-083801.png" alt="截屏2020-07-14 下午4.37.36" style="zoom:67%;" />
+
+
+
 <p>AST_IF这个list下连接的每一个分支都由一个IF_ELEMENT进入。</p>
 <ul>
 <li>Child0 :条件判定式</li>
@@ -167,7 +185,10 @@
 <h2 id="AST-BINARY-OP"><a href="#AST-BINARY-OP" class="headerlink" title="AST_BINARY_OP"></a>AST_BINARY_OP</h2><blockquote>
 <p>二元操作</p>
 </blockquote>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2020-07-14-085207.png" alt="截屏2020-07-14 下午4.51.41"></p>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2020-07-14-085207.png" alt="截屏2020-07-14 下午4.51.41" style="zoom:67%;" />
+
+
+
 <p>控制流、数据流走判定表达式的话都是直接连这个点。代表整个二元操作表达式。 </p>
 <p>在PHP-AST这个项目中， 此点有flags字段，决定作用方法：</p>
 <p><a target="_blank" rel="noopener" href="https://github.com/nikic/php-ast/blob/1b5d767dd326f535288786130b2215744feb2cbf/tests/metadata.phpt#L97">https://github.com/nikic/php-ast/blob/1b5d767dd326f535288786130b2215744feb2cbf/tests/metadata.phpt#L97</a></p>
@@ -193,8 +214,14 @@
 </ul>
 <h2 id="AST-ASSIGN"><a href="#AST-ASSIGN" class="headerlink" title="AST_ASSIGN"></a>AST_ASSIGN</h2><p>另一个非常常见的两孩子点，就是赋值语句。当然， 左值和右值。</p>
 <p> 数据流最爱连接的节点：</p>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2020-07-14-090810.png" alt="截屏2020-07-14 下午5.07.42"></p>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2020-07-14-090953.png" alt="截屏2020-07-14 下午5.09.18"></p>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2020-07-14-090810.png" alt="截屏2020-07-14 下午5.07.42" style="zoom:67%;" />
+
+
+
+
+
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2020-07-14-090953.png" alt="截屏2020-07-14 下午5.09.18" style="zoom:67%;" />
+
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$a</span> = <span class="title function_ invoke__">foo</span>();</span><br></pre></td></tr></table></figure>
 
 <ul>
@@ -202,14 +229,20 @@
 <li>1child: 右值(一波操作)</li>
 </ul>
 <p>追踪数据流变量在这一级上追踪。</p>
-<h2 id="AST-ARRAY-ELEMENT"><a href="#AST-ARRAY-ELEMENT" class="headerlink" title="AST_ARRAY_ELEMENT"></a>AST_ARRAY_ELEMENT</h2><p><img src="/PHP-AST/%E6%88%AA%E5%B1%8F2020-07-27%20%E4%B8%8B%E5%8D%889.26.11.png" alt="截屏2020-07-27 下午9.26.11"></p>
+<h2 id="AST-ARRAY-ELEMENT"><a href="#AST-ARRAY-ELEMENT" class="headerlink" title="AST_ARRAY_ELEMENT"></a>AST_ARRAY_ELEMENT</h2><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044347.png" alt="截屏2020-07-27 下午9.26.11" style="zoom:67%;" />
+
+
+
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$arr</span> = <span class="keyword">array</span>(</span><br><span class="line">    <span class="string">&#x27;a&#x27;</span> =&gt; <span class="string">&#x27;1&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;b&#x27;</span> =&gt; <span class="string">&#x27;2&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;c&#x27;</span> =&gt; <span class="string">&#x27;3&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;d&#x27;</span> =&gt; <span class="string">&#x27;4&#x27;</span>,</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
 
 
 
 
 
-<h1 id="3-child-nodes"><a href="#3-child-nodes" class="headerlink" title="3 child nodes"></a>3 child nodes</h1><h2 id="AST-METHOD-CALL"><a href="#AST-METHOD-CALL" class="headerlink" title="AST_METHOD_CALL"></a>AST_METHOD_CALL</h2><p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2020-06-29-123118.png" alt="截屏2020-06-20 下午4.52.15"></p>
+<h1 id="3-child-nodes"><a href="#3-child-nodes" class="headerlink" title="3 child nodes"></a>3 child nodes</h1><h2 id="AST-METHOD-CALL"><a href="#AST-METHOD-CALL" class="headerlink" title="AST_METHOD_CALL"></a>AST_METHOD_CALL</h2><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2020-06-29-123118.png" alt="截屏2020-06-20 下午4.52.15" style="zoom:67%;" />
+
+
+
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$stu</span>-&gt;<span class="title function_ invoke__">getScore</span>(<span class="string">&#x27;math&#x27;</span>);</span><br></pre></td></tr></table></figure>
 
 <ul>
@@ -217,7 +250,10 @@
 <li>child1: name: getScore </li>
 <li>child2: args:math &#x2F;&#x2F;arg list</li>
 </ul>
-<h2 id="AST-STATIC-CALL"><a href="#AST-STATIC-CALL" class="headerlink" title="AST_STATIC_CALL"></a>AST_STATIC_CALL</h2><p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2020-06-29-123122.png" alt="截屏2020-06-20 下午5.00.15"></p>
+<h2 id="AST-STATIC-CALL"><a href="#AST-STATIC-CALL" class="headerlink" title="AST_STATIC_CALL"></a>AST_STATIC_CALL</h2><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2020-06-29-123122.png" alt="截屏2020-06-20 下午5.00.15" style="zoom:67%;" />
+
+
+
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">stu::<span class="title function_ invoke__">getScore</span>(<span class="string">&#x27;math&#x27;</span>);</span><br></pre></td></tr></table></figure>
 
 <ul>
@@ -225,8 +261,14 @@
 <li>child1: name: getScore</li>
 <li>child2: args: math</li>
 </ul>
-<h2 id="AST-CONDITIONAL"><a href="#AST-CONDITIONAL" class="headerlink" title="AST_CONDITIONAL"></a>AST_CONDITIONAL</h2><p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2020-06-29-123125.png" alt="截屏2020-06-20 下午5.05.39"></p>
-<h1 id="4-child-nodes"><a href="#4-child-nodes" class="headerlink" title="4 child nodes"></a>4 child nodes</h1><h2 id="AST-FOREACH"><a href="#AST-FOREACH" class="headerlink" title="AST_FOREACH"></a>AST_FOREACH</h2><p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2020-06-29-123130.png" alt="截屏2020-06-20 下午3.42.11"></p>
+<h2 id="AST-CONDITIONAL"><a href="#AST-CONDITIONAL" class="headerlink" title="AST_CONDITIONAL"></a>AST_CONDITIONAL</h2><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2020-06-29-123125.png" alt="截屏2020-06-20 下午5.05.39" style="zoom:67%;" />
+
+
+
+
+
+<h1 id="4-child-nodes"><a href="#4-child-nodes" class="headerlink" title="4 child nodes"></a>4 child nodes</h1><h2 id="AST-FOREACH"><a href="#AST-FOREACH" class="headerlink" title="AST_FOREACH"></a>AST_FOREACH</h2><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2020-06-29-123130.png" alt="截屏2020-06-20 下午3.42.11" style="zoom:67%;" />
+
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">foreach</span>(<span class="variable">$arr</span> <span class="keyword">as</span> <span class="variable">$k</span> =&gt; <span class="variable">$v</span>)&#123;</span><br><span class="line">     <span class="keyword">echo</span> <span class="variable">$k</span>.<span class="variable">$v</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
 <ul>
@@ -235,7 +277,10 @@
 <li>child2: valueVar: $v</li>
 <li>child3: stmts: 代码块list (ZEND_AST_STMT_LIST)</li>
 </ul>
-<h2 id="ZEND-AST-FOR"><a href="#ZEND-AST-FOR" class="headerlink" title="ZEND_AST_FOR"></a>ZEND_AST_FOR</h2><p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2020-06-29-123134.png" alt="截屏2020-06-20 下午3.50.18"></p>
+<h2 id="ZEND-AST-FOR"><a href="#ZEND-AST-FOR" class="headerlink" title="ZEND_AST_FOR"></a>ZEND_AST_FOR</h2><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2020-06-29-123134.png" alt="截屏2020-06-20 下午3.50.18" style="zoom:67%;" />
+
+
+
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="variable">$i</span>=<span class="number">0</span>; <span class="variable">$i</span>&lt;=<span class="number">1</span>; <span class="variable">$i</span>++)</span><br><span class="line">&#123;</span><br><span class="line">  <span class="keyword">echo</span> <span class="variable">$i</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <ul>
@@ -246,7 +291,8 @@
 </ul>
 <h1 id="list-nodes"><a href="#list-nodes" class="headerlink" title="list nodes"></a>list nodes</h1><p>AST_ARG_LIST &#x3D; 1    &#x2F;&#x2F;函数参数列表（实参）</p>
 <p>AST_ARRAY &#x2F;&#x2F;数组成员列表</p>
-<p><img src="/PHP-AST/%E6%88%AA%E5%B1%8F2020-07-27%20%E4%B8%8B%E5%8D%889.26.11-5856522.png" alt="截屏2020-07-27 下午9.26.11"></p>
+<img src="PHP-AST/%E6%88%AA%E5%B1%8F2020-07-27%20%E4%B8%8B%E5%8D%889.26.11-5856522.png" alt="截屏2020-07-27 下午9.26.11" style="zoom:67%;" />
+
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$arr</span> = <span class="keyword">array</span>(</span><br><span class="line">    <span class="string">&#x27;a&#x27;</span> =&gt; <span class="string">&#x27;1&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;b&#x27;</span> =&gt; <span class="string">&#x27;2&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;c&#x27;</span> =&gt; <span class="string">&#x27;3&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;d&#x27;</span> =&gt; <span class="string">&#x27;4&#x27;</span>,</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
 
 
@@ -265,9 +311,11 @@
 <h2 id="AST-STMT-LIST"><a href="#AST-STMT-LIST" class="headerlink" title="AST_STMT_LIST"></a>AST_STMT_LIST</h2><blockquote>
 <p>最常见的块</p>
 </blockquote>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2020-07-14-093758.png" alt="截屏2020-07-14 下午5.30.15"></p>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2020-07-14-093758.png" alt="截屏2020-07-14 下午5.30.15" style="zoom:67%;" />
+
 <p>儿孙满堂， 一般从这个点跳到块中各个语句中。</p>
-<h2 id="AST-IF-LIST"><a href="#AST-IF-LIST" class="headerlink" title="AST_IF_LIST"></a>AST_IF_LIST</h2><p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2020-07-14-093754.png" alt="截屏2020-07-14 下午5.14.28"></p>
+<h2 id="AST-IF-LIST"><a href="#AST-IF-LIST" class="headerlink" title="AST_IF_LIST"></a>AST_IF_LIST</h2><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2020-07-14-093754.png" alt="截屏2020-07-14 下午5.14.28" style="zoom:67%;" />
+
 <hr>
 <p>一个分支结构的入口， 因为分支结构是不确定的， 所以是list，从这个点可以纵览分支结构有几个。一般不连控制流边(控制流边一般练到数据操作表达式点上如BINARY_OP，ASSIGN)。</p>
 <p>下边的每一个分支入口，都是一个AST_IF（二元）:</p>
@@ -311,7 +359,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2020/06/01/PHP-AST/" data-id="cl1dky4n20009n7w5aybpfi42" data-title="" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2020/06/01/PHP-AST/" data-id="cl1ej4ail00073bw59md1hbp8" data-title="" class="article-share-link">Share</a>
       
       
       

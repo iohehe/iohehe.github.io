@@ -6,12 +6,12 @@
   
   <title>rips | Penlab</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="description" content="抱着我一定要更新博客的决心， 我开始了RIPS折腾笔记。 0x00 背景PHP静态分析有个里程碑式的工具-RIPS，这个工具是最早Dahse博士提出来的， 现在早已闭源。  到0.55是开源的最后一个版本。  10年到17年期间，Dahse发表的文章有：  2010 - RIPS-A static source code analyser for vulnerabilities in PHP sc">
+  <meta name="description" content="抱着我一定要更新博客的决心， 我开始了RIPS折腾笔记。 0x00 背景PHP静态分析有个里程碑式的工具-RIPS，这个工具是最早Dahse博士提出来的， 现在早已闭源。   到0.55是开源的最后一个版本。  10年到17年期间，Dahse发表的文章有：  2010 - RIPS-A static source code analyser for vulnerabilities in PHP s">
 <meta property="og:type" content="article">
 <meta property="og:title" content="rips">
 <meta property="og:url" content="http://example.com/2020/08/12/rips/index.html">
 <meta property="og:site_name" content="Penlab">
-<meta property="og:description" content="抱着我一定要更新博客的决心， 我开始了RIPS折腾笔记。 0x00 背景PHP静态分析有个里程碑式的工具-RIPS，这个工具是最早Dahse博士提出来的， 现在早已闭源。  到0.55是开源的最后一个版本。  10年到17年期间，Dahse发表的文章有：  2010 - RIPS-A static source code analyser for vulnerabilities in PHP sc">
+<meta property="og:description" content="抱着我一定要更新博客的决心， 我开始了RIPS折腾笔记。 0x00 背景PHP静态分析有个里程碑式的工具-RIPS，这个工具是最早Dahse博士提出来的， 现在早已闭源。   到0.55是开源的最后一个版本。  10年到17年期间，Dahse发表的文章有：  2010 - RIPS-A static source code analyser for vulnerabilities in PHP s">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125136.png">
 <meta property="og:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125142.png">
@@ -36,7 +36,7 @@
 <meta property="og:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125255.png">
 <meta property="og:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125300.jpg">
 <meta property="article:published_time" content="2020-08-12T04:06:21.000Z">
-<meta property="article:modified_time" content="2022-03-30T12:53:06.002Z">
+<meta property="article:modified_time" content="2022-03-31T04:52:55.107Z">
 <meta property="article:author" content="iohex">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125136.png">
@@ -71,6 +71,10 @@
       <h1 id="logo-wrap">
         <a href="/" id="logo">Penlab</a>
       </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">注入的艺术</a>
+        </h2>
       
     </div>
     <div id="header-inner" class="inner">
@@ -120,7 +124,8 @@
       
         <p>抱着我一定要更新博客的决心， 我开始了RIPS折腾笔记。</p>
 <h1 id="0x00-背景"><a href="#0x00-背景" class="headerlink" title="0x00 背景"></a>0x00 背景</h1><p>PHP静态分析有个里程碑式的工具-RIPS，这个工具是最早Dahse博士提出来的， 现在早已闭源。</p>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125136.png" alt="截屏2020-08-12 下午12.11.26"></p>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125136.png" alt="截屏2020-08-12 下午12.11.26" style="zoom: 50%;" />
+
 <p>到0.55是开源的最后一个版本。 </p>
 <p>10年到17年期间，Dahse发表的文章有：</p>
 <ul>
@@ -145,9 +150,11 @@
 <p>根据作者的污点分析论述，此版本RIPS有139个PVFs(潜在漏洞函数)，首先第一步找到这些漏洞函数，这些PVFs标记在<code>config/PVF.php</code>中，如一个命令执行：</p>
 <p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125153.png" alt="截屏2020-08-12 下午3.52.20"></p>
 <p>我们扫描这样一段代码：</p>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125157.png" alt="截屏2020-08-14 下午3.28.27"></p>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125157.png" alt="截屏2020-08-14 下午3.28.27" style="zoom:50%;" />
+
 <p>看到没，这是一个命令执行，最后输出：</p>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125201.png" alt="截屏2020-08-14 下午3.29.18"></p>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125201.png" alt="截屏2020-08-14 下午3.29.18" style="zoom: 67%;" />
+
 <p>从效果上看，是一个完整有效的污点分析了噜， 大体来看这段代码的扫描是怎样实现的？ 大致分为三个阶段：读代码-&gt;token化-&gt;扫描。</p>
 <p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125204.png" alt="截屏2020-08-14 上午10.47.59"></p>
 <p>   RIPS将所有文件读入到$data，然后循环针对每一个文件进行scan_file。</p>
@@ -212,7 +219,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2020/08/12/rips/" data-id="cl1dky4nd0015n7w5h5zzaxa5" data-title="rips" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2020/08/12/rips/" data-id="cl1ej4aiz00133bw5f9sf8man" data-title="rips" class="article-share-link">Share</a>
       
       
       

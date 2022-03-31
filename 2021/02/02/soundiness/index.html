@@ -13,18 +13,18 @@
 <meta property="og:site_name" content="Penlab">
 <meta property="og:description" content="0x01 从soundness到soundiness The typical reasons for such choices are engineering compromises: implementers of such tools are well aware of how they could handle complex language features soundly (e.g.,">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://example.com/soundiness/truthiness.png">
-<meta property="og:image" content="http://example.com/soundiness/image-20210202094033999.png">
-<meta property="og:image" content="http://example.com/soundiness/image-20210202094244020.png">
-<meta property="og:image" content="http://example.com/soundiness/image-20210202113047743.png">
-<meta property="og:image" content="http://example.com/soundiness/image-20210202114600176.png">
-<meta property="og:image" content="http://example.com/soundiness/image-20210202114857543.png">
-<meta property="og:image" content="http://example.com/soundiness/image-20210202115838235.png">
+<meta property="og:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043246.png">
+<meta property="og:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043248.png">
+<meta property="og:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043251.png">
+<meta property="og:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043313.png">
+<meta property="og:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043328.png">
+<meta property="og:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043335.png">
+<meta property="og:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043344.png">
 <meta property="article:published_time" content="2021-02-02T00:37:44.000Z">
-<meta property="article:modified_time" content="2022-03-30T06:25:22.715Z">
+<meta property="article:modified_time" content="2022-03-31T04:48:05.125Z">
 <meta property="article:author" content="iohex">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/soundiness/truthiness.png">
+<meta name="twitter:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043246.png">
   
     <link rel="alternate" href="/atom.xml" title="Penlab" type="application/atom+xml">
   
@@ -56,6 +56,10 @@
       <h1 id="logo-wrap">
         <a href="/" id="logo">Penlab</a>
       </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">注入的艺术</a>
+        </h2>
       
     </div>
     <div id="header-inner" class="inner">
@@ -114,11 +118,17 @@
 <p>这里的Conservative其实就是Over, 可以看到理想的soundness理论上分析处出实际程序运行时所有的路径和情形。</p>
 <p>然而，无论是当前学术界和工业界都无法达到soundness。但是这些文章或技术一般都不会说自己是unsoundness的，因为通常unsoundness是故意的忽略掉分析一些行为，以达到更高效率的目的。 而这一些技术是想soundness的，但是又无法达到理想的soundness，在这种情形下，这些文章就会产生一些误导。 如一些分析工具，文章说的很好， 但是实际用起来有很多的情况cover不了导致大量误报造成结果直接不可用…</p>
 <p>在想sound，sound不了。我又不是unsound的，这种情况下，就产生了soundy分析的概念。15年提出[2]的，呼吁将这一类分析结果，是soundiness的。</p>
-<p><img src="/soundiness/truthiness.png" alt="truthiness"></p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043246.png" alt="truthiness"></p>
 <h1 id="0x02-hard-language-features"><a href="#0x02-hard-language-features" class="headerlink" title="0x02 hard language features"></a>0x02 hard language features</h1><p>几乎所有现代语言中，都有一些对于静态分析来比较hard 的点：</p>
-<p><img src="/soundiness/image-20210202094033999.png" alt="image-20210202094033999"></p>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043248.png" alt="image-20210202094033999" style="zoom: 50%;" />
+
+
+
+
+
 <h2 id="Java-Reflection"><a href="#Java-Reflection" class="headerlink" title="Java Reflection"></a>Java Reflection</h2><p>以反射为例：</p>
-<p><img src="/soundiness/image-20210202094244020.png" alt="image-20210202094244020"></p>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043251.png" alt="image-20210202094244020" style="zoom:20%;" />
+
 <p>反射的提出为了使得软件架构低耦合，高复用的目的。 如MVC框架中，框架要和web程序解耦，就需要通过反射去调用控制器中的方法，而不是改框架调用控制器。</p>
 <p>在Java中， 反射使用的是对Class, method, field分别生成Metaobject, 然后使用这些metaobject来调用反射API接口来动态的达到静态调用效果。</p>
 <p>反射是很重要的， 那么，如何静态分析呢？05年的APLAS提出了<code>String Constant analysis + Pointer Analysis</code>。</p>
@@ -138,16 +148,20 @@
 <p>这个工作的问题可以总结为： 名字不知道，啥也不知道。</p>
 <p>在14年ECOOP, 南大李樾和谭添老师做了一个工作[4] (膜)，他们的方法 <code>Type Inference+String analysis+Pointer Analysis</code></p>
 <p>他们的方法为：生时不可解， 用时亦可推。</p>
-<p><img src="/soundiness/image-20210202113047743.png" alt="image-20210202113047743"></p>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043313.png" alt="image-20210202113047743" style="zoom:20%;" />
+
 <p>通过反射使用点，结合java强大的类型系统，去推到这个方法的线索(如有几个参数， 这些参数是什么类型)[5]。</p>
 <p>目前解决这些问题还是使用动态方式比较通用，如[6]去跑java的测试用例，得到的信息供给静态分析使用， 此类工作(Assisted by Dynamic Analysis)快，准。但是soundness做的不够好。</p>
 <h2 id="Native-Code"><a href="#Native-Code" class="headerlink" title="Native Code"></a>Native Code</h2><p>Native Code 是另外一种hard analysis的情况。 核心就是一种跨语言的调用，如何去静态分析。</p>
-<p><img src="/soundiness/image-20210202114600176.png" alt="image-20210202114600176"></p>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043328.png" alt="image-20210202114600176" style="zoom:25%;" />
+
 <p>Java中提供了native关键字去声明调用JNI(Java Native Interface), 他是一套java调用底层平台c&#x2F;c++功能的接口， 没有函数体。实现逻辑在c&#x2F;c++中。这种机制能够使JVM同本地的动态链接库进行交互。</p>
-<p><img src="/soundiness/image-20210202114857543.png" alt="image-20210202114857543"></p>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043335.png" alt="image-20210202114857543" style="zoom:33%;" />
+
 <p>那么这种跨语言，如何去做程序分析呢？</p>
 <p>现在通常分析器通常去进行手工建模(Manually models the critical native code)…</p>
-<p><img src="/soundiness/image-20210202115838235.png" alt="image-20210202115838235"></p>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043344.png" alt="image-20210202115838235" style="zoom:20%;" />
+
 <p>这里是对调用c&#x2F;c++中的arraycopy进行手工建模成java逻辑， 然后转化为三地址码。</p>
 <p>最近的工作[7] (ISSTA2020), 有直接在二进制上分析跨语言的调用。</p>
 <h1 id="reference"><a href="#reference" class="headerlink" title="reference"></a>reference</h1><p><a target="_blank" rel="noopener" href="http://soundiness.org/#Introduction">[1] http://soundiness.org/#Introduction</a></p>
@@ -161,7 +175,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2021/02/02/soundiness/" data-id="cl1dky4ne0016n7w5d7g44heg" data-title="soundiness" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2021/02/02/soundiness/" data-id="cl1ej4aj000153bw5d2485sof" data-title="soundiness" class="article-share-link">Share</a>
       
       
       

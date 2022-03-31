@@ -45,6 +45,10 @@
         <a href="/" id="logo">Penlab</a>
       </h1>
       
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">注入的艺术</a>
+        </h2>
+      
     </div>
     <div id="header-inner" class="inner">
       <nav id="main-nav">
@@ -70,244 +74,6 @@
 
       <div class="outer">
         <section id="main">
-  
-    <article id="post-static-analysis-4-2-md" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2020/05/17/static-analysis-4-2-md/" class="article-date">
-  <time class="dt-published" datetime="2020-05-17T11:00:37.000Z" itemprop="datePublished">2020-05-17</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2020/05/17/static-analysis-4-2-md/">南大静态分析-4(Avaliable Expressions Analsis)</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <h1 id="Available-Expressions-Analysis-（可用表达式分析）"><a href="#Available-Expressions-Analysis-（可用表达式分析）" class="headerlink" title="Available Expressions Analysis （可用表达式分析）"></a>Available Expressions Analysis （可用表达式分析）</h1><blockquote>
-<p>must analysis </p>
-</blockquote>
-<p>如果说一个表达式 <code>x op y </code> 在 program point <code>p</code> 上是available的，那么</p>
-<ol>
-<li>从流图入口点到点<code>p</code>的所有路径，都必须经过表达式<code>x op y</code>。(该表达式结点在流图上支配p点)</li>
-<li>在上一次计算该表达式后， 没有再定义过x或者y</li>
-</ol>
-<img src="static-analysis-4-2-md/%E6%88%AA%E5%B1%8F2020-05-17%20%E4%B8%8B%E5%8D%888.16.00.png" alt="截屏2020-05-17 下午8.16.00 " style="zoom:50%;" />
-
-<p>在程序优化中， 我们就可以在p出直接利用上一次的表达式计算结果来替换该表达式。也可以用来探测全域公共子表达式。</p>
-<p>例子：</p>
-<p>表达式可利用</p>
-<img src="static-analysis-4-2-md/image-20201209145609833.png" alt="image-20201209145609833 " style="zoom:50%;" />
-
-<p>表达式不可利用</p>
-<img src="static-analysis-4-2-md/image-20201209145630745.png" alt="image-20201209145630745 " style="zoom:50%;" />
-
-
-
-<h2 id="Abstraction-数据抽象"><a href="#Abstraction-数据抽象" class="headerlink" title="Abstraction(数据抽象)"></a>Abstraction(数据抽象)</h2><img src="static-analysis-4-2-md/%E6%88%AA%E5%B1%8F2020-05-17%20%E4%B8%8B%E5%8D%888.16.43.png" alt="截屏2020-05-17 下午8.16.43 " style="zoom:70%;" />
-
-<p>在流图中抽象每条表达式，可利用状态为一个位。0代表不可利用。 </p>
-<h2 id="Safe-approximation"><a href="#Safe-approximation" class="headerlink" title="Safe-approximation"></a>Safe-approximation</h2><p>有了定义，有了抽象，下面就要进行评估-&gt;先看汇聚点怎么merge，再制定transfer function。</p>
-<img src="static-analysis-4-2-md/%E6%88%AA%E5%B1%8F2020-05-17%20%E4%B8%8B%E5%8D%889.43.38.png" alt="截屏2020-05-17 下午9.43.38 " style="zoom:67%;" />
-
-
-
-<p><img src="/static-analysis-4-2-md/%E6%88%AA%E5%B1%8F2020-05-17%20%E4%B8%8B%E5%8D%889.46.53.png" alt="截屏2020-05-17 下午9.46.53"></p>
-<p>must analysis所有的path都要满足这一条件:</p>
-<img src="static-analysis-4-2-md/%E6%88%AA%E5%B1%8F2020-05-17%20%E4%B8%8B%E5%8D%889.47.55.png" alt="截屏2020-05-17 下午9.47.55 " style="zoom:67%;" />
-
-<p>是一种 under-approximation，可以有漏报，可以是safe的。</p>
-<img src="static-analysis-4-2-md/%E6%88%AA%E5%B1%8F2020-05-17%20%E4%B8%8B%E5%8D%889.49.19.png" alt="截屏2020-05-17 下午9.49.19 " style="zoom:80%;" />
-
-<p>这里如果b删了， 这里要做交。但是有情况，如x流下来时是<code>x=3</code>而恰好左边的BB中<code>x=3</code>。那么就是一个漏报。</p>
-<h2 id="Algorithm-of-Available-Expressions-Analysis"><a href="#Algorithm-of-Available-Expressions-Analysis" class="headerlink" title="Algorithm of Available Expressions Analysis"></a>Algorithm of Available Expressions Analysis</h2><img src="static-analysis-4-2-md/%E6%88%AA%E5%B1%8F2020-05-17%20%E4%B8%8B%E5%8D%889.51.13.png" alt="截屏2020-05-17 下午9.51.13 " style="zoom:67%;" />
-
-<ul>
-<li>正向分析， boundary是<code>OUT[entry]= 空</code>;</li>
-<li>因为是must analysis,汇聚点做交，仅此<code>OUT[B] = U</code></li>
-</ul>
-<p>CASE:</p>
-<p>初始化：</p>
-<img src="static-analysis-4-2-md/%E6%88%AA%E5%B1%8F2020-05-17%20%E4%B8%8B%E5%8D%889.52.56.png" alt="截屏2020-05-17 下午9.52.56 " style="zoom:80%;" />
-
-<p>第一次迭代：</p>
-<img src="static-analysis-4-2-md/%E6%88%AA%E5%B1%8F2020-05-17%20%E4%B8%8B%E5%8D%889.53.57.png" alt="截屏2020-05-17 下午9.53.57 " style="zoom:80%;" />
-
-<p>第二次迭代：</p>
-<img src="static-analysis-4-2-md/%E6%88%AA%E5%B1%8F2020-05-17%20%E4%B8%8B%E5%8D%889.54.44.png" alt="截屏2020-05-17 下午9.54.44 " style="zoom:80%;" />
-
-
-
-<h1 id="总结三个算法"><a href="#总结三个算法" class="headerlink" title="总结三个算法"></a>总结三个算法</h1><img src="static-analysis-4-2-md/%E6%88%AA%E5%B1%8F2020-05-17%20%E4%B8%8B%E5%8D%889.56.10.png" alt="截屏2020-05-17 下午9.56.10 " style="zoom:80%;" />
-
-
-
-<ul>
-<li>设计一个数据流分析算法， 首先要描述场景， 从场景中抽象出我们需要的数据，然后设计<code>safe approximation</code>，转化成算法；还有就是理解算法是如何停止的。</li>
-</ul>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://example.com/2020/05/17/static-analysis-4-2-md/" data-id="cl1dky4nf001bn7w521ik3es4" data-title="南大静态分析-4(Avaliable Expressions Analsis)" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/pl/" rel="tag">pl</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-static-analysis-4" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2020/05/12/static-analysis-4/" class="article-date">
-  <time class="dt-published" datetime="2020-05-12T12:38:44.000Z" itemprop="datePublished">2020-05-12</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2020/05/12/static-analysis-4/">南大静态分析-4(Live Variables Analysis)</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>前言：</p>
-<p><code>reaching definitions</code>, <code>live variables</code>和<code>avaliable expressions</code>  都是可以表示为对一个<code>bit array</code>（ <code>bit map, bit set, bit string, or bit vector</code>）迭代求解。 如<code>reaching definitions</code>, using a bit for a definition position in the program. 因此这一类问题也称 为<code>Bit vector problems</code><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Data-flow_analysis">https://en.wikipedia.org/wiki/Data-flow_analysis</a>。</p>
-<blockquote>
-<p>Live Variables Analysis:  06:10</p>
-<p>Available Expressions Analysis: </p>
-<p>总结： </p>
-</blockquote>
-<h1 id="Live-Variables-Analysis-活跃变量分析"><a href="#Live-Variables-Analysis-活跃变量分析" class="headerlink" title="Live Variables Analysis(活跃变量分析)"></a>Live Variables Analysis(活跃变量分析)</h1><blockquote>
-<p>May analysis</p>
-</blockquote>
-<p>活跃变量分析， 如果一个变量v在程序点p开始的路径里被使用过，那么在这条路径上，变量v就是一个Live Variables。 这种分析常常用作寄存器优化，将那些从某一程序点不活跃的变量(即之后不再使用的变量)，做为寄存器替换对象。</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125636.png" alt="截屏2020-05-14 下午9.29.10 z" style="zoom:50%;" />
-
-<blockquote>
-<ol>
-<li>v在路径上被使用过</li>
-<li>v没有被重定义</li>
-</ol>
-</blockquote>
-<h2 id="目标抽象"><a href="#目标抽象" class="headerlink" title="目标抽象"></a>目标抽象</h2><p>关注的抽象应该是<code>live variables</code>，即活跃变量。我们设立一个数据结构来表示程序中所有的变量活跃状态。</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125640.png" alt="截屏2020-05-14 下午9.30.51 " style="zoom:50%;" />
-
-<p>比特位表示状态，比如有100个variables，每一个比特位代表一个变量。形成bit vector, 每一个program point上分配一个(bit vectors)。 有了抽象的状态表示，接下来做safe-approximation制定transfer function 和control flow analysis来操作这些状态位。</p>
-<h2 id="方法设计"><a href="#方法设计" class="headerlink" title="方法设计"></a>方法设计</h2><p>我们的程序在流动之后，如何变换我们的标志位，使得我们得到的结果safe?</p>
-<p>即如何设计transfer function和control flow 合并。</p>
-<h3 id="分析方向"><a href="#分析方向" class="headerlink" title="分析方向"></a>分析方向</h3><p>前向分析和后向分析都是可以的， 但是在live variables的分析中， 我没每个program point的bit vector表示的是路径上所有变量在之后是否被用了，如果是forward分析的话， 从entry点开始向下，我们在每一个program point上不能确定每个variable是否在之后的语句中被use了， 此时如果再往下走，发现某一个variable被use了，那么需要向上传播这个消息来通知之前program point此变量在后边被use了。 但是backward的话，从exit开始进入，先找到的是variable的use点，后找definition信息， 因此变量被use了这个信息就可以随着后向数据流propagate, 从而节省了开销。</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125645.png" alt="截屏2020-05-14 下午9.36.52 " style="zoom:50%;" />
-
-<h3 id="汇聚点处理"><a href="#汇聚点处理" class="headerlink" title="汇聚点处理"></a>汇聚点处理</h3><p>看这里在BB[P]处有一个<code>v=3</code> 的表达式，BB[B]不知道。而在BB[S1]处用到了<code>v</code>， 在backward中走到BB[B]，BB[S1]和BB[S2]汇合，看图中抽象公式，要处理在merge处的近似，因为是may analysis所以使用Union。(不放过任何一条path)</p>
-<p>然后就是核心的设计Transfer function：</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125649.png" alt="截屏2020-05-15 下午6.51.57 " style="zoom:50%;" />
-
-<p>刚才我们说过， 在此数据流分析中， 我们采用backward, <code>v</code>在BB[S1]中被使用了，且在汇合处，我们做union操作，所以得到有<code>OUT[B] = &#123;v&#125;</code>，现在在程序中， 我们要backward过一个条任意语句(假设Baisc Block中只有一条statement,即以单条statement为分析单位)。我们要设计transfer function，得出上出program proint处的IN[B]，即OUT[B]-&gt;IN[B]。</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125652.png" alt="截屏2020-05-15 下午7.00.47 " style="zoom:70%;" />
-
-<p>这里有一个场景，现在<code>v=3</code>寄存 器<code>R</code>中待着，经过我们的<code>live</code>分析，如果走过该点，经过我们设计的transfer function，IN[B] &#x3D; { v }， 那么这个值就在寄存器里待着。如果IN[B] &#x3D; {}，那么就把它从寄存器中拿出。因为我们的目的是分析数据流中，变量的<code>live </code>情况，由前面的定义如果BB[P]处的变量v是live的：</p>
-<ol>
-<li>BB[B]中v被使用过？</li>
-<li>BB[B]中v没有被重新定义？</li>
-</ol>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125655.png" alt="截屏2020-05-15 下午8.00.26 " style="zoom:80%;" />
-
-<p>因为我们是在backward分析IN[B]这个<code>program point</code>的状态，来决定<code>v=3</code>是否被寄存器丢掉，即<code>IN[B]</code>这一点的事关<code>v</code>在未来是否会被使用到。看在第一个情况中，与<code>v</code>无关，但是我们知道OUT[B]这一点我们union出了<code>OUT[B]=&#123;v&#125;</code>，因为是<code>backward</code>分析，即接下来<code>v</code>会被使用到(BB[S1]处)。那么这一点中，<code>v</code>没有被重新定义，那么<code>IN[B]=&#123;v&#125;</code></p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125658.png" alt="截屏2020-05-15 下午8.09.19 " style="zoom:80%;" />
-
-<p>这里面<code>v</code>被使用了，离着<code>v=3</code>更近，这种情况下，即使<code>OUT[B]=&#123;&#125;</code>，也会有<code>IN[B]=&#123;v&#125;</code>。</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125700.png" alt="截屏2020-05-15 下午8.11.14 z" style="zoom:80%;" />
-
-<p>这里<code>v=2</code>，v是<code>lval</code>左值，那么这个defition中v被重新定义了，上边<code>v=3</code>就不live了，因为没有被使用过，就被<code>redefine</code>了。此时<code>IN[B]=&#123;&#125;</code>，依据这个状态，从这个<code>program point</code>开始，寄存器中的<code>3</code>可以拿掉了。</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125701.png" alt="截屏2020-05-15 下午8.18.10" style="zoom:80%;" />
-
-<p>再想象一下寄存器中的那个3，<code>v=v-1</code>中，右边的表达式是一个使用了寄存器中该值的二元操作。因此在这一时刻，我们需要使用寄存器中的3，那么<code>IN[B]=&#123;v&#125;</code>。</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125703.png" alt="截屏2020-05-15 下午8.21.04 " style="zoom:80%;" />
-
-<p>这里case5是先写后读，case6是先读后写。在先写的时候 ，寄存器完全可以舍去<code>3</code> 。因为没有用到，还要重新读，而在case6中，寄存器中的<code>3</code>先被user了一下，所以在被<code>redefine</code>之前，有<code>use</code>，就是<code>live</code>咯。</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125707.png" alt="截屏2020-05-15 下午8.28.22 " style="zoom:80%;" />
-
-<p>这里就定义了经过BB时的transfer function。</p>
-<p>设计好了，就开始用算法动起来。</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125709.png" alt="截屏2020-05-15 下午8.31.52 " style="zoom:50%;" />
-
-<blockquote>
-<p>这里的定义，我理解的是因为transfer function是从下往上一句一句走的，那么先走到define被删掉了，然后use就又加上了。所以正序来看，先use后define就是live的。</p>
-</blockquote>
-<ul>
-<li><p>INPUT:  CFG</p>
-</li>
-<li><p>OUTPUT: 每一个program  point的标志位的状态</p>
-</li>
-<li><p>METHOD: 第一句的边界条件，因为是backward的，所以是IN[exit]，这里设置是空。（未来没有变量会被用到了）。然后所有BB初始化为空，求到所有的IN[B]不回被change了(反向)。</p>
-</li>
-</ul>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125710.png" alt="截屏2020-05-15 下午9.22.50 " style="zoom:50%;" />
-
-<p>STEP:</p>
-<ol>
-<li>抽象7个变量位7个特位</li>
-<li>分配给每一个program point(IN处)，并初始化为零。</li>
-<li>第一次迭代(backward)开始</li>
-<li>B5: <code>z=2p</code> ，<code>p</code>被use加上，<code>z</code>被redefine删除&#x3D;》0001000</li>
-<li>B3: <code>x= x-3</code>x 先被use后被redfine，需要加上&#x3D;〉1001000</li>
-<li>B4: B4的OUT需要先union一下两个后继节点(successor)的IN，即(IN[B2]+IN[B5])，然后transfer &#x3D;》 0101000</li>
-<li>B2: IN[B4]+IN[B3] &#x3D; 1101000，加m,减y，加k，减m &#x3D;&gt; 1101001</li>
-<li>B1: +q+z-y+p-x&#x3D;&gt;0111001</li>
-</ol>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125715.png" alt="截屏2020-05-15 下午9.34.54 " style="zoom:50%;" />
-
-<ol start="9">
-<li><p>因为上一轮即初始化IN[]都为0，现在变了，依据算法进行第二轮迭代。</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125719.png" alt="截屏2020-05-15 下午9.37.49 " style="zoom:50%;" /></li>
-</ol>
-<p>10.第二轮后IN[B4]变了，下一轮：</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125725.png" alt="截屏2020-05-15 下午9.38.29 " style="zoom:50%;" />
-
-<ol start="11">
-<li>第三轮没有IN转变。</li>
-</ol>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://example.com/2020/05/12/static-analysis-4/" data-id="cl1dky4nf001cn7w5fvb9d7f9" data-title="南大静态分析-4(Live Variables Analysis)" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/pl/" rel="tag">pl</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
   
     <article id="post-xss-encode" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
@@ -358,7 +124,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2020/05/08/xss-encode/" data-id="cl1dky4nl001un7w543bfbb1l" data-title="XSS编码" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2020/05/08/xss-encode/" data-id="cl1ej4aj7001t3bw5cg1r77uo" data-title="XSS编码" class="article-share-link">Share</a>
       
       
       
@@ -424,21 +190,21 @@
 <p>Must analysis: outputs information that must be true (under-approximation). 报出来的必须对</p>
 <p>两者应用于不同场景，都是为了结果是正确的。以结果的正确为目的，称之为safe-approximation。</p>
 </blockquote>
-<img src="static-analysis-3/%E6%88%AA%E5%B1%8F2020-05-09%20%E4%B8%8B%E5%8D%885.10.09.png" alt="截屏2020-05-09 下午5.10.09 " style="zoom:90%;" />
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044435.png" alt="截屏2020-05-09 下午5.10.09 " style="zoom: 67%;" />
 
 <p>所以对于数据流分析来说：</p>
-<img src="static-analysis-3/image-20210712194843394.png" alt="image-20210712194843394" style="zoom:50%;" />
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044438.png" alt="image-20210712194843394" style="zoom:50%;" />
 
 <p>不同的数据流分析应用， 关注的data就不同，其safe-approximation策略就不同(transfer functions 和control-flow handlings不同)。</p>
-<h2 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h2><img src="static-analysis-3/image-20210714194847170.png" alt="image-20210714194847170" style="zoom:50%;" />
+<h2 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h2><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044442.png" alt="image-20210714194847170" style="zoom:50%;" />
 
 <p>数据流分析就是<code>application-specific Data</code>(不同的数据抽象策略)，如何在CFG上(<code>a program</code>)沿着点(<code>Transfer function</code>)和Edges(<code>control flows</code>)流动的评估(<code>safe-approximation</code>)</p>
 <h1 id="0x02-Prelimiaries-of-Data-Flow-Analysis"><a href="#0x02-Prelimiaries-of-Data-Flow-Analysis" class="headerlink" title="0x02 Prelimiaries of Data Flow Analysis"></a>0x02 Prelimiaries of Data Flow Analysis</h1><h2 id="Input-and-Output-States"><a href="#Input-and-Output-States" class="headerlink" title="Input and Output States"></a>Input and Output States</h2><p>控制流图上无非有三种情形： 顺序、 分支、汇聚。 要在控制流分析数据，需要了然数据在控制流上的传递情况。那么数据如何变化的呢。</p>
-<img src="static-analysis-3/%E6%88%AA%E5%B1%8F2020-05-05%20%E4%B8%8B%E5%8D%888.47.16.png" alt="截屏2020-05-05 下午8.47.16 " style="zoom:50%;" />
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044445.png" alt="截屏2020-05-05 下午8.47.16 " style="zoom:50%;" />
 
 <p>一条statement, 执行前的状态是<code>IN[s1]</code>， 执行后的状态是 <code>OUT[s1]</code>。</p>
 <p>顺序执行，s2的input就是s1的output。</p>
-<img src="static-analysis-3/%E6%88%AA%E5%B1%8F2020-05-05%20%E4%B8%8B%E5%8D%888.50.48.png" alt="截屏2020-05-05 下午8.50.48 " style="zoom:50%;" />
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044447.png" alt="截屏2020-05-05 下午8.50.48 " style="zoom:50%;" />
 
 
 
@@ -448,39 +214,39 @@
 <p>In each data-flow analysis application, we associate with every program point a <code>data-flow value</code> that represents an <code>abstraction</code> of the set of all possible <code>program states</code> that can be observed for thatå point.</p>
 </blockquote>
 <p>就是说对每一条statement的前后program point ，会关联一个数据流的值，这个值代表program states 在这一点的所有抽象，即在这一program point上所有可能的出现状态。</p>
-<img src="static-analysis-3/%E6%88%AA%E5%B1%8F2020-05-05%20%E4%B8%8B%E5%8D%889.02.42.png" alt="截屏2020-05-05 下午9.02.42 " style="zoom:50%;" />
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044450.png" alt="截屏2020-05-05 下午9.02.42 " style="zoom:50%;" />
 
 <p>拿第一节探测每一个变量的check做例子，要探测每一个program point 上的program states。我们先抽象出我们关注的data， 即变量的符号。 因此将 code中的数据抽象成符号，形成一个值域，即根据应用场景，对数据所有可能的状态做的抽象集(Domain)：</p>
-<img src="static-analysis-3/%E6%88%AA%E5%B1%8F2020-05-05%20%E4%B8%8B%E5%8D%889.06.40.png" alt="截屏2020-05-05 下午9.06.40 " style="zoom:50%;" />
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044452.png" alt="截屏2020-05-05 下午9.06.40 " style="zoom:50%;" />
 
 <p>Data-flow Analysis:</p>
-<img src="static-analysis-3/%E6%88%AA%E5%B1%8F2020-05-06%20%E4%B8%8B%E5%8D%888.46.49.png" alt="截屏2020-05-06 下午8.46.49 " style="zoom:50%;" />
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044456.png" alt="截屏2020-05-06 下午8.46.49 " style="zoom:50%;" />
 
 <ul>
 <li>Dataflow analysis 就是对程序中所有的statements的input point和output point关联一个dataflow value, 这个solution通过解析一系列的<code>safe-approximation-deriected constraints</code>(约束规则)。约束规则基于：1. semantics of statements（转化函数） 2. flows of control(控制流信息)</li>
 </ul>
-<h2 id="Transfer-Function’s-constraints"><a href="#Transfer-Function’s-constraints" class="headerlink" title="Transfer Function’s constraints"></a>Transfer Function’s constraints</h2><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2020-05-06-124827.png" alt="截屏2020-05-06 下午8.48.18 " style="zoom:50%;" />
+<h2 id="Transfer-Function’s-constraints"><a href="#Transfer-Function’s-constraints" class="headerlink" title="Transfer Function’s constraints"></a>Transfer Function’s constraints</h2><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044458.png" alt="截屏2020-05-06 下午8.48.18 " style="zoom:50%;" />
 
 <p>如图一个前向分析中， transfer function 的定义就是将In这一program point 的state转化为out点的state。就是上图定义中的第一条，根据抽象的数据，对program point进行状态的转移。</p>
-<img src="static-analysis-3/%E6%88%AA%E5%B1%8F2020-05-06%20%E4%B8%8B%E5%8D%888.50.46.png" alt="截屏2020-05-06 下午8.50.46 " style="zoom:50%;" />
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044501.png" alt="截屏2020-05-06 下午8.50.46 " style="zoom:50%;" />
 
 <p>逆向分析，有的分析也会把整个控制流图反着建立， 然后在上边顺着做数据流分析。 正常的逆向数据流分析都是沿着CFG做反方向分析。</p>
 <h2 id="Control-Flow’s-Constraints"><a href="#Control-Flow’s-Constraints" class="headerlink" title="Control Flow’s Constraints"></a>Control Flow’s Constraints</h2><p>程序中的很多statements可以阻止成一个Basic Block， 那么Control Flow’s constraints 就可以分为BB内和BB外。</p>
-<img src="static-analysis-3/%E6%88%AA%E5%B1%8F2020-05-09%20%E4%B8%8B%E5%8D%885.19.56.png" alt="截屏2020-05-09 下午5.19.56 " style="zoom:60%;" />
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044503.png" alt="截屏2020-05-09 下午5.19.56 " style="zoom:60%;" />
 
 
 
 <p>Within a BB: 的话没有分支， 那么就是顺序执行，每个stmt的 in就是上一个stmt的out。</p>
 <p>Among BBs: 进入状态是s1的状态， 出状态就是sn的状态。</p>
-<img src="static-analysis-3/%E6%88%AA%E5%B1%8F2020-05-09%20%E4%B8%8B%E5%8D%885.23.31.png" alt="截屏2020-05-09 下午5.23.31 " style="zoom:50%;" />
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044505.png" alt="截屏2020-05-09 下午5.23.31 " style="zoom:50%;" />
 
 
 
 <p>定义正向、反向的BBs间的Control Flow’s Constraints。正反各有两条，第一条是定义出口， 正向为例。OUT[B]是出口， fb这个从右往左，依次连接基本块内每一条语句的转换函数(注意transfer functions时从右往左连接)。得到出口处的转化规则fb，以IN[B]为参数即可。而第二条则是定义入口， 入口处分支汇合的情况，因此我们需要^上这些OUT[P]。逆向反着来，同样的原理。</p>
-<h1 id="0x03-Reaching-Definitions-Analysis"><a href="#0x03-Reaching-Definitions-Analysis" class="headerlink" title="0x03 Reaching Definitions Analysis"></a>0x03 Reaching Definitions Analysis</h1><img src="static-analysis-3/%E6%88%AA%E5%B1%8F2020-05-09%20%E4%B8%8B%E5%8D%885.35.26.png" alt="截屏2020-05-09 下午5.35.26 " style="zoom:80%;" />
+<h1 id="0x03-Reaching-Definitions-Analysis"><a href="#0x03-Reaching-Definitions-Analysis" class="headerlink" title="0x03 Reaching Definitions Analysis"></a>0x03 Reaching Definitions Analysis</h1><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044507.png" alt="截屏2020-05-09 下午5.35.26 " style="zoom:80%;" />
 
 <p>Reaching Definitions, 即一个definitions在传播路径上能不能reaches到某一点。 </p>
-<p><img src="/static-analysis-3/%E6%88%AA%E5%B1%8F2020-05-09%20%E4%B8%8B%E5%8D%885.34.19.png" alt="截屏2020-05-09 下午5.34.19"></p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044510.png" alt="截屏2020-05-09 下午5.34.19"></p>
 <p>一条reaching definition满足三点：</p>
 <ol>
 <li>路径上有一个point p, 定义了v</li>
@@ -491,7 +257,7 @@
 <p>Reaching Definitions 是一个may analysis, 定义上没有说must, 那就是over-approximation。</p>
 </blockquote>
 <p>关注的数据是-&gt; definitions</p>
-<img src="static-analysis-3/%E6%88%AA%E5%B1%8F2020-05-09%20%E4%B8%8B%E5%8D%888.04.45.png" alt="截屏2020-05-09 下午8.04.45 " style="zoom:50%;" />
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044512.png" alt="截屏2020-05-09 下午8.04.45 " style="zoom:50%;" />
 
 <p>假设程序中有100个definitions，抽象为100个比特位。</p>
 <p>有了抽象，我们就要有每一个program point 的状态规则，设计transfer Function，继而设计control flow。</p>
@@ -499,9 +265,9 @@
 <p>制定通常先给出一条语句为例,对其进行<code>safe-approximation</code></p>
 </blockquote>
 <p>先看transfer function</p>
-<p><img src="/static-analysis-3/%E6%88%AA%E5%B1%8F2020-05-09%20%E4%B8%8B%E5%8D%888.07.26.png" alt="截屏2020-05-09 下午8.07.26"></p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044515.png" alt="截屏2020-05-09 下午8.07.26"></p>
 <p>这是一条<code>definition</code>，这句话的语义要从<code>definitnion</code>的角度去看。我们去指定trasferì  function , 使得这一条语句之前的program point状态IN转化为OUT。</p>
-<p><img src="/static-analysis-3/%E6%88%AA%E5%B1%8F2020-05-09%20%E4%B8%8B%E5%8D%888.11.36.png" alt="截屏2020-05-09 下午8.11.36"></p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044517.png" alt="截屏2020-05-09 下午8.11.36"></p>
 <p>假设这个B块中只有这一条statement， 那么这个B的转化函数就是如上定义。</p>
 <ul>
 <li>“generates” a definition D of variable v</li>
@@ -509,13 +275,13 @@
 <li>while leaving the remaining incoming definitions unaffected（不kill的）</li>
 </ul>
 <p>举个例子：</p>
-<img src="static-analysis-3/%E6%88%AA%E5%B1%8F2020-05-09%20%E4%B8%8B%E5%8D%888.18.53.png" alt="截屏2020-05-09 下午8.18.53 " style="zoom:50%;" />
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044521.png" alt="截屏2020-05-09 下午8.18.53 " style="zoom:50%;" />
 
  
 
 <p>B1中有三个definitions, genB1 &#x3D; {d1, d2, d3}。 三个变量i, j, a，那么 killB1 &#x3D; {d4, d5, d6, d7}即是其他定义了i,j,a的地方。以此类推。</p>
 <p>接着再来看Control Flow</p>
-<img src="static-analysis-3/%E6%88%AA%E5%B1%8F2020-05-09%20%E4%B8%8B%E5%8D%888.22.47.png" alt="截屏2020-05-09 下午8.22.47 " style="zoom:50%;" />
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044525.png" alt="截屏2020-05-09 下午8.22.47 " style="zoom:50%;" />
 
 <ul>
 <li>因为我们是一个may analysis， 所以用Union 把所有的Path都考虑到。</li>
@@ -524,7 +290,7 @@
 <blockquote>
 <p>一个数据流分析， 有了抽象，制定了transfer function和control flow设计。下一步设计算法</p>
 </blockquote>
-<img src="static-analysis-3/%E6%88%AA%E5%B1%8F2020-05-09%20%E4%B8%8B%E5%8D%889.11.28.png" alt="截屏2020-05-09 下午9.11.28 " style="zoom:60%;" />
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044528.png" alt="截屏2020-05-09 下午9.11.28 " style="zoom:60%;" />
 
 <ul>
 <li>问题 ：<ol>
@@ -535,12 +301,12 @@
 </li>
 <li>例子</li>
 </ul>
-<img src="static-analysis-3/%E6%88%AA%E5%B1%8F2020-05-09%20%E4%B8%8B%E5%8D%889.10.53.png" alt="截屏2020-05-09 下午9.10.53 " style="zoom:50%;" />
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044531.png" alt="截屏2020-05-09 下午9.10.53 " style="zoom:50%;" />
 
 
 
 <p>第一轮迭代：</p>
-<img src="static-analysis-3/image-20210714204736937.png" alt="image-20210714204736937" style="zoom:50%;" />
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044534.png" alt="image-20210714204736937" style="zoom:50%;" />
 
 <ol>
 <li><p>左上角是我们设计的数据抽象，表示definitions的状态。</p>
@@ -552,17 +318,17 @@
 <li><p>根据transfer function开始第一轮迭代。(合并IN-&gt;加入新的d efinition-&gt;删除其他相同变量definition定义的位置)</p>
 </li>
 <li><p>如果有任何一个OUT变化了，继续迭代</p>
-<img src="static-analysis-3/%E6%88%AA%E5%B1%8F2020-05-09%20%E4%B8%8B%E5%8D%889.28.22.png" alt="截屏2020-05-09 下午9.28.22 " style="zoom:50%;" />
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044535.png" alt="截屏2020-05-09 下午9.28.22 " style="zoom:50%;" />
 
 <p>（上一轮OUT即初始化0000 0000）</p>
 </li>
 </ol>
 <p>第二轮迭代：</p>
-   <img src="static-analysis-3/%E6%88%AA%E5%B1%8F2020-05-09%20%E4%B8%8B%E5%8D%889.31.00.png" alt="截屏2020-05-09 下午9.31.00 " style="zoom:50%;" />
+   <img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044540.png" alt="截屏2020-05-09 下午9.31.00 " style="zoom:50%;" />
 
 <p>可以看到高亮处， B2,B3的OUT变了。所以依据算法，还要迭代。</p>
 <p>第三轮：</p>
-<img src="static-analysis-3/%E6%88%AA%E5%B1%8F2020-05-09%20%E4%B8%8B%E5%8D%889.32.26.png" alt="截屏2020-05-09 下午9.32.26 " style="zoom:50%;" />
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044544.png" alt="截屏2020-05-09 下午9.32.26 " style="zoom:50%;" />
 
 <p>OUT没有变，得到结果</p>
 <blockquote>
@@ -572,11 +338,11 @@
 <ul>
 <li>Data Abstraction: 一个definition 能否reach</li>
 </ul>
-<p><img src="/static-analysis-3/%E6%88%AA%E5%B1%8F2020-05-09%20%E4%B8%8B%E5%8D%889.35.09.png" alt="截屏2020-05-09 下午9.35.09"></p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044548.png" alt="截屏2020-05-09 下午9.35.09"></p>
 <p>如何得到这个状态：</p>
-<p><img src="/static-analysis-3/%E6%88%AA%E5%B1%8F2020-05-09%20%E4%B8%8B%E5%8D%889.35.56.png" alt="截屏2020-05-09 下午9.35.56"></p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044546.png" alt="截屏2020-05-09 下午9.35.56"></p>
 <p>迭代数据流分析就是不停的迭代<code>directed constraints</code>(transfer functin 和 control flow handling)，直到停止找到solutaion。</p>
-<h2 id="算法为什么会停"><a href="#算法为什么会停" class="headerlink" title="算法为什么会停"></a>算法为什么会停</h2><img src="static-analysis-3/%E6%88%AA%E5%B1%8F2020-05-09%20%E4%B8%8B%E5%8D%889.44.19.png" alt="截屏2020-05-09 下午9.44.19 " style="zoom:50%;" />
+<h2 id="算法为什么会停"><a href="#算法为什么会停" class="headerlink" title="算法为什么会停"></a>算法为什么会停</h2><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044550.png" alt="截屏2020-05-09 下午9.44.19 " style="zoom:50%;" />
 
 <p>改算法最重要的部分，就是他的transfer function, 其由四部分组成:</p>
 <ul>
@@ -593,7 +359,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2020/05/05/static-analysis-3/" data-id="cl1dky4ne0018n7w574d56dwp" data-title="南大静态分析-3" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2020/05/05/static-analysis-3/" data-id="cl1ej4aj100193bw59hua5650" data-title="南大静态分析-3" class="article-share-link">Share</a>
       
       
       
@@ -631,11 +397,11 @@
       
         <p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1zE411s77Z">课程链接</a></p>
 <h1 id="0x01-Compilers-and-Static-Analyzers"><a href="#0x01-Compilers-and-Static-Analyzers" class="headerlink" title="0x01 Compilers and Static Analyzers"></a>0x01 Compilers and Static Analyzers</h1><p>编译器工作原理， 开始贴ppt：</p>
-<img src="static-analysis-2/%E6%88%AA%E5%B1%8F2020-05-04%20%E4%B8%8B%E5%8D%888.53.05.png" alt="截屏2020-05-04 下午8.53.05 " style="zoom:50%;" />
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045807.png" alt="截屏2020-05-04 下午8.53.05 " style="zoom:50%;" />
 
 <p>IR之前前端， 之后称后端。 前端是词法、语法、简单的语义检查。 后端是在IR上分析一些高级的程序属性。（其实我觉得编译过程任何一个阶段的输出表示，都可以叫做IR(中间表示)，一般IR指的是编译后段处理的目标内容形式，一般用3AC(三地址码)表示）。</p>
 <h1 id="0x02-AST-vs-IR"><a href="#0x02-AST-vs-IR" class="headerlink" title="0x02 AST vs. IR"></a>0x02 AST vs. IR</h1><p>重点来了， AST 和 IR做为编译过程中两个重要的中间表示，各自有什么意义与区别呢？ 我们继续贴ppt…</p>
-<img src="static-analysis-2/%E6%88%AA%E5%B1%8F2020-05-04%20%E4%B8%8B%E5%8D%888.58.04.png" alt="截屏2020-05-04 下午8.58.04 " style="zoom:50%;" />
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045811.png" alt="截屏2020-05-04 下午8.58.04 " style="zoom:50%;" />
 
 
 
@@ -670,16 +436,16 @@
 <li>Propagate fresh name to subsequent use</li>
 <li>Ever variable has exactly one definition</li>
 </ul>
-<img src="static-analysis-2/%E6%88%AA%E5%B1%8F2020-05-04%20%E4%B8%8B%E5%8D%889.16.05.png" alt="截屏2020-05-04 下午9.16.05 " style="zoom:50%;" />
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045815.png" alt="截屏2020-05-04 下午9.16.05 " style="zoom:50%;" />
 
 
 
-<img src="static-analysis-2/%E6%88%AA%E5%B1%8F2020-05-04%20%E4%B8%8B%E5%8D%889.17.15.png" alt="截屏2020-05-04 下午9.17.15 " style="zoom:50%;" />
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045817.png" alt="截屏2020-05-04 下午9.17.15 " style="zoom:50%;" />
 
 <p>每一个variable在不同语句都给一个地址， 在control flow 汇合处就是这个变量的集合。</p>
 <h1 id="0x04-Control-Flow-Analysis"><a href="#0x04-Control-Flow-Analysis" class="headerlink" title="0x04 Control Flow Analysis"></a>0x04 Control Flow Analysis</h1><p>重点来了…</p>
 <p>之前构造了3AC，那么在后端中需要在此之上构建控制流图进行控制流分析。 控制流图中， 每一个节点为一个基本快。</p>
-<h2 id="Basic-Blokcs-BB"><a href="#Basic-Blokcs-BB" class="headerlink" title="Basic Blokcs(BB)"></a>Basic Blokcs(BB)</h2><img src="static-analysis-2/%E6%88%AA%E5%B1%8F2020-05-04%20%E4%B8%8B%E5%8D%889.21.28.png" alt="截屏2020-05-04 下午9.21.28 " style="zoom:50%;" />
+<h2 id="Basic-Blokcs-BB"><a href="#Basic-Blokcs-BB" class="headerlink" title="Basic Blokcs(BB)"></a>Basic Blokcs(BB)</h2><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045822.png" alt="截屏2020-05-04 下午9.21.28 " style="zoom:50%;" />
 
 <p>一个基本块应该满足，唯一一个<strong>入口</strong>进，唯一一个<strong>出口</strong>出。 </p>
 <blockquote>
@@ -687,13 +453,13 @@
 </blockquote>
 <h2 id="构建basic-block"><a href="#构建basic-block" class="headerlink" title="构建basic block"></a>构建basic block</h2><p>按视频给出的算法：</p>
 <p>首先，标出跳转语句的目标</p>
-<img src="static-analysis-2/%E6%88%AA%E5%B1%8F2020-05-04%20%E4%B8%8B%E5%8D%889.32.58.png" alt="截屏2020-05-04 下午9.32.58 " style="zoom:50%;" />
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045825.png" alt="截屏2020-05-04 下午9.32.58 " style="zoom:50%;" />
 
 <p>之后，标出紧接着jump之后的指令</p>
-<img src="static-analysis-2/%E6%88%AA%E5%B1%8F2020-05-04%20%E4%B8%8B%E5%8D%889.34.26.png" alt="截屏2020-05-04 下午9.34.26 " style="zoom:50%;" />
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045827.png" alt="截屏2020-05-04 下午9.34.26 " style="zoom:50%;" />
 
 <p>找到了所有的leaders之后，构造基本块。</p>
-<img src="static-analysis-2/%E6%88%AA%E5%B1%8F2020-05-04%20%E4%B8%8B%E5%8D%889.36.17.png" alt="截屏2020-05-04 下午9.36.17 " style="zoom:50%;" />
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045831.png" alt="截屏2020-05-04 下午9.36.17 " style="zoom:50%;" />
 
 <p>有了基本块， 建立控制流的边。</p>
 <h2 id="构建Control-Flow-Graph-CFG"><a href="#构建Control-Flow-Graph-CFG" class="headerlink" title="构建Control Flow Graph(CFG)"></a>构建Control Flow Graph(CFG)</h2><ol>
@@ -702,15 +468,15 @@
 <li><p>B immediately follows A in the original order of instructions(依序添边) and A does not end in an unconditional jump(且A块出口并没有无条件跳转)</p>
 </li>
 </ol>
-   <img src="static-analysis-2/%E6%88%AA%E5%B1%8F2020-05-04%20%E4%B8%8B%E5%8D%889.43.32.png" alt="截屏2020-05-04 下午9.43.32 " style="zoom:50%;" />
+   <img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045835.png" alt="截屏2020-05-04 下午9.43.32 " style="zoom:50%;" />
 
 <ol start="3">
 <li>It is normal to replace the jumps to instruction labels by jumps to basic blocks(很自然的将指令跳转转化为basic block 跳转)</li>
 </ol>
-<img src="static-analysis-2/%E6%88%AA%E5%B1%8F2020-05-04%20%E4%B8%8B%E5%8D%889.47.18.png" alt="截屏2020-05-04 下午9.47.18 " style="zoom:50%;" />
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045837.png" alt="截屏2020-05-04 下午9.47.18 " style="zoom:50%;" />
 
 <p>（这里将goto 目标都换成了基本块label）</p>
-<img src="static-analysis-2/%E6%88%AA%E5%B1%8F2020-05-04%20%E4%B8%8B%E5%8D%889.49.11.png" alt="截屏2020-05-04 下午9.49.11 " style="zoom:50%;" />
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045839.png" alt="截屏2020-05-04 下午9.49.11 " style="zoom:50%;" />
 
 <p>   加上了CFG的入口和出口，形成一个完整的CFG。</p>
 <blockquote>
@@ -722,13 +488,13 @@
 <li>入口节点加入第一个，指向第一条执行的指令</li>
 </ul>
 </blockquote>
-<h3 id="算法"><a href="#算法" class="headerlink" title="算法"></a>算法</h3><img src="static-analysis-2/image-20211111072257404.png" alt="image-20211111072257404" style="zoom:50%;" />
+<h3 id="算法"><a href="#算法" class="headerlink" title="算法"></a>算法</h3><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045843.png" alt="image-20211111072257404" style="zoom:50%;" />
 
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2020/05/04/static-analysis-2/" data-id="cl1dky4nf001an7w5fmn54ypn" data-title="南大静态分析-2" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2020/05/04/static-analysis-2/" data-id="cl1ej4aj100173bw53aqe9tll" data-title="南大静态分析-2" class="article-share-link">Share</a>
       
       
       
@@ -888,7 +654,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2020/05/03/static-analysis-1/" data-id="cl1dky4ne0017n7w50h5r4ktl" data-title="南大静态分析-1" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2020/05/03/static-analysis-1/" data-id="cl1ej4aj000163bw5hctw7epm" data-title="南大静态分析-1" class="article-share-link">Share</a>
       
       
       
@@ -940,7 +706,10 @@
 <h2 id="生成实验样本"><a href="#生成实验样本" class="headerlink" title="生成实验样本"></a>生成实验样本</h2><p>矩阵X.shape &#x3D;&#x3D; (n, m)，现在我有十个随机点：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"></span><br><span class="line">X = np.array([[<span class="number">5</span>,<span class="number">3</span>],</span><br><span class="line">    [<span class="number">10</span>,<span class="number">15</span>],</span><br><span class="line">    [<span class="number">15</span>,<span class="number">12</span>],</span><br><span class="line">    [<span class="number">24</span>,<span class="number">10</span>],</span><br><span class="line">    [<span class="number">30</span>,<span class="number">30</span>],</span><br><span class="line">    [<span class="number">85</span>,<span class="number">70</span>],</span><br><span class="line">    [<span class="number">71</span>,<span class="number">80</span>],</span><br><span class="line">    [<span class="number">60</span>,<span class="number">78</span>],</span><br><span class="line">    [<span class="number">70</span>,<span class="number">55</span>],</span><br><span class="line">    [<span class="number">80</span>,<span class="number">91</span>],])</span><br><span class="line"></span><br><span class="line">labels = <span class="built_in">range</span>(<span class="number">1</span>, <span class="number">11</span>)</span><br><span class="line">plt.figure(figsize=(<span class="number">10</span>, <span class="number">7</span>))</span><br><span class="line">plt.subplots_adjust(bottom=<span class="number">0.1</span>)</span><br><span class="line">plt.scatter(X[: ,<span class="number">0</span>], X[: ,<span class="number">1</span>], label=<span class="string">&#x27;True Position&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> label, x, y <span class="keyword">in</span> <span class="built_in">zip</span>(labels, X[:, <span class="number">0</span>], X[:, <span class="number">1</span>]):</span><br><span class="line">    plt.annotate(</span><br><span class="line">        label,</span><br><span class="line">        xy=(x, y), xytext=(-<span class="number">3</span>, <span class="number">3</span>),</span><br><span class="line">        textcoords=<span class="string">&#x27;offset points&#x27;</span>, ha=<span class="string">&#x27;right&#x27;</span>, va=<span class="string">&#x27;bottom&#x27;</span>)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
 
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125331.png"></p>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125331.png" style="zoom:33%;" />
+
+
+
 <h1 id="0x02-进行层次聚类"><a href="#0x02-进行层次聚类" class="headerlink" title="0x02 进行层次聚类"></a>0x02 进行层次聚类</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Z = linkage(X, method=<span class="string">&#x27;ward&#x27;</span>) <span class="comment">#average, single, complete...</span></span><br></pre></td></tr></table></figure>
 
 <p>method选择一个 距离算法。</p>
@@ -955,7 +724,10 @@
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">print</span> X[[<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>]]</span><br><span class="line"><span class="comment">#=&gt; output:</span></span><br><span class="line">[[<span class="number">10</span> <span class="number">15</span>]</span><br><span class="line"> [<span class="number">15</span> <span class="number">12</span>]</span><br><span class="line"> [<span class="number">24</span> <span class="number">10</span>]]</span><br></pre></td></tr></table></figure>
 
 <p>单看他们的坐标点应该是挺近，看图：</p>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125332.png"></p>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125332.png" style="zoom:33%;" />
+
+
+
 <p>挺近…</p>
 <p>代码：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"><span class="keyword">from</span> scipy.cluster.hierarchy <span class="keyword">import</span> dendrogram, linkage</span><br><span class="line"></span><br><span class="line">X = np.array([[<span class="number">5</span>,<span class="number">3</span>],</span><br><span class="line">    [<span class="number">10</span>,<span class="number">15</span>],</span><br><span class="line">    [<span class="number">15</span>,<span class="number">12</span>],</span><br><span class="line">    [<span class="number">24</span>,<span class="number">10</span>],</span><br><span class="line">    [<span class="number">30</span>,<span class="number">30</span>],</span><br><span class="line">    [<span class="number">85</span>,<span class="number">70</span>],</span><br><span class="line">    [<span class="number">71</span>,<span class="number">80</span>],</span><br><span class="line">    [<span class="number">60</span>,<span class="number">78</span>],</span><br><span class="line">    [<span class="number">70</span>,<span class="number">55</span>],</span><br><span class="line">    [<span class="number">80</span>,<span class="number">91</span>],])</span><br><span class="line"></span><br><span class="line">labels = <span class="built_in">range</span>(<span class="number">0</span>, <span class="number">10</span>)</span><br><span class="line">idx = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>]</span><br><span class="line">plt.figure(figsize=(<span class="number">10</span>, <span class="number">7</span>))</span><br><span class="line">plt.subplots_adjust(bottom=<span class="number">0.1</span>)</span><br><span class="line">plt.scatter(X[: ,<span class="number">0</span>], X[: ,<span class="number">1</span>], label=<span class="string">&#x27;True Position&#x27;</span>)</span><br><span class="line">plt.scatter(X[idx,<span class="number">0</span>], X[idx,<span class="number">1</span>], label=<span class="string">&#x27;True Position&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> label, x, y <span class="keyword">in</span> <span class="built_in">zip</span>(labels, X[:, <span class="number">0</span>], X[:, <span class="number">1</span>]):</span><br><span class="line">    plt.annotate(</span><br><span class="line">        label,</span><br><span class="line">        xy=(x, y), xytext=(-<span class="number">3</span>, <span class="number">3</span>),</span><br><span class="line">        textcoords=<span class="string">&#x27;offset points&#x27;</span>, ha=<span class="string">&#x27;right&#x27;</span>, va=<span class="string">&#x27;bottom&#x27;</span>)</span><br><span class="line">plt.show()</span><br><span class="line"></span><br><span class="line">Z = linkage(X, method=<span class="string">&#x27;ward&#x27;</span>)</span><br><span class="line"><span class="built_in">print</span>(X[[<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>]])</span><br></pre></td></tr></table></figure>
@@ -969,7 +741,8 @@
 
 
 
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125338.png"></p>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125338.png" style="zoom:33%;" />
+
 <p>对就是这个图，让我们先，从下往上捋一捋。横坐标就是特征嘛，纵坐标看那个连接位置，就是他们聚在一起时候的值，这里好像根据的是<code>欧几里得距离</code>…再看我们聚类时的第一步:</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[  1.           2.           5.83095189   2.        ]</span><br></pre></td></tr></table></figure>
 
@@ -980,7 +753,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2020/01/04/python_cluster_hi/" data-id="cl1dky4nc0010n7w5bl4mauhm" data-title="python层次聚类学习" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2020/01/04/python_cluster_hi/" data-id="cl1ej4aiy00103bw527pd5q0u" data-title="python层次聚类学习" class="article-share-link">Share</a>
       
       
       
@@ -1055,7 +828,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2019/12/28/burp_ex_1/" data-id="cl1dky4n6000jn7w58vnadww1" data-title="burp插件入门" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2019/12/28/burp_ex_1/" data-id="cl1ej4aiq000g3bw5f1o9b22k" data-title="burp插件入门" class="article-share-link">Share</a>
       
       
       
@@ -1158,7 +931,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2019/12/05/tp5-container/" data-id="cl1dky4nk001rn7w5hobf1ibt" data-title="tp5学习-容器" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2019/12/05/tp5-container/" data-id="cl1ej4aj6001q3bw5cix50ziq" data-title="tp5学习-容器" class="article-share-link">Share</a>
       
       
       
@@ -1222,7 +995,160 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2019/11/08/php_file_vul/" data-id="cl1dky4na000tn7w5cfcf9uqp" data-title="PHP文件操作漏洞总结" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2019/11/08/php_file_vul/" data-id="cl1ej4aiw000t3bw5d7yjcorp" data-title="PHP文件操作漏洞总结" class="article-share-link">Share</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-php_source" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2019/11/05/php_source/" class="article-date">
+  <time class="dt-published" datetime="2019-11-04T16:00:00.000Z" itemprop="datePublished">2019-11-05</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2019/11/05/php_source/">PHP数据传入点分析</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043858.png" alt="截屏2020-06-06 上午8.28.40" style="zoom: 67%;" />
+
+
+
+<h1 id="0x01-globals输入"><a href="#0x01-globals输入" class="headerlink" title="0x01 globals输入"></a>0x01 globals输入</h1><p>  用户操作一个web站点通常需要传入变量，变量“污染”了代码，造成注入问题。用户的输入的数据大致可分为有结构(数组)和无结构两种(字符串，NULL)。</p>
+<h2 id="GPC输入"><a href="#GPC输入" class="headerlink" title="GPC输入"></a>GPC输入</h2><ul>
+<li>最常见的方式， 用户输入的内容直接赋给一个变量：</li>
+</ul>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 取值赋给变量</span></span><br><span class="line"><span class="variable">$var</span> = <span class="variable">$_GET</span>[<span class="string">&#x27;value&#x27;</span>];</span><br><span class="line"></span><br><span class="line"><span class="comment">// 名值皆赋给变量</span></span><br><span class="line"><span class="keyword">foreach</span>(<span class="variable">$_GET</span> <span class="keyword">as</span> <span class="variable">$k</span>=&gt;<span class="variable">$v</span>)</span><br><span class="line">&#123;</span><br><span class="line">   <span class="variable">$name</span> = <span class="variable">$k</span>;</span><br><span class="line">   <span class="variable">$var</span> = <span class="variable">$v</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<ul>
+<li>通过处理数组的方法污染变量，如extract：</li>
+</ul>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//extract ( array &amp;$array [, int $flags = EXTR_OVERWRITE [, string $prefix = NULL ]] ) : int</span></span><br><span class="line"><span class="title function_ invoke__">extract</span>(<span class="variable">$_GET</span>);</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>import_request_variables</li>
+</ul>
+<p>​       <a target="_blank" rel="noopener" href="https://www.php.net/manual/zh/function.import-request-variables.php">php.net</a>原文中说明，将 GET／POST／Cookie 变量导入到全局作用域中。如果你禁止了 <a target="_blank" rel="noopener" href="https://www.php.net/manual/zh/ini.core.php#ini.register-globals">register_globals</a>，但又想用到一些全局变量，那么此函数就很有用。(<code>register_globals</code>是PHP的一个特性。)</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//?xss=666 =&gt; 666</span></span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="variable">$xss</span> = <span class="number">123</span>;</span><br><span class="line"><span class="title function_ invoke__">import_request_variables</span>(<span class="string">&#x27;G&#x27;</span>);</span><br><span class="line"><span class="keyword">echo</span> <span class="variable">$xss</span>;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>但是这个特性已经在php5.4.0移除。</p>
+<ul>
+<li>$_REQUEST</li>
+</ul>
+<p>​      $_REQUEST中也可包含<code>GPC</code>的内容，在注册后，数组是独立的处理起来互不影响，如果过滤其中一个而没有过滤另一个就有可能造成绕过：</p>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043920.png" alt="屏幕快照 2019-11-05 下午3.59.00" style="zoom: 67%;" />
+
+<p>​                                                                                  (POEM-RIPS SECURITY CALENDAR 2017 )</p>
+<h1 id="0x02-SERVER输入"><a href="#0x02-SERVER输入" class="headerlink" title="0x02 SERVER输入"></a>0x02 SERVER输入</h1><p>如通过<code>$_SERVER[&#39;REQUEST_URI&#39;]</code>或<code>$_SERVER[&#39;QUERY_STRING&#39;]</code>。真实案例(<a target="_blank" rel="noopener" href="https://bugs.leavesongs.com/php/%E8%B4%B7%E9%BD%90%E4%B9%90%E7%B3%BB%E7%BB%9F%E6%9C%80%E6%96%B0%E7%89%88sql%E6%B3%A8%E5%85%A5%EF%BC%88%E6%97%A0%E9%9C%80%E7%99%BB%E5%BD%95%E7%BB%95%E8%BF%87waf%E5%8F%AFunion-select%E8%B7%A8%E8%A1%A8%E6%9F%A5%E8%AF%A2%EF%BC%89/">贷齐乐系统最新版SQL注入（无需登录绕过WAF可union select跨表查询）</a>)</p>
+<ul>
+<li><p>parse_str</p>
+<p>此函数解析字符串中的<code>QUERY STRING</code> 如果没有设置第二个变量<code>result</code>则可能导致变量覆盖。</p>
+<p>函数原型：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="title function_ invoke__">parse_str</span> ( <span class="keyword">string</span> <span class="variable">$encoded_string</span> [, <span class="keyword">array</span> &amp;<span class="variable">$result</span> ] ) : <span class="keyword">void</span></span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//?xss=666 =&gt; 666</span></span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="variable">$xss</span>= <span class="number">123</span>;</span><br><span class="line"><span class="title function_ invoke__">parse_str</span>(<span class="variable">$_SERVER</span>[<span class="string">&#x27;QUERY_STRING&#x27;</span>])</span><br><span class="line"><span class="keyword">echo</span> <span class="variable">$xss</span>;</span><br></pre></td></tr></table></figure>
+
+
+</li>
+<li><p>mb_parse_str</p>
+<p>与parse_str类似，解析 GET&#x2F;POST&#x2F;COOKIE 数据并设置全局变量</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//?xss=666 =&gt; 666</span></span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="variable">$xss</span> = <span class="number">123</span>;</span><br><span class="line"><span class="title function_ invoke__">mb_parse_str</span>(<span class="variable">$_SERVER</span>[<span class="string">&#x27;QUERY_STRING&#x27;</span>] );</span><br><span class="line"><span class="keyword">echo</span> <span class="variable">$xss</span>;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+<h1 id="0x03-其他"><a href="#0x03-其他" class="headerlink" title="0x03 其他"></a>0x03 其他</h1><ul>
+<li>getenv()得到变量</li>
+<li>$HTTP_RAW_POST_DATA与PHP输入、输出流</li>
+</ul>
+<h1 id="案例分析"><a href="#案例分析" class="headerlink" title="案例分析"></a>案例分析</h1><p>让我们看一下，脚本实际如何在用户请求中提取信息。</p>
+<h2 id="thinkPHP5"><a href="#thinkPHP5" class="headerlink" title="thinkPHP5"></a>thinkPHP5</h2><p>获取某个get变量</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="title class_">Reuqest</span>::<span class="title function_ invoke__">instance</span>()-&gt;<span class="title function_ invoke__">get</span>(<span class="string">&#x27;name&#x27;</span>);</span><br></pre></td></tr></table></figure>
+
+<p>定位到get方法：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 设置获取GET参数</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@access</span> public</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span>  mixed         $name 变量名</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span>  mixed         $default 默认值</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span>  string|array  $filter 过滤方法</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> mixed</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">get</span>(<span class="params"><span class="variable">$name</span> = <span class="string">&#x27;&#x27;</span>, <span class="variable">$default</span> = <span class="literal">null</span>, <span class="variable">$filter</span> = <span class="string">&#x27;&#x27;</span></span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">empty</span>(<span class="variable language_">$this</span>-&gt;get)) &#123;</span><br><span class="line">        <span class="variable language_">$this</span>-&gt;get = <span class="variable">$_GET</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (<span class="title function_ invoke__">is_array</span>(<span class="variable">$name</span>)) &#123;</span><br><span class="line">        <span class="variable language_">$this</span>-&gt;param      = [];</span><br><span class="line">        <span class="keyword">return</span> <span class="variable language_">$this</span>-&gt;get = <span class="title function_ invoke__">array_merge</span>(<span class="variable">$this</span>-&gt;get, <span class="variable">$name</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="variable language_">$this</span>-&gt;<span class="title function_ invoke__">input</span>(<span class="variable">$this</span>-&gt;get, <span class="variable">$name</span>, <span class="variable">$default</span>, <span class="variable">$filter</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们想从请求中拿$_GET[‘name’]的值， $_GET的值被统一收集到了$this-&gt;get这个field中来。 在return时，从$this-&gt;input中取值。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">  * 获取变量 支持过滤和默认值</span></span><br><span class="line"><span class="comment">  * <span class="doctag">@access</span> public</span></span><br><span class="line"><span class="comment">  * <span class="doctag">@param</span>  array         $data 数据源</span></span><br><span class="line"><span class="comment">  * <span class="doctag">@param</span>  string|false  $name 字段名</span></span><br><span class="line"><span class="comment">  * <span class="doctag">@param</span>  mixed         $default 默认值</span></span><br><span class="line"><span class="comment">  * <span class="doctag">@param</span>  string|array  $filter 过滤函数</span></span><br><span class="line"><span class="comment">  * <span class="doctag">@return</span> mixed</span></span><br><span class="line"><span class="comment">  */</span></span><br><span class="line"> <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">input</span>(<span class="params"><span class="variable">$data</span> = [], <span class="variable">$name</span> = <span class="string">&#x27;&#x27;</span>, <span class="variable">$default</span> = <span class="literal">null</span>, <span class="variable">$filter</span> = <span class="string">&#x27;&#x27;</span></span>)</span></span><br><span class="line"><span class="function"> </span>&#123;</span><br><span class="line">     <span class="keyword">if</span> (<span class="literal">false</span> === <span class="variable">$name</span>) &#123;</span><br><span class="line">         <span class="comment">// 获取原始数据</span></span><br><span class="line">         <span class="keyword">return</span> <span class="variable">$data</span>;</span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line">     <span class="variable">$name</span> = (<span class="keyword">string</span>) <span class="variable">$name</span>;</span><br><span class="line">     <span class="keyword">if</span> (<span class="string">&#x27;&#x27;</span> != <span class="variable">$name</span>) &#123;</span><br><span class="line">         <span class="comment">// 解析name</span></span><br><span class="line">         <span class="keyword">if</span> (<span class="title function_ invoke__">strpos</span>(<span class="variable">$name</span>, <span class="string">&#x27;/&#x27;</span>)) &#123;</span><br><span class="line">             <span class="keyword">list</span>(<span class="variable">$name</span>, <span class="variable">$type</span>) = <span class="title function_ invoke__">explode</span>(<span class="string">&#x27;/&#x27;</span>, <span class="variable">$name</span>);</span><br><span class="line">         &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">             <span class="variable">$type</span> = <span class="string">&#x27;s&#x27;</span>;</span><br><span class="line">         &#125;</span><br><span class="line">         <span class="comment">// 按.拆分成多维数组进行判断</span></span><br><span class="line">         <span class="keyword">foreach</span> (<span class="title function_ invoke__">explode</span>(<span class="string">&#x27;.&#x27;</span>, <span class="variable">$name</span>) <span class="keyword">as</span> <span class="variable">$val</span>) &#123;</span><br><span class="line">             <span class="keyword">if</span> (<span class="keyword">isset</span>(<span class="variable">$data</span>[<span class="variable">$val</span>])) &#123;</span><br><span class="line">                 <span class="variable">$data</span> = <span class="variable">$data</span>[<span class="variable">$val</span>];</span><br><span class="line">             &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                 <span class="comment">// 无输入数据，返回默认值</span></span><br><span class="line">                 <span class="keyword">return</span> <span class="variable">$default</span>;</span><br><span class="line">             &#125;</span><br><span class="line">         &#125;</span><br><span class="line">         <span class="keyword">if</span> (<span class="title function_ invoke__">is_object</span>(<span class="variable">$data</span>)) &#123;</span><br><span class="line">             <span class="keyword">return</span> <span class="variable">$data</span>;</span><br><span class="line">         &#125;</span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line">     <span class="comment">// 解析过滤器</span></span><br><span class="line">     <span class="variable">$filter</span> = <span class="variable language_">$this</span>-&gt;<span class="title function_ invoke__">getFilter</span>(<span class="variable">$filter</span>, <span class="variable">$default</span>);</span><br><span class="line"></span><br><span class="line">     <span class="keyword">if</span> (<span class="title function_ invoke__">is_array</span>(<span class="variable">$data</span>)) &#123;</span><br><span class="line">         <span class="title function_ invoke__">array_walk_recursive</span>(<span class="variable">$data</span>, [<span class="variable">$this</span>, <span class="string">&#x27;filterValue&#x27;</span>], <span class="variable">$filter</span>);</span><br><span class="line">         <span class="title function_ invoke__">reset</span>(<span class="variable">$data</span>);</span><br><span class="line">     &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">         <span class="variable language_">$this</span>-&gt;<span class="title function_ invoke__">filterValue</span>(<span class="variable">$data</span>, <span class="variable">$name</span>, <span class="variable">$filter</span>);</span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line">     <span class="keyword">if</span> (<span class="keyword">isset</span>(<span class="variable">$type</span>) &amp;&amp; <span class="variable">$data</span> !== <span class="variable">$default</span>) &#123;</span><br><span class="line">         <span class="comment">// 强制类型转换</span></span><br><span class="line">         <span class="variable language_">$this</span>-&gt;<span class="title function_ invoke__">typeCast</span>(<span class="variable">$data</span>, <span class="variable">$type</span>);</span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line">     <span class="keyword">return</span> <span class="variable">$data</span>;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+
+<p>一个比较的输入封装， 有默认输出、数组处理， 过滤选择、类型转化等部分。(这里的$filter可控的话就是那个漏洞了)</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2019/11/05/php_source/" data-id="cl1ej4aix000w3bw5h2xlbeir" data-title="PHP数据传入点分析" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/php/" rel="tag">php</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-pl" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2019/09/22/pl/" class="article-date">
+  <time class="dt-published" datetime="2019-09-21T16:00:00.000Z" itemprop="datePublished">2019-09-22</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2019/09/22/pl/">闲谈PL</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>如果一年前选一个安全之外的方向，我可能毫不犹豫地选择AI，但是现在我可能更偏向于选择PL(Program Language)。对于这两个方向，我都算是个门外汉，只是想谈谈我现有水平下对于两个方向的一些看法。</p>
+<p>我觉得现阶段的机器学习，更像是在“训狗”，把机器当作动物去进行训练然后识别。而反倒是比较传统的”PL”方向更像是把机器当作一个“人”去交流。 </p>
+<p>这里我完全是自己扯给自己玩的。 没啥依据。</p>
+<p>起初，人们是通过人力去做功的，比如从A地到B地需要人力去达到目的。后来人们开始发明自行车一类的简单机械使之更容易达到这个目的。但还不是自动。我觉得所谓自动，就是人不用主动去做功罢了，但是还是需要能量来代替人的能量。这时候人们开始用一些其他的动能来源去替代人力做功，即自动化。</p>
+<p>后来人们开始使用一种更纯粹的能量形式–电能。电具有巨大能量。人们通过控制电这种能量来做功，进入了电气社会。发明了各种机械：电灯、汽车、轮船…。这些机械极大解放了人力，但是他们还需要人来控制，是一个有能量而无思想的工具。</p>
+<p>那么机械是否能够达到真正的自动，比如一辆汽车如果前方十米有一个障碍物我就自动停车而不用人来控制。那么我如何能够和器械进行交流，把我的这种思想传递给他？ 人们目前最常用的思想交流方式是语言，那么对于机器，我是否可以有一种语言和他们交流，让他们理解我的意图。</p>
+<p>语言是信息的载体，而传达信息简易的形式是二进制。通过二进制来向机器传达任务，自然成了最直接的方式。</p>
+<p>二进制是一种很底层的信息载体，当然，人们平时也可以用二进制来交流，比如摩尔斯点码。虽然不及一些高维信息载体方便，但是我们完全可以通过这种方式进行交流，我们的计算机初期也是这么做的。比如早期的程序载体–打孔纸带。后来为了便于理解，汇编语言逐渐演化开来，然后高级语言等等。</p>
+<p>那么我愿意相信，计算机出现的初衷就是使得机器具有<code>智能</code>，能够自动化做功。而具有这种智能的标志我目前认为不是能够识别某些东西，而是能够<code>交流</code>。如果能够加深这层交流，便可能更加智能化，这种智能的精髓在于使机器能够真正的理解交流，而不是去做单纯的聚类和识别。也许有一天，真的能够用机器来创造音乐。对我来说那是更高级，也是更直接的交流。</p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045801.png"></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2019/09/22/pl/" data-id="cl1ej4aix000x3bw5bjdsalpm" data-title="闲谈PL" class="article-share-link">Share</a>
       
       
       

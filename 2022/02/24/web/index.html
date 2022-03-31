@@ -13,15 +13,15 @@
 <meta property="og:site_name" content="Penlab">
 <meta property="og:description" content="本文基于Securing web applications from injection and logic vulnerabilities: Approaches and chanlleengs[1] 首先给出一张典型的Web架构图， 分为前后端两个部分，从Architecture,Software,以及Technology三个方面去说的。  Web漏洞分类Web系统面临的主要攻击有:    -">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://tva1.sinaimg.cn/large/e6c9d24ely1gzob7ekyh4j20jw06lwf2.jpg">
-<meta property="og:image" content="https://tva1.sinaimg.cn/large/e6c9d24ely1gzoc8ywo89j20ml0adgme.jpg">
-<meta property="og:image" content="https://tva1.sinaimg.cn/large/e6c9d24ely1gzody44fepj20k509et9i.jpg">
-<meta property="og:image" content="https://tva1.sinaimg.cn/large/e6c9d24ely1gzofxxgtqzj20me0cmwfi.jpg">
+<meta property="og:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044203.jpg">
+<meta property="og:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044206.jpg">
+<meta property="og:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044209.jpg">
+<meta property="og:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044212.jpg">
 <meta property="article:published_time" content="2022-02-24T00:37:13.000Z">
-<meta property="article:modified_time" content="2022-03-30T06:25:22.787Z">
+<meta property="article:modified_time" content="2022-03-31T04:42:13.324Z">
 <meta property="article:author" content="iohex">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://tva1.sinaimg.cn/large/e6c9d24ely1gzob7ekyh4j20jw06lwf2.jpg">
+<meta name="twitter:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044203.jpg">
   
     <link rel="alternate" href="/atom.xml" title="Penlab" type="application/atom+xml">
   
@@ -53,6 +53,10 @@
       <h1 id="logo-wrap">
         <a href="/" id="logo">Penlab</a>
       </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">注入的艺术</a>
+        </h2>
       
     </div>
     <div id="header-inner" class="inner">
@@ -102,9 +106,9 @@
       
         <p>本文基于Securing web applications from injection and logic vulnerabilities: Approaches and chanlleengs[1]</p>
 <p>首先给出一张典型的Web架构图， 分为前后端两个部分，从Architecture,Software,以及Technology三个方面去说的。</p>
-<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1gzob7ekyh4j20jw06lwf2.jpg"></p>
-<h1 id="Web漏洞分类"><a href="#Web漏洞分类" class="headerlink" title="Web漏洞分类"></a>Web漏洞分类</h1><p>Web系统面临的主要攻击有:<br>    - 不充分地输入验证(improper input validation)，缺少或者错误的输入验证，可触发**注入类漏洞(Injecton Vulnerabilities)<strong>。<br>    - 不充分地身份验证(improper authentication and authorization mechanisms)，错误地实现身份验证(authentication functions)与会话管理(access-control policies)。可触发</strong>业务逻辑类漏洞(Business Logic Vulnerabilities)<strong>。<br>    - 不充分地会话管理(improper managerment of session information)，与session令牌的使用有关，可触发</strong>会话管理类漏洞(Session Manangement Vulnerabilities)**。</p>
-<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1gzoc8ywo89j20ml0adgme.jpg"></p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044203.jpg"></p>
+<h1 id="Web漏洞分类"><a href="#Web漏洞分类" class="headerlink" title="Web漏洞分类"></a>Web漏洞分类</h1><p>Web系统面临的主要攻击有:<br>    - 不充分地输入验证(improper input validation)，缺少或者错误的输入验证，可触发**注入类漏洞(Injecton Vulnerabilities)<strong>。<br>        - 不充分地身份验证(improper authentication and authorization mechanisms)，错误地实现身份验证(authentication functions)与会话管理(access-control policies)。可触发</strong>业务逻辑类漏洞(Business Logic Vulnerabilities)<strong>。<br>        - 不充分地会话管理(improper managerment of session information)，与session令牌的使用有关，可触发</strong>会话管理类漏洞(Session Manangement Vulnerabilities)**。</p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044206.jpg"></p>
 <p>根据上图，总结一下，Web系统里最常见也是流行度最广的漏洞类型有三类： 注入类、业务逻辑类、会话管理类。</p>
 <p>本文主要介绍注入。</p>
 <h1 id="注入漏洞"><a href="#注入漏洞" class="headerlink" title="注入漏洞"></a>注入漏洞</h1><p>注入类漏洞本质上是攻击者可以通过操纵用作某种查询的user-input parameters，来改变该查询的语法。从而造成了应用系统的安全问题。主要引发该类漏洞的原因是缺少输入验证或者验证不充分。主要的注入漏洞有XSS和SQL注入两种。</p>
@@ -120,18 +124,18 @@
 <h3 id="XSS漏洞防护-Vulnerability-prevention"><a href="#XSS漏洞防护-Vulnerability-prevention" class="headerlink" title="XSS漏洞防护(Vulnerability prevention)"></a>XSS漏洞防护(Vulnerability prevention)</h3><h3 id="XSS漏洞预测-Vulnerability-prediction"><a href="#XSS漏洞预测-Vulnerability-prediction" class="headerlink" title="XSS漏洞预测(Vulnerability prediction)"></a>XSS漏洞预测(Vulnerability prediction)</h3><h3 id="XSS攻击发现-Attack-detection"><a href="#XSS攻击发现-Attack-detection" class="headerlink" title="XSS攻击发现(Attack detection)"></a>XSS攻击发现(Attack detection)</h3><h3 id="XSS攻击防护-Attack-prevention"><a href="#XSS攻击防护-Attack-prevention" class="headerlink" title="XSS攻击防护(Attack prevention)"></a>XSS攻击防护(Attack prevention)</h3><ul>
 <li>保护Web应用程序免受XSS漏洞影响的缓解机制：</li>
 </ul>
-<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1gzody44fepj20k509et9i.jpg"></p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044209.jpg"></p>
 <ul>
 <li>保护Web应用程序免受XSS攻击的缓解机制：</li>
 </ul>
-<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1gzofxxgtqzj20me0cmwfi.jpg"></p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044212.jpg"></p>
 <p>对于XSS防护机制，在web应用服务端存在以下问题：<br>    1. 性能开销，大多数防护都是设置为HTTP请求与响应间的中间代理。<br>    2. 他涉及检测应用程序的源代码以防止攻击。<br>    3. 一些方法需要开发者人为定义安全策略。</p>
 <p><a target="_blank" rel="noopener" href="https://www.sciencedirect.com/science/article/pii/S0950584916300234">参考1</a></p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2022/02/24/web/" data-id="cl1dky4nk001sn7w526coeic8" data-title="Web应用系中注入类漏洞调研" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2022/02/24/web/" data-id="cl1ej4aj6001r3bw5012g8vrq" data-title="Web应用系中注入类漏洞调研" class="article-share-link">Share</a>
       
       
       

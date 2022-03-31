@@ -13,13 +13,13 @@
 <meta property="og:site_name" content="Penlab">
 <meta property="og:description" content="0x01 注册自动加载在tp5中，从base.php载入框架，第一件事就是实现自动加载。 首先，载入Loader类 thinkphp\base.php 1234require think;require __DIR__.&amp;#x27;library&#x2F;think&#x2F;Loader.php&amp;#x27;;# 调用的第一个方法Loader::register();    thinkphp\library\thi">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://example.com/media/tp5/image-20190906195031150.png">
-<meta property="og:image" content="http://example.com/media/tp5/15711294662916.png">
+<meta property="og:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044008.png">
+<meta property="og:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044016.png">
 <meta property="article:published_time" content="2019-09-05T16:00:00.000Z">
-<meta property="article:modified_time" content="2022-03-30T06:25:22.782Z">
+<meta property="article:modified_time" content="2022-03-31T04:40:21.663Z">
 <meta property="article:author" content="iohex">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/media/tp5/image-20190906195031150.png">
+<meta name="twitter:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044008.png">
   
     <link rel="alternate" href="/atom.xml" title="Penlab" type="application/atom+xml">
   
@@ -51,6 +51,10 @@
       <h1 id="logo-wrap">
         <a href="/" id="logo">Penlab</a>
       </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">注入的艺术</a>
+        </h2>
       
     </div>
     <div id="header-inner" class="inner">
@@ -115,7 +119,7 @@
 <li>$prefixDirPsr4：命名空间到他的路径位置索引</li>
 </ol>
 <p>这里存在一个问题， <code>autoload_Static.php</code>里的类名是随机的：这里存在一个问题， <code>autoload_Static.php</code>里的类名是随机的：</p>
-<p><img src="/media/tp5/image-20190906195031150.png"></p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044008.png"></p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 拿到类名后检查类中是否存在指定属性</span></span><br><span class="line">              <span class="keyword">foreach</span> ([<span class="string">&#x27;prefixLengthsPsr4&#x27;</span>, <span class="string">&#x27;prefixDirsPsr4&#x27;</span>, <span class="string">&#x27;fallbackDirsPsr4&#x27;</span>, <span class="string">&#x27;prefixesPsr0&#x27;</span>, <span class="string">&#x27;fallbackDirsPsr0&#x27;</span>, <span class="string">&#x27;classMap&#x27;</span>, <span class="string">&#x27;files&#x27;</span>] <span class="keyword">as</span> <span class="variable">$attr</span>)</span><br><span class="line">              &#123;</span><br><span class="line">                  <span class="keyword">if</span> (<span class="title function_ invoke__">property_exists</span>(<span class="variable">$composerClass</span>, <span class="variable">$attr</span>))</span><br><span class="line">                  &#123;</span><br><span class="line">                      <span class="comment"># 有的话就注册该属性</span></span><br><span class="line">                      <span class="built_in">self</span>::$&#123;<span class="variable">$attr</span>&#125; = <span class="variable">$composerClass</span>::$&#123;<span class="variable">$attr</span>&#125;;</span><br><span class="line">                  &#125;</span><br><span class="line">              &#125;</span><br><span class="line">          &#125;</span><br><span class="line">          <span class="keyword">else</span></span><br><span class="line">          &#123;   </span><br><span class="line">              <span class="comment"># 如果composer中没有`autoload_static.php`通过这里分别加载:</span></span><br><span class="line">            	<span class="comment"># `autoload_namespaces` `autoload_psr4` `autoload_classmap` `autoload_files`</span></span><br><span class="line">              <span class="built_in">self</span>::<span class="title function_ invoke__">registerComposerLoader</span>(<span class="built_in">self</span>::<span class="variable">$composerPath</span>);</span><br><span class="line">          &#125;</span><br><span class="line">      &#125;</span><br></pre></td></tr></table></figure>
 
 <p>我们通过<code>composer</code>加载的组件都可以通过这里加载框架中有引用。</p>
@@ -144,7 +148,8 @@
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">think/Error = /Applications/MAMP/htdocs/learn_tp5/learn_tp5/thinkphp/library//think/Error.php</span><br></pre></td></tr></table></figure>
 
 <p>通过这条映射将该文件加载。如果没找到就会向后找注册Psr4属性(classMap-&gt;prefix-&gt;fallback)。再比如把<code>runtime</code>下的类库映射文件<code>classmap.php</code>删除，就会触发 <code>查找 PSR-4</code>这一段：</p>
-<p><img src="/media/tp5/15711294662916.png"></p>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044016.png" style="zoom:50%;" />
+
 <p>如果我们开发了一个类库，放入到<code>extends</code>文件夹下，如：</p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//extend/mytools/sayHi.php</span></span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">  </span><br><span class="line"><span class="keyword">namespace</span> <span class="title class_">mytools</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">sayHi</span></span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">static</span> <span class="function"><span class="keyword">function</span> <span class="title">sayHi</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">        <span class="keyword">echo</span> <span class="string">&#x27;Hi~&#x27;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
 
@@ -156,7 +161,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2019/09/06/tp5-autoload/" data-id="cl1dky4nj001on7w5fdmtcucl" data-title="TP5学习-自动加载" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2019/09/06/tp5-autoload/" data-id="cl1ej4aj5001n3bw5h8jl6ir4" data-title="TP5学习-自动加载" class="article-share-link">Share</a>
       
       
       

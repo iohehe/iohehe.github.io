@@ -45,6 +45,10 @@
         <a href="/" id="logo">Penlab</a>
       </h1>
       
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">注入的艺术</a>
+        </h2>
+      
     </div>
     <div id="header-inner" class="inner">
       <nav id="main-nav">
@@ -95,9 +99,9 @@
       
         <p>本文基于Securing web applications from injection and logic vulnerabilities: Approaches and chanlleengs[1]</p>
 <p>首先给出一张典型的Web架构图， 分为前后端两个部分，从Architecture,Software,以及Technology三个方面去说的。</p>
-<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1gzob7ekyh4j20jw06lwf2.jpg"></p>
-<h1 id="Web漏洞分类"><a href="#Web漏洞分类" class="headerlink" title="Web漏洞分类"></a>Web漏洞分类</h1><p>Web系统面临的主要攻击有:<br>    - 不充分地输入验证(improper input validation)，缺少或者错误的输入验证，可触发**注入类漏洞(Injecton Vulnerabilities)<strong>。<br>    - 不充分地身份验证(improper authentication and authorization mechanisms)，错误地实现身份验证(authentication functions)与会话管理(access-control policies)。可触发</strong>业务逻辑类漏洞(Business Logic Vulnerabilities)<strong>。<br>    - 不充分地会话管理(improper managerment of session information)，与session令牌的使用有关，可触发</strong>会话管理类漏洞(Session Manangement Vulnerabilities)**。</p>
-<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1gzoc8ywo89j20ml0adgme.jpg"></p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044203.jpg"></p>
+<h1 id="Web漏洞分类"><a href="#Web漏洞分类" class="headerlink" title="Web漏洞分类"></a>Web漏洞分类</h1><p>Web系统面临的主要攻击有:<br>    - 不充分地输入验证(improper input validation)，缺少或者错误的输入验证，可触发**注入类漏洞(Injecton Vulnerabilities)<strong>。<br>        - 不充分地身份验证(improper authentication and authorization mechanisms)，错误地实现身份验证(authentication functions)与会话管理(access-control policies)。可触发</strong>业务逻辑类漏洞(Business Logic Vulnerabilities)<strong>。<br>        - 不充分地会话管理(improper managerment of session information)，与session令牌的使用有关，可触发</strong>会话管理类漏洞(Session Manangement Vulnerabilities)**。</p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044206.jpg"></p>
 <p>根据上图，总结一下，Web系统里最常见也是流行度最广的漏洞类型有三类： 注入类、业务逻辑类、会话管理类。</p>
 <p>本文主要介绍注入。</p>
 <h1 id="注入漏洞"><a href="#注入漏洞" class="headerlink" title="注入漏洞"></a>注入漏洞</h1><p>注入类漏洞本质上是攻击者可以通过操纵用作某种查询的user-input parameters，来改变该查询的语法。从而造成了应用系统的安全问题。主要引发该类漏洞的原因是缺少输入验证或者验证不充分。主要的注入漏洞有XSS和SQL注入两种。</p>
@@ -113,18 +117,18 @@
 <h3 id="XSS漏洞防护-Vulnerability-prevention"><a href="#XSS漏洞防护-Vulnerability-prevention" class="headerlink" title="XSS漏洞防护(Vulnerability prevention)"></a>XSS漏洞防护(Vulnerability prevention)</h3><h3 id="XSS漏洞预测-Vulnerability-prediction"><a href="#XSS漏洞预测-Vulnerability-prediction" class="headerlink" title="XSS漏洞预测(Vulnerability prediction)"></a>XSS漏洞预测(Vulnerability prediction)</h3><h3 id="XSS攻击发现-Attack-detection"><a href="#XSS攻击发现-Attack-detection" class="headerlink" title="XSS攻击发现(Attack detection)"></a>XSS攻击发现(Attack detection)</h3><h3 id="XSS攻击防护-Attack-prevention"><a href="#XSS攻击防护-Attack-prevention" class="headerlink" title="XSS攻击防护(Attack prevention)"></a>XSS攻击防护(Attack prevention)</h3><ul>
 <li>保护Web应用程序免受XSS漏洞影响的缓解机制：</li>
 </ul>
-<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1gzody44fepj20k509et9i.jpg"></p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044209.jpg"></p>
 <ul>
 <li>保护Web应用程序免受XSS攻击的缓解机制：</li>
 </ul>
-<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1gzofxxgtqzj20me0cmwfi.jpg"></p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044212.jpg"></p>
 <p>对于XSS防护机制，在web应用服务端存在以下问题：<br>    1. 性能开销，大多数防护都是设置为HTTP请求与响应间的中间代理。<br>    2. 他涉及检测应用程序的源代码以防止攻击。<br>    3. 一些方法需要开发者人为定义安全策略。</p>
 <p><a target="_blank" rel="noopener" href="https://www.sciencedirect.com/science/article/pii/S0950584916300234">参考1</a></p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2022/02/24/web/" data-id="cl1dky4nk001sn7w526coeic8" data-title="Web应用系中注入类漏洞调研" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2022/02/24/web/" data-id="cl1ej4aj6001r3bw5012g8vrq" data-title="Web应用系中注入类漏洞调研" class="article-share-link">Share</a>
       
       
       
@@ -188,7 +192,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2022/02/18/data-mining/" data-id="cl1dky4n5000in7w5hogqhlif" data-title="data_mining" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2022/02/18/data-mining/" data-id="cl1ej4ais000k3bw50uxl0koq" data-title="data_mining" class="article-share-link">Share</a>
       
       
       
@@ -227,7 +231,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2022/02/06/logic-machine/" data-id="cl1dky4n8000pn7w51c63cqvv" data-title="Logic Machine" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2022/02/06/logic-machine/" data-id="cl1ej4aiu000p3bw572adgfyt" data-title="Logic Machine" class="article-share-link">Share</a>
       
       
       
@@ -276,12 +280,13 @@
 <blockquote>
 <p>Definition 1 (Fuzzing). Fuzzing 执行PUT<br>Definition 2 (Fuzz Testing).<br>Definition 3 (Fuzzer)<br>Definition 4 (Fuzz Campaign)<br>Definition 5 (Bug Oracle)<br>Definition 6 (Fuzz Configuration)</p>
 </blockquote>
-<h1 id="算法"><a href="#算法" class="headerlink" title="算法"></a>算法</h1><p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-01-26-090624.png"></p>
+<h1 id="算法"><a href="#算法" class="headerlink" title="算法"></a>算法</h1><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-01-26-090624.png" style="zoom:50%;" />
+
 <h1 id="PREPROCESS-预处理"><a href="#PREPROCESS-预处理" class="headerlink" title="PREPROCESS(预处理)"></a>PREPROCESS(预处理)</h1><h1 id="SCHEDULING"><a href="#SCHEDULING" class="headerlink" title="SCHEDULING()"></a>SCHEDULING()</h1><h1 id="INPUT-GENERATION-INPUT生成"><a href="#INPUT-GENERATION-INPUT生成" class="headerlink" title="INPUT GENERATION(INPUT生成)"></a>INPUT GENERATION(INPUT生成)</h1><h1 id="INPUT-EVALUATION-INPUT评估"><a href="#INPUT-EVALUATION-INPUT评估" class="headerlink" title="INPUT EVALUATION(INPUT评估)"></a>INPUT EVALUATION(INPUT评估)</h1><h2 id="Bug-Oracles"><a href="#Bug-Oracles" class="headerlink" title="Bug Oracles"></a>Bug Oracles</h2><h2 id="Execution-Optimizations"><a href="#Execution-Optimizations" class="headerlink" title="Execution Optimizations"></a>Execution Optimizations</h2><h2 id="Triage"><a href="#Triage" class="headerlink" title="Triage"></a>Triage</h2><h1 id="CONFIGURATION-UUPDATING"><a href="#CONFIGURATION-UUPDATING" class="headerlink" title="CONFIGURATION UUPDATING"></a>CONFIGURATION UUPDATING</h1>
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2022/01/26/fuz/" data-id="cl1dky4n8000on7w53l4j13fy" data-title="Fuzzing(TODO)" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2022/01/26/fuz/" data-id="cl1ej4aiu000o3bw5f3xvhqyn" data-title="Fuzzing(TODO)" class="article-share-link">Share</a>
       
       
       
@@ -335,7 +340,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2022/01/01/bayes/" data-id="cl1dky4n4000fn7w5axh05sdw" data-title="信念传播(Belief propagation)" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2022/01/01/bayes/" data-id="cl1ej4aiq000e3bw5e3fe0g2c" data-title="信念传播(Belief propagation)" class="article-share-link">Share</a>
       
       
       
@@ -397,7 +402,7 @@
 <p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2021-12-31-065024.png" alt="image-20211231145019900"></p>
 <h2 id="2-Formatting-Text"><a href="#2-Formatting-Text" class="headerlink" title="2. Formatting Text"></a>2. Formatting Text</h2><p>使用<code>,+x</code>面板来做formatting Text。</p>
 <p>使用vim的viwe模式选中文本(spacemacs太强了), 然后可以做格式化操作了</p>
-<p><img src="/img/image-20211231145648418.png" alt="image-20211231145648418"></p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044132.png" alt="image-20211231145648418"></p>
 <blockquote>
 <p>还可以使用vim中的ys(surround)</p>
 </blockquote>
@@ -419,25 +424,25 @@
 <p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2021-12-31-091447.png" alt="image-20211231171445473"></p>
 <h4 id="TODO"><a href="#TODO" class="headerlink" title="TODO"></a>TODO</h4><p>将一条note变为<code>TODO</code>： <code>shift+left</code> (<code>shift+right</code> remove it), 再来一遍就由TODO变为DONE</p>
 <p>设置优先级: <code>shift+up</code>:</p>
-<p><img src="/img/image-20211231171934954.png" alt="image-20211231171934954"></p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044143.png" alt="image-20211231171934954"></p>
 <h4 id="Agenda"><a href="#Agenda" class="headerlink" title="Agenda"></a>Agenda</h4><p>设置aganda 使用<code>,d</code>，如schedule <code>,ds</code>:</p>
-<p><img src="/img/image-20211231172132119.png" alt="image-20211231172132119"></p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044145.png" alt="image-20211231172132119"></p>
 <p>可以通过方向键任意选择。同样在问不去也可以通过<code>shift + 方向键</code>选择。</p>
 <h2 id="4-Browse-the-agenda"><a href="#4-Browse-the-agenda" class="headerlink" title="4. Browse the agenda"></a>4. Browse the agenda</h2><p>加载org-agenda:</p>
-<p><img src="/img/image-20211231172757425.png" alt="image-20211231172757425"></p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044149.png" alt="image-20211231172757425"></p>
 <p>点击<code>,a</code>, 就会看到一个新的agenda view, 可以做很多事，比如使用t来查看TODO:</p>
-<p><img src="/img/image-20211231172937596.png" alt="image-20211231172937596"></p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044151.png" alt="image-20211231172937596"></p>
 <p><code>,aa</code>可以看我们的agenda</p>
-<p><img src="/img/image-20211231173256006.png" alt="image-20211231173256006"></p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044154.png" alt="image-20211231173256006"></p>
 <p>可以在配置中改颜色和新的keywords。 这个暂时不需要。</p>
 <h2 id="5-search"><a href="#5-search" class="headerlink" title="5. search"></a>5. search</h2><p><code>,ss</code>进入search, 如<code>,sst</code>找到所有的todo:</p>
-<p><img src="/img/image-20211231190225564.png" alt="image-20211231190225564"></p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044157.png" alt="image-20211231190225564"></p>
 <p>先介绍这么多，后续的逐渐熟悉。</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2021/12/31/org/" data-id="cl1dky4n9000rn7w5fhzxcylg" data-title="org使用入门" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2021/12/31/org/" data-id="cl1ej4aiv000s3bw53fr2erw6" data-title="org使用入门" class="article-share-link">Share</a>
       
       
       
@@ -492,7 +497,8 @@
 <img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2021-12-30-111629.png" alt="image-20211230143847717" style="zoom:50%;" />
 
 <p>注：自己和自己一定同级。</p>
-<h2 id="0x03-Data-flow-analysis"><a href="#0x03-Data-flow-analysis" class="headerlink" title="0x03 Data-flow analysis"></a>0x03 Data-flow analysis</h2><p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2021-12-30-111616.jpg" alt="Reaching definition example"></p>
+<h2 id="0x03-Data-flow-analysis"><a href="#0x03-Data-flow-analysis" class="headerlink" title="0x03 Data-flow analysis"></a>0x03 Data-flow analysis</h2><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2021-12-30-111616.jpg" alt="Reaching definition example" style="zoom:50%;" />
+
 <p>这里有一个程序流图，做一个数据流分析。</p>
 <blockquote>
 <p>Data-flow analysis(DFA) aims to determine <em>static</em> properties of programs.</p>
@@ -504,7 +510,8 @@
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Reachable</span>(u,d) :- <span class="built_in">GenDef</span>(u,d).    <span class="comment">// 初始化define点, 相当于Gen_B</span></span><br><span class="line"><span class="built_in">Reachable</span>(v, d) :- <span class="built_in">Edge</span>(u, v), <span class="built_in">Reachable</span>(u, d), !<span class="built_in">KillDef</span>(u, d). <span class="comment">//相当于(IN[B]-killB)</span></span><br></pre></td></tr></table></figure>
 
 <p>递归地实现了reaching definition 的迭代数据流算法:</p>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2021-12-30-111607.png" alt="截屏2020-05-09 下午9.11.28 "></p>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2021-12-30-111607.png" alt="截屏2020-05-09 下午9.11.28 " style="zoom:50%;" />
+
 <blockquote>
 <p>参考南大程序分析第三节</p>
 </blockquote>
@@ -512,7 +519,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2021/12/30/datalog/" data-id="cl1dky4n7000ln7w56yyqe131" data-title="datalog" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2021/12/30/datalog/" data-id="cl1ej4ait000m3bw53cc2gex5" data-title="datalog" class="article-share-link">Share</a>
       
       
       
@@ -555,7 +562,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2021/12/25/why/" data-id="cl1dky4nk001tn7w55tal4zbl" data-title="我为什么很少写安全相关的东西" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2021/12/25/why/" data-id="cl1ej4aj6001s3bw550spa4g7" data-title="我为什么很少写安全相关的东西" class="article-share-link">Share</a>
       
       
       
@@ -642,7 +649,7 @@
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> <span class="title function_">foo</span><span class="params">()</span> &#123;</span><br><span class="line">  <span class="type">A</span> <span class="variable">a</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">A</span>();</span><br><span class="line">  <span class="type">B</span> <span class="variable">x</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">B</span>();</span><br><span class="line">  a.setB(x);</span><br><span class="line">  <span class="type">B</span> <span class="variable">y</span> <span class="operator">=</span> a.getB();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">A</span> &#123;</span><br><span class="line">  B b;</span><br><span class="line">  <span class="keyword">void</span> <span class="title function_">setB</span><span class="params">(B b)</span> &#123;</span><br><span class="line">    <span class="built_in">this</span>.b = b;</span><br><span class="line">  &#125;</span><br><span class="line">  B <span class="title function_">getB</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">this</span>.b;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>本例子中，类A 是类B的容器，并提供了get, set方法。 在foo()方法中，独立的new了A和B。 而变量a是<code>new A</code>的指针，变量x是<code>new B</code>的指针。 之后，a调用 setB方法将<code>new B()</code>，store进了<code>new A()</code>。接着又声明了变量y，通过getB方法获取了<code>new B</code>（指向，没 new）。</p>
-<img src="img/image-20211215193741664.png" alt="image-20211215193741664" style="zoom:50%;" />
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043531.png" alt="image-20211215193741664" style="zoom:50%;" />
 
 <blockquote>
 <p>很datalog </p>
@@ -657,11 +664,11 @@
 
 
 <p>对于上下文敏感，对于同一个方法，他有多个上下文，么个上下文分别分析一次</p>
-<img src="img/image-20211215201557399.png" alt="image-20211215201557399" style="zoom:80%;" />
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043534.png" alt="image-20211215201557399" style="zoom:80%;" />
 
 <p>这里有两个上下文，就会有两个不同的分析。</p>
 <p>对于上下文不敏感：</p>
-<p><img src="/img/image-20211215202037637.png" alt="image-20211215202037637"></p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043536.png" alt="image-20211215202037637"></p>
 <p>方法foo()只分析一次。 汇合上下文可能会丢失精度。</p>
 <blockquote>
 <p>向下文敏感技术是一个重要技术，他能很大程度提高分析精度</p>
@@ -676,7 +683,7 @@
 
 <p>在程序的每一个点,都维护着一个映射(状态)。 每一条语句，都存着数据流到达这一点的数据流信息</p>
 <p>在指针分析中要做的流敏感，就要让每一个指针维持一个指向关系集合：</p>
-<p><img src="/img/image-20211215203219981.png" alt="image-20211215203219981"></p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043539.png" alt="image-20211215203219981"></p>
 <p>在这个图片中， 可以看到变量c指向了<code>new C</code>, 经过Allocation-site Abstraction后就是o1</p>
 <blockquote>
 <p>c-&gt;{o1}</p>
@@ -690,14 +697,14 @@
 <ul>
 <li>流敏感:  s-&gt;{“x”}, o1.f-&gt;{“y”}</li>
 </ul>
-<p><img src="/img/image-20211215203935009.png" alt="image-20211215203935009"></p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043541.png" alt="image-20211215203935009"></p>
 <ul>
 <li><p>流不敏感：</p>
 <p>把程序当成无序集合， 将所有的控制流信息忽略掉。</p>
 <p>因此在整个程序中，流不敏感<code>只维护一个指针集</code></p>
 </li>
 </ul>
-<img src="img/image-20211215204252197.png" alt="image-20211215204252197" style="zoom:67%;" />
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043544.png" alt="image-20211215204252197" style="zoom:67%;" />
 
 <p>所有只维护一个map, 记录程序在运行期间所有指向的对象。</p>
 <p>注意由于流不敏感的分析忽略了控制流信息，因此为了保证分析结果是<code>safe</code>的，在分析到s指向o1.f后，就要把程序中所有o1.f map的对象全部传给s(保守期间)。</p>
@@ -713,10 +720,10 @@
 <li><p>按需分析(Demand-driven)</p>
 </li>
 </ul>
-<img src="img/image-20211215204816102.png" alt="image-20211215204816102" style="zoom:80%;" />
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043546.png" alt="image-20211215204816102" style="zoom:80%;" />
 
 <p>对于如下例子:</p>
-<img src="img/image-20211215205000523.png" alt="image-20211215205000523" style="zoom:67%;" />
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043548.png" alt="image-20211215205000523" style="zoom:67%;" />
 
 <p>如果我们只想知道程序中第5行的call graph,那么我们只需要对变量z做指针分析就可以了。</p>
 <blockquote>
@@ -743,7 +750,7 @@
 <blockquote>
 <p> Ignore indexes. Modeled as an object(pointed by array) with a <code>single field</code>, say arr, which may point to any value stored in array.</p>
 </blockquote>
-<p><img src="/img/image-20211216194745810.png" alt="image-20211216194745810"></p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043552.png" alt="image-20211216194745810"></p>
 <p>在右边的指针分析中，注意array在声明时new 无长度信息， 因为将array看作一个object, 包含唯一的field arr. 对所有下标(无视下标)都看作对这个field进行store。</p>
 <p>所以，指针分析基本上就是围绕以下五条语句：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">x = <span class="keyword">new</span> <span class="title class_">T</span>()   <span class="comment">// New </span></span><br><span class="line">x = y <span class="comment">// Assign</span></span><br><span class="line">x.f = y <span class="comment">// Store</span></span><br><span class="line">y = x.f <span class="comment">// Load  </span></span><br><span class="line">r = x.k(a, ...)  <span class="comment">// Call </span></span><br></pre></td></tr></table></figure>
@@ -759,7 +766,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2021/12/15/pointer-analysis/" data-id="cl1dky4nb000zn7w548sk9r73" data-title="pointer_analysis" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2021/12/15/pointer-analysis/" data-id="cl1ej4aiy000z3bw51u9a84wk" data-title="pointer_analysis" class="article-share-link">Share</a>
       
       
       
@@ -800,7 +807,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2021/09/18/freedo/" data-id="cl1dky4n7000nn7w520ugcpz7" data-title="论自由" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2021/09/18/freedo/" data-id="cl1ej4ait000n3bw58uf0b6za" data-title="论自由" class="article-share-link">Share</a>
       
       
       

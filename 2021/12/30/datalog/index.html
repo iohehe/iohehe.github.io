@@ -20,7 +20,7 @@
 <meta property="og:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2021-12-30-111616.jpg">
 <meta property="og:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2021-12-30-111607.png">
 <meta property="article:published_time" content="2021-12-30T11:08:07.000Z">
-<meta property="article:modified_time" content="2022-03-30T06:25:22.906Z">
+<meta property="article:modified_time" content="2022-03-31T04:42:59.495Z">
 <meta property="article:author" content="iohex">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2021-12-30-111626.png">
@@ -55,6 +55,10 @@
       <h1 id="logo-wrap">
         <a href="/" id="logo">Penlab</a>
       </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">注入的艺术</a>
+        </h2>
       
     </div>
     <div id="header-inner" class="inner">
@@ -123,7 +127,8 @@
 <img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2021-12-30-111629.png" alt="image-20211230143847717" style="zoom:50%;" />
 
 <p>注：自己和自己一定同级。</p>
-<h2 id="0x03-Data-flow-analysis"><a href="#0x03-Data-flow-analysis" class="headerlink" title="0x03 Data-flow analysis"></a>0x03 Data-flow analysis</h2><p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2021-12-30-111616.jpg" alt="Reaching definition example"></p>
+<h2 id="0x03-Data-flow-analysis"><a href="#0x03-Data-flow-analysis" class="headerlink" title="0x03 Data-flow analysis"></a>0x03 Data-flow analysis</h2><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2021-12-30-111616.jpg" alt="Reaching definition example" style="zoom:50%;" />
+
 <p>这里有一个程序流图，做一个数据流分析。</p>
 <blockquote>
 <p>Data-flow analysis(DFA) aims to determine <em>static</em> properties of programs.</p>
@@ -135,7 +140,8 @@
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Reachable</span>(u,d) :- <span class="built_in">GenDef</span>(u,d).    <span class="comment">// 初始化define点, 相当于Gen_B</span></span><br><span class="line"><span class="built_in">Reachable</span>(v, d) :- <span class="built_in">Edge</span>(u, v), <span class="built_in">Reachable</span>(u, d), !<span class="built_in">KillDef</span>(u, d). <span class="comment">//相当于(IN[B]-killB)</span></span><br></pre></td></tr></table></figure>
 
 <p>递归地实现了reaching definition 的迭代数据流算法:</p>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2021-12-30-111607.png" alt="截屏2020-05-09 下午9.11.28 "></p>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2021-12-30-111607.png" alt="截屏2020-05-09 下午9.11.28 " style="zoom:50%;" />
+
 <blockquote>
 <p>参考南大程序分析第三节</p>
 </blockquote>
@@ -143,7 +149,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2021/12/30/datalog/" data-id="cl1dky4n7000ln7w56yyqe131" data-title="datalog" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2021/12/30/datalog/" data-id="cl1ej4ait000m3bw53cc2gex5" data-title="datalog" class="article-share-link">Share</a>
       
       
       

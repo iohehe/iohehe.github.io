@@ -45,6 +45,10 @@
         <a href="/" id="logo">Penlab</a>
       </h1>
       
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">注入的艺术</a>
+        </h2>
+      
     </div>
     <div id="header-inner" class="inner">
       <nav id="main-nav">
@@ -70,155 +74,6 @@
 
       <div class="outer">
         <section id="main">
-  
-    <article id="post-php_source" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2019/11/05/php_source/" class="article-date">
-  <time class="dt-published" datetime="2019-11-04T16:00:00.000Z" itemprop="datePublished">2019-11-05</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2019/11/05/php_source/">PHP数据传入点分析</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p><img src="/php_source/%E6%88%AA%E5%B1%8F2020-06-06%20%E4%B8%8A%E5%8D%888.28.40.png" alt="截屏2020-06-06 上午8.28.40"></p>
-<h1 id="0x01-globals输入"><a href="#0x01-globals输入" class="headerlink" title="0x01 globals输入"></a>0x01 globals输入</h1><p>  用户操作一个web站点通常需要传入变量，变量“污染”了代码，造成注入问题。用户的输入的数据大致可分为有结构(数组)和无结构两种(字符串，NULL)。</p>
-<h2 id="GPC输入"><a href="#GPC输入" class="headerlink" title="GPC输入"></a>GPC输入</h2><ul>
-<li>最常见的方式， 用户输入的内容直接赋给一个变量：</li>
-</ul>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 取值赋给变量</span></span><br><span class="line"><span class="variable">$var</span> = <span class="variable">$_GET</span>[<span class="string">&#x27;value&#x27;</span>];</span><br><span class="line"></span><br><span class="line"><span class="comment">// 名值皆赋给变量</span></span><br><span class="line"><span class="keyword">foreach</span>(<span class="variable">$_GET</span> <span class="keyword">as</span> <span class="variable">$k</span>=&gt;<span class="variable">$v</span>)</span><br><span class="line">&#123;</span><br><span class="line">   <span class="variable">$name</span> = <span class="variable">$k</span>;</span><br><span class="line">   <span class="variable">$var</span> = <span class="variable">$v</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-
-<ul>
-<li>通过处理数组的方法污染变量，如extract：</li>
-</ul>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//extract ( array &amp;$array [, int $flags = EXTR_OVERWRITE [, string $prefix = NULL ]] ) : int</span></span><br><span class="line"><span class="title function_ invoke__">extract</span>(<span class="variable">$_GET</span>);</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"></span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>import_request_variables</li>
-</ul>
-<p>​       <a target="_blank" rel="noopener" href="https://www.php.net/manual/zh/function.import-request-variables.php">php.net</a>原文中说明，将 GET／POST／Cookie 变量导入到全局作用域中。如果你禁止了 <a target="_blank" rel="noopener" href="https://www.php.net/manual/zh/ini.core.php#ini.register-globals">register_globals</a>，但又想用到一些全局变量，那么此函数就很有用。(<code>register_globals</code>是PHP的一个特性。)</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//?xss=666 =&gt; 666</span></span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="variable">$xss</span> = <span class="number">123</span>;</span><br><span class="line"><span class="title function_ invoke__">import_request_variables</span>(<span class="string">&#x27;G&#x27;</span>);</span><br><span class="line"><span class="keyword">echo</span> <span class="variable">$xss</span>;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
-
-<p>但是这个特性已经在php5.4.0移除。</p>
-<ul>
-<li>$_REQUEST</li>
-</ul>
-<p>​      $_REQUEST中也可包含<code>GPC</code>的内容，在注册后，数组是独立的处理起来互不影响，如果过滤其中一个而没有过滤另一个就有可能造成绕过：</p>
-<p><img src="/php_source/panda.png" alt="屏幕快照 2019-11-05 下午3.59.00"></p>
-<p>​                                                                                  (POEM-RIPS SECURITY CALENDAR 2017 )</p>
-<h1 id="0x02-SERVER输入"><a href="#0x02-SERVER输入" class="headerlink" title="0x02 SERVER输入"></a>0x02 SERVER输入</h1><p>如通过<code>$_SERVER[&#39;REQUEST_URI&#39;]</code>或<code>$_SERVER[&#39;QUERY_STRING&#39;]</code>。真实案例(<a target="_blank" rel="noopener" href="https://bugs.leavesongs.com/php/%E8%B4%B7%E9%BD%90%E4%B9%90%E7%B3%BB%E7%BB%9F%E6%9C%80%E6%96%B0%E7%89%88sql%E6%B3%A8%E5%85%A5%EF%BC%88%E6%97%A0%E9%9C%80%E7%99%BB%E5%BD%95%E7%BB%95%E8%BF%87waf%E5%8F%AFunion-select%E8%B7%A8%E8%A1%A8%E6%9F%A5%E8%AF%A2%EF%BC%89/">贷齐乐系统最新版SQL注入（无需登录绕过WAF可union select跨表查询）</a>)</p>
-<ul>
-<li><p>parse_str</p>
-<p>此函数解析字符串中的<code>QUERY STRING</code> 如果没有设置第二个变量<code>result</code>则可能导致变量覆盖。</p>
-<p>函数原型：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="title function_ invoke__">parse_str</span> ( <span class="keyword">string</span> <span class="variable">$encoded_string</span> [, <span class="keyword">array</span> &amp;<span class="variable">$result</span> ] ) : <span class="keyword">void</span></span><br></pre></td></tr></table></figure>
-
-
-
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//?xss=666 =&gt; 666</span></span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="variable">$xss</span>= <span class="number">123</span>;</span><br><span class="line"><span class="title function_ invoke__">parse_str</span>(<span class="variable">$_SERVER</span>[<span class="string">&#x27;QUERY_STRING&#x27;</span>])</span><br><span class="line"><span class="keyword">echo</span> <span class="variable">$xss</span>;</span><br></pre></td></tr></table></figure>
-
-
-</li>
-<li><p>mb_parse_str</p>
-<p>与parse_str类似，解析 GET&#x2F;POST&#x2F;COOKIE 数据并设置全局变量</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//?xss=666 =&gt; 666</span></span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="variable">$xss</span> = <span class="number">123</span>;</span><br><span class="line"><span class="title function_ invoke__">mb_parse_str</span>(<span class="variable">$_SERVER</span>[<span class="string">&#x27;QUERY_STRING&#x27;</span>] );</span><br><span class="line"><span class="keyword">echo</span> <span class="variable">$xss</span>;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></li>
-</ul>
-<h1 id="0x03-其他"><a href="#0x03-其他" class="headerlink" title="0x03 其他"></a>0x03 其他</h1><ul>
-<li>getenv()得到变量</li>
-<li>$HTTP_RAW_POST_DATA与PHP输入、输出流</li>
-</ul>
-<h1 id="案例分析"><a href="#案例分析" class="headerlink" title="案例分析"></a>案例分析</h1><p>让我们看一下，脚本实际如何在用户请求中提取信息。</p>
-<h2 id="thinkPHP5"><a href="#thinkPHP5" class="headerlink" title="thinkPHP5"></a>thinkPHP5</h2><p>获取某个get变量</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="title class_">Reuqest</span>::<span class="title function_ invoke__">instance</span>()-&gt;<span class="title function_ invoke__">get</span>(<span class="string">&#x27;name&#x27;</span>);</span><br></pre></td></tr></table></figure>
-
-<p>定位到get方法：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 设置获取GET参数</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@access</span> public</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span>  mixed         $name 变量名</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span>  mixed         $default 默认值</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span>  string|array  $filter 过滤方法</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> mixed</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">get</span>(<span class="params"><span class="variable">$name</span> = <span class="string">&#x27;&#x27;</span>, <span class="variable">$default</span> = <span class="literal">null</span>, <span class="variable">$filter</span> = <span class="string">&#x27;&#x27;</span></span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">empty</span>(<span class="variable language_">$this</span>-&gt;get)) &#123;</span><br><span class="line">        <span class="variable language_">$this</span>-&gt;get = <span class="variable">$_GET</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (<span class="title function_ invoke__">is_array</span>(<span class="variable">$name</span>)) &#123;</span><br><span class="line">        <span class="variable language_">$this</span>-&gt;param      = [];</span><br><span class="line">        <span class="keyword">return</span> <span class="variable language_">$this</span>-&gt;get = <span class="title function_ invoke__">array_merge</span>(<span class="variable">$this</span>-&gt;get, <span class="variable">$name</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="variable language_">$this</span>-&gt;<span class="title function_ invoke__">input</span>(<span class="variable">$this</span>-&gt;get, <span class="variable">$name</span>, <span class="variable">$default</span>, <span class="variable">$filter</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>我们想从请求中拿$_GET[‘name’]的值， $_GET的值被统一收集到了$this-&gt;get这个field中来。 在return时，从$this-&gt;input中取值。</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">  * 获取变量 支持过滤和默认值</span></span><br><span class="line"><span class="comment">  * <span class="doctag">@access</span> public</span></span><br><span class="line"><span class="comment">  * <span class="doctag">@param</span>  array         $data 数据源</span></span><br><span class="line"><span class="comment">  * <span class="doctag">@param</span>  string|false  $name 字段名</span></span><br><span class="line"><span class="comment">  * <span class="doctag">@param</span>  mixed         $default 默认值</span></span><br><span class="line"><span class="comment">  * <span class="doctag">@param</span>  string|array  $filter 过滤函数</span></span><br><span class="line"><span class="comment">  * <span class="doctag">@return</span> mixed</span></span><br><span class="line"><span class="comment">  */</span></span><br><span class="line"> <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">input</span>(<span class="params"><span class="variable">$data</span> = [], <span class="variable">$name</span> = <span class="string">&#x27;&#x27;</span>, <span class="variable">$default</span> = <span class="literal">null</span>, <span class="variable">$filter</span> = <span class="string">&#x27;&#x27;</span></span>)</span></span><br><span class="line"><span class="function"> </span>&#123;</span><br><span class="line">     <span class="keyword">if</span> (<span class="literal">false</span> === <span class="variable">$name</span>) &#123;</span><br><span class="line">         <span class="comment">// 获取原始数据</span></span><br><span class="line">         <span class="keyword">return</span> <span class="variable">$data</span>;</span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line">     <span class="variable">$name</span> = (<span class="keyword">string</span>) <span class="variable">$name</span>;</span><br><span class="line">     <span class="keyword">if</span> (<span class="string">&#x27;&#x27;</span> != <span class="variable">$name</span>) &#123;</span><br><span class="line">         <span class="comment">// 解析name</span></span><br><span class="line">         <span class="keyword">if</span> (<span class="title function_ invoke__">strpos</span>(<span class="variable">$name</span>, <span class="string">&#x27;/&#x27;</span>)) &#123;</span><br><span class="line">             <span class="keyword">list</span>(<span class="variable">$name</span>, <span class="variable">$type</span>) = <span class="title function_ invoke__">explode</span>(<span class="string">&#x27;/&#x27;</span>, <span class="variable">$name</span>);</span><br><span class="line">         &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">             <span class="variable">$type</span> = <span class="string">&#x27;s&#x27;</span>;</span><br><span class="line">         &#125;</span><br><span class="line">         <span class="comment">// 按.拆分成多维数组进行判断</span></span><br><span class="line">         <span class="keyword">foreach</span> (<span class="title function_ invoke__">explode</span>(<span class="string">&#x27;.&#x27;</span>, <span class="variable">$name</span>) <span class="keyword">as</span> <span class="variable">$val</span>) &#123;</span><br><span class="line">             <span class="keyword">if</span> (<span class="keyword">isset</span>(<span class="variable">$data</span>[<span class="variable">$val</span>])) &#123;</span><br><span class="line">                 <span class="variable">$data</span> = <span class="variable">$data</span>[<span class="variable">$val</span>];</span><br><span class="line">             &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                 <span class="comment">// 无输入数据，返回默认值</span></span><br><span class="line">                 <span class="keyword">return</span> <span class="variable">$default</span>;</span><br><span class="line">             &#125;</span><br><span class="line">         &#125;</span><br><span class="line">         <span class="keyword">if</span> (<span class="title function_ invoke__">is_object</span>(<span class="variable">$data</span>)) &#123;</span><br><span class="line">             <span class="keyword">return</span> <span class="variable">$data</span>;</span><br><span class="line">         &#125;</span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line">     <span class="comment">// 解析过滤器</span></span><br><span class="line">     <span class="variable">$filter</span> = <span class="variable language_">$this</span>-&gt;<span class="title function_ invoke__">getFilter</span>(<span class="variable">$filter</span>, <span class="variable">$default</span>);</span><br><span class="line"></span><br><span class="line">     <span class="keyword">if</span> (<span class="title function_ invoke__">is_array</span>(<span class="variable">$data</span>)) &#123;</span><br><span class="line">         <span class="title function_ invoke__">array_walk_recursive</span>(<span class="variable">$data</span>, [<span class="variable">$this</span>, <span class="string">&#x27;filterValue&#x27;</span>], <span class="variable">$filter</span>);</span><br><span class="line">         <span class="title function_ invoke__">reset</span>(<span class="variable">$data</span>);</span><br><span class="line">     &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">         <span class="variable language_">$this</span>-&gt;<span class="title function_ invoke__">filterValue</span>(<span class="variable">$data</span>, <span class="variable">$name</span>, <span class="variable">$filter</span>);</span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line">     <span class="keyword">if</span> (<span class="keyword">isset</span>(<span class="variable">$type</span>) &amp;&amp; <span class="variable">$data</span> !== <span class="variable">$default</span>) &#123;</span><br><span class="line">         <span class="comment">// 强制类型转换</span></span><br><span class="line">         <span class="variable language_">$this</span>-&gt;<span class="title function_ invoke__">typeCast</span>(<span class="variable">$data</span>, <span class="variable">$type</span>);</span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line">     <span class="keyword">return</span> <span class="variable">$data</span>;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
-
-<p>一个比较的输入封装， 有默认输出、数组处理， 过滤选择、类型转化等部分。(这里的$filter可控的话就是那个漏洞了)</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://example.com/2019/11/05/php_source/" data-id="cl1dky4nb000wn7w59uqqfkf8" data-title="PHP数据传入点分析" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/php/" rel="tag">php</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-pl" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2019/09/22/pl/" class="article-date">
-  <time class="dt-published" datetime="2019-09-21T16:00:00.000Z" itemprop="datePublished">2019-09-22</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2019/09/22/pl/">闲谈PL</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>如果一年前选一个安全之外的方向，我可能毫不犹豫地选择AI，但是现在我可能更偏向于选择PL(Program Language)。对于这两个方向，我都算是个门外汉，只是想谈谈我现有水平下对于两个方向的一些看法。</p>
-<p>我觉得现阶段的机器学习，更像是在“训狗”，把机器当作动物去进行训练然后识别。而反倒是比较传统的”PL”方向更像是把机器当作一个“人”去交流。 </p>
-<p>这里我完全是自己扯给自己玩的。 没啥依据。</p>
-<p>起初，人们是通过人力去做功的，比如从A地到B地需要人力去达到目的。后来人们开始发明自行车一类的简单机械使之更容易达到这个目的。但还不是自动。我觉得所谓自动，就是人不用主动去做功罢了，但是还是需要能量来代替人的能量。这时候人们开始用一些其他的动能来源去替代人力做功，即自动化。</p>
-<p>后来人们开始使用一种更纯粹的能量形式–电能。电具有巨大能量。人们通过控制电这种能量来做功，进入了电气社会。发明了各种机械：电灯、汽车、轮船…。这些机械极大解放了人力，但是他们还需要人来控制，是一个有能量而无思想的工具。</p>
-<p>那么机械是否能够达到真正的自动，比如一辆汽车如果前方十米有一个障碍物我就自动停车而不用人来控制。那么我如何能够和器械进行交流，把我的这种思想传递给他？ 人们目前最常用的思想交流方式是语言，那么对于机器，我是否可以有一种语言和他们交流，让他们理解我的意图。</p>
-<p>语言是信息的载体，而传达信息简易的形式是二进制。通过二进制来向机器传达任务，自然成了最直接的方式。</p>
-<p>二进制是一种很底层的信息载体，当然，人们平时也可以用二进制来交流，比如摩尔斯点码。虽然不及一些高维信息载体方便，但是我们完全可以通过这种方式进行交流，我们的计算机初期也是这么做的。比如早期的程序载体–打孔纸带。后来为了便于理解，汇编语言逐渐演化开来，然后高级语言等等。</p>
-<p>那么我愿意相信，计算机出现的初衷就是使得机器具有<code>智能</code>，能够自动化做功。而具有这种智能的标志我目前认为不是能够识别某些东西，而是能够<code>交流</code>。如果能够加深这层交流，便可能更加智能化，这种智能的精髓在于使机器能够真正的理解交流，而不是去做单纯的聚类和识别。也许有一天，真的能够用机器来创造音乐。对我来说那是更高级，也是更直接的交流。</p>
-<p><img src="/media/other/15711300496425.png"></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://example.com/2019/09/22/pl/" data-id="cl1dky4nb000xn7w53cg7dbog" data-title="闲谈PL" class="article-share-link">Share</a>
-      
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-
   
     <article id="post-tp5-config" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
@@ -307,7 +162,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2019/09/19/tp5-config/" data-id="cl1dky4nj001qn7w50taqduyq" data-title="TP5学习-配置文件" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2019/09/19/tp5-config/" data-id="cl1ej4aj5001p3bw53bt2a7uj" data-title="TP5学习-配置文件" class="article-share-link">Share</a>
       
       
       
@@ -358,7 +213,7 @@
 <li>$prefixDirPsr4：命名空间到他的路径位置索引</li>
 </ol>
 <p>这里存在一个问题， <code>autoload_Static.php</code>里的类名是随机的：这里存在一个问题， <code>autoload_Static.php</code>里的类名是随机的：</p>
-<p><img src="/media/tp5/image-20190906195031150.png"></p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044008.png"></p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 拿到类名后检查类中是否存在指定属性</span></span><br><span class="line">              <span class="keyword">foreach</span> ([<span class="string">&#x27;prefixLengthsPsr4&#x27;</span>, <span class="string">&#x27;prefixDirsPsr4&#x27;</span>, <span class="string">&#x27;fallbackDirsPsr4&#x27;</span>, <span class="string">&#x27;prefixesPsr0&#x27;</span>, <span class="string">&#x27;fallbackDirsPsr0&#x27;</span>, <span class="string">&#x27;classMap&#x27;</span>, <span class="string">&#x27;files&#x27;</span>] <span class="keyword">as</span> <span class="variable">$attr</span>)</span><br><span class="line">              &#123;</span><br><span class="line">                  <span class="keyword">if</span> (<span class="title function_ invoke__">property_exists</span>(<span class="variable">$composerClass</span>, <span class="variable">$attr</span>))</span><br><span class="line">                  &#123;</span><br><span class="line">                      <span class="comment"># 有的话就注册该属性</span></span><br><span class="line">                      <span class="built_in">self</span>::$&#123;<span class="variable">$attr</span>&#125; = <span class="variable">$composerClass</span>::$&#123;<span class="variable">$attr</span>&#125;;</span><br><span class="line">                  &#125;</span><br><span class="line">              &#125;</span><br><span class="line">          &#125;</span><br><span class="line">          <span class="keyword">else</span></span><br><span class="line">          &#123;   </span><br><span class="line">              <span class="comment"># 如果composer中没有`autoload_static.php`通过这里分别加载:</span></span><br><span class="line">            	<span class="comment"># `autoload_namespaces` `autoload_psr4` `autoload_classmap` `autoload_files`</span></span><br><span class="line">              <span class="built_in">self</span>::<span class="title function_ invoke__">registerComposerLoader</span>(<span class="built_in">self</span>::<span class="variable">$composerPath</span>);</span><br><span class="line">          &#125;</span><br><span class="line">      &#125;</span><br></pre></td></tr></table></figure>
 
 <p>我们通过<code>composer</code>加载的组件都可以通过这里加载框架中有引用。</p>
@@ -387,7 +242,8 @@
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">think/Error = /Applications/MAMP/htdocs/learn_tp5/learn_tp5/thinkphp/library//think/Error.php</span><br></pre></td></tr></table></figure>
 
 <p>通过这条映射将该文件加载。如果没找到就会向后找注册Psr4属性(classMap-&gt;prefix-&gt;fallback)。再比如把<code>runtime</code>下的类库映射文件<code>classmap.php</code>删除，就会触发 <code>查找 PSR-4</code>这一段：</p>
-<p><img src="/media/tp5/15711294662916.png"></p>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044016.png" style="zoom:50%;" />
+
 <p>如果我们开发了一个类库，放入到<code>extends</code>文件夹下，如：</p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//extend/mytools/sayHi.php</span></span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">  </span><br><span class="line"><span class="keyword">namespace</span> <span class="title class_">mytools</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">sayHi</span></span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">static</span> <span class="function"><span class="keyword">function</span> <span class="title">sayHi</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">        <span class="keyword">echo</span> <span class="string">&#x27;Hi~&#x27;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
 
@@ -399,7 +255,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2019/09/06/tp5-autoload/" data-id="cl1dky4nj001on7w5fdmtcucl" data-title="TP5学习-自动加载" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2019/09/06/tp5-autoload/" data-id="cl1ej4aj5001n3bw5h8jl6ir4" data-title="TP5学习-自动加载" class="article-share-link">Share</a>
       
       
       
@@ -471,7 +327,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2019/09/01/php_parser/" data-id="cl1dky4na000vn7w5gpt0c3oc" data-title="PHP-Parser使用" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2019/09/01/php_parser/" data-id="cl1ej4aiw000v3bw5e0kycspd" data-title="PHP-Parser使用" class="article-share-link">Share</a>
       
       
       
@@ -506,7 +362,8 @@
     <div class="e-content article-entry" itemprop="articleBody">
       
         <h3 id="0x01-Github平台的信息"><a href="#0x01-Github平台的信息" class="headerlink" title="0x01 Github平台的信息"></a>0x01 Github平台的信息</h3><p>Github做为全球最大的代码托管(tongxingjiaoyou)平台，有着令人惊讶的数据量。您除了会在其中泄露一些个人信息，最重要的就是源码。你的项目可能出卖了你。最有名的事件大概就是18年8月发生的华住5亿数据泄露。此事件的缘起，据说就是开发人员将数据库的套接字与口令直接上传到了github库中。</p>
-<p><img src="https://i.guancha.cn/news/social/2018/08/28/20180828140050752.jpg" alt="img"></p>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044026.jpg" alt="img" style="zoom:75%;" />
+
 <p>如今，各种Github泄露监控软件如雨后春笋板的出现。说道Github信息泄露，就不得不说今年ndss上发布的那篇-“How Bad Can It Git? Characterizing Secret Leakage in Public GitHub Repositories ”，哈哈哈哈哈哈哈。</p>
 <h3 id="0x02-论文"><a href="#0x02-论文" class="headerlink" title="0x02 论文"></a>0x02 论文</h3><ul>
 <li><p>原文作者：Michael Meli, Matthew R.McNiece, Bradley Reaves</p>
@@ -518,7 +375,8 @@
 </ul>
 <p>该团队来自北卡罗来纳州立大学(NCSU)，主要关心的是在开源代码库中，私有证书的管理。这篇文章六个月内扫描了Github上13%的公共代码库，发现了超过10万代码库泄露了API令牌和加密密钥。</p>
 <p>API Key作为接口间通信的长期身份认证令牌，一旦泄漏即可绕过认证系统。</p>
-<p><img src="/media/Other_Git_Leak/1.png" alt="1"></p>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044035.png" alt="1" style="zoom:67%;" />
+
 <p>本文获取这些敏感信息的过程如下：</p>
 <ul>
 <li><p>0: 总结这些敏感信息的规律，称之为Distinct Secrets。</p>
@@ -531,25 +389,29 @@
 </li>
 </ul>
 <p>本系统遵循这些敏感信息的内容是有规律可循的。下表为一些有迹可循的popular API keys和Asymmetric Private Keys。</p>
-<p><img src="/media/Other_Git_Leak/2.png" alt="2"></p>
+<img src="/media/Other_Git_Leak/2.png" alt="2" style="zoom:50%;" />
+
 <p>从文中看，这个系统的实验效果还是比较好的。文章从以下几个方面进行分析。</p>
 <ul>
 <li>私有或者公有隐私信息</li>
 </ul>
-<p><img src="/media/Other_Git_Leak/3.png" alt="3"></p>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044046.png" alt="3" style="zoom:50%;" />
+
 <p>从这张表可以看出，在实际数据采集分析后。目标隐私信息的私密度非常的高。</p>
 <ul>
 <li><p>平行泄露</p>
 <p>即有些应用不能单方面的使用必须有”multi-factor”才能触发。如Google OAuth IDs必须同时找到OAuth Secret。而研究表明这种”parallel secrets”通常会在隐私数据前后五行内平行泄露。</p>
 </li>
 </ul>
-<p><img src="/media/Other_Git_Leak/4.png" alt="4"></p>
+<img src="/media/Other_Git_Leak/4.png" alt="4" style="zoom:50%;" />
+
 <ul>
 <li><p>隐私存活周期</p>
 <p>研究者功能总泄密项目，观察所有者是否会发现，监控每小时探测一次。发现大约6%的用户在泄密一小时后发现并删除。19%会在两周后移除。然而这些删除掉的隐私通常仍然可以在git历史中访问。</p>
 </li>
 </ul>
-<p><img src="/media/Other_Git_Leak/5.png" alt="5"></p>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044057.png" alt="5" style="zoom:67%;" />
+
 <ul>
 <li>文章还分析了RSA Key Leakage, Number of Encrypted Keys以及OpenVPN Config等隐私数据泄露。总之，公共开源项目中泄露的大量的私密信息。NCSU团队表示，他们在10万个GitHub项目中总共发现了575,456个API和密钥，其中201,642个是独立的。</li>
 </ul>
@@ -557,7 +419,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2019/03/25/Git_Leak/" data-id="cl1dky4my0003n7w53ll62tye" data-title="git隐私泄露" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2019/03/25/Git_Leak/" data-id="cl1ej4aii00033bw5a5se2yxh" data-title="git隐私泄露" class="article-share-link">Share</a>
       
       
       
@@ -621,7 +483,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2018/11/10/php_object_inject/" data-id="cl1dky4na000un7w520830zkv" data-title="POP链" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2018/11/10/php_object_inject/" data-id="cl1ej4aiw000u3bw58oncb1xh" data-title="POP链" class="article-share-link">Share</a>
       
       
       
@@ -773,7 +635,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2018/11/07/VulDeePecker/" data-id="cl1dky4n4000dn7w5d9k88buq" data-title="论文：VulDeePecker" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2018/11/07/VulDeePecker/" data-id="cl1ej4aio000b3bw549mqgwlb" data-title="论文：VulDeePecker" class="article-share-link">Share</a>
       
       
       
@@ -813,7 +675,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2018/07/31/Beginer/" data-id="cl1dky4mv0001n7w5gyn07asb" data-title="新的开始" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2018/07/31/Beginer/" data-id="cl1ej4aif00013bw5hst2bxnw" data-title="新的开始" class="article-share-link">Share</a>
       
       
       

@@ -13,20 +13,20 @@
 <meta property="og:site_name" content="Penlab">
 <meta property="og:description" content="以南大视频课件为主   Motivation  Introduction to Pointer Analysis 06:50  Pointer Analysis and Alias Analysis 14:50 Application of Pointer Analysis 17:20   Key Factors of Pointer Analysis 19:15  Heap Abstratio">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://example.com/2021/12/15/pointer-analysis/img/image-20211215193741664.png">
-<meta property="og:image" content="http://example.com/2021/12/15/pointer-analysis/img/image-20211215201557399.png">
-<meta property="og:image" content="http://example.com/img/image-20211215202037637.png">
-<meta property="og:image" content="http://example.com/img/image-20211215203219981.png">
-<meta property="og:image" content="http://example.com/img/image-20211215203935009.png">
-<meta property="og:image" content="http://example.com/2021/12/15/pointer-analysis/img/image-20211215204252197.png">
-<meta property="og:image" content="http://example.com/2021/12/15/pointer-analysis/img/image-20211215204816102.png">
-<meta property="og:image" content="http://example.com/2021/12/15/pointer-analysis/img/image-20211215205000523.png">
-<meta property="og:image" content="http://example.com/img/image-20211216194745810.png">
+<meta property="og:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043531.png">
+<meta property="og:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043534.png">
+<meta property="og:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043536.png">
+<meta property="og:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043539.png">
+<meta property="og:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043541.png">
+<meta property="og:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043544.png">
+<meta property="og:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043546.png">
+<meta property="og:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043548.png">
+<meta property="og:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043552.png">
 <meta property="article:published_time" content="2021-12-15T09:57:35.000Z">
-<meta property="article:modified_time" content="2022-03-30T06:25:22.764Z">
+<meta property="article:modified_time" content="2022-03-31T04:35:59.968Z">
 <meta property="article:author" content="iohex">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/2021/12/15/pointer-analysis/img/image-20211215193741664.png">
+<meta name="twitter:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043531.png">
   
     <link rel="alternate" href="/atom.xml" title="Penlab" type="application/atom+xml">
   
@@ -58,6 +58,10 @@
       <h1 id="logo-wrap">
         <a href="/" id="logo">Penlab</a>
       </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">注入的艺术</a>
+        </h2>
       
     </div>
     <div id="header-inner" class="inner">
@@ -158,7 +162,7 @@
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> <span class="title function_">foo</span><span class="params">()</span> &#123;</span><br><span class="line">  <span class="type">A</span> <span class="variable">a</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">A</span>();</span><br><span class="line">  <span class="type">B</span> <span class="variable">x</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">B</span>();</span><br><span class="line">  a.setB(x);</span><br><span class="line">  <span class="type">B</span> <span class="variable">y</span> <span class="operator">=</span> a.getB();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">A</span> &#123;</span><br><span class="line">  B b;</span><br><span class="line">  <span class="keyword">void</span> <span class="title function_">setB</span><span class="params">(B b)</span> &#123;</span><br><span class="line">    <span class="built_in">this</span>.b = b;</span><br><span class="line">  &#125;</span><br><span class="line">  B <span class="title function_">getB</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">this</span>.b;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>本例子中，类A 是类B的容器，并提供了get, set方法。 在foo()方法中，独立的new了A和B。 而变量a是<code>new A</code>的指针，变量x是<code>new B</code>的指针。 之后，a调用 setB方法将<code>new B()</code>，store进了<code>new A()</code>。接着又声明了变量y，通过getB方法获取了<code>new B</code>（指向，没 new）。</p>
-<img src="img/image-20211215193741664.png" alt="image-20211215193741664" style="zoom:50%;" />
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043531.png" alt="image-20211215193741664" style="zoom:50%;" />
 
 <blockquote>
 <p>很datalog </p>
@@ -173,11 +177,11 @@
 
 
 <p>对于上下文敏感，对于同一个方法，他有多个上下文，么个上下文分别分析一次</p>
-<img src="img/image-20211215201557399.png" alt="image-20211215201557399" style="zoom:80%;" />
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043534.png" alt="image-20211215201557399" style="zoom:80%;" />
 
 <p>这里有两个上下文，就会有两个不同的分析。</p>
 <p>对于上下文不敏感：</p>
-<p><img src="/img/image-20211215202037637.png" alt="image-20211215202037637"></p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043536.png" alt="image-20211215202037637"></p>
 <p>方法foo()只分析一次。 汇合上下文可能会丢失精度。</p>
 <blockquote>
 <p>向下文敏感技术是一个重要技术，他能很大程度提高分析精度</p>
@@ -192,7 +196,7 @@
 
 <p>在程序的每一个点,都维护着一个映射(状态)。 每一条语句，都存着数据流到达这一点的数据流信息</p>
 <p>在指针分析中要做的流敏感，就要让每一个指针维持一个指向关系集合：</p>
-<p><img src="/img/image-20211215203219981.png" alt="image-20211215203219981"></p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043539.png" alt="image-20211215203219981"></p>
 <p>在这个图片中， 可以看到变量c指向了<code>new C</code>, 经过Allocation-site Abstraction后就是o1</p>
 <blockquote>
 <p>c-&gt;{o1}</p>
@@ -206,14 +210,14 @@
 <ul>
 <li>流敏感:  s-&gt;{“x”}, o1.f-&gt;{“y”}</li>
 </ul>
-<p><img src="/img/image-20211215203935009.png" alt="image-20211215203935009"></p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043541.png" alt="image-20211215203935009"></p>
 <ul>
 <li><p>流不敏感：</p>
 <p>把程序当成无序集合， 将所有的控制流信息忽略掉。</p>
 <p>因此在整个程序中，流不敏感<code>只维护一个指针集</code></p>
 </li>
 </ul>
-<img src="img/image-20211215204252197.png" alt="image-20211215204252197" style="zoom:67%;" />
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043544.png" alt="image-20211215204252197" style="zoom:67%;" />
 
 <p>所有只维护一个map, 记录程序在运行期间所有指向的对象。</p>
 <p>注意由于流不敏感的分析忽略了控制流信息，因此为了保证分析结果是<code>safe</code>的，在分析到s指向o1.f后，就要把程序中所有o1.f map的对象全部传给s(保守期间)。</p>
@@ -229,10 +233,10 @@
 <li><p>按需分析(Demand-driven)</p>
 </li>
 </ul>
-<img src="img/image-20211215204816102.png" alt="image-20211215204816102" style="zoom:80%;" />
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043546.png" alt="image-20211215204816102" style="zoom:80%;" />
 
 <p>对于如下例子:</p>
-<img src="img/image-20211215205000523.png" alt="image-20211215205000523" style="zoom:67%;" />
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043548.png" alt="image-20211215205000523" style="zoom:67%;" />
 
 <p>如果我们只想知道程序中第5行的call graph,那么我们只需要对变量z做指针分析就可以了。</p>
 <blockquote>
@@ -259,7 +263,7 @@
 <blockquote>
 <p> Ignore indexes. Modeled as an object(pointed by array) with a <code>single field</code>, say arr, which may point to any value stored in array.</p>
 </blockquote>
-<p><img src="/img/image-20211216194745810.png" alt="image-20211216194745810"></p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043552.png" alt="image-20211216194745810"></p>
 <p>在右边的指针分析中，注意array在声明时new 无长度信息， 因为将array看作一个object, 包含唯一的field arr. 对所有下标(无视下标)都看作对这个field进行store。</p>
 <p>所以，指针分析基本上就是围绕以下五条语句：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">x = <span class="keyword">new</span> <span class="title class_">T</span>()   <span class="comment">// New </span></span><br><span class="line">x = y <span class="comment">// Assign</span></span><br><span class="line">x.f = y <span class="comment">// Store</span></span><br><span class="line">y = x.f <span class="comment">// Load  </span></span><br><span class="line">r = x.k(a, ...)  <span class="comment">// Call </span></span><br></pre></td></tr></table></figure>
@@ -275,7 +279,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2021/12/15/pointer-analysis/" data-id="cl1dky4nb000zn7w548sk9r73" data-title="pointer_analysis" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2021/12/15/pointer-analysis/" data-id="cl1ej4aiy000z3bw51u9a84wk" data-title="pointer_analysis" class="article-share-link">Share</a>
       
       
       

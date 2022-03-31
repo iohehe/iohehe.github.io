@@ -45,6 +45,10 @@
         <a href="/" id="logo">Penlab</a>
       </h1>
       
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">注入的艺术</a>
+        </h2>
+      
     </div>
     <div id="header-inner" class="inner">
       <nav id="main-nav">
@@ -106,70 +110,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2021/08/16/exp/" data-id="cl1dky4n7000mn7w5g09i6fpi" data-title="教训与感悟" class="article-share-link">Share</a>
-      
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-reaching-definitions" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2021/07/12/reaching-definitions/" class="article-date">
-  <time class="dt-published" datetime="2021-07-12T11:22:20.000Z" itemprop="datePublished">2021-07-12</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2021/07/12/reaching-definitions/">reaching_definitions</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <h1 id="0x01-Bit-Vector-Program"><a href="#0x01-Bit-Vector-Program" class="headerlink" title="0x01 Bit-Vector Program"></a>0x01 Bit-Vector Program</h1><p><code>Reaching Definitions analysis</code>  aims at finding out for each node of a program graph where a variable or array might have been previously defined(or modified) the last time. It is a kind of <code>bit vector problem</code>.  </p>
-<img src="reaching-definitions/image-20210712192406787.png" alt="image-20210712192406787" style="zoom:40%;" />
-
-<p>As shown in the Figure 2.1, we can see that the node <code>q1</code> there are two possibilities for the variable <code>y</code>, either it was modified using the action from <code>q_start</code> to <code>q1</code>, or the action <code>q3</code> to <code>q1</code>.</p>
-<p>For the variables <code>x</code> there are also two possibilities: either the action from <code>q3</code> to <code>q1</code>, or it has not been modified at all and hence it  has <code>retained its original value</code>.</p>
-<h2 id="Analysis-assignments"><a href="#Analysis-assignments" class="headerlink" title="Analysis assignments"></a>Analysis assignments</h2><ul>
-<li><p>Variable: <img src="/reaching-definitions/image-20210715191536593.png" alt="image-20210715191536593"></p>
-</li>
-<li><p>Array: <img src="/reaching-definitions/image-20210715191551279.png" alt="image-20210715191551279"></p>
-</li>
-</ul>
-<p>the q means a program point on the graph Q. and there has an edge with an action \alpha:  <img src="/reaching-definitions/image-20210715191717541.png" alt="image-20210715191717541"></p>
-<p>so the variable y in the Figure 2.1 can be represented as the triple: </p>
-<p> <img src="/reaching-definitions/image-20210715191939568.png" alt="image-20210715191939568">: y is modified by the action labelling the edge from q2 to q3.<img src="/reaching-definitions/image-20210715192150692.png" alt="image-20210715192150692"></p>
-<p>: symbol ‘?’ means retaining its initial value.</p>
-<img src="reaching-definitions/image-20210715192357776.png" alt="image-20210715192357776" style="zoom:60%;" />
-
-
-
-
-
-
-
-
-
-<h2 id="What-is-defined-on-a-path"><a href="#What-is-defined-on-a-path" class="headerlink" title="What is defined on a path"></a>What is defined on a path</h2><h2 id="Constraints-for-Reaching-Definitions"><a href="#Constraints-for-Reaching-Definitions" class="headerlink" title="Constraints for Reaching Definitions"></a>Constraints for Reaching Definitions</h2><h2 id="Solving-the-constraints"><a href="#Solving-the-constraints" class="headerlink" title="Solving the constraints"></a>Solving the constraints</h2><h2 id="Solutions-summarise-the-path"><a href="#Solutions-summarise-the-path" class="headerlink" title="Solutions summarise the path"></a>Solutions summarise the path</h2><h1 id="0x02-Montone-Framework"><a href="#0x02-Montone-Framework" class="headerlink" title="0x02 Montone Framework"></a>0x02 Montone Framework</h1><h1 id="0x03-Datalog-Based-Analyses"><a href="#0x03-Datalog-Based-Analyses" class="headerlink" title="0x03 Datalog Based Analyses"></a>0x03 Datalog Based Analyses</h1>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://example.com/2021/07/12/reaching-definitions/" data-id="cl1dky4nc0011n7w5fe6v7um1" data-title="reaching_definitions" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2021/08/16/exp/" data-id="cl1ej4ais000l3bw521isd1xi" data-title="教训与感悟" class="article-share-link">Share</a>
       
       
       
@@ -207,33 +148,33 @@
 <p>算了， 还是把博客搞成学习笔记本好了…xD</p>
 <p>李宏毅老师的机器学习课程非常的棒，我一定要好好学习….</p>
 <h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h2><p>对于机器学习可以理解成：</p>
-<p><img src="/ml-2021-1/image-20210707203503647.png" alt="image-20210707203503647"></p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043405.png" alt="image-20210707203503647"></p>
 <p>其实就是约等于一个找函数的能力， 如：</p>
 <ul>
 <li><p>语音辨识(Image Recognition)：</p>
-<img src="ml-2021-1/image-20210707203601984.png" alt="image-20210707203601984" style="zoom:80%;" /></li>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043407.png" alt="image-20210707203601984" style="zoom:80%;" /></li>
 </ul>
 <p>这里的声音信号做为输入， 而对应的文字作为输出。 这种函数会非常的复杂， 因此我们期望通过机器把它找出来。</p>
 <ul>
 <li><p>图像识别(Image Recognition):</p>
-<img src="ml-2021-1/image-20210707203916147.png" alt="image-20210707203916147" style="zoom:80%;" /></li>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043412.png" alt="image-20210707203916147" style="zoom:80%;" /></li>
 </ul>
 <p>同理图像识别图片是输入，输出是图片的内容。</p>
 <p>等等…</p>
 <hr>
 <h3 id="专有名词介绍"><a href="#专有名词介绍" class="headerlink" title="专有名词介绍"></a>专有名词介绍</h3><ul>
 <li><p><code>Regression</code>: The function outputs a scalar.</p>
-<img src="ml-2021-1/image-20210707204151325.png" alt="image-20210707204151325" style="zoom:80%;" /></li>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043416.png" alt="image-20210707204151325" style="zoom:80%;" /></li>
 </ul>
 <p> 如上图所示，是一个回归(Regression)任务，此函数输入是今天已知的与输出有关的各种参数， 输出是对于明天PM2.5指数的预测。</p>
 <ul>
 <li><code>Classification</code>: Given options(classes), the function outputs the correct one.</li>
 </ul>
 <p>Classification是做选择题:</p>
-<img src="ml-2021-1/image-20210707204729572.png" alt="image-20210707204729572" style="zoom:80%;" />
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043418.png" alt="image-20210707204729572" style="zoom:80%;" />
 
 <p>如上图，一个函数帮我们甄别是否一封邮件是垃圾邮件。他的输入就是一封电子邮件，输出是一个选项(选项是提前设定好的)。 选项可以有多个， 如:</p>
-<img src="ml-2021-1/image-20210707205158308.png" alt="image-20210707205158308" style="zoom:50%;" />
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043420.png" alt="image-20210707205158308" style="zoom:50%;" />
 
 <p>Playing Go 也是一个Classification, 他有19*19(棋盘大小)个选项。</p>
 <ul>
@@ -242,11 +183,11 @@
 <hr>
 <h2 id="Case-Study"><a href="#Case-Study" class="headerlink" title="Case Study"></a>Case Study</h2><p>来直观的看一下如何通过机器学习解决问题。</p>
 <p>老师的YouTube地址: <a target="_blank" rel="noopener" href="https://www.youtube.com/c/HungyiLeeNTU">https://www.youtube.com/c/HungyiLeeNTU</a></p>
-<img src="ml-2021-1/image-20210707205846249.png" alt="image-20210707205846249" style="zoom:50%;" />
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043423.png" alt="image-20210707205846249" style="zoom:50%;" />
 
 <p>后台记录了每一天的观看人数等数据。 现在， 老师想找到一个function，他能够帮我们预测今天有多少人会观看老师的频道。 机器学习找这个function，需要三个步骤：</p>
 <h3 id="1-Function-with-unknown-parameters"><a href="#1-Function-with-unknown-parameters" class="headerlink" title="1. Function with unknown parameters"></a>1. Function with unknown parameters</h3><p>写出一个带有<code>未知参数(unknow parameters)</code>的函数:</p>
-<img src="ml-2021-1/image-20210707210146306.png" alt="image-20210707210146306" style="zoom:100%;" />
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043425.png" alt="image-20210707210146306" style="zoom:100%;" />
 
 <p>我们来猜测一下， 我们要找的数学式是:<br>$$<br>y &#x3D; b+wx_1<br>$$<br>这个带有unknown parameters的函数我们就称为模型(Model)。</p>
 <p>其中<code>y</code>是我们所需要的预测的，当天观看频道的总人数。 而<code>x1</code>是我们输入的，已知的昨天观看该频道的人数。</p>
@@ -255,7 +196,7 @@
 <h2 id="2-Define-Loss-from-Training-Data"><a href="#2-Define-Loss-from-Training-Data" class="headerlink" title="2. Define Loss from Training Data"></a>2. Define Loss from Training Data</h2><p>第二步骤， 定义一个Loss Function:<br>$$<br>L(b, w)<br>$$<br>L的输入就是我们model里的参数<code>b</code>跟<code>w</code>;  输出是一个代表了model使用改组参数的好坏。</p>
 <p>假设现在设置:<br>$$<br>L(0.5k, 1)<br>$$<br>那么我们的model就变为：<br>$$<br>y &#x3D; b+ wx_1 \rightarrow y&#x3D;0.5k +1x_1<br>$$<br>那么如何衡量目前这个已定参数的model有多好呢？就需要使用Loss Function。</p>
 <p>我们需要从训练资料中找答案：</p>
-<img src="ml-2021-1/image-20210708204015376.png" alt="image-20210708204015376" style="zoom:30%;" />
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043434.png" alt="image-20210708204015376" style="zoom:30%;" />
 
 
 
@@ -264,41 +205,41 @@
 <p>每一天的真实数值就叫做Label</p>
 </blockquote>
 <p>如e2代表我们对2017&#x2F;01&#x2F;02的估值。 我们可以依次算出三年的训练资料的误差：</p>
-<img src="ml-2021-1/image-20210708205313401.png" alt="image-20210708205313401" style="zoom:20%;" />
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043443.png" alt="image-20210708205313401" style="zoom:20%;" />
 
 <p>这个L越大效果越差， 越小效果越小。</p>
 <p>这种依据绝对值求Loss的方法叫做<code>MAE</code>, 而使用平方和求Loss的方法叫做<code>MSE</code>:</p>
-<img src="ml-2021-1/image-20210708205441134.png" alt="image-20210708205441134" style="zoom:25%;" />
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043439.png" alt="image-20210708205441134" style="zoom:25%;" />
 
 
 
 <p>两种求误差的方法根据需求选择。</p>
-<img src="ml-2021-1/image-20210708205619696.png" alt="image-20210708205619696" style="zoom:30%;" />
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043447.png" alt="image-20210708205619696" style="zoom:30%;" />
 
 
 
 <p>经过作者对Model进行一系列的调参后的真实结果， 在穷举各种<code>w</code>和<code>b</code>后，使用真实数据计算出来的Loss结果。各种组合的Loss表示为上边的等高线图，越偏红色， 表示计算出的Loss越大， <code>w</code>跟<code>b</code>放入mdoel，效果越差。可以看到估测最准的大约在<code>w</code>在1，b在100左右。</p>
 <h2 id="3-Optimization"><a href="#3-Optimization" class="headerlink" title="3. Optimization"></a>3. Optimization</h2><p> 第三步是解一个最佳化的问题， 找到一组最好的<code>w</code>跟<code>b</code>(<code>w*</code>, <code> b*</code>)，可以让Loss的值最小 ：</p>
-<img src="ml-2021-1/image-20210709202254891.png" alt="image-20210709202254891" style="zoom:25%;" />
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043452.png" alt="image-20210709202254891" style="zoom:25%;" />
 
 
 
 <p>此门课程中唯一用到的Optimization方法是<code>Gradient Descent</code>。</p>
 <p>上大图：</p>
-<img src="ml-2021-1/image-20210709202351925.png" alt="image-20210709202351925" style="zoom:50%;" />
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043456.png" alt="image-20210709202351925" style="zoom:50%;" />
 
 <p>如图， 为了简化期间， 假设我们已知参数<code>b</code>, 只有一个参数<code>w</code>未知。 当<code>w</code>在不同的数值的时候， 就会得到不同的Loss, 由于简化为只有一个参数， 所以是一条曲线(1D)。</p>
 <p>现在的问题是， 如何找到一个<code>w</code>， 使得<code>Loss</code>的值最小?</p>
 <p>首先， 我们随机选择一个随机的点<code>w0</code>。 接下来计算， 当<code>w=w0</code>时， <code>w</code>这个参数对<code>L</code>的微分。 即使计算<code>w0</code>点的<code>error surface</code>的切线斜率。如果是<code>Negative </code>就<code>Increase w</code>, 反之。</p>
 <p>如图就是猴子哥现在的位置。猴子哥站在那里， 看到左高右低，就向右<code>Increase w</code>。</p>
-<img src="ml-2021-1/image-20210709203107456.png" alt="image-20210709203107456" style="zoom:50%;" />
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043458.png" alt="image-20210709203107456" style="zoom:50%;" />
 
 <p>再来一张图，此时猴子哥移动了一段位置，由<code>w0</code>到了<code>w1</code>, 这段距离还依赖于一个参数<code>η</code>, 这个参数是认为设定的<code>learning rate</code>。</p>
 <blockquote>
 <p>在机器学习中， 自己设定的值，就叫做hyperparameters</p>
 </blockquote>
 <p>继续反复操作， 最后停下了： 两种情况下停下了: 1)到上限了(hyperparameters)  2)   到达极值点</p>
-<img src="ml-2021-1/image-20210709203845841.png" alt="image-20210709203845841" style="zoom:50%;" />
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043504.png" alt="image-20210709203845841" style="zoom:50%;" />
 
 <p>如图假设我们移动到了<code>Local minima</code>的位置停止了， 那么， 我们其实没有到达真正最好的， 可以让<code>Loss</code>最小的<code>w</code>(global minima)。但是实际上，这是一个假问题(不是实际中真正的痛点)。</p>
 <p>以上例子只有一个参数<code>w</code>。 那么有<code>w</code>, 跟<code>b</code>如何做<code>Gradient Descent</code>呢？</p>
@@ -308,34 +249,34 @@
 <li><p>分别在初始位置计算<code>w</code>和<code>b</code>对<code>L</code>的微分</p>
 </li>
 <li><p>更新<code>w</code>跟<code>b</code>，得到<code>w1</code>跟<code>b1</code> </p>
-<img src="ml-2021-1/image-20210709204432226.png" alt="image-20210709204432226" style="zoom:33%;" />
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043509.png" alt="image-20210709204432226" style="zoom:33%;" />
 
 
 </li>
 <li><p>迭代更新， 找到<code>w*</code>跟<code>b*</code></p>
 </li>
 </ul>
-<img src="ml-2021-1/image-20210709204603236.png" alt="image-20210709204603236" style="zoom:50%;" />
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043511.png" alt="image-20210709204603236" style="zoom:50%;" />
 
 <p>将<code>w</code>跟<code>b</code>结合起来，得到箭头的方向，一直移动…</p>
 <p>算出来的<code>w*=0.97</code>, <code>b*=0.1k</code> , <code>Loss=0.48K</code>(观看误差大约500人)。</p>
 <p>我们以上的三个步骤， 叫做训练。 我们真正要做的是， 对未来的未知的观看次数的预测。</p>
-<img src="ml-2021-1/image-20210709204838642.png" alt="image-20210709204838642" style="zoom:50%;" />
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043514.png" alt="image-20210709204838642" style="zoom:50%;" />
 
 
 
 <p>如图我们发现在2021的误差值是0.58。因此在位置的数据上， 误差相对较大。</p>
 <p>如何再缩小误差， 分析结果：</p>
-<img src="ml-2021-1/image-20210709205158675.png" alt="image-20210709205158675" style="zoom:50%;" />
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043518.png" alt="image-20210709205158675" style="zoom:50%;" />
 
 <p>蓝色的线几乎是红色向右平移，因为这个model只参考前一天的结果。 找规律， 发现有<code>每七天一个循环</code>，也许使用一个参考7天的model结果会更准确。修改模型</p>
 <blockquote>
 <p>对模型的修改往往来自于对问题的理解(Domain Knowledge)</p>
 </blockquote>
-<img src="ml-2021-1/image-20210709205554126.png" alt="image-20210709205554126" style="zoom:33%;" />
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043519.png" alt="image-20210709205554126" style="zoom:33%;" />
 
 <p>第二个模型，将7天的数据，都列入考虑。我们得到了一个更低的<code>Loss</code>（0.38k）。这个模型中计算了前七天的<code>wjxj</code>, 每一个<code>w</code>跟<code>b</code>都用Gradient Descent计算，来看每一天的<code>w*</code>，让<code>L</code>减小的是<code>w2, w4, w5</code>为负值。</p>
-<img src="ml-2021-1/image-20210709205750727.png" alt="image-20210709205750727" style="zoom:50%;" /> 
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043523.png" alt="image-20210709205750727" style="zoom:50%;" /> 
 
 <p>以此类推考虑更多天…28天…56天…<code>Loss</code>在没有看过的资料上还是<code>0.46k</code>。</p>
 <p>这种将x(feature)乘上一个weight, 再加上bias得到预测结果的模型， 叫做<code>Linear models</code>。</p>
@@ -344,125 +285,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2021/07/07/ml-2021-1/" data-id="cl1dky4n9000sn7w5ft3e9tws" data-title="台大深度学习2021-1" class="article-share-link">Share</a>
-      
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-PAAA-1" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2021/07/07/PAAA-1/" class="article-date">
-  <time class="dt-published" datetime="2021-07-07T10:29:06.000Z" itemprop="datePublished">2021-07-07</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2021/07/07/PAAA-1/">Program Analysis An Appetizer读书笔记： 第一章</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p><img src="/PAAA-1/image-20210707182952591.png" alt="image-20210707182952591"></p>
-<p>本书在结构上如上图所示：本书没有使用任何具体的程序语言， 而是使用作者设计的两套prototypical programming languages, based on Guarded Commands and a subset of C，即上图A和B。</p>
-<ul>
-<li>第一章：  介绍了basic model of program graphs</li>
-<li>第二章和第三章： 介绍了基本的过程内程序分析： 四个经典的bit-vector analyses, monotone framework。</li>
-</ul>
-<h1 id="第一章：-Programs-as-Graphs"><a href="#第一章：-Programs-as-Graphs" class="headerlink" title="第一章： Programs as Graphs"></a>第一章： Programs as Graphs</h1><p><img src="/PAAA-1/image-20210707184040462.png" alt="image-20210707184040462"></p>
-<p>Figure 1.1 的有向图表示了一个程序图， 其中有五个点，定点表示了<code>initial node</code>, 最右边的叶子节点是<code>final node</code>。 q1, q2, q3 是三个<code>additional nodes</code>。</p>
-<p>边上的label是该边相关的<code>actions</code> ， 构成了程序的语义。 可以看出这个程序是在迭代的计算阶乘。</p>
-<h2 id="1-1-Actions"><a href="#1-1-Actions" class="headerlink" title="1.1 Actions"></a>1.1 Actions</h2><p>根据上面所描述的， 程序图的边上的actions代表了程序的语义。 </p>
-<p><img src="/PAAA-1/image-20210707191056485.png" alt="image-20210707191056485"></p>
-<p>以上是对每一个action的形式化的描述：首先看第一个第一式子中有七种可能， </p>
-<ul>
-<li><p>Assign: 分别是变量或数组赋值，</p>
-</li>
-<li><p>Input: 从channel或文件读取的数据赋值给变量或数组，</p>
-</li>
-<li><p>Output: 将数据写入channle或文件</p>
-</li>
-<li><p>Boolean</p>
-</li>
-<li><p>skip</p>
-</li>
-</ul>
-<p>其中a代表一个算数表达式， b代表一个布尔表达式， 也给出了定义。</p>
-<h2 id="1-2-Memories"><a href="#1-2-Memories" class="headerlink" title="1.2 Memories"></a>1.2 Memories</h2><p>Memory is in order to describe the meaning of the actions. There are three kinds of components we should consider: </p>
-<ol>
-<li><code>Variables</code>: The values of the variables</li>
-<li><code>Arrays</code>:  The contents of the arrays</li>
-<li><code>Channels</code>: The data available  on the Channels.</li>
-</ol>
-<ul>
-<li><p>Variables: The values of the variables are modelled by a mapping:<br>$$<br>\sigma_v: Var \rightarrow Int<br>$$<br><code>Var</code> is a finite set of variables that we are interesting; and the set called <code>the domain of the mapping</code>.</p>
-<p>This mapping can determines the value of each variable. </p>
-<p><img src="/PAAA-1/image-20210712124107530.png" alt="image-20210712124107530"></p>
-</li>
-</ul>
-<p>The Figure 1.2 shows a memory:<br>$$<br>\sigma: {x,y} \rightarrow Int<br>$$</p>
-<p><img src="/PAAA-1/image-20210712124309441.png" alt="image-20210712124309441"></p>
-<p>The Figuare 1.3 shows an update of the memory by assignment, and it can be represented by:</p>
-<p><img src="/PAAA-1/image-20210712124532326.png" alt="image-20210712124532326"></p>
-<ul>
-<li><p>Arrays. The values of arrays are modelled by a mapping:<br>$$<br>\sigma_A: Arr \rightarrow Int^*<br>$$</p>
-<p>Arr is a set of interesting array names;</p>
-<p>Int* denotes lists of values.</p>
-<p><img src="/PAAA-1/image-20210712124914015.png" alt="image-20210712124914015"></p>
-</li>
-</ul>
-<p>Figure 1.4 shows a memory of two Arrays <code>A</code> (length 3)and <code>B</code>(length 4).</p>
-<p><img src="/PAAA-1/image-20210712125206806.png" alt="image-20210712125206806"> </p>
-<p>We can update memory in the <code>Figure 1.5</code> <img src="/PAAA-1/image-20210712125353559.png" alt="image-20210712125353559"></p>
-<ul>
-<li>Channels.<br>$$<br>\sigma_c: Chan \rightarrow Int^*<br>$$</li>
-</ul>
-<p>Chan is a finite set of channel names:</p>
-<p><img src="/PAAA-1/image-20210712125532398.png" alt="image-20210712125532398"></p>
-<p><img src="/PAAA-1/image-20210712125836056.png" alt="image-20210712125836056"></p>
-<p><img src="/PAAA-1/image-20210712125828401.png" alt="image-20210712125828401"></p>
-<h2 id="1-3-Semantics"><a href="#1-3-Semantics" class="headerlink" title="1.3 Semantics"></a>1.3 Semantics</h2><p>the semantics of the actions is about how to determine the values of the arithmetic expressions using the memories and how to determine the truth values of the boolean expressions&#x2F;</p>
-<ul>
-<li><p>Arthmetic expressions.</p>
-</li>
-<li><p>Boolean expressions.</p>
-</li>
-<li><p>Actions</p>
-</li>
-</ul>
-<h2 id="1-4-Program-Graphs"><a href="#1-4-Program-Graphs" class="headerlink" title="1.4 Program Graphs"></a>1.4 Program Graphs</h2><img src="PAAA-1/image-20210713123451105.png" alt="image-20210713123451105" style="zoom:60%;" />
-
-<img src="PAAA-1/image-20210713123516499.png" alt="image-20210713123516499" style="zoom:60%;" />
-
-<p>The definition of the program graph is a graph includes a set of  nodes like q_start and q_end, and it has a set of directed edges <code>labelled by actions</code>.</p>
-<img src="PAAA-1/image-20210713123810628.png" alt="image-20210713123810628" style="zoom:60%;" />
-
-<img src="PAAA-1/image-20210713123840735.png" alt="image-20210713123840735" style="zoom:60%;" />
-
-
-
-
-
-<h2 id="1-5-Execution-Sequences"><a href="#1-5-Execution-Sequences" class="headerlink" title="1.5 Execution Sequences"></a>1.5 Execution Sequences</h2><h2 id="1-6-The-Nature-of-Approximation"><a href="#1-6-The-Nature-of-Approximation" class="headerlink" title="1.6 The Nature of Approximation"></a>1.6 The Nature of Approximation</h2>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://example.com/2021/07/07/PAAA-1/" data-id="cl1dky4n00007n7w5bxr53lzs" data-title="Program Analysis An Appetizer读书笔记： 第一章" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2021/07/07/ml-2021-1/" data-id="cl1ej4aiv000r3bw595e7h41i" data-title="台大深度学习2021-1" class="article-share-link">Share</a>
       
       
       
@@ -595,7 +418,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2021/04/07/xss-patterns/" data-id="cl1dky4nl001vn7w55j7p9rv6" data-title="xss patterns" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2021/04/07/xss-patterns/" data-id="cl1ej4aj7001u3bw5h5tbd1ep" data-title="xss patterns" class="article-share-link">Share</a>
       
       
       
@@ -693,7 +516,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2021/03/17/static-sum/" data-id="cl1dky4ni001kn7w54i0nhi4x" data-title="静态分析之殇" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2021/03/17/static-sum/" data-id="cl1ej4aj4001j3bw57oq0gmq8" data-title="静态分析之殇" class="article-share-link">Share</a>
       
       
       
@@ -738,11 +561,17 @@
 <p>这里的Conservative其实就是Over, 可以看到理想的soundness理论上分析处出实际程序运行时所有的路径和情形。</p>
 <p>然而，无论是当前学术界和工业界都无法达到soundness。但是这些文章或技术一般都不会说自己是unsoundness的，因为通常unsoundness是故意的忽略掉分析一些行为，以达到更高效率的目的。 而这一些技术是想soundness的，但是又无法达到理想的soundness，在这种情形下，这些文章就会产生一些误导。 如一些分析工具，文章说的很好， 但是实际用起来有很多的情况cover不了导致大量误报造成结果直接不可用…</p>
 <p>在想sound，sound不了。我又不是unsound的，这种情况下，就产生了soundy分析的概念。15年提出[2]的，呼吁将这一类分析结果，是soundiness的。</p>
-<p><img src="/soundiness/truthiness.png" alt="truthiness"></p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043246.png" alt="truthiness"></p>
 <h1 id="0x02-hard-language-features"><a href="#0x02-hard-language-features" class="headerlink" title="0x02 hard language features"></a>0x02 hard language features</h1><p>几乎所有现代语言中，都有一些对于静态分析来比较hard 的点：</p>
-<p><img src="/soundiness/image-20210202094033999.png" alt="image-20210202094033999"></p>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043248.png" alt="image-20210202094033999" style="zoom: 50%;" />
+
+
+
+
+
 <h2 id="Java-Reflection"><a href="#Java-Reflection" class="headerlink" title="Java Reflection"></a>Java Reflection</h2><p>以反射为例：</p>
-<p><img src="/soundiness/image-20210202094244020.png" alt="image-20210202094244020"></p>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043251.png" alt="image-20210202094244020" style="zoom:20%;" />
+
 <p>反射的提出为了使得软件架构低耦合，高复用的目的。 如MVC框架中，框架要和web程序解耦，就需要通过反射去调用控制器中的方法，而不是改框架调用控制器。</p>
 <p>在Java中， 反射使用的是对Class, method, field分别生成Metaobject, 然后使用这些metaobject来调用反射API接口来动态的达到静态调用效果。</p>
 <p>反射是很重要的， 那么，如何静态分析呢？05年的APLAS提出了<code>String Constant analysis + Pointer Analysis</code>。</p>
@@ -762,16 +591,20 @@
 <p>这个工作的问题可以总结为： 名字不知道，啥也不知道。</p>
 <p>在14年ECOOP, 南大李樾和谭添老师做了一个工作[4] (膜)，他们的方法 <code>Type Inference+String analysis+Pointer Analysis</code></p>
 <p>他们的方法为：生时不可解， 用时亦可推。</p>
-<p><img src="/soundiness/image-20210202113047743.png" alt="image-20210202113047743"></p>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043313.png" alt="image-20210202113047743" style="zoom:20%;" />
+
 <p>通过反射使用点，结合java强大的类型系统，去推到这个方法的线索(如有几个参数， 这些参数是什么类型)[5]。</p>
 <p>目前解决这些问题还是使用动态方式比较通用，如[6]去跑java的测试用例，得到的信息供给静态分析使用， 此类工作(Assisted by Dynamic Analysis)快，准。但是soundness做的不够好。</p>
 <h2 id="Native-Code"><a href="#Native-Code" class="headerlink" title="Native Code"></a>Native Code</h2><p>Native Code 是另外一种hard analysis的情况。 核心就是一种跨语言的调用，如何去静态分析。</p>
-<p><img src="/soundiness/image-20210202114600176.png" alt="image-20210202114600176"></p>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043328.png" alt="image-20210202114600176" style="zoom:25%;" />
+
 <p>Java中提供了native关键字去声明调用JNI(Java Native Interface), 他是一套java调用底层平台c&#x2F;c++功能的接口， 没有函数体。实现逻辑在c&#x2F;c++中。这种机制能够使JVM同本地的动态链接库进行交互。</p>
-<p><img src="/soundiness/image-20210202114857543.png" alt="image-20210202114857543"></p>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043335.png" alt="image-20210202114857543" style="zoom:33%;" />
+
 <p>那么这种跨语言，如何去做程序分析呢？</p>
 <p>现在通常分析器通常去进行手工建模(Manually models the critical native code)…</p>
-<p><img src="/soundiness/image-20210202115838235.png" alt="image-20210202115838235"></p>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043344.png" alt="image-20210202115838235" style="zoom:20%;" />
+
 <p>这里是对调用c&#x2F;c++中的arraycopy进行手工建模成java逻辑， 然后转化为三地址码。</p>
 <p>最近的工作[7] (ISSTA2020), 有直接在二进制上分析跨语言的调用。</p>
 <h1 id="reference"><a href="#reference" class="headerlink" title="reference"></a>reference</h1><p><a target="_blank" rel="noopener" href="http://soundiness.org/#Introduction">[1] http://soundiness.org/#Introduction</a></p>
@@ -785,7 +618,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2021/02/02/soundiness/" data-id="cl1dky4ne0016n7w5d7g44heg" data-title="soundiness" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2021/02/02/soundiness/" data-id="cl1ej4aj000153bw5d2485sof" data-title="soundiness" class="article-share-link">Share</a>
       
       
       
@@ -828,10 +661,13 @@
 </blockquote>
 <p><img src="https://tva1.sinaimg.cn/large/008eGmZEgy1gmru5lf4ghj306006hq2u.jpg"></p>
 <p>在cyber世界， 我们的坏人不言而喻， 我们的目标保护我们的计算机系统在有坏人的情况下还能正常运行，而且数据不会泄露。</p>
-<p><img src="/debreach/image-20210118143612640.png" alt="image-20210118143612640"></p>
-<p><img src="/debreach/image-20210118143702213.png" alt="image-20210118143702213"></p>
+<img src="debreach/image-20210118143612640.png" alt="image-20210118143612640" style="zoom:33%;" />
+
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045327.png" alt="image-20210118143702213" style="zoom:33%;" />
+
 <p>我们来关注注入问题和信息泄露问题，为啥呢？ 因为他们属于一大类问题： 信息流的问题。</p>
-<h1 id="0x02-信息流安全"><a href="#0x02-信息流安全" class="headerlink" title="0x02 信息流安全"></a>0x02 信息流安全</h1><p><img src="/debreach/image-20210118143903537.png" alt="image-20210118143903537"></p>
+<h1 id="0x02-信息流安全"><a href="#0x02-信息流安全" class="headerlink" title="0x02 信息流安全"></a>0x02 信息流安全</h1><img src="debreach/image-20210118143903537.png" alt="image-20210118143903537" style="zoom:33%;" />
+
 <p>在一个wechat登录界面中， 密码是一个敏感信息， 合法的信息流动是将密码从客户端流到服务器(可信赖一方)。</p>
 <p>如果敏感信息流到了怀仁手上，是我们不想要的。</p>
 <p>如何保护保护信息呢？</p>
@@ -841,7 +677,8 @@
 <h2 id="什么是信息流"><a href="#什么是信息流" class="headerlink" title="什么是信息流"></a>什么是信息流</h2><blockquote>
 <p> Information flow: if the information in variable x is transferred to variable y, then there is information flow x-&gt;y [2]</p>
 </blockquote>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-124711.png" alt="image-20210118145110826"></p>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045337.png" alt="image-20210118145110826" style="zoom:33%;" />
+
 <p>信息载体(变量x)，传入了y, 这就是系统中的一个信息流动。</p>
 <h2 id="信息流和Security结合"><a href="#信息流和Security结合" class="headerlink" title="信息流和Security结合"></a>信息流和Security结合</h2><p>要考虑信息流和安全结合起来， 需要考虑两点， 第一我们就要给信息流的载体，变量进行一个安全分级， 第二点我们需要在安全等级的基础上制定信息流动的策略。</p>
 <h3 id="Security-Levels"><a href="#Security-Levels" class="headerlink" title="Security Levels"></a>Security Levels</h3><p>最简单说是将变量分为两级:</p>
@@ -849,30 +686,47 @@
 <li><p>H, meaning <code>high</code> security, secret information (秘密信息)</p>
 </li>
 <li><p>L, meaning <code>low</code>security, public observable information (系统以外可已观测到的)</p>
-<p><img src="/debreach/image-20210118145706312.png" alt="image-20210118145706312"></p>
-</li>
+<img src="debreach/image-20210118145706312.png" alt="image-20210118145706312" style="zoom: 50%;" /></li>
 </ol>
 <p>以上代码 broadcast(l)就是可以被广播出去的信息， h就是不能被信息系统之外不允许被观测到的。</p>
 <p>这种安全等级可以抽象为格来表述的[3]。</p>
-<p><img src="/debreach/image-20210118150635775.png" alt="image-20210118150635775"></p>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045349.png" alt="image-20210118150635775" style="zoom:67%;" />
+
+
+
 <p>格可以很复杂， 而且它可能不是线性上升的。</p>
-<p><img src="/debreach/image-20210118150709113.png" alt="image-20210118150709113"></p>
+<img src="debreach/image-20210118150709113.png" alt="image-20210118150709113" style="zoom:50%;" />
+
 <p>现在有了安全等级分类， 下一步就是制定策略</p>
 <h3 id="Information-Flow-Policy"><a href="#Information-Flow-Policy" class="headerlink" title="Information Flow Policy"></a>Information Flow Policy</h3><p>信息流安全策略是限制这个信息流如何在不同安全等级中进行流动的。这里介绍一种不干涉策略(Noninterreference policy)[4]， 他的思想是： </p>
 <blockquote>
 <p> 高安全等级的变量不能影响到信息流中地安全等级的变量。就是说你不能够在信息可观测的底安全等级变量中，观测到高安全等级信息。</p>
 </blockquote>
-<p><img src="/debreach/image-20210118151455095.png" alt="image-20210118151455095"></p>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045404.png" alt="image-20210118151455095" style="zoom: 50%;" />
+
+
+
 <p>嗯…</p>
-<p><img src="/debreach/image-20210118151610860.png" alt="image-20210118151610860"></p>
+<img src="debreach/image-20210118151610860.png" alt="image-20210118151610860" style="zoom:50%;" />
+
 <p>看这些例子， 总之，高密集变量不能赋值给地密级遍历中。</p>
-<p><img src="/debreach/image-20210118151657627.png" alt="image-20210118151657627"></p>
+<img src="debreach/image-20210118151657627.png" alt="image-20210118151657627" style="zoom:50%;" />
+
+
+
 <p>就是保证格上始终是按照边上升的</p>
-<p><img src="/debreach/image-20210118151733378.png" alt="image-20210118151733378"></p>
+<img src="debreach/image-20210118151733378.png" alt="image-20210118151733378" style="zoom:50%;" />
+
+
+
+
+
 <h1 id="0x03-Confidentiality-保密性-and-Integrity-完整性"><a href="#0x03-Confidentiality-保密性-and-Integrity-完整性" class="headerlink" title="0x03 Confidentiality(保密性) and Integrity(完整性)"></a>0x03 Confidentiality(保密性) and Integrity(完整性)</h1><p>从信息泄露的角度讲，需要阻止的信息流是从高到低， 但是完整性与保密性正好相反， 他要阻止的是从低安全流向高安全从而破坏高安全信息的完整性[5]。</p>
-<p><img src="/debreach/image-20210118152255244.png" alt="image-20210118152255244"></p>
+<img src="debreach/image-20210118152255244.png" alt="image-20210118152255244" style="zoom:50%;" />
+
 <p>完整性涵盖了一大类漏洞，如注入漏洞, 注入漏洞…还是注入漏洞。</p>
-<p><img src="/debreach/image-20210118152448073.png" alt="image-20210118152448073"></p>
+<img src="debreach/image-20210118152448073.png" alt="image-20210118152448073" style="zoom:50%;" />
+
 <p>从而可见， 保密性和完整性是信息流安全中的一体两面。 如此， 我们可以用一种手段解决这两种问题。</p>
 <h2 id="扩展安全性概念"><a href="#扩展安全性概念" class="headerlink" title="扩展安全性概念"></a>扩展安全性概念</h2><p>完整性要保证数据在信息系统中的准确性(accuracy)、完全性(completeness)、一致性(consistency)</p>
 <ul>
@@ -888,9 +742,10 @@
 </ul>
 <p>完整性需要保证整个系统运行是正确的。</p>
 <h1 id="0x04-显式流-Explicit-Flows-和隐藏信道-Covert-Channels"><a href="#0x04-显式流-Explicit-Flows-和隐藏信道-Covert-Channels" class="headerlink" title="0x04 显式流(Explicit Flows)和隐藏信道(Covert Channels)"></a>0x04 显式流(Explicit Flows)和隐藏信道(Covert Channels)</h1><p>该部分讨论了信息流中，信息的传播方式，所有的流都是显示传播的吗(沿数据流图传播)。 当然还有侧信道(隐藏信道)或者隐式流。</p>
-<p><img src="/debreach/image-20210118153545945.png" alt="image-20210118153545945"></p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045431.png" alt="image-20210118153545945"></p>
 <p>控制流可以被敏感信息影响， 通过控制流的方式去泄漏信息。</p>
-<p><img src="/debreach/image-20210118160246443.png" alt="image-20210118160246443"></p>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045440.png" alt="image-20210118160246443" style="zoom:50%;" />
+
 <p>以上例子是一些隐藏信道[6]。</p>
 <ul>
 <li><p>Implicit flows:  隐式流， 不是为了传递信息，仍然能够利用控制信息传递出敏感信息。</p>
@@ -902,17 +757,19 @@
 <li><p>Exceptions: 通过异常泄露数据</p>
 <p>…</p>
 </li>
-<li><p><img src="/debreach/image-20210118160625484.png" alt="image-20210118160625484"></p>
-</li>
+<li><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045448.png" alt="image-20210118160625484" style="zoom:50%;" /></li>
 </ul>
 <p>虽然隐式流比较难以发现， 但是隐藏信道泄露出的数据往往是有限的。</p>
 <h1 id="0x05-Taint-Analysis"><a href="#0x05-Taint-Analysis" class="headerlink" title="0x05 Taint Analysis"></a>0x05 Taint Analysis</h1><p>污点分析是目前大量使用的信息流安全问题的分析方法。</p>
 <p>思路：将数据分为两类， 其中将关注的一类数据打上标记，关注这些数据的传播。</p>
 <h2 id="source"><a href="#source" class="headerlink" title="source"></a>source</h2><p>污点数据的源头， 污点数据的来源往往是某些特定方法的返回值。</p>
 <h2 id="sink"><a href="#sink" class="headerlink" title="sink"></a>sink</h2><p>污点分析关心的是，从source打上标记的污点数据，是否会流向特殊的sink。</p>
-<p><img src="/debreach/image-20210118161205249.png" alt="image-20210118161205249"></p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045450.png" alt="image-20210118161205249"></p>
 <p>两个例子：</p>
-<p><img src="/debreach/image-20210118161501315.png" alt="image-20210118161501315"></p>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045553.png" alt="image-20210118161501315" style="zoom:50%;" />
+
+
+
 <h2 id="Taint-and-Pointer-Analysis-Together"><a href="#Taint-and-Pointer-Analysis-Together" class="headerlink" title="Taint and Pointer Analysis, Together"></a>Taint and Pointer Analysis, Together</h2><p>2017年的P&#x2F;Taint论文正式提出要将指针分析和污点分析结合起来[7]。</p>
 <p>污点分析本质上是追踪程序中的污点数据， 而指针分析的本质上是跟踪程序中的抽象对象如何在程序中流动。</p>
 <p>那么我们就可以看作一类问题：</p>
@@ -924,8 +781,7 @@
 <p>那么通过上下文不敏感指针分析为例，来改造成一个污点分析。</p>
 <h2 id="Define"><a href="#Define" class="headerlink" title="Define"></a>Define</h2><ol>
 <li><p>Domain: </p>
-<p><img src="/debreach/image-20210118162349114.png" alt="image-20210118162349114"></p>
-</li>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045501.png" alt="image-20210118162349114" style="zoom:50%;" /></li>
 </ol>
 <p>在指针分析的Domain(varibales, Fields, Objects)的基础上加入一类Tainted data。 （ti表示来自于程序中call site i中的数据）</p>
 <p>(可以右边图中看到原先指针分析中的All objects(堆上的object), 现在分为两类，tainted data也看作一个T字头的objects。。。)</p>
@@ -945,22 +801,28 @@
 </li>
 </ol>
 <h2 id="Rules"><a href="#Rules" class="headerlink" title="Rules"></a>Rules</h2><p> 污点分析借助指针分析做的，</p>
-<h1 id="0x06-使用Datalog实现污点分析操作"><a href="#0x06-使用Datalog实现污点分析操作" class="headerlink" title="0x06 使用Datalog实现污点分析操作"></a>0x06 使用Datalog实现污点分析操作</h1><h2 id="Datalog"><a href="#Datalog" class="headerlink" title="Datalog"></a>Datalog</h2><p><img src="/security/image-20210126115602820.png" alt="image-20210126115602820"></p>
+<h1 id="0x06-使用Datalog实现污点分析操作"><a href="#0x06-使用Datalog实现污点分析操作" class="headerlink" title="0x06 使用Datalog实现污点分析操作"></a>0x06 使用Datalog实现污点分析操作</h1><h2 id="Datalog"><a href="#Datalog" class="headerlink" title="Datalog"></a>Datalog</h2><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045547.png" alt="image-20210126115602820" style="zoom:50%;" />
+
 <p>简单说一下Datalog是一门逻辑声明式编程语言，他的操作元素是一系列的谓词(predicate)，为此中是一个一个的fact。最初输入的谓词叫做EDB, 而推出来的是IDB。而对于谓词逻辑推导叫做Rules，Rules左边是头部，通过一个一个的原子操作(包含relational和arithmetic)复合逻辑运算(逗号是与，还有或非)得到头部(头部可以是多个谓词)。</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">//  symbol declare</span><br><span class="line">.type P &lt;: symbol</span><br><span class="line">.type A &lt;: number</span><br><span class="line"></span><br><span class="line">// EDB predict</span><br><span class="line">.decl Age(person: P, age: A)</span><br><span class="line"></span><br><span class="line">// facts</span><br><span class="line">Age(&quot;Xiaoming&quot;, 18).</span><br><span class="line">Age(&quot;Xiaohong&quot;, 23).</span><br><span class="line">Age(&quot;Alan&quot;, 16).</span><br><span class="line">Age(&quot;Abao&quot;, 31).</span><br><span class="line"></span><br><span class="line">// IDB predict</span><br><span class="line">.decl Audlt(person: P, age: A) output</span><br><span class="line"></span><br><span class="line">// rules</span><br><span class="line">Audlt(person, age) :- Age(person, age), age&gt;=18.</span><br></pre></td></tr></table></figure>
 
 
 
 <p>上文就是使用souffle实现的图示的datalog关系，可以看到灰常的直观，那么他的输出IDB为：</p>
-<p><img src="/security/image-20210126120329197.png" alt="image-20210126120329197"></p>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045511.png" alt="image-20210126120329197" style="zoom:50%;" />
+
 <p>以为datalog支持谓词推出自己的facts(递归)， 因此支持很多复杂的操作， 如指针分析：</p>
-<p><img src="/security/image-20210126120426056.png" alt="image-20210126120426056"></p>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045538.png" alt="image-20210126120426056" style="zoom: 33%;" />
+
 <p>如上是一个简单的过程内指针分析, 它的推导出的内容：</p>
-<p><img src="/security/image-20210126120514215.png" alt="image-20210126120514215"></p>
-<p><img src="/security/image-20210126120520304.png" alt="image-20210126120520304"></p>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045531.png" alt="image-20210126120514215" style="zoom:33%;" />
+
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045534.png" alt="image-20210126120520304" style="zoom:50%;" />
+
 <p>看和表中是一毛一样。</p>
 <p>然后再演示一个过程间的：</p>
-<p><img src="/security/image-20210126141708850.png" alt="image-20210126141708850"></p>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045619.png" alt="image-20210126141708850" style="zoom:50%;" />
+
 <p>目标代码中，为了处理第五行里的call, 需要4个东西：</p>
 <ol>
 <li><p>Dispatch： </p>
@@ -987,12 +849,15 @@
 <p>EDB增加:</p>
 <p>MethodReturn(m:M, ret:V), 方法的return </p>
 <p>CallReturn(l:S, r:V), 接受返回值</p>
-<p><img src="/security/image-20210126170849123.png" alt="image-20210126170849123"></p>
-</li>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045623.png" alt="image-20210126170849123" style="zoom: 33%;" /></li>
 </ol>
 <p>污点分析还需要改点。</p>
-<p><img src="/security/image-20210126171038704.png" alt="image-20210126171038704"></p>
-<p><img src="/security/image-20210126171054264.png" alt="image-20210126171054264"></p>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045647.png" alt="image-20210126171038704" style="zoom:25%;" />
+
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045655.png" alt="image-20210126171054264" style="zoom: 33%;" />
+
+
+
 <h1 id="reference"><a href="#reference" class="headerlink" title="reference"></a>reference</h1><p>[1] A practical system needs both access and flow control to satisfy all security requirements. – D.Denning, 1976</p>
 <p>[2] Dorothy E.Denning and Peter J.Denning, “Certification of Programs for Secure Information Flow”. CACM 1977</p>
 <p>[3] Dorothy E.Denning, “A Lattice Model of Secure Information Flow”. CACM 1976</p>
@@ -1004,7 +869,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2021/01/15/security/" data-id="cl1dky4nd0014n7w51ldud3i5" data-title="安全性分析" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2021/01/15/security/" data-id="cl1ej4aiz00143bw5end6esl4" data-title="安全性分析" class="article-share-link">Share</a>
       
       
       
@@ -1046,7 +911,7 @@
 <p>71:45 Interprocedural Data-Flow Analysis</p>
 </blockquote>
 <h1 id="Problem-of-Intraprocedural-Analysis"><a href="#Problem-of-Intraprocedural-Analysis" class="headerlink" title="Problem of Intraprocedural Analysis"></a>Problem of Intraprocedural Analysis</h1><p>过程内的常量传播过于保守， 造成结果的不准确</p>
-<img src="cha/image-20210102095211276.png" alt="image-20210102095211276" style="zoom:40%;" />
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043605.png" alt="image-20210102095211276" style="zoom:40%;" />
 
 <p>如上所示，对于一个常量传播:</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> <span class="title function_">foo</span><span class="params">()</span> &#123;</span><br><span class="line">  <span class="type">int</span> <span class="variable">n</span> <span class="operator">=</span> ten();  <span class="comment">// 返回一个常量10</span></span><br><span class="line">  addOne(<span class="number">42</span>); <span class="comment">// 传出一个常量42</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">ten</span><span class="params">()</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="number">10</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">addOne</span><span class="params">(<span class="type">int</span> x)</span> &#123;</span><br><span class="line">  <span class="type">int</span> <span class="variable">y</span> <span class="operator">=</span> x + <span class="number">1</span>;  <span class="comment">// y值本程序中是确定的，但是只做过程内分析是不确定的。</span></span><br><span class="line">  <span class="keyword">return</span> y;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -1056,7 +921,7 @@
 <p>涉及到过程间方法调用的元素： 1. Call site(实参) 2. function decl(形参) 。</p>
 <p>实际上，在分析foo的时候n就是10, 在分析addOne的时候x就是42,y就是43，但是过程内分析的时候，是不知道过程外的信息的，因此这里就是NAC。</p>
 <p>在传统的过程内分析中，都是保守的假设(safe-approximation)。 </p>
-<img src="cha/image-20210102095421699.png" alt="image-20210102095421699" style="zoom:60%;" />
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043608.png" alt="image-20210102095421699" style="zoom:40%;" />
 
 <p>在过程间分析时，作为caller, foo就可以通过return边得到n的值。</p>
 <p>作为callee, addOne就可以通过call边得到x和y的值。(caller得return, callee得实参)。</p>
@@ -1068,19 +933,20 @@
 <li>IDFG（过程间数据流分析）</li>
 </ol>
 <h1 id="Call-Graph"><a href="#Call-Graph" class="headerlink" title="Call Graph"></a>Call Graph</h1><p>为了过程间分析， 引入了call graph。</p>
-<img src="cha/image-20210102100152715.png" alt="image-20210102100152715" style="zoom:20%;" />
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043620.png" alt="image-20210102100152715" style="zoom:20%;" />
 
 <blockquote>
 <p>本图foo函数作为caller，call了bar和baz, bar又调用了baz。</p>
 </blockquote>
 <p>重要程度不言而喻（要有过程间的控制流边，就先要建立call graph边那(所有跨函数分析的基础)）</p>
-<h2 id="构造CG"><a href="#构造CG" class="headerlink" title="构造CG"></a>构造CG</h2><img src="cha/image-20210102100255628.png" alt="image-20210102100255628" style="zoom:30%;" />
+<h2 id="构造CG"><a href="#构造CG" class="headerlink" title="构造CG"></a>构造CG</h2><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043623.png" alt="image-20210102100255628" style="zoom:30%;" />
 
 
 
 <p>蓝色为精度指标， 绿色为速度指标。 这里介绍CHA。</p>
 <p>首先看下java中函数调用方法。</p>
-<p><img src="/cha/image-20210102100409591.png" alt="image-20210102100409591"></p>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043628.png" alt="image-20210102100409591" style="zoom:30%;" />
+
 <ul>
 <li><p>static call: 静态调用（有点像非oo的function call）</p>
 </li>
@@ -1105,7 +971,7 @@
 </blockquote>
 <h2 id="Method-Dispatch-of-Virtual-Calls"><a href="#Method-Dispatch-of-Virtual-Calls" class="headerlink" title="Method Dispatch of Virtual Calls"></a>Method Dispatch of Virtual Calls</h2><p> 在处理virtual call中， 一个关键的步骤就是<code>method dispatch</code>。</p>
 <p>__Dispatch__在过程间分析中比较重要的一个概念。</p>
-<img src="cha/image-20210102101028005.png" alt="image-20210102101028005" style="zoom:30%;" />
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043639.png" alt="image-20210102101028005" style="zoom:30%;" />
 
 
 
@@ -1116,13 +982,15 @@
 </ol>
 <p>动态的时候去求解这个virtual call的过程也叫做<code>method dispatch</code></p>
 <p>通过一个signature可以确定唯一的一个方法：</p>
-<p><img src="/cha/image-20210102102131163.png" alt="image-20210102102131163"></p>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043644.png" alt="image-20210102102131163" style="zoom:20%;" />
+
 <ul>
 <li>Class type: 类名</li>
 <li>Method name: 方法名</li>
 <li>Descriptor： 由两部分构成： 1.返回值类型 2. 参数类型</li>
 </ul>
-<p><img src="/cha/image-20210102102936695.png" alt="image-20210102102936695"></p>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043658.png" alt="image-20210102102936695" style="zoom:25%;" />
+
 <p>定义一个函数Dispatch， 这个函数模拟了动态时dispatch一个virtual call的具体过程。他的输入就是c(receiver object 的类型)， m(call si te这一点方法的签名)。</p>
 <p>dispatch函数的目的是找到一个能够被调用的方法， 必须是一个具体的有方法体的方法，所以返回的必须是一个非抽象的方法。</p>
 <ol>
@@ -1131,15 +999,19 @@
 <li><p>如果c没有，就去找c的所有父类c’(注意，是找父类)，直到找到目标方法m’。</p>
 </li>
 </ol>
-<p><img src="/cha/image-20210102103447307.png" alt="image-20210102103447307"></p>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043701.png" alt="image-20210102103447307" style="zoom:33%;" />
+
 <p> 这个例子中有ABC三个类，如果dispatch中x.foo()这个call site的两个元素：1. x:  receiver object的具体类型是 B(因为它指向 new B()这个类), 2. Foo()这个call site的签名： &lt;B: void foo() &gt; 。所以首先回到B类中进行dispatch, B类中没有foo方法， 就去父类A中去找。</p>
 <p>y.foo()中就是C的foo方法, 因为他的dispatch函数中，c是receiver object 指向的new C() 类型， 而且内部有一个foo方法供m匹配上。</p>
-<h1 id="CHA-Class-Hierarchy-Analysis"><a href="#CHA-Class-Hierarchy-Analysis" class="headerlink" title="CHA(Class Hierarchy Analysis)"></a>CHA(Class Hierarchy Analysis)</h1><h2 id="Dispatch"><a href="#Dispatch" class="headerlink" title="Dispatch"></a>Dispatch</h2><p><img src="/cha/image-20210102105706369.png" alt="image-20210102105706369"></p>
+<h1 id="CHA-Class-Hierarchy-Analysis"><a href="#CHA-Class-Hierarchy-Analysis" class="headerlink" title="CHA(Class Hierarchy Analysis)"></a>CHA(Class Hierarchy Analysis)</h1><h2 id="Dispatch"><a href="#Dispatch" class="headerlink" title="Dispatch"></a>Dispatch</h2><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043711.png" alt="image-20210102105706369" style="zoom:25%;" />
+
 <p>CHA是用来解整个程序call graph的一方法， 他需要知道整个程序的class以及继承信息。 核心思想是对于一个virtual call， 基于这个virtual call的声明类型(不是recevier的具体类型)，以及receiver variable a。</p>
-<p><img src="/cha/image-20210102110314592.png" alt="image-20210102110314592"></p>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043718.png" alt="image-20210102110314592" style="zoom:25%;" />
+
 <p>核心思想是给定一个receiver variable a, 他可能会指向他的类型下的所有子类型(即本身)。</p>
 <p>来看CHA的算法：</p>
-<p><img src="/cha/image-20210103195541252.png" alt="image-20210103195541252"></p>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043722.png" alt="image-20210103195541252" style="zoom:25%;" />
+
 <p>CS： call site, 即调用点</p>
 <p>T:  target methods，返回的目标方法</p>
 <p>m: 目标方法的签名</p>
@@ -1151,20 +1023,22 @@
 <p>其中父类方法比较特殊，需要Dispatch(cm,m) cm指的是方法m的类型(不是声明类型，A c &#x3D; new C(), 从C类找)。</p>
 </li>
 <li><p>Virtual call: </p>
-<p><img src="/cha/image-20210103200229662.png" alt="image-20210103200229662"></p>
-</li>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043730.png" alt="image-20210103200229662" style="zoom:25%;" /></li>
 </ol>
 <p>注意这里不是唯一的了， 所以使add 目标调用点的声明类型开始找所有符合方法签名m的本类或子类中的c’。</p>
-<p><img src="/cha/image-20210103200405069.png" alt="image-20210103200405069"></p>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043736.png" alt="image-20210103200405069" style="zoom:25%;" />
+
 <p>注意三点：</p>
 <ol>
 <li>从本类以及子类中找所有的foo方法</li>
 <li>其中包含dispatch, 如果本类中没有foo, 回望父类中找，因此Resolve(b.foo())中B无foo(),因此dispatch到了A.foo()。</li>
 <li>和new B()无关(尽管new B()中不能调c.foo(), d.foo())，还是根据variable b的声明类(即B类)去找。</li>
 </ol>
-<h2 id="通过CHA构建Call-Graph"><a href="#通过CHA构建Call-Graph" class="headerlink" title="通过CHA构建Call Graph"></a>通过CHA构建Call Graph</h2><p><img src="/cha/image-20210103201000619.png" alt="image-20210103201000619"></p>
+<h2 id="通过CHA构建Call-Graph"><a href="#通过CHA构建Call-Graph" class="headerlink" title="通过CHA构建Call Graph"></a>通过CHA构建Call Graph</h2><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043743.png" alt="image-20210103201000619" style="zoom:25%;" />
+
 <p>从入口方法开始，没遇到一个可达方法，去解目标方法，得到新的方法后，再去解新的方法的可达方法。。。知道算法停止，得到call grap:</p>
-<p><img src="/cha/image-20210103201150287.png" alt="image-20210103201150287"></p>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043749.png" alt="image-20210103201150287" style="zoom:25%;" />
+
 <p>三个数据结构：</p>
 <ul>
 <li>WL: worklist , 需要被处理的目标方法， 开始只有入口方法。</li>
@@ -1173,23 +1047,31 @@
 </ul>
 <p>算法：</p>
 <p>一个大的While循环。以起初main方法为例，首先将main方法从worklist中取出来，如果main方法不在RM中说明没有分析过， 进入call graph分析过程， 从main方法中找到所有的call site, 对每一个call site进行单个call site结点的CHA resolve(cs)得到该call site所有可能的target method, 对于每一个target method m’, 将其在call graph中与main方法中对应的call site相连(cs-&gt;m’), 并将这些target method标记为可达method(add m’ to WL), 此时main方法加入到RM里了，之后不会再被重复分析。(每次分析的目标方法:remove m from WL, add m to RM)。</p>
-<p><img src="/cha/image-20210103202612835.png" alt="image-20210103202612835"></p>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043754.png" alt="image-20210103202612835" style="zoom:25%;" />
+
 <p>虚线是call graph其中C.m()并无调用关系。 此时WL&#x3D;[]，构造完成，其中橙色的是每一个需要分析的method, 从中去找每一个call site（如B.bar()这个函数体为空，因此无任何call site), 找到所有call site, 对每个call site进行CHA 的resolve，得到调用边放入(cg，即虚线关系)，新增加的method放入WL（如果和RM重复就不分析了，因为已经分析过了）。</p>
-<h1 id="Interprocedural-Contrl-Flow-Graph"><a href="#Interprocedural-Contrl-Flow-Graph" class="headerlink" title="Interprocedural Contrl-Flow Graph"></a>Interprocedural Contrl-Flow Graph</h1><p><img src="/cha/image-20210103203046532.png" alt="image-20210103203046532"></p>
+<h1 id="Interprocedural-Contrl-Flow-Graph"><a href="#Interprocedural-Contrl-Flow-Graph" class="headerlink" title="Interprocedural Contrl-Flow Graph"></a>Interprocedural Contrl-Flow Graph</h1><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043759.png" alt="image-20210103203046532" style="zoom:25%;" />
+
 <p>ICFG就是在过程内的CFG的过程加上一堆call site的调用边和返回边连接起来。</p>
-<p><img src="/cha/image-20210103203135345.png" alt="image-20210103203135345"></p>
-<p><img src="/cha/image-20210103210513165.png" alt="image-20210103210513165"></p>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043807.png" alt="image-20210103203135345" style="zoom:25%;" />
+
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043811.png" alt="image-20210103210513165" style="zoom:25%;" />
+
+
+
 <h1 id="Interprocedural-Data-Flow-Graph"><a href="#Interprocedural-Data-Flow-Graph" class="headerlink" title="Interprocedural Data-Flow Graph"></a>Interprocedural Data-Flow Graph</h1><p>在ICFG的基础上进行常量传播为例</p>
-<p><img src="/cha/image-20210103210615560.png" alt="image-20210103210615560"></p>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043822.png" alt="image-20210103210615560" style="zoom:25%;" />
+
 <p>这里的转移函数除了node上的， 还需要加上边上的x&#x3D;val(a)的参数传递以及b&#x3D;val(y)的return传递，而加上那一条实现边(黄色标注)是为了传播a中的常量，如果没有这条边a的内容就会从过程外传到c&#x3D;b-3这很不科学。</p>
-<p><img src="/cha/image-20210103211000777.png" alt="image-20210103211000777"></p>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043829.png" alt="image-20210103211000777" style="zoom:25%;" />
+
 <p>还有一点要注意就是，如下b&#x3D;ten()需要把b从过程内的常量传播中移除，这样b&#x3D;10传到下一条stmt，不然b&#x3D;7传下来的话就是NAC。</p>
 <p>O了。</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2021/01/02/cha/" data-id="cl1dky4n5000hn7w5hghc42x7" data-title="CHA" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2021/01/02/cha/" data-id="cl1ej4air000j3bw5b0qd2a3u" data-title="CHA" class="article-share-link">Share</a>
       
       
       
@@ -1355,10 +1237,414 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2020/12/06/loops/" data-id="cl1dky4n9000qn7w546lz5uzl" data-title="程序分析之Loops in Flow Graphs" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2020/12/06/loops/" data-id="cl1ej4aiu000q3bw58fe08jd3" data-title="程序分析之Loops in Flow Graphs" class="article-share-link">Share</a>
       
       
       
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-PHP-Static-Analysis-Theory" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2020/11/14/PHP-Static-Analysis-Theory/" class="article-date">
+  <time class="dt-published" datetime="2020-11-14T03:15:48.000Z" itemprop="datePublished">2020-11-14</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2020/11/14/PHP-Static-Analysis-Theory/">Static Detection of Security Vulnerabilities in Scripting Languages</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="Static-Detection-of-Security-Vulnerabilities-in-Scripting-Languages"><a href="#Static-Detection-of-Security-Vulnerabilities-in-Scripting-Languages" class="headerlink" title="Static Detection of Security Vulnerabilities in Scripting Languages"></a>Static Detection of Security Vulnerabilities in Scripting Languages</h1><p>本文为Stanford大学2005年发表的文章追本溯源，这个Yichen Xie和Alex Aiken团队似乎是PHP安全静态分析比较早的，那个时候，台大的Huang等的WebSSARI应该出来了； Livshits等的Pixy也在构建中。 这一篇理论性的东西比较多，都是在构建数学模型，有借鉴意义。 再拿来总结一下。</p>
+<p>本文提出的是一个PHP安全漏洞的静态分析算法， 他们提出了一种三层架构从块内，过程内， 过程间三个级别进行静态分析。 尝试解决脚本语言独有的一些的动态特性，如动态类型， 代码包含。</p>
+<h2 id="贡献"><a href="#贡献" class="headerlink" title="贡献"></a>贡献</h2><ul>
+<li><p>提出了一个对于PHP的过程间静态分析算法。 尝试解决一些动态语言特有的挑战， 如： 动态代码加载， 动态变量类型转化， pervasive use of hash tables and regular expression matching. </p>
+<p>如上所说， 本文的核心方法时提出了一种三层结构， 利用隔离处理，想上传播的思想。 在<code>intrablock</code>, <code>intraprocedural</code>, and <code>interprocedual </code>三个level上做文章。 如在每个BB（basic block）中， 作者尝试利用符号执行去model动态特征(dynamic features)， 然后将结果生成block summaries, 这些summaries供上层分析使用， 从而帮助我们hidden了下层内部的复杂结构。 </p>
+</li>
+<li><p>本文使用上述静态分析方法寻找SQL注入， 但是we believe that, with small modifications, the same techniques can be applied to detecting other vulnerabilities such as XSS and code injection in web applications.</p>
+</li>
+<li><p>本文experimentally validate our approach by implementing the analysisi algorithm and running it on 6 popular web application written in PHP. 找到了105个0day.</p>
+</li>
+</ul>
+<h2 id="Scripting-Language-Dynamic-Feautres"><a href="#Scripting-Language-Dynamic-Feautres" class="headerlink" title="Scripting Language Dynamic Feautres"></a>Scripting Language Dynamic Feautres</h2><p>每次遇到这个章节， 我都想总结一下:</p>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-130127.png" alt="image-20210711161321077 " style="zoom:40%;" />
+
+<p>如上例子， 作者对比了PHP与JAVA构造SQL语句时的不同，JAVA用的是prepared statements(当然PHP引入PDO后也是这样，但是int类型还是会出问题)。而PHP直接拼接字符串(<code>natural integration</code>)。</p>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-130130.png" alt="image-20210711161557125" style="zoom:40%;" />
+
+<p><code>implicit casting</code>  主要涉及到字符串,这种web app中最常见的输入。 在代码中常常做出各种诡异的转化。</p>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-130134.png" alt="image-20210711161827521" style="zoom:40%;" />
+
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-130136.png" alt="image-20210711162140830" style="zoom:40%;" />  
+
+
+
+<p>如使用，<code>extract</code>会根据参数讲数组的键值映射成变量，(这一块没太看清楚,可能就是讲extract这种函数动态向符号表引入变量)。</p>
+<h2 id="ANALYSIS"><a href="#ANALYSIS" class="headerlink" title="ANALYSIS"></a>ANALYSIS</h2><p>本文主要的贡献是还是一些理论上的形式化分析， 没有看到工程上的东西。</p>
+<h3 id="步骤："><a href="#步骤：" class="headerlink" title="步骤："></a>步骤：</h3><ol>
+<li>生成AST</li>
+</ol>
+<p>AST:  将PHP解析成抽象语法树(用的PHP5.0.5)， 还是以文件为单位的， 将文件中无封装的无的语句作为main function, 每一个文件有一个main, 0-N个user-defined function, 分析从main function开始。</p>
+<ol start="2">
+<li>建BB，建CFG</li>
+</ol>
+<p>分析文件中的每个function的ast。 划分BB,本文用的粒度是<code>single entry, single exit sequences of tatements</code>(看到还有以单条statement为粒度的)。然后构建CFG，遇到conditional jumps在CFG edge上label branch predicate。</p>
+<ol start="3">
+<li><p>Simulated using Symbol execution</p>
+<p>对每一个基本块， 作者使用了动态特性去理解块中的每一条statement对global state of the program所带来的影响，并将这些信息记录成summary。</p>
+</li>
+<li><p>Reachability analysis</p>
+<p>即数据流的可达性分析， 建立在构造好summaries的块之上，combine <code>block summaries</code> into a <code>function summary</code> , 此时function summary建立了(即第二层)，每个<code>function summary</code> 描述了<code>pre- and post-conditions of a function</code></p>
+</li>
+<li><p>处理calls</p>
+<p>在function内做可达性分析时， 难免会遇到其他过程的调用，此时需cover。</p>
+</li>
+</ol>
+<p>具体来看：</p>
+<h2 id="1-Simulate-Basic"><a href="#1-Simulate-Basic" class="headerlink" title="1. Simulate Basic"></a>1. Simulate Basic</h2><p>在语言建模的基础上，完成转化，生成每个块的summary（BlockSummary）</p>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-130155.png" alt="image-20201114140707691 " style="zoom:50%;" />
+
+<p>这个总的算法，输入为一个基本块，初始一个<code>state</code> 用来初始化块中变量状态(<code>x</code>-&gt;<code>x0</code>) 。 并在循环中迭代更新状态，如果遇到return和exit，则为出口；end block（迭代完成）也为出口，过程间分析时遇到<code>exit</code>也为出口。用每一个基本块的simulate后的state做一个summary, 然后返回这个块的summary。</p>
+<p><code>intra-block simulation</code>的关键 问题就是在于如何simulate state， 以下讨论<code>simulation process</code>:</p>
+<h2 id="Language：-先对语言进行建模"><a href="#Language：-先对语言进行建模" class="headerlink" title="Language： 先对语言进行建模"></a>Language： 先对语言进行建模</h2><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-130158.png" alt="image-20201114142327873 " style="zoom:50%;" />
+
+
+
+<p>在此作者根据需求， 对PHP语言进行建模， 形成了一个子集：</p>
+<ol>
+<li><p>变量值类型(Value Type): 字符，布尔，数组，静态无法确认的数据(如形参) </p>
+</li>
+<li><p>常量值类型(Constant): 字符串，数字，true, false, null</p>
+</li>
+<li><p>L-val(location value)，这里有variable x, 实参，array </p>
+</li>
+<li><p>表达式(Expression)：常量表达式，变量表达式， 二元操作表达式， 一元操作表达式， 表达式类型转化。 </p>
+</li>
+<li><p>语句(Statement):  赋值语句(表达式运算)，赋值语句(过程调用) ，返回值语句return, 退出语句exit，包含语句include。</p>
+<p>其中提到了，include这种statement是scripting language所特有的(which allows prorammers to dynamically insert code into the program)。</p>
+</li>
+</ol>
+<h2 id="Simulation-State-Memory-Location-gt-Value"><a href="#Simulation-State-Memory-Location-gt-Value" class="headerlink" title="Simulation State(Memory Location -&gt; Value)"></a>Simulation State(Memory Location -&gt; Value)</h2><p><code>Simulation State</code> 是一个映射， 此映射: Memory Location-&gt;their value representations, 此处的<code>memory location</code> 指的是一个<code>program variable</code>(e.g., x), 或者<code>a hash table accessed via another location</code>（e.g. x[key]).</p>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-130211.png" alt="image-20210713163228163" style="zoom:50%;" />
+
+<blockquote>
+<p>The simulation state maps memory locations to their value representations</p>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-130214.png" alt="image-20210715164509813" style="zoom:50%;" />
+</blockquote>
+<p>图(a)是完整的表述。这一段就是形成一个Location到value的映射。</p>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-130217.png" alt="image-20201114145427950 " style="zoom:50%;" />
+
+<p>在开始分析的时候， Loc会被初始化为一个<code>L0</code>, 组成了simulation的初始状态集合。然后迭代value， 这里的value分为三类，具体看图(a)中的value representation部分，可以表示为三类分别是(String, Boolean和Integer)。</p>
+<ul>
+<li><p>String:</p>
+<p>String是最基本的类型，也是我们关注的类型。modeling string 的精确程度，直接影响了分析的精确性。</p>
+<p>作者认为，<code>modeling concatenation well enables an analysis to better understand information flow in a script</code>. 举例子来说，就像用户输入的GET, POST会拿来拼接SQL语句，SQL查询结果又会拼接到HTML中， 这是常见的动态web操作。因此，作者将<code>string values are represented as an ordered concatenation of string segments,.</code></p>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-130220.png" alt="image-20210713162322867" style="zoom:67%;" />
+</li>
+<li><p>Boolean:</p>
+</li>
+<li><p>Integer:</p>
+<p>Support track integer constants and binary and unary operations between them. We also support type cast from integers to Boolean and string values.</p>
+</li>
+</ul>
+<h3 id="Locations和L-val转化规则"><a href="#Locations和L-val转化规则" class="headerlink" title="Locations和L-val转化规则"></a>Locations和L-val转化规则</h3><p>这里在解释L-val, 首先看模型：</p>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-130223.png" alt="image-20201114152059860 " style="zoom:50%;" />
+
+<p>如上面对Lv的规则的定义， var, arg,dim三种(注意当时的文章都不考虑OO)。</p>
+<p>看下边这个例子：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$hash</span> = <span class="variable">$_POST</span>; <span class="comment">//$_POST这个hash table赋给$hash</span></span><br><span class="line"><span class="variable">$key</span> = <span class="string">&quot;user&quot;</span>; <span class="comment">//常量赋值</span></span><br><span class="line"><span class="variable">$userid</span> = <span class="variable">$hash</span>[<span class="variable">$key</span>]; </span><br></pre></td></tr></table></figure>
+
+<p>分析这段代码， 首先看初始状态</p>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-130227.png" alt="image-20201114152915770 " style="zoom:50%;" />
+
+<p>我们让每一个符号指向一个初始状态。然后根据上边的规则定义， 根据var的规则处理前两条：</p>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-130231.png" alt="image-20201114153406937 " style="zoom:50%;" />
+
+<p>他们都指向了一个unique location。</p>
+<p>第三条来用dim的规则定义处理。此时根据横线上方两条条件规则(e是名e’是键)，分别映射到_POST0和[‘userid’]那么他将映射到L[阿尔法]中， 即_POST[userid]0。</p>
+<hr>
+<h3 id="Exp转化规则"><a href="#Exp转化规则" class="headerlink" title="Exp转化规则"></a>Exp转化规则</h3><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-130234.png" alt="image-20201114154757715 " style="zoom:50%;" />
+
+<p>因为脚本语言是一种动态类型， 在运行解释器会选择当前运算最适合的规则(弱类型)。那么就带了了类型转化问题。</p>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-130236.png" alt="image-20201114154900851 " style="zoom:50%;" />
+
+
+
+
+
+<hr>
+<h3 id="Statements转化规则"><a href="#Statements转化规则" class="headerlink" title="Statements转化规则"></a>Statements转化规则</h3><p>赋值有两种： 表达式计算赋值，和过程间调用赋值。 先看表达式计算如何被model:</p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-130240.png" alt="image-20210715171024725"></p>
+<p>Assignment rule：</p>
+<ol>
+<li>resolves the left-hand side into a memory location l. (上式lv&#x3D;&gt;l)</li>
+<li>evaluates the right-hand side into a value v.(上式e&#x3D;&gt;v)</li>
+</ol>
+<p>然后根据rule update the simulation state after the assignment maps <code>l</code> to the new value <code>v</code>。 </p>
+<hr>
+<h3 id="Block-summary"><a href="#Block-summary" class="headerlink" title="Block summary"></a>Block summary</h3><p>经过以上的转化后， 将块内信息转化为block summary，一个块summary是由六元组组成:</p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-130243.png" alt="image-20210719203339317"></p>
+<ul>
+<li><p>Error set: 在进入BB时，每一个variables必须是sanitized的状态。</p>
+</li>
+<li><p>Definitions: the set of memory locations defined in the current block. </p>
+</li>
+<li><p>Value flow:  the set of pairs of locations (l1, l2), l1 on the entry becomes a substring of l2 on exit.</p>
+</li>
+<li><p>Termination predicate: 块中是否含有程序终结, true if the current block contains a exit statement, or if it calls a function that causes the progmra to terminate.</p>
+</li>
+<li><p>Return value:  返回值， records the representation for the return value if any, undefined otherwise. </p>
+</li>
+<li><p>Untaint set:  向每个后继块传递当前的未过滤变量集合(由于有分支的存在，故每一个后继得到的summary可能不同)</p>
+</li>
+</ul>
+<h3 id="Intraprocedural-Analysis"><a href="#Intraprocedural-Analysis" class="headerlink" title="Intraprocedural Analysis"></a>Intraprocedural Analysis</h3><p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-130248.png" alt="image-20210719204831765"></p>
+<p>一个过程内的抽象，是基于他的块抽象的：</p>
+<ul>
+<li>Error set: the set of <code>memory locations(variables, parameters, and hash access)</code>, 因为查的是SQL注入， 所以当其中一个memory locations的value流入database query时， 必须有记录他被sanitized了,否则error</li>
+<li>Return set:  the set of parameters or global variables 进入了return value（only string）</li>
+<li>Sanitized values:  the set of parameters or global variables,使用前向数据流可达性分析来探测被过滤输入流入每一个包含return的块。</li>
+<li>Program Exit:  一个指明当前function是否退出程序， 穷举所有CFG可达块。  如果没有return, 此程序就是一个exit function(也不一定，有的分支执行到最后就默认返回null了)</li>
+</ul>
+<h3 id="Interprocedural-Analysis"><a href="#Interprocedural-Analysis" class="headerlink" title="Interprocedural Analysis"></a>Interprocedural Analysis</h3><p>本文的分层次污点分析的最高层， interprocedural层。分析intra的summary, 对于每一个function call点， f(e1…en)分析一下四个方面：</p>
+<ul>
+<li><p>Pre-conditions:  使用error set 证明the set of parameters and global variables在进入该过程时都是安全的</p>
+</li>
+<li><p>Exit condition:  如果进入了一个exit function, 就将之后所有的stmt删除。</p>
+</li>
+<li><p>Post-conditions:  </p>
+</li>
+<li><p>Return value:  </p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-130251.png" alt="image-20210719210926117"></p>
+</li>
+</ul>
+<p><img src="/PHP-Static-Analysis-Theory/image-20210719210938703.png" alt="image-20210719210938703"></p>
+<h2 id="ExPERIMENTAL-RESULTS"><a href="#ExPERIMENTAL-RESULTS" class="headerlink" title="ExPERIMENTAL RESULTS"></a>ExPERIMENTAL RESULTS</h2><p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-130253.png" alt="image-20210719211022777"></p>
+<p>没有 False Positive, 确定没有误报？</p>
+<h2 id="CASE-STUDY"><a href="#CASE-STUDY" class="headerlink" title="CASE STUDY"></a>CASE STUDY</h2><p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-130258.png" alt="image-20210719211058506"></p>
+<p>但是我并没有看到具体的符号执行啊。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2020/11/14/PHP-Static-Analysis-Theory/" data-id="cl1ej4ain00093bw55fh9b2e1" data-title="Static Detection of Security Vulnerabilities in Scripting Languages" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/paper/" rel="tag">paper</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-NDSS-14-RIPS" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2020/11/01/NDSS-14-RIPS/" class="article-date">
+  <time class="dt-published" datetime="2020-11-01T07:24:12.000Z" itemprop="datePublished">2020-11-01</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2020/11/01/NDSS-14-RIPS/">Simulation of Built-in PHP Feature for Precise Static Code Analysis</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>文章题目： Simulation of Built-in PHP Feature for Precise Static Code Analysis.</p>
+<p>作者： Johannes Dahse &amp; Toorstem Holz</p>
+<p>RIPS研究PHP静态分析几乎绕不开的工具， 一是选择的时间点好，2014年左右PHP还是比较火的。二是工具确实不多。 这篇文章发了14年的NDSS，还是有些东西值得借鉴的。</p>
+<h2 id="技术背景"><a href="#技术背景" class="headerlink" title="技术背景"></a>技术背景</h2><p>首先， 作者在技术背景部分分析了一些PHP这种highly dynamic lanuage的痛点。</p>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125738.png" alt="image-20201101153514155" style="zoom: 25%;" />
+
+<ul>
+<li><p>1） 动态类型&#x2F;弱类型</p>
+<p>脚本语言在变量声明时不用声明类型的确给静态分析带来不少麻烦，而动态类型指的是在运行时类型是可以变得(its variables are not bound to a specific data type).</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$var1</span> = <span class="number">1</span>; <span class="variable">$var2</span> = <span class="string">&#x27;test&#x27;</span>;</span><br><span class="line"><span class="variable">$var2</span> = <span class="variable">$var1</span> + <span class="variable">$var2</span>; <span class="comment">//1 </span></span><br></pre></td></tr></table></figure>
+
+
+</li>
+<li><ol start="2">
+<li>variable Variables</li>
+</ol>
+<p>这个貌似是PHP独有的，叫$$特性？</p>
+ <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$name</span> = <span class="string">&quot;x&quot;</span>;</span><br><span class="line"><span class="variable">$x</span> = <span class="string">&quot;test&quot;</span>;</span><br><span class="line"><span class="keyword">echo</span> <span class="variable">$$name</span>; <span class="comment">//test</span></span><br><span class="line"><span class="variable">$y</span> = $&#123;<span class="title function_ invoke__">getVar</span>()&#125;; <span class="comment">//变量名可以是一个表达式ZZ</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><ol start="3">
+<li><p>Dynamic Arrays</p>
+<p>动态数组，PHP的数组是hash table实现的。可以存任何不同的数据类型，而且在初始化的时候key值可以省略在运行时指定。</p>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125750.png" alt="image-20201101154933544" style="zoom: 50%;" /></li>
+</ol>
+</li>
+</ul>
+<p>注意这里新添加的自动索引了6, 神不神奇？会按照“4”开始算，把”4”改成”664”就是’e’的索引就是666。（还是说脚本语言的不规范性）</p>
+<ul>
+<li><ol start="4">
+<li><p>Dynamic Constants</p>
+<p>通过define()在于形式动态定一个常量， 通过constant()运行时访问。</p>
+</li>
+</ol>
+</li>
+<li><ol start="5">
+<li>Dynamic Function</li>
+</ol>
+<p>function动态调用， 这个说的就太多了。</p>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125752.png" alt="image-20201101155917397" style="zoom:50%;" /></li>
+</ul>
+<p>第2行向我们讲述了， 不仅变量名可以是表达式， 方法名也可以是表达式； 第三行是一个回调函数，在动态的时候才知道执行啥。另外，还有<code>fun_get_arg()</code>和<code>func_get_args()</code>在运行时动态从call site拿参数; <code>create_function()</code>动态创建一个方法体org。</p>
+<ul>
+<li><ol start="6">
+<li><p>Dynamic Code </p>
+<p>动态执行代码， 通过<code>eval</code>, <code>assert</code>，小马常用到。这些代码在动态运行时才能知道， 给静态分析增加了难度。</p>
+</li>
+</ol>
+</li>
+<li><ol start="7">
+<li><p>Dynamic includes </p>
+<p>这个吐糟也比较多， 大型PHP项目尝尝被分割成若干文件和目录，他们的拼接为静态分析也增加了难度。类似<code>include</code>，使用这种操作，将文件中的代码返回到include处。尤其是现在又加了惰性加载机制。autoload()这种在静态分析目前只有猜了。</p>
+</li>
+</ol>
+</li>
+<li><ol start="8">
+<li>Built-in Functinos</li>
+</ol>
+<p>   本文关注和要解决的主要challenge。不像Java, PHP的内建函数都是用C写的， 在ZEND执行时调用。大约有228个扩展5701个内建函数， 他们在静态分析PHP代码时无法被hook到，这就导致了分析的不精确。</p>
+</li>
+</ul>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125756.png" alt="image-20201101162437988" style="zoom:50%;" />
+
+<p>如图，第二个位置月份可以是字符型， 这里如果要能探测到XSS就要对list(), printf()进行精确建模。</p>
+<ul>
+<li><ol start="9">
+<li><p>Superglobals</p>
+<p> 我们的超全局变量， 需要精确的标明哪些可控。开发者经常忽略FILES和SERVER的安全性。</p>
+</li>
+</ol>
+</li>
+</ul>
+<h2 id="方法设计"><a href="#方法设计" class="headerlink" title="方法设计"></a>方法设计</h2><h3 id="纵览"><a href="#纵览" class="headerlink" title="纵览"></a>纵览</h3><ol>
+<li><p>还是文件为单位， 首相将散乱在文件中的代码解析成main AST(脚本语言通常没有main方法做入口)， 然后将user-defined function们收集起来， 将函数名， 参数等信息存入分析环境， 然后将其函数体构建成separate AST独立于main AST。</p>
+</li>
+<li><p>有了 AST， 下一步构建CFG(控制流图)， 分析AST如果发现<code>conditional jump</code> ,  就开辟一个新的基本块(<code>basic block</code>);并使用<code>basic edge</code>相连接。</p>
+</li>
+<li><p>有了CFG， 下一步构建PDG(数据依赖图)咯， 以基本块为单位，每当一个BB产生， 就分析一下他的<code>adta flow</code> 。</p>
+</li>
+<li><p>实现Intra(过程内)和Inter(过程间)分析，当遇到<code>call site</code> 就在环境中找到该方法名并进入其AST进行分析，从而实现<code>inter</code>能力。</p>
+</li>
+<li><p>实现污点分析。</p>
+</li>
+</ol>
+<p>(说的挺复杂，开源版的RIPS的基础分析能力还是以分析tokens流并以各种数据结构辅助追踪为主)</p>
+<h2 id="创新点"><a href="#创新点" class="headerlink" title="创新点"></a>创新点</h2><p>那么本paper novel在什么地方呢：</p>
+<ul>
+<li>在污点分析时添加了sanitization tags来表明数据被过滤</li>
+<li>为952个内建方法建模，从而更精准的把控整个分析流的变化</li>
+<li>在处理include file时，当作functions来处理，而不是直接加入到当前CFG，防止重复分析, 减少开销</li>
+<li>根据基本块边来总结他们之间的sanitization影响</li>
+<li>实现了后向污点分析，每一个基本块的分析结果，cache到一个变量里。</li>
+<li>使用上下文敏感字符分析(context-sensitive stirng analysis)来精炼污点分析结果，基于当前环境。</li>
+</ul>
+<h2 id="CFGBuilder"><a href="#CFGBuilder" class="headerlink" title="CFGBuilder"></a>CFGBuilder</h2><p>要构建一个CFG, 先定义statements, 划分基本块。</p>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125759.png" alt="image-20201102203138487" style="zoom:50%;" />
+
+<p>这里作者定义了几种划分基本块的stmt， 配合算法：  </p>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125801.png" alt="image-20201102203339071" style="zoom:50%;" />
+
+<p> 中间的循环AST上的每一个点，如果遇到四种stmt的情况。 </p>
+<ul>
+<li><p>JSTMT, 遇到IF, Switch, Try, Ternary, LogicalOr（后两个没见过）， 就递归分析每个分支下的基本块。将入口条件加到基本块头。</p>
+</li>
+<li><p>LSTMT, 生成循环基本块</p>
+</li>
+<li><p>SSTMT, 停止，基本块下的stmts不可达</p>
+</li>
+<li><p>RSTMT, return,到达return或者是探测到程序退出，就不和下一个基本块建立连接。</p>
+<p>这里增量在<code>simluate()</code>方法上，来看。</p>
+</li>
+</ul>
+<h2 id="simulating-Basic-Blocks"><a href="#simulating-Basic-Blocks" class="headerlink" title="simulating Basic Blocks"></a>simulating Basic Blocks</h2><p>静态分析能干的事，就是编译器或者解释器能干的事。 RIPS为获取基本块内的data flow, 在控制流的基础上进行所谓的simulating，实现simulating:</p>
+<ol>
+<li>制定symbols:   值-val, 变量名-varibale, 常量-constant, 数组-ArrayDimFetch… 每一个symbol都会有几个状态(type, encoding, sanitization)，通过观察状态变化做到对类型，编码以及sanitize的敏感。</li>
+</ol>
+<p>2）Block Summary: 此过程就是将制定的符号集在块中使用进行后向追踪。生成一些块属性(block Summary):</p>
+<pre><code>  * DataFlow - 记录变量/数组的assign
+  * Constants - 记录常量的assign
+  * GlobalDefines - 记录名称，加入global scope
+  * ReturnValue - 记录块中的返回值(每个块一个返回， return和exit后的代码丢弃)
+  * registerGlobals - 记录使用extract()或者import_request_varibales()注册变量
+</code></pre>
+<p>在每个块的后向data flow分析后记录以上内容， 生成block summary.</p>
+<ol start="3">
+<li><p>Data Flow Analysis</p>
+</li>
+<li><p>Simulating Includes and Dynamic Code： php 的includes是一个动态表达式，通过路径去找，找到加入，若无正则匹配。eval同理。</p>
+</li>
+<li><p>Simulating Built-in Functions:</p>
+</li>
+</ol>
+<p>​     本文重点。 对621个内建函数进行数据流建模， configured name and effected parameters. 分类如下：</p>
+<ul>
+<li>Alphanumeric(284):  返回值只有字母数字组成的，effectively sanitize. 如: md5(), strlen()</li>
+<li>Argument(122): 原样返回实参或部分的, 如： trim(), strrev()</li>
+<li>escape(20): mysql_real_escap_string()这种， 遇到将symbol中的sanitization属性打上SQLI_SQ 和 SQLI_DO标签(如果没遇到就SQLI_NQ)</li>
+<li>Substring(6): substr(), chunk_split()这种，返回实参字串的。 </li>
+<li>Encode(18):  urlencode(), base64_encode() …</li>
+<li>Decode(25): urldecode(), base64_decode()…</li>
+<li>Callbacks(51): 回调函数，如果调用函数名事字符串，就调用分析。如果是变量，正则猜测。</li>
+</ul>
+<h2 id="Intra-produral-Analysis"><a href="#Intra-produral-Analysis" class="headerlink" title="Intra-produral Analysis"></a>Intra-produral Analysis</h2><p>实现intra</p>
+<h2 id="Inter-procedural-Analysis"><a href="#Inter-procedural-Analysis" class="headerlink" title="Inter-procedural Analysis"></a>Inter-procedural Analysis</h2><p>实现inter</p>
+<h2 id="Simluating-Block-Edges"><a href="#Simluating-Block-Edges" class="headerlink" title="Simluating Block Edges"></a>Simluating Block Edges</h2><p>块与块之间的simluating, 考虑validation的情况</p>
+<ul>
+<li>operators(6): isset(), empty()…</li>
+<li>Type  checks(21): is_numeric()…</li>
+<li>File checks(11): is_file()…</li>
+<li>Whitelists(3): array_search()</li>
+<li>Regex(8): 正则</li>
+</ul>
+<p>（原来validatation的情况可以放到块与块间，这样就和sanitization的情况分开来去了）。</p>
+<h2 id="Taint-Analysis"><a href="#Taint-Analysis" class="headerlink" title="Taint Analysis"></a>Taint Analysis</h2><p>污点分析探测漏洞的过程略。:&gt;</p>
+<h2 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h2><p>之前看这篇觉得没啥东西， 仔细分析来东西还是挺多的， 毕竟顶会。</p>
+<p>他几乎把所有语言特性层和面向过程层的东西讲到了， 缺少OO层的分析，也是后来不上人针对发文的。</p>
+<p>(为什么看起来这么高大上的东西开源版本用起来和…一样)</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2020/11/01/NDSS-14-RIPS/" data-id="cl1ej4aik00053bw5b3r97g8w" data-title="Simulation of Built-in PHP Feature for Precise Static Code Analysis" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/paper/" rel="tag">paper</a></li></ul>
+
     </footer>
   </div>
   
