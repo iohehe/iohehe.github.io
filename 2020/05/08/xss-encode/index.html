@@ -6,18 +6,18 @@
   
   <title>XSS编码 | Penlab</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="description" content="对xss编码的思考：  一段文本输入，不是字符串就是代码。代码之所以为代码，是因为解析器认识他。  ​     ​    以后端以PHP为例，常用的编码方式是htmlspecialchars($str)，这种方式会将”,&lt;,&gt;等转化成html实体编码，对于PHP来说这是一个文本替换处理。但是输送到了浏览器端，需要解析渲染他，html解析器会将将其转化为实体，就是真的是输出这个符号，而不">
+  <meta name="description" content="对xss编码的思考：  一段文本输入，不是字符串就是代码。代码之所以为代码，是因为解析器认识他。  ​ ​ 以后端以PHP为例，常用的编码方式是htmlspecialchars($str)，这种方式会将&quot;,&lt;,&gt;等转化成html实体编码，对于PHP来说这是一个文本替换处理。但是输送到了浏览器端，需要解析渲染他，html解析器会将将其转化为实体，就是真的是输出这个符号，而不是解析成htm">
 <meta property="og:type" content="article">
 <meta property="og:title" content="XSS编码">
 <meta property="og:url" content="http://example.com/2020/05/08/xss-encode/index.html">
 <meta property="og:site_name" content="Penlab">
-<meta property="og:description" content="对xss编码的思考：  一段文本输入，不是字符串就是代码。代码之所以为代码，是因为解析器认识他。  ​     ​    以后端以PHP为例，常用的编码方式是htmlspecialchars($str)，这种方式会将”,&lt;,&gt;等转化成html实体编码，对于PHP来说这是一个文本替换处理。但是输送到了浏览器端，需要解析渲染他，html解析器会将将其转化为实体，就是真的是输出这个符号，而不">
+<meta property="og:description" content="对xss编码的思考：  一段文本输入，不是字符串就是代码。代码之所以为代码，是因为解析器认识他。  ​ ​ 以后端以PHP为例，常用的编码方式是htmlspecialchars($str)，这种方式会将&quot;,&lt;,&gt;等转化成html实体编码，对于PHP来说这是一个文本替换处理。但是输送到了浏览器端，需要解析渲染他，html解析器会将将其转化为实体，就是真的是输出这个符号，而不是解析成htm">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125312.png">
 <meta property="og:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125316.png">
 <meta property="og:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125320.png">
 <meta property="og:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125322.png">
-<meta property="og:image" content="http://example.com/xss-encode/%E6%88%AA%E5%B1%8F2020-05-09%20%E4%B8%8B%E5%8D%884.27.11.png">
+<meta property="og:image" content="http://example.com/2020/05/08/xss-encode/xss-encode/%E6%88%AA%E5%B1%8F2020-05-09%20%E4%B8%8B%E5%8D%884.27.11.png">
 <meta property="article:published_time" content="2020-05-08T09:53:18.000Z">
 <meta property="article:modified_time" content="2022-03-30T12:53:25.872Z">
 <meta property="article:author" content="iohex">
@@ -109,30 +109,42 @@
 <blockquote>
 <p>一段文本输入，不是字符串就是代码。代码之所以为代码，是因为解析器认识他。</p>
 </blockquote>
-<p>​    </p>
-<p>​    以后端以PHP为例，常用的编码方式是<code>htmlspecialchars($str)</code>，这种方式会将”,&lt;,&gt;等转化成html实体编码，对于PHP来说这是一个文本替换处理。但是输送到了浏览器端，需要解析渲染他，html解析器会将将其转化为<code>实体</code>，就是真的是输出这个符号，而不是解析成html标签。解析器也不会为此发生状态变化。所以一段输入的内容被当作代码执行的关键点就是，关键词能够被解析，即能让解析器发生状态转移。而xss能够触发，需要转移到一个能够调用js解析器的状态。</p>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125312.png" alt="截屏2020-05-09 下午12.03.29"></p>
-<p>​    这里的html解析器，让状态机从<code>data</code>转移到<code>tag open</code>所consume的”&lt;”是真正的”&lt;”而不是”&amp;lt;”，所以这时如果有，<code>&lt;a href=&quot;javascrpt: alert(1)&gt;click&lt;/a&gt;</code> 这句话中js被解释的地方显然是javascript:{}中，这个地方如何处理的呢？ 首先看html是否解析他。</p>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125316.png" alt="截屏2020-05-09 下午2.54.38"> </p>
+<p>​</p>
+<p>​ 以后端以PHP为例，常用的编码方式是<code>htmlspecialchars($str)</code>，这种方式会将",&lt;,&gt;等转化成html实体编码，对于PHP来说这是一个文本替换处理。但是输送到了浏览器端，需要解析渲染他，html解析器会将将其转化为<code>实体</code>，就是真的是输出这个符号，而不是解析成html标签。解析器也不会为此发生状态变化。所以一段输入的内容被当作代码执行的关键点就是，关键词能够被解析，即能让解析器发生状态转移。而xss能够触发，需要转移到一个能够调用js解析器的状态。</p>
+<figure>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125312.png" alt="截屏2020-05-09 下午12.03.29" /><figcaption aria-hidden="true">截屏2020-05-09 下午12.03.29</figcaption>
+</figure>
+<p>​ 这里的html解析器，让状态机从<code>data</code>转移到<code>tag open</code>所consume的"&lt;"是真正的"&lt;"而不是"&amp;lt;"，所以这时如果有，<code>&lt;a href="javascrpt: alert(1)&gt;click&lt;/a&gt;</code> 这句话中js被解释的地方显然是javascript:{}中，这个地方如何处理的呢？ 首先看html是否解析他。</p>
+<figure>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125316.png" alt="截屏2020-05-09 下午2.54.38" /><figcaption aria-hidden="true">截屏2020-05-09 下午2.54.38</figcaption>
+</figure>
 <p>将<code>t</code>编码成<code>&amp;#x74;</code>。</p>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125320.png" alt="截屏2020-05-09 下午2.56.52"></p>
-<p>​    我们看到解析了，成为了<code>alert(1)</code>，点击也可以执行。为什么可以执行，在js被调用解析之前，字符<code>&amp;#x74</code>已经被html解析器解析了，翻译成了<code>t</code>，html解析器知道这个<code>t </code>是实体，不做状态转化。但是js解析器处理起来，没有区别。在js解析器的落点里，我们同样可以用js认识的编码规则。可以使用unicode编码，甚至js内部函数。</p>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125322.png" alt="截屏2020-05-09 下午3.11.38"></p>
-<p>​    虽然在解析中，也需要遵循解析器本身的规则。如括号，引号等被unicode编码了就不解析(详见参考2)。url解析器也同样的，在<code>&lt;a href=&#123;&#125;&gt;</code>中，因为是一个资源加在动作，所以可以触发url解析器。在url解析器规则中，包含<code>协议名:</code> 不能使用url编码。因此此处不可以将<code>javascript:</code>进行url编码，但是可以html编码。</p>
-<p>​     结合<code>HTML</code>, <code>URL</code>,<code>Javascript</code>三者的解析顺序、编码集、以及编码规则。根据我们输入的落点环境情况，就能够构造出可以”召唤”js解析器不能够绕过安全防护的payload。</p>
-<h2 id="CASE"><a href="#CASE" class="headerlink" title="CASE"></a>CASE</h2><p><img src="/xss-encode/%E6%88%AA%E5%B1%8F2020-05-09%20%E4%B8%8B%E5%8D%884.27.11.png" alt="截屏2020-05-09 下午4.27.11"></p>
+<figure>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125320.png" alt="截屏2020-05-09 下午2.56.52" /><figcaption aria-hidden="true">截屏2020-05-09 下午2.56.52</figcaption>
+</figure>
+<p>​ 我们看到解析了，成为了<code>alert(1)</code>，点击也可以执行。为什么可以执行，在js被调用解析之前，字符<code>&amp;#x74</code>已经被html解析器解析了，翻译成了<code>t</code>，html解析器知道这个<code>t</code>是实体，不做状态转化。但是js解析器处理起来，没有区别。在js解析器的落点里，我们同样可以用js认识的编码规则。可以使用unicode编码，甚至js内部函数。</p>
+<figure>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125322.png" alt="截屏2020-05-09 下午3.11.38" /><figcaption aria-hidden="true">截屏2020-05-09 下午3.11.38</figcaption>
+</figure>
+<p>​ 虽然在解析中，也需要遵循解析器本身的规则。如括号，引号等被unicode编码了就不解析(详见参考2)。url解析器也同样的，在<code>&lt;a href=&#123;&#125;&gt;</code>中，因为是一个资源加在动作，所以可以触发url解析器。在url解析器规则中，包含<code>协议名:</code> 不能使用url编码。因此此处不可以将<code>javascript:</code>进行url编码，但是可以html编码。</p>
+<p>​ 结合<code>HTML</code>, <code>URL</code>,<code>Javascript</code>三者的解析顺序、编码集、以及编码规则。根据我们输入的落点环境情况，就能够构造出可以"召唤"js解析器不能够绕过安全防护的payload。</p>
+<h2 id="case">CASE</h2>
+<figure>
+<img src="xss-encode/%E6%88%AA%E5%B1%8F2020-05-09%20%E4%B8%8B%E5%8D%884.27.11.png" alt="截屏2020-05-09 下午4.27.11" /><figcaption aria-hidden="true">截屏2020-05-09 下午4.27.11</figcaption>
+</figure>
 <blockquote>
 <p>规则1 - 属性名不能html编码</p>
 <p>规则2 - javascript:不能url编码</p>
 <p>规则3 - 括号不能unicode编码</p>
 </blockquote>
-<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a target="_blank" rel="noopener" href="https://www.html5rocks.com/zh/tutorials/internals/howbrowserswork/#Types_of_parsers">[1] 解析器</a></p>
+<h2 id="参考">参考</h2>
+<p><a target="_blank" rel="noopener" href="https://www.html5rocks.com/zh/tutorials/internals/howbrowserswork/#Types_of_parsers">[1] 解析器</a></p>
 <p><a target="_blank" rel="noopener" href="https://www.attacker-domain.com/2013/04/deep-dive-into-browser-parsing-and-xss.html">[2] https://www.attacker-domain.com/2013/04/deep-dive-into-browser-parsing-and-xss.html</a></p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2020/05/08/xss-encode/" data-id="cl1elu1o3001tjnw57jtga5oz" data-title="XSS编码" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2020/05/08/xss-encode/" data-id="cl1q1rwcr001uajw5dft7d4am" data-title="XSS编码" class="article-share-link">Share</a>
       
       
       
@@ -193,7 +205,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/02/">February 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/01/">January 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/12/">December 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">September 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">August 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">April 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">February 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">January 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/04/">April 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/03/">March 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/02/">February 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/01/">January 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/12/">December 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">September 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">August 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">April 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">February 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">January 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li></ul>
     </div>
   </div>
 
@@ -206,6 +218,14 @@
       <ul>
         
           <li>
+            <a href="/2022/04/06/taint-2/">PHP污点分析</a>
+          </li>
+        
+          <li>
+            <a href="/2022/03/31/nlp-1/">NLP入门(一)</a>
+          </li>
+        
+          <li>
             <a href="/2022/02/24/web/">Web应用系中注入类漏洞调研</a>
           </li>
         
@@ -215,14 +235,6 @@
         
           <li>
             <a href="/2022/02/06/logic-machine/">Logic Machine</a>
-          </li>
-        
-          <li>
-            <a href="/2022/01/26/fuz/">Fuzzing(TODO)</a>
-          </li>
-        
-          <li>
-            <a href="/2022/01/01/bayes/">信念传播(Belief propagation)</a>
           </li>
         
       </ul>

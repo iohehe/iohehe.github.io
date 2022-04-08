@@ -75,6 +75,374 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-PHP-Static-Analysis-Theory" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2020/11/14/PHP-Static-Analysis-Theory/" class="article-date">
+  <time class="dt-published" datetime="2020-11-14T03:15:48.000Z" itemprop="datePublished">2020-11-14</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2020/11/14/PHP-Static-Analysis-Theory/">Static Detection of Security Vulnerabilities in Scripting Languages</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="static-detection-of-security-vulnerabilities-in-scripting-languages">Static Detection of Security Vulnerabilities in Scripting Languages</h1>
+<p>本文为Stanford大学2005年发表的文章追本溯源，这个Yichen Xie和Alex Aiken团队似乎是PHP安全静态分析比较早的，那个时候，台大的Huang等的WebSSARI应该出来了； Livshits等的Pixy也在构建中。 这一篇理论性的东西比较多，都是在构建数学模型，有借鉴意义。 再拿来总结一下。</p>
+<p>本文提出的是一个PHP安全漏洞的静态分析算法， 他们提出了一种三层架构从块内，过程内， 过程间三个级别进行静态分析。 尝试解决脚本语言独有的一些的动态特性，如动态类型， 代码包含。</p>
+<h2 id="贡献">贡献</h2>
+<ul>
+<li><p>提出了一个对于PHP的过程间静态分析算法。 尝试解决一些动态语言特有的挑战， 如： 动态代码加载， 动态变量类型转化， pervasive use of hash tables and regular expression matching.</p>
+<p>如上所说， 本文的核心方法时提出了一种三层结构， 利用隔离处理，想上传播的思想。 在<code>intrablock</code>, <code>intraprocedural</code>, and <code>interprocedual</code>三个level上做文章。 如在每个BB（basic block）中， 作者尝试利用符号执行去model动态特征(dynamic features)， 然后将结果生成block summaries, 这些summaries供上层分析使用， 从而帮助我们hidden了下层内部的复杂结构。</p></li>
+<li><p>本文使用上述静态分析方法寻找SQL注入， 但是we believe that, with small modifications, the same techniques can be applied to detecting other vulnerabilities such as XSS and code injection in web applications.</p></li>
+<li><p>本文experimentally validate our approach by implementing the analysisi algorithm and running it on 6 popular web application written in PHP. 找到了105个0day.</p></li>
+</ul>
+<h2 id="scripting-language-dynamic-feautres">Scripting Language Dynamic Feautres</h2>
+<p>每次遇到这个章节， 我都想总结一下:</p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-130127.png" alt="image-20210711161321077 " style="zoom:40%;" /></p>
+<p>如上例子， 作者对比了PHP与JAVA构造SQL语句时的不同，JAVA用的是prepared statements(当然PHP引入PDO后也是这样，但是int类型还是会出问题)。而PHP直接拼接字符串(<code>natural integration</code>)。</p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-130130.png" alt="image-20210711161557125" style="zoom:40%;" /></p>
+<p><code>implicit casting</code> 主要涉及到字符串,这种web app中最常见的输入。 在代码中常常做出各种诡异的转化。</p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-130134.png" alt="image-20210711161827521" style="zoom:40%;" /></p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-130136.png" alt="image-20210711162140830" style="zoom:40%;" /></p>
+<p>如使用，<code>extract</code>会根据参数讲数组的键值映射成变量，(这一块没太看清楚,可能就是讲extract这种函数动态向符号表引入变量)。</p>
+<h2 id="analysis">ANALYSIS</h2>
+<p>本文主要的贡献是还是一些理论上的形式化分析， 没有看到工程上的东西。</p>
+<h3 id="步骤">步骤：</h3>
+<ol type="1">
+<li>生成AST</li>
+</ol>
+<p>AST: 将PHP解析成抽象语法树(用的PHP5.0.5)， 还是以文件为单位的， 将文件中无封装的无的语句作为main function, 每一个文件有一个main, 0-N个user-defined function, 分析从main function开始。</p>
+<ol start="2" type="1">
+<li>建BB，建CFG</li>
+</ol>
+<p>分析文件中的每个function的ast。 划分BB,本文用的粒度是<code>single entry, single exit sequences of tatements</code>(看到还有以单条statement为粒度的)。然后构建CFG，遇到conditional jumps在CFG edge上label branch predicate。</p>
+<ol start="3" type="1">
+<li><p>Simulated using Symbol execution</p>
+<p>对每一个基本块， 作者使用了动态特性去理解块中的每一条statement对global state of the program所带来的影响，并将这些信息记录成summary。</p></li>
+<li><p>Reachability analysis</p>
+<p>即数据流的可达性分析， 建立在构造好summaries的块之上，combine <code>block summaries</code> into a <code>function summary</code> , 此时function summary建立了(即第二层)，每个<code>function summary</code> 描述了<code>pre- and post-conditions of a function</code></p></li>
+<li><p>处理calls</p>
+<p>在function内做可达性分析时， 难免会遇到其他过程的调用，此时需cover。</p></li>
+</ol>
+<p>具体来看：</p>
+<h2 id="simulate-basic">1. Simulate Basic</h2>
+<p>在语言建模的基础上，完成转化，生成每个块的summary（BlockSummary）</p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-130155.png" alt="image-20201114140707691 " style="zoom:50%;" /></p>
+<p>这个总的算法，输入为一个基本块，初始一个<code>state</code> 用来初始化块中变量状态(<code>x</code>-&gt;<code>x0</code>) 。 并在循环中迭代更新状态，如果遇到return和exit，则为出口；end block（迭代完成）也为出口，过程间分析时遇到<code>exit</code>也为出口。用每一个基本块的simulate后的state做一个summary, 然后返回这个块的summary。</p>
+<p><code>intra-block simulation</code>的关键 问题就是在于如何simulate state， 以下讨论<code>simulation process</code>:</p>
+<p>## Language： 先对语言进行建模</p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-130158.png" alt="image-20201114142327873 " style="zoom:50%;" /></p>
+<p>在此作者根据需求， 对PHP语言进行建模， 形成了一个子集：</p>
+<ol type="1">
+<li><p>变量值类型(Value Type): 字符，布尔，数组，静态无法确认的数据(如形参)</p></li>
+<li><p>常量值类型(Constant): 字符串，数字，true, false, null</p></li>
+<li><p>L-val(location value)，这里有variable x, 实参，array</p></li>
+<li><p>表达式(Expression)：常量表达式，变量表达式， 二元操作表达式， 一元操作表达式， 表达式类型转化。</p></li>
+<li><p>语句(Statement): 赋值语句(表达式运算)，赋值语句(过程调用) ，返回值语句return, 退出语句exit，包含语句include。</p>
+<p>其中提到了，include这种statement是scripting language所特有的(which allows prorammers to dynamically insert code into the program)。</p></li>
+</ol>
+<h2 id="simulation-statememory-location---value">Simulation State(Memory Location -&gt; Value)</h2>
+<p><code>Simulation State</code> 是一个映射， 此映射: Memory Location-&gt;their value representations, 此处的<code>memory location</code> 指的是一个<code>program variable</code>(e.g., x), 或者<code>a hash table accessed via another location</code>（e.g. x[key]).</p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-130211.png" alt="image-20210713163228163" style="zoom:50%;" /></p>
+<blockquote>
+<p>The simulation state maps memory locations to their value representations</p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-130214.png" alt="image-20210715164509813" style="zoom:50%;" /></p>
+</blockquote>
+<p>图(a)是完整的表述。这一段就是形成一个Location到value的映射。</p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-130217.png" alt="image-20201114145427950 " style="zoom:50%;" /></p>
+<p>在开始分析的时候， Loc会被初始化为一个<code>L0</code>, 组成了simulation的初始状态集合。然后迭代value， 这里的value分为三类，具体看图(a)中的value representation部分，可以表示为三类分别是(String, Boolean和Integer)。</p>
+<ul>
+<li><p>String:</p>
+<p>String是最基本的类型，也是我们关注的类型。modeling string 的精确程度，直接影响了分析的精确性。</p>
+<p>作者认为，<code>modeling concatenation well enables an analysis to better understand information flow in a script</code>. 举例子来说，就像用户输入的GET, POST会拿来拼接SQL语句，SQL查询结果又会拼接到HTML中， 这是常见的动态web操作。因此，作者将<code>string values are represented as an ordered concatenation of string segments,.</code></p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-130220.png" alt="image-20210713162322867" style="zoom:67%;" /></p></li>
+<li><p>Boolean:</p></li>
+<li><p>Integer:</p>
+<p>Support track integer constants and binary and unary operations between them. We also support type cast from integers to Boolean and string values.</p></li>
+</ul>
+<h3 id="locations和l-val转化规则">Locations和L-val转化规则</h3>
+<p>这里在解释L-val, 首先看模型：</p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-130223.png" alt="image-20201114152059860 " style="zoom:50%;" /></p>
+<p>如上面对Lv的规则的定义， var, arg,dim三种(注意当时的文章都不考虑OO)。</p>
+<p>看下边这个例子：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$hash</span> = <span class="variable">$_POST</span>; <span class="comment">//$_POST这个hash table赋给$hash</span></span><br><span class="line"><span class="variable">$key</span> = <span class="string">&quot;user&quot;</span>; <span class="comment">//常量赋值</span></span><br><span class="line"><span class="variable">$userid</span> = <span class="variable">$hash</span>[<span class="variable">$key</span>]; </span><br></pre></td></tr></table></figure>
+<p>分析这段代码， 首先看初始状态</p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-130227.png" alt="image-20201114152915770 " style="zoom:50%;" /></p>
+<p>我们让每一个符号指向一个初始状态。然后根据上边的规则定义， 根据var的规则处理前两条：</p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-130231.png" alt="image-20201114153406937 " style="zoom:50%;" /></p>
+<p>他们都指向了一个unique location。</p>
+<p>第三条来用dim的规则定义处理。此时根据横线上方两条条件规则(e是名e'是键)，分别映射到_POST0和['userid']那么他将映射到L[阿尔法]中， 即_POST[userid]0。</p>
+<hr />
+<h3 id="exp转化规则">Exp转化规则</h3>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-130234.png" alt="image-20201114154757715 " style="zoom:50%;" /></p>
+<p>因为脚本语言是一种动态类型， 在运行解释器会选择当前运算最适合的规则(弱类型)。那么就带了了类型转化问题。</p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-130236.png" alt="image-20201114154900851 " style="zoom:50%;" /></p>
+<hr />
+<h3 id="statements转化规则">Statements转化规则</h3>
+<p>赋值有两种： 表达式计算赋值，和过程间调用赋值。 先看表达式计算如何被model:</p>
+<figure>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-130240.png" alt="image-20210715171024725" /><figcaption aria-hidden="true">image-20210715171024725</figcaption>
+</figure>
+<p>Assignment rule：</p>
+<ol type="1">
+<li>resolves the left-hand side into a memory location l. (上式lv=&gt;l)</li>
+<li>evaluates the right-hand side into a value v.(上式e=&gt;v)</li>
+</ol>
+<p>然后根据rule update the simulation state after the assignment maps <code>l</code> to the new value <code>v</code>。</p>
+<hr />
+<h3 id="block-summary">Block summary</h3>
+<p>经过以上的转化后， 将块内信息转化为block summary，一个块summary是由六元组组成:</p>
+<figure>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-130243.png" alt="image-20210719203339317" /><figcaption aria-hidden="true">image-20210719203339317</figcaption>
+</figure>
+<ul>
+<li><p>Error set: 在进入BB时，每一个variables必须是sanitized的状态。</p></li>
+<li><p>Definitions: the set of memory locations defined in the current block.</p></li>
+<li><p>Value flow: the set of pairs of locations (l1, l2), l1 on the entry becomes a substring of l2 on exit.</p></li>
+<li><p>Termination predicate: 块中是否含有程序终结, true if the current block contains a exit statement, or if it calls a function that causes the progmra to terminate.</p></li>
+<li><p>Return value: 返回值， records the representation for the return value if any, undefined otherwise.</p></li>
+<li><p>Untaint set: 向每个后继块传递当前的未过滤变量集合(由于有分支的存在，故每一个后继得到的summary可能不同)</p></li>
+</ul>
+<h3 id="intraprocedural-analysis">Intraprocedural Analysis</h3>
+<figure>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-130248.png" alt="image-20210719204831765" /><figcaption aria-hidden="true">image-20210719204831765</figcaption>
+</figure>
+<p>一个过程内的抽象，是基于他的块抽象的：</p>
+<ul>
+<li>Error set: the set of <code>memory locations(variables, parameters, and hash access)</code>, 因为查的是SQL注入， 所以当其中一个memory locations的value流入database query时， 必须有记录他被sanitized了,否则error</li>
+<li>Return set: the set of parameters or global variables 进入了return value（only string）</li>
+<li>Sanitized values: the set of parameters or global variables,使用前向数据流可达性分析来探测被过滤输入流入每一个包含return的块。</li>
+<li>Program Exit: 一个指明当前function是否退出程序， 穷举所有CFG可达块。 如果没有return, 此程序就是一个exit function(也不一定，有的分支执行到最后就默认返回null了)</li>
+</ul>
+<h3 id="interprocedural-analysis">Interprocedural Analysis</h3>
+<p>本文的分层次污点分析的最高层， interprocedural层。分析intra的summary, 对于每一个function call点， f(e1...en)分析一下四个方面：</p>
+<ul>
+<li><p>Pre-conditions: 使用error set 证明the set of parameters and global variables在进入该过程时都是安全的</p></li>
+<li><p>Exit condition: 如果进入了一个exit function, 就将之后所有的stmt删除。</p></li>
+<li><p>Post-conditions:</p></li>
+<li><p>Return value:</p>
+<figure>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-130251.png" alt="image-20210719210926117" /><figcaption aria-hidden="true">image-20210719210926117</figcaption>
+</figure></li>
+</ul>
+<figure>
+<img src="PHP-Static-Analysis-Theory/image-20210719210938703.png" alt="image-20210719210938703" /><figcaption aria-hidden="true">image-20210719210938703</figcaption>
+</figure>
+<h2 id="experimental-results">ExPERIMENTAL RESULTS</h2>
+<figure>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-130253.png" alt="image-20210719211022777" /><figcaption aria-hidden="true">image-20210719211022777</figcaption>
+</figure>
+<p>没有 False Positive, 确定没有误报？</p>
+<h2 id="case-study">CASE STUDY</h2>
+<figure>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-130258.png" alt="image-20210719211058506" /><figcaption aria-hidden="true">image-20210719211058506</figcaption>
+</figure>
+<p>但是我并没有看到具体的符号执行啊。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2020/11/14/PHP-Static-Analysis-Theory/" data-id="cl1q1rwc50008ajw58wrocqag" data-title="Static Detection of Security Vulnerabilities in Scripting Languages" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/paper/" rel="tag">paper</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-NDSS-14-RIPS" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2020/11/01/NDSS-14-RIPS/" class="article-date">
+  <time class="dt-published" datetime="2020-11-01T07:24:12.000Z" itemprop="datePublished">2020-11-01</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2020/11/01/NDSS-14-RIPS/">Simulation of Built-in PHP Feature for Precise Static Code Analysis</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>文章题目： Simulation of Built-in PHP Feature for Precise Static Code Analysis.</p>
+<p>作者： Johannes Dahse &amp; Toorstem Holz</p>
+<p>RIPS研究PHP静态分析几乎绕不开的工具， 一是选择的时间点好，2014年左右PHP还是比较火的。二是工具确实不多。 这篇文章发了14年的NDSS，还是有些东西值得借鉴的。</p>
+<h2 id="技术背景">技术背景</h2>
+<p>首先， 作者在技术背景部分分析了一些PHP这种highly dynamic lanuage的痛点。</p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125738.png" alt="image-20201101153514155" style="zoom: 25%;" /></p>
+<ul>
+<li><p>1） 动态类型/弱类型</p>
+<p>脚本语言在变量声明时不用声明类型的确给静态分析带来不少麻烦，而动态类型指的是在运行时类型是可以变得(its variables are not bound to a specific data type).</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$var1</span> = <span class="number">1</span>; <span class="variable">$var2</span> = <span class="string">&#x27;test&#x27;</span>;</span><br><span class="line"><span class="variable">$var2</span> = <span class="variable">$var1</span> + <span class="variable">$var2</span>; <span class="comment">//1 </span></span><br></pre></td></tr></table></figure></li>
+<li><ol start="2" type="1">
+<li>variable Variables</li>
+</ol>
+<p>这个貌似是PHP独有的，叫$$特性？</p>
+<p><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$name</span> = <span class="string">&quot;x&quot;</span>;</span><br><span class="line"><span class="variable">$x</span> = <span class="string">&quot;test&quot;</span>;</span><br><span class="line"><span class="keyword">echo</span> <span class="variable">$$name</span>; <span class="comment">//test</span></span><br><span class="line"><span class="variable">$y</span> = $&#123;<span class="title function_ invoke__">getVar</span>()&#125;; <span class="comment">//变量名可以是一个表达式ZZ</span></span><br></pre></td></tr></table></figure></p></li>
+<li><ol start="3" type="1">
+<li><p>Dynamic Arrays</p>
+<p>动态数组，PHP的数组是hash table实现的。可以存任何不同的数据类型，而且在初始化的时候key值可以省略在运行时指定。</p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125750.png" alt="image-20201101154933544" style="zoom: 50%;" /></p></li>
+</ol></li>
+</ul>
+<p>注意这里新添加的自动索引了6, 神不神奇？会按照“4”开始算，把"4"改成"664"就是'e'的索引就是666。（还是说脚本语言的不规范性）</p>
+<ul>
+<li><ol start="4" type="1">
+<li><p>Dynamic Constants</p>
+<p>通过define()在于形式动态定一个常量， 通过constant()运行时访问。</p></li>
+</ol></li>
+<li><ol start="5" type="1">
+<li>Dynamic Function</li>
+</ol>
+<p>function动态调用， 这个说的就太多了。</p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125752.png" alt="image-20201101155917397" style="zoom:50%;" /></p></li>
+</ul>
+<p>第2行向我们讲述了， 不仅变量名可以是表达式， 方法名也可以是表达式； 第三行是一个回调函数，在动态的时候才知道执行啥。另外，还有<code>fun_get_arg()</code>和<code>func_get_args()</code>在运行时动态从call site拿参数; <code>create_function()</code>动态创建一个方法体org。</p>
+<ul>
+<li><ol start="6" type="1">
+<li><p>Dynamic Code</p>
+<p>动态执行代码， 通过<code>eval</code>, <code>assert</code>，小马常用到。这些代码在动态运行时才能知道， 给静态分析增加了难度。</p></li>
+</ol></li>
+<li><ol start="7" type="1">
+<li><p>Dynamic includes</p>
+<p>这个吐糟也比较多， 大型PHP项目尝尝被分割成若干文件和目录，他们的拼接为静态分析也增加了难度。类似<code>include</code>，使用这种操作，将文件中的代码返回到include处。尤其是现在又加了惰性加载机制。autoload()这种在静态分析目前只有猜了。</p></li>
+</ol></li>
+<li><ol start="8" type="1">
+<li>Built-in Functinos</li>
+</ol>
+本文关注和要解决的主要challenge。不像Java, PHP的内建函数都是用C写的， 在ZEND执行时调用。大约有228个扩展5701个内建函数， 他们在静态分析PHP代码时无法被hook到，这就导致了分析的不精确。</li>
+</ul>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125756.png" alt="image-20201101162437988" style="zoom:50%;" /></p>
+<p>如图，第二个位置月份可以是字符型， 这里如果要能探测到XSS就要对list(), printf()进行精确建模。</p>
+<ul>
+<li><ol start="9" type="1">
+<li><p>Superglobals</p>
+<p>我们的超全局变量， 需要精确的标明哪些可控。开发者经常忽略FILES和SERVER的安全性。</p></li>
+</ol></li>
+</ul>
+<h2 id="方法设计">方法设计</h2>
+<h3 id="纵览">纵览</h3>
+<ol type="1">
+<li><p>还是文件为单位， 首相将散乱在文件中的代码解析成main AST(脚本语言通常没有main方法做入口)， 然后将user-defined function们收集起来， 将函数名， 参数等信息存入分析环境， 然后将其函数体构建成separate AST独立于main AST。</p></li>
+<li><p>有了 AST， 下一步构建CFG(控制流图)， 分析AST如果发现<code>conditional jump</code> , 就开辟一个新的基本块(<code>basic block</code>);并使用<code>basic edge</code>相连接。</p></li>
+<li><p>有了CFG， 下一步构建PDG(数据依赖图)咯， 以基本块为单位，每当一个BB产生， 就分析一下他的<code>adta flow</code> 。</p></li>
+<li><p>实现Intra(过程内)和Inter(过程间)分析，当遇到<code>call site</code> 就在环境中找到该方法名并进入其AST进行分析，从而实现<code>inter</code>能力。</p></li>
+<li><p>实现污点分析。</p></li>
+</ol>
+<p>(说的挺复杂，开源版的RIPS的基础分析能力还是以分析tokens流并以各种数据结构辅助追踪为主)</p>
+<h2 id="创新点">创新点</h2>
+<p>那么本paper novel在什么地方呢：</p>
+<ul>
+<li>在污点分析时添加了sanitization tags来表明数据被过滤</li>
+<li>为952个内建方法建模，从而更精准的把控整个分析流的变化</li>
+<li>在处理include file时，当作functions来处理，而不是直接加入到当前CFG，防止重复分析, 减少开销</li>
+<li>根据基本块边来总结他们之间的sanitization影响</li>
+<li>实现了后向污点分析，每一个基本块的分析结果，cache到一个变量里。</li>
+<li>使用上下文敏感字符分析(context-sensitive stirng analysis)来精炼污点分析结果，基于当前环境。</li>
+</ul>
+<h2 id="cfgbuilder">CFGBuilder</h2>
+<p>要构建一个CFG, 先定义statements, 划分基本块。</p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125759.png" alt="image-20201102203138487" style="zoom:50%;" /></p>
+<p>这里作者定义了几种划分基本块的stmt， 配合算法：</p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125801.png" alt="image-20201102203339071" style="zoom:50%;" /></p>
+<p>中间的循环AST上的每一个点，如果遇到四种stmt的情况。</p>
+<ul>
+<li><p>JSTMT, 遇到IF, Switch, Try, Ternary, LogicalOr（后两个没见过）， 就递归分析每个分支下的基本块。将入口条件加到基本块头。</p></li>
+<li><p>LSTMT, 生成循环基本块</p></li>
+<li><p>SSTMT, 停止，基本块下的stmts不可达</p></li>
+<li><p>RSTMT, return,到达return或者是探测到程序退出，就不和下一个基本块建立连接。</p>
+<p>这里增量在<code>simluate()</code>方法上，来看。</p></li>
+</ul>
+<h2 id="simulating-basic-blocks">simulating Basic Blocks</h2>
+<p>静态分析能干的事，就是编译器或者解释器能干的事。 RIPS为获取基本块内的data flow, 在控制流的基础上进行所谓的simulating，实现simulating:</p>
+<ol type="1">
+<li>制定symbols: 值-val, 变量名-varibale, 常量-constant, 数组-ArrayDimFetch... 每一个symbol都会有几个状态(type, encoding, sanitization)，通过观察状态变化做到对类型，编码以及sanitize的敏感。</li>
+</ol>
+<p>2）Block Summary: 此过程就是将制定的符号集在块中使用进行后向追踪。生成一些块属性(block Summary):</p>
+<pre><code>  * DataFlow - 记录变量/数组的assign
+  * Constants - 记录常量的assign
+  * GlobalDefines - 记录名称，加入global scope
+  * ReturnValue - 记录块中的返回值(每个块一个返回， return和exit后的代码丢弃)
+  * registerGlobals - 记录使用extract()或者import_request_varibales()注册变量</code></pre>
+<p>在每个块的后向data flow分析后记录以上内容， 生成block summary.</p>
+<ol start="3" type="1">
+<li><p>Data Flow Analysis</p></li>
+<li><p>Simulating Includes and Dynamic Code： php 的includes是一个动态表达式，通过路径去找，找到加入，若无正则匹配。eval同理。</p></li>
+<li><p>Simulating Built-in Functions:</p></li>
+</ol>
+<p>​ 本文重点。 对621个内建函数进行数据流建模， configured name and effected parameters. 分类如下：</p>
+<ul>
+<li>Alphanumeric(284): 返回值只有字母数字组成的，effectively sanitize. 如: md5(), strlen()</li>
+<li>Argument(122): 原样返回实参或部分的, 如： trim(), strrev()</li>
+<li>escape(20): mysql_real_escap_string()这种， 遇到将symbol中的sanitization属性打上SQLI_SQ 和 SQLI_DO标签(如果没遇到就SQLI_NQ)</li>
+<li>Substring(6): substr(), chunk_split()这种，返回实参字串的。</li>
+<li>Encode(18): urlencode(), base64_encode() ...</li>
+<li>Decode(25): urldecode(), base64_decode()...</li>
+<li>Callbacks(51): 回调函数，如果调用函数名事字符串，就调用分析。如果是变量，正则猜测。</li>
+</ul>
+<h2 id="intra-produral-analysis">Intra-produral Analysis</h2>
+<p>实现intra</p>
+<h2 id="inter-procedural-analysis">Inter-procedural Analysis</h2>
+<p>实现inter</p>
+<h2 id="simluating-block-edges">Simluating Block Edges</h2>
+<p>块与块之间的simluating, 考虑validation的情况</p>
+<ul>
+<li>operators(6): isset(), empty()...</li>
+<li>Type checks(21): is_numeric()...</li>
+<li>File checks(11): is_file()...</li>
+<li>Whitelists(3): array_search()</li>
+<li>Regex(8): 正则</li>
+</ul>
+<p>（原来validatation的情况可以放到块与块间，这样就和sanitization的情况分开来去了）。</p>
+<h2 id="taint-analysis">Taint Analysis</h2>
+<p>污点分析探测漏洞的过程略。:&gt;</p>
+<h2 id="后记">后记</h2>
+<p>之前看这篇觉得没啥东西， 仔细分析来东西还是挺多的， 毕竟顶会。</p>
+<p>他几乎把所有语言特性层和面向过程层的东西讲到了， 缺少OO层的分析，也是后来不上人针对发文的。</p>
+<p>(为什么看起来这么高大上的东西开源版本用起来和...一样)</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2020/11/01/NDSS-14-RIPS/" data-id="cl1q1rwc50007ajw5373td459" data-title="Simulation of Built-in PHP Feature for Precise Static Code Analysis" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/paper/" rel="tag">paper</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-RAID-2020_Relfected_Server_XSS" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
     <a href="/2020/10/26/RAID-2020_Relfected_Server_XSS/" class="article-date">
@@ -99,52 +467,63 @@
       
         <p><a target="_blank" rel="noopener" href="https://github.com/iohehe/research/RAID-2020-xss-stats-paper/xss-stats-paper.pdf">原文链接</a></p>
 <p>本文发表自RAID2020年，作者来自微软、东北大学和纽约大学。一项对反射型XSS的实证分析研究。</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045716.png" alt="image-20201030143613662" style="zoom:33%;" />
-
-
-
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045716.png" alt="image-20201030143613662" style="zoom:33%;" /></p>
 <p>本文从XSSED和OPENBUGBOUNTY两个网站收集了近十年来的反射型XSS提交的payload。 两个测试集OBB的比较新一些。</p>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045726.png" alt="image-20201030162110612"></p>
+<figure>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045726.png" alt="image-20201030162110612" /><figcaption aria-hidden="true">image-20201030162110612</figcaption>
+</figure>
 <p>在此即上进行EXP分析，设计了一个验证系统。证明这些反射型的EXP是可以被精确的识别出来的。</p>
-<p>  <img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045729.png" alt="image-20201030162154660"></p>
+<figure>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045729.png" alt="image-20201030162154660" /><figcaption aria-hidden="true">image-20201030162154660</figcaption>
+</figure>
 <p>整个系统分为动态和静态两个佐证部分，尝试识别出每个exp的trick:</p>
 <ul>
 <li><p>静态：</p>
-<p>静态部分是:EXP Extraction ​到​ ​S​t​a​ti​c​ ​F​e​a​t​ur​e​ ​E​x​t​ra​c​t​i​on。​ 其实我觉得还带是正则。</p>
-</li>
+<p>静态部分是:EXP Extraction ​到​ ​S​t​a​ti​c​ ​F​e​a​t​ur​e​ ​E​x​t​ra​c​t​i​on。​ 其实我觉得还带是正则。</p></li>
 <li><p>动态：</p>
 <p>动态部分是：EXP Execution 到 Dynamic Feature Extraction。 将收集的response的page使用chrome和FireFox加载，在沙箱环境中观察，因为有一些触发条件需要特定操作或者加载资源，因此作者分了四个round，后三个round需要操作(Mouse Move, Mouse Click, Network Error)，通过在response page中插桩，观察XSS执行里的trick。</p>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045734.png" alt="image-20201030173010493"></p>
-</li>
+<figure>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045734.png" alt="image-20201030173010493" /><figcaption aria-hidden="true">image-20201030173010493</figcaption>
+</figure></li>
 </ul>
 <p>下面来看看对payload的一些分统计：</p>
-<ol>
+<ol type="1">
 <li><p>Context( Escaping and Creation)技术:</p>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045732.png" alt="image-20201030163940277"></p>
-</li>
+<figure>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045732.png" alt="image-20201030163940277" /><figcaption aria-hidden="true">image-20201030163940277</figcaption>
+</figure></li>
 </ol>
 <p>这一类主要是指逃逸+构造，日常使用中确实最多。细分为： HTML环境注释逃逸法、 JS环境注视逃逸法、属性环境标签闭合逃逸+构造标签、属性环境属性闭合+构造属性、JS环境代码续接。 （我瞎编的:expressionless:)​</p>
-<ol start="2">
+<ol start="2" type="1">
 <li>Synatx Confusion技术</li>
 </ol>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045740.png" alt="image-20201030164425916"></p>
-<p>这一类就是语法混淆，包括： 方法名的额外括号、大小写混淆、 unicode编码混淆(乱入：注意方法括号不能unicode)、第四个厉害了没听说过、 空白符混淆、 斜杠替换空格(还有alert(&#x2F;xss&#x2F;))、 标签解析混淆(频率还很高，mark!)</p>
-<ol start="3">
+<figure>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045740.png" alt="image-20201030164425916" /><figcaption aria-hidden="true">image-20201030164425916</figcaption>
+</figure>
+<p>这一类就是语法混淆，包括： 方法名的额外括号、大小写混淆、 unicode编码混淆(乱入：注意方法括号不能unicode)、第四个厉害了没听说过、 空白符混淆、 斜杠替换空格(还有alert(/xss/))、 标签解析混淆(频率还很高，mark!)</p>
+<ol start="3" type="1">
 <li>Control Flow Modification技术</li>
 </ol>
 <p>此技术在OBB的测试集中使用比较多。也就是有48.2%的</p>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045744.png" alt="image-20201030165941047"></p>
-<p>这个分类粒度是控制流更改(可能喝上两种不是一个维度)。主要是躲过&lt;script&gt;标签过，有1, 自动触发事件 2，exploit-triggered events(咋翻译？) 3,用户交互事件  4, 将事件赋给一个变量！ 5，抛异常！！</p>
+<figure>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045744.png" alt="image-20201030165941047" /><figcaption aria-hidden="true">image-20201030165941047</figcaption>
+</figure>
+<p>这个分类粒度是控制流更改(可能喝上两种不是一个维度)。主要是躲过&lt;script&gt;标签过，有1, 自动触发事件 2，exploit-triggered events(咋翻译？) 3,用户交互事件 4, 将事件赋给一个变量！ 5，抛异常！！</p>
 <p>这个类型分的有点混乱，可能我还没看仔细。</p>
-<ol start="4">
+<ol start="4" type="1">
 <li><p>字符解释技术</p>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045746.png" alt="image-20201030171318469"></p>
-<p>能够将字符当作JS代码解释的方法， 1，document.write 2, eval 3, setTimeout 4, top (写一遍加深印象…)</p>
-</li>
+<figure>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045746.png" alt="image-20201030171318469" /><figcaption aria-hidden="true">image-20201030171318469</figcaption>
+</figure>
+<p>能够将字符当作JS代码解释的方法， 1，document.write 2, eval 3, setTimeout 4, top (写一遍加深印象...)</p></li>
 </ol>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045749.png" alt="image-20201030171651652"></p>
-<p>En…还是闭合标签感觉爽些。</p>
-<h2 id="Tips"><a href="#Tips" class="headerlink" title="Tips"></a>Tips</h2><p>看完这篇文章其他部分没仔细看， 光学姿势去了…</p>
+<h2 id="总结">总结</h2>
+<figure>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045749.png" alt="image-20201030171651652" /><figcaption aria-hidden="true">image-20201030171651652</figcaption>
+</figure>
+<p>En...还是闭合标签感觉爽些。</p>
+<h2 id="tips">Tips</h2>
+<p>看完这篇文章其他部分没仔细看， 光学姿势去了...</p>
 <ul>
 <li>可能有些位置就是可以用多种方法，最近趋于喜欢直接用svg做注入</li>
 <li>是时候总结一波姿势了</li>
@@ -153,7 +532,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2020/10/26/RAID-2020_Relfected_Server_XSS/" data-id="cl1elu1nk000ajnw566nsewb2" data-title="What&#39;s in an Exploit? An Empirical Analysis of Reflected Server XSS Exploitation Techniques" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2020/10/26/RAID-2020_Relfected_Server_XSS/" data-id="cl1q1rwc8000bajw51vwqfmd9" data-title="What&#39;s in an Exploit? An Empirical Analysis of Reflected Server XSS Exploitation Techniques" class="article-share-link">Share</a>
       
       
       
@@ -191,23 +570,19 @@
       
         <p>设计一个递归函数， 考虑三个方面： 参数、 中间量、返回值</p>
 <ul>
-<li><p>参数： 设计递归表达式中包含的关键东西， 每一次调用，只有参数在改变。</p>
-</li>
-<li><p>中间量：中间每次调用时，会在一个新的栈中存储，他在内存上和上次的变量是两块独立的空间，他们的行为只依赖于参数的变化。</p>
-</li>
-<li><p>返回值： 需要所有过程共同的return值来完成。</p>
-</li>
+<li><p>参数： 设计递归表达式中包含的关键东西， 每一次调用，只有参数在改变。</p></li>
+<li><p>中间量：中间每次调用时，会在一个新的栈中存储，他在内存上和上次的变量是两块独立的空间，他们的行为只依赖于参数的变化。</p></li>
+<li><p>返回值： 需要所有过程共同的return值来完成。</p></li>
 </ul>
 <p>每一次函数调用，都有一个独立的函数栈空间， 理解好这个就可以更好的理解递归。</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">new_str = [] // 返回值</span><br><span class="line"><span class="keyword">def</span> <span class="title function_">recv</span>(<span class="params">_<span class="built_in">str</span></span>):</span><br><span class="line">    <span class="keyword">global</span> new_str</span><br><span class="line">    <span class="keyword">if</span>(<span class="built_in">len</span>(_<span class="built_in">str</span>) &gt; <span class="number">1</span>): //中间量</span><br><span class="line">        x = _<span class="built_in">str</span>.pop() //中间量</span><br><span class="line">        new_str.append(x)</span><br><span class="line">        recv(_<span class="built_in">str</span>)</span><br><span class="line">        <span class="keyword">return</span> new_str</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">return</span> _<span class="built_in">str</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    _<span class="built_in">str</span> = [<span class="string">&quot;H&quot;</span>, <span class="string">&quot;e&quot;</span>, <span class="string">&quot;l&quot;</span>, <span class="string">&quot;l&quot;</span>, <span class="string">&quot;0&quot;</span>] //参数</span><br><span class="line">    res = recv(_<span class="built_in">str</span>)</span><br><span class="line">    <span class="built_in">print</span>(res)</span><br></pre></td></tr></table></figure>
-
 <p>之前在遍历子路径时没想明白， 就在于我没有理解好每一次调用变量都存在独立的站。在递归返回上一级的时候，父函数在工作环境中继续施工，所以之前的内容都在。哈哈哈真的是，太菜了</p>
 <p>(这里的new_str不写在递归区域， 因为new_str是返回值，所以不能每个过程都开一个新的，而是每次都将结果压入一个共同的空间中)</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2020/09/15/recuv/" data-id="cl1elu1nu0011jnw58h32gup3" data-title="递归" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2020/09/15/recuv/" data-id="cl1q1rwcj0013ajw59spba98f" data-title="递归" class="article-share-link">Share</a>
       
       
       
@@ -242,58 +617,51 @@
     <div class="e-content article-entry" itemprop="articleBody">
       
         <p>如下是一个典型污点分析算法：</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044109.png" alt="截屏2020-09-09 上午9.38.59" style="zoom: 67%;" />
-
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044109.png" alt="截屏2020-09-09 上午9.38.59" style="zoom: 67%;" /></p>
 <p>一般地，污点分析会选择后向追踪。如果前向按照程序执行的方向追踪，即从sources找sinks往往会有很多误报。 从sinks后向找的话首先定位了漏洞点了。后向的话就是在一个赋值过程中<code>左值为污点传播给右值(lval-&gt;rval)</code> 那么一个后向算法的实现：</p>
 <ul>
 <li>第一步： 根据设定的sinks列表， 在程序中全局定位所有的sinkNodes的位置</li>
 <li>第二步： 对每一个sinkNode进行后向追随，看有没有能够达到我们设定为sources的静态路径， 有就存为vulnerablePaths</li>
 </ul>
 <p>关键在于对每一个sink点如何追溯， 这里先不考虑地22行的filter。找到&lt;sink, source&gt;路径，核心是一个递归过程。这个过程的原操作是在数据流上向后走到下一个传播点，并将其标注为污点(taint)。 那么这个过程何时停？ 根据第18行，即当追到一个taint就是我们的sources，当然输出一条vulnerablePath。 当追到了Parameters时，此时此过程中的污点传播已经到头，说明污点已经传入了他的caller中，将此路径保存，停止污点追溯，回到他的caller中，如果caller中构造了vulnerablePaths，在讲这种由return传播到parameter的过程路径拼接。</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044114.jpg" alt="WechatIMG10" style="zoom:67%;" />
-
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044114.jpg" alt="WechatIMG10" style="zoom:67%;" /></p>
 <p>上图描述了从sink开始找到一个赋值语句，转移函数在这里要回答右值是否标为污点？但是他的表达式中有一个call，要回答这个问题就我们就要分析这个调用。</p>
 <p>如果将这个call看作一个黑盒的话，首先它一定要有返回值，如果没有返回值， 那么就没有数据传到sink点了(这里考虑的是显式传播，不考虑控制流的影响)。其次，要看我们的taint点，是否做为实参传入，如果做为实参传入，且从return点能够从数据流后向走到Parameters(这个taint的传入位置)，那么就做为一个子过程，拼接到path上(path+call_path)。 还有就是自过程中包含source，那么这个source直接就通过return和sink拼接成vulpath了。</p>
 <p>递归过程:</p>
-<ol>
+<ol type="1">
 <li>检查call中是否有返回</li>
 <li>有返回值，标注污点传入的参数位置</li>
 <li>将返回点做为sink，后向污点分析，如果遇到source,输出vul_path；走到标注的参数，返回路径；遇到call继续递归该过程。</li>
 </ol>
-<p> 给出一个Example，有空可以探测试一下。</p>
+<p>给出一个Example，有空可以探测试一下。</p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">foo_1</span>(<span class="params"><span class="variable">$foo_1_param</span></span>)</span>&#123;</span><br><span class="line">	<span class="variable">$foo_1_res</span> = <span class="string">&quot;&lt;a&gt;&quot;</span>.<span class="variable">$foo_1_param</span>.<span class="string">&quot;&lt;/a&gt;&quot;</span>;</span><br><span class="line">	<span class="keyword">return</span> <span class="variable">$foo_1_res</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">foo_2</span>(<span class="params"><span class="variable">$foo_2_param</span></span>)</span>&#123;</span><br><span class="line">        <span class="variable">$foo_2_res</span> = <span class="title function_ invoke__">foo_1</span>(<span class="variable">$foo_2_param</span>);</span><br><span class="line">	<span class="keyword">return</span> <span class="variable">$foo_2_res</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">bar</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="variable">$pass_2</span> = <span class="variable">$_GET</span>[<span class="string">&#x27;id&#x27;</span>];</span><br><span class="line">    <span class="variable">$pass_1</span> = <span class="title function_ invoke__">foo_2</span>(<span class="variable">$pass_2</span>);</span><br><span class="line">    <span class="variable">$target</span> = <span class="variable">$pass_1</span>;</span><br><span class="line">    <span class="title function_ invoke__">evil</span>(<span class="variable">$target</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">evil</span>(<span class="params"><span class="variable">$target</span></span>)</span>&#123;</span><br><span class="line">    <span class="keyword">echo</span> <span class="variable">$target</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="title function_ invoke__">bar</span>();</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
-
-
-
-
-
 <ul>
 <li><code>evil($target)</code>: 污点标为target</li>
 <li><code>$target = $pass_1</code>: 污点标为$pass_1</li>
-<li><code>$pass_1 = foo_2($pass_2)</code>: 污点标为foo_2的第一个Argument，转入foo_2<ul>
+<li><code>$pass_1 = foo_2($pass_2)</code>: 污点标为foo_2的第一个Argument，转入foo_2
+<ul>
 <li>foo_2标记第一个Parameter</li>
 <li>foo_2有return，从return开始追踪</li>
 <li><code>return $foo_2_res</code>: 标记$foo_2_res为污点</li>
-<li><code>$foo_2_res = foo_1($foo_2_param)</code>: 标记foo_2_param为污点，转入foo_1<ul>
+<li><code>$foo_2_res = foo_1($foo_2_param)</code>: 标记foo_2_param为污点，转入foo_1
+<ul>
 <li>foo_1标记第一个Parameter</li>
 <li>foo_1有return，从return开始追踪</li>
 <li><code>return $foo_1_res</code>: 标记$foo_1_param为污点</li>
-<li><code>$foo_1_res = &quot;&lt;a&gt;&quot;.$foo_1_param.&quot;&lt;/a&gt;&quot;;</code>：标记$foo_1_param为污点</li>
+<li><code>$foo_1_res = "&lt;a&gt;".$foo_1_param."&lt;/a&gt;";</code>：标记$foo_1_param为污点</li>
 <li><code>function foo_1($foo_1_param)</code>: 污点传入标记的Parameter, 返回call_path</li>
-</ul>
-</li>
-<li><code> $foo_2_res = foo_1($foo_2_param);</code>: 拼接call_path,标记$foo_2_res为污点</li>
+</ul></li>
+<li><code>$foo_2_res = foo_1($foo_2_param);</code>: 拼接call_path,标记$foo_2_res为污点</li>
 <li><code>function foo_2($foo_2_param)</code>: 污点传入标记的Parameter, 返回call_path</li>
-</ul>
-</li>
-<li><code>    $pass_1 = foo_2($pass_2)</code>: 标记$pass_1为污点</li>
-<li><code> $pass_2 = $_GET[&#39;id&#39;];</code>: 找到source点，输出vulPath</li>
+</ul></li>
+<li><code>$pass_1 = foo_2($pass_2)</code>: 标记$pass_1为污点</li>
+<li><code>$pass_2 = $_GET['id'];</code>: 找到source点，输出vulPath</li>
 </ul>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2020/09/09/taint/" data-id="cl1elu1o0001ljnw5gl90dmit" data-title="taint" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2020/09/09/taint/" data-id="cl1q1rwco001majw59oxmercj" data-title="taint" class="article-share-link">Share</a>
       
       
       
@@ -327,13 +695,13 @@
     
     <div class="e-content article-entry" itemprop="articleBody">
       
-        <p>计算机和计算器的区别是什么？抛开体积、功能等等，我觉得最本质的区别还是处理的信息域。 计算器只有数学语言的有限编码，它更像是封装了计算机的一个处理数学符号的软件而已。 </p>
-<p>而为什么计算机可以处理几乎所有的信息域呢？计算机可以通过二进制的0和1，创造出更加丰富的编码来表示更多种类的信息。起初可能计算机和计算器没什么不同，只是在处理一些数学运算。但是人们想通过它来处理文字信息。 对于英文这种拼音文字，大小写52个，加上一些符号等等。首先我们要通过计算机表示这些符号，第一步就是要通过二进制去制定一个规则去表示(映射)他们。那么二进制中，1位可以携带两种信息，2位有2的二次方即4中组合来表示信息。那么8位是128个，装下日常看的英文信息应该够用了。为了保险，又扩展到8位刚好比较合适，能表示256种符号而且不会太大。ASCII码就是这么干的，当然可以其他的位数表示一个btye，但是现在通常来说，1btye&#x3D;8bits。</p>
+        <p>计算机和计算器的区别是什么？抛开体积、功能等等，我觉得最本质的区别还是处理的信息域。 计算器只有数学语言的有限编码，它更像是封装了计算机的一个处理数学符号的软件而已。</p>
+<p>而为什么计算机可以处理几乎所有的信息域呢？计算机可以通过二进制的0和1，创造出更加丰富的编码来表示更多种类的信息。起初可能计算机和计算器没什么不同，只是在处理一些数学运算。但是人们想通过它来处理文字信息。 对于英文这种拼音文字，大小写52个，加上一些符号等等。首先我们要通过计算机表示这些符号，第一步就是要通过二进制去制定一个规则去表示(映射)他们。那么二进制中，1位可以携带两种信息，2位有2的二次方即4中组合来表示信息。那么8位是128个，装下日常看的英文信息应该够用了。为了保险，又扩展到8位刚好比较合适，能表示256种符号而且不会太大。ASCII码就是这么干的，当然可以其他的位数表示一个btye，但是现在通常来说，1btye=8bits。</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2020/08/19/byte/" data-id="cl1elu1nm000gjnw51ao2919z" data-title="byte" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2020/08/19/byte/" data-id="cl1q1rwca000hajw55xs7cpmf" data-title="byte" class="article-share-link">Share</a>
       
       
       
@@ -368,103 +736,134 @@
     <div class="e-content article-entry" itemprop="articleBody">
       
         <p>抱着我一定要更新博客的决心， 我开始了RIPS折腾笔记。</p>
-<h1 id="0x00-背景"><a href="#0x00-背景" class="headerlink" title="0x00 背景"></a>0x00 背景</h1><p>PHP静态分析有个里程碑式的工具-RIPS，这个工具是最早Dahse博士提出来的， 现在早已闭源。</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125136.png" alt="截屏2020-08-12 下午12.11.26" style="zoom: 50%;" />
-
-<p>到0.55是开源的最后一个版本。 </p>
+<h1 id="x00-背景">0x00 背景</h1>
+<p>PHP静态分析有个里程碑式的工具-RIPS，这个工具是最早Dahse博士提出来的， 现在早已闭源。</p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125136.png" alt="截屏2020-08-12 下午12.11.26" style="zoom: 50%;" /></p>
+<p>到0.55是开源的最后一个版本。</p>
 <p>10年到17年期间，Dahse发表的文章有：</p>
 <ul>
 <li>2010 - RIPS-A static source code analyser for vulnerabilities in PHP scripts : 简单介绍RIPS工具，对应在0.3版本</li>
-<li>2014 -  Simulation of Built-in PHP Features for Precise Static Code Analysis:  发表在NDSS上， 如何模拟内建函数来精确静态分析</li>
+<li>2014 - Simulation of Built-in PHP Features for Precise Static Code Analysis: 发表在NDSS上， 如何模拟内建函数来精确静态分析</li>
 <li>2014 - Static Detection of Second-Order Vulnerabilities in Web Applications: 发表在USENIX上，二次注入漏洞探测问题。</li>
 <li>2014 - Code Reuse Attacks in PHP: Automated POP Chain Generatio: 发表在CCS上，POP链探测</li>
 <li>2015 - Experience report: an empirical study of PHP security mechanism usage: 一个软工的B</li>
-<li>2016 - Thesis. Static Detection of Complex Vulnerabilities in Modern PHP Applications: 总结性的文章，毕业了…</li>
+<li>2016 - Thesis. Static Detection of Complex Vulnerabilities in Modern PHP Applications: 总结性的文章，毕业了...</li>
 </ul>
 <p>不得不说， 时间点卡的非常好， 10-15年正是PHP发展火爆的上升期，在14年发表了三篇也是醉了。如今四大上关注PHP的文章寥寥。</p>
-<hr>
-<h1 id="0x01-0-32版本工作流程"><a href="#0x01-0-32版本工作流程" class="headerlink" title="0x01 0.32版本工作流程"></a>0x01 0.32版本工作流程</h1><p>能找的最早版本，是RIPS-0.32，从这一版开始，结合文章资料开始分析，看RIPS是如何发展起来的。(此时还没有相对复杂的前端)</p>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125142.png" alt="截屏2020-08-12 下午3.32.16"></p>
+<hr />
+<h1 id="x01-0.32版本工作流程">0x01 0.32版本工作流程</h1>
+<p>能找的最早版本，是RIPS-0.32，从这一版开始，结合文章资料开始分析，看RIPS是如何发展起来的。(此时还没有相对复杂的前端)</p>
+<figure>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125142.png" alt="截屏2020-08-12 下午3.32.16" /><figcaption aria-hidden="true">截屏2020-08-12 下午3.32.16</figcaption>
+</figure>
 <p>目录相对也简单， 直接index.php入口，也没有正则搜索功能了(虽然我平时只用这个)。</p>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125147.png" alt="截屏2020-08-12 下午3.38.13"></p>
+<figure>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125147.png" alt="截屏2020-08-12 下午3.38.13" /><figcaption aria-hidden="true">截屏2020-08-12 下午3.38.13</figcaption>
+</figure>
 <p>画风可以说非常的清气，板正。</p>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125149.gif" alt="6a04b428gy1g0zyyluaozg203j036no9"></p>
+<figure>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125149.gif" alt="6a04b428gy1g0zyyluaozg203j036no9" /><figcaption aria-hidden="true">6a04b428gy1g0zyyluaozg203j036no9</figcaption>
+</figure>
 <p>看代码入口处：</p>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125152.png" alt="截屏2020-08-12 下午3.42.20"></p>
+<figure>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125152.png" alt="截屏2020-08-12 下午3.42.20" /><figcaption aria-hidden="true">截屏2020-08-12 下午3.42.20</figcaption>
+</figure>
 <p>导入config里是一些需要使用的数据；functions里是处理token，扫描和输出三个功能；classes是定义了几个需要使用的数据结构(以类的形式，其实更像是结构体)。</p>
 <p>根据作者的污点分析论述，此版本RIPS有139个PVFs(潜在漏洞函数)，首先第一步找到这些漏洞函数，这些PVFs标记在<code>config/PVF.php</code>中，如一个命令执行：</p>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125153.png" alt="截屏2020-08-12 下午3.52.20"></p>
+<figure>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125153.png" alt="截屏2020-08-12 下午3.52.20" /><figcaption aria-hidden="true">截屏2020-08-12 下午3.52.20</figcaption>
+</figure>
 <p>我们扫描这样一段代码：</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125157.png" alt="截屏2020-08-14 下午3.28.27" style="zoom:50%;" />
-
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125157.png" alt="截屏2020-08-14 下午3.28.27" style="zoom:50%;" /></p>
 <p>看到没，这是一个命令执行，最后输出：</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125201.png" alt="截屏2020-08-14 下午3.29.18" style="zoom: 67%;" />
-
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125201.png" alt="截屏2020-08-14 下午3.29.18" style="zoom: 67%;" /></p>
 <p>从效果上看，是一个完整有效的污点分析了噜， 大体来看这段代码的扫描是怎样实现的？ 大致分为三个阶段：读代码-&gt;token化-&gt;扫描。</p>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125204.png" alt="截屏2020-08-14 上午10.47.59"></p>
-<p>   RIPS将所有文件读入到$data，然后循环针对每一个文件进行scan_file。</p>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125209.png" alt="截屏2020-08-14 下午4.14.08"></p>
+<figure>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125204.png" alt="截屏2020-08-14 上午10.47.59" /><figcaption aria-hidden="true">截屏2020-08-14 上午10.47.59</figcaption>
+</figure>
+<p>RIPS将所有文件读入到$data，然后循环针对每一个文件进行scan_file。</p>
+<figure>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125209.png" alt="截屏2020-08-14 下午4.14.08" /><figcaption aria-hidden="true">截屏2020-08-14 下午4.14.08</figcaption>
+</figure>
 <blockquote>
 <p>file_name文件名， scan_functions目标PVFs，其他T开头的都是从tokens中读取的标识好的token集合。</p>
 </blockquote>
 <p>进入<code>scan_file</code>方法也就是进入了<code>functions/scan.php</code>这个文件中，它是扫描的主逻辑所在地，文件在此完成扫描。先进行token化代码然后在此之上进行一些处理</p>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125213.png" alt="截屏2020-08-14 下午4.25.13"></p>
+<figure>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125213.png" alt="截屏2020-08-14 下午4.25.13" /><figcaption aria-hidden="true">截屏2020-08-14 下午4.25.13</figcaption>
+</figure>
 <p>这里的<code>$lines_pointer</code>是一个<code>scan_file</code>里注册的一个局部变量，用来装目标源码的。总之做了一些处理，放入到<code>$tokens</code>这个就是待分析源吗的目标token，进行<code>prepare_tokens</code>和<code>fix_tokens</code>，这里使用token进行污点分析的一个很关键的点就是我们分析每一个token的时候可以通过当前token的标号在<code>$tokens</code>这个数组中随意提取周围的token以确定代码环境。这样我们就需要把<code>$tokens</code>进行一些处理，比如去掉空格这种东西，因为<code>$a=$b</code>有的人会加任意空格<code>$a = $b</code>这样我们计算这个表达式的时候比如扫描到了<code>$a</code>我们需要知道这是不是一个<code>declare</code>就要在<code>$tokens[i+1]</code>找等号。这些工作是在token处理中完成的(<code>prepare_tokens</code>)，然后这里是在一个基本块里的例子，<code>fix_tokens</code>没什么用所以先不理会。</p>
 <p>接下来就是扫描阶段：</p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="variable">$i</span>=<span class="number">0</span>; <span class="variable">$tokencount</span>=<span class="title function_ invoke__">count</span>(<span class="variable">$tokens</span>); <span class="variable">$i</span>&lt;<span class="variable">$tokencount</span>; <span class="variable">$i</span>++) <span class="comment">//遍历每一个token</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="variable">$token</span> = <span class="variable">$tokens</span>[<span class="variable">$i</span>]; <span class="comment">//此处既有当前token又保留了tokens可以随意提取周围token。</span></span><br><span class="line">  <span class="keyword">if</span> (<span class="title function_ invoke__">is_array</span>(<span class="variable">$token</span>))</span><br><span class="line">  &#123;</span><br><span class="line">    ...token是数组处理</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">else</span></span><br><span class="line">  &#123;</span><br><span class="line">    token不是数组处理</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
 <p>此处迭代每一个<code>$tokens</code>。分为数组和非数组两大块，每一块又分不同的情形：</p>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125219.png" alt="截屏2020-08-14 下午4.51.44"></p>
+<figure>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125219.png" alt="截屏2020-08-14 下午4.51.44" /><figcaption aria-hidden="true">截屏2020-08-14 下午4.51.44</figcaption>
+</figure>
 <p>这里简单记录了一下他的注释。针对每种情况的不同 RIPS有自己处理的case。</p>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125223.png" alt="截屏2020-08-14 下午5.09.07"></p>
+<figure>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125223.png" alt="截屏2020-08-14 下午5.09.07" /><figcaption aria-hidden="true">截屏2020-08-14 下午5.09.07</figcaption>
+</figure>
 <p>看对上边的代码进行扫描，起作用的token，看到这个最简单的污点追踪，分别有<code>variable declarations</code>和标红的<code>check if token is a function call and a function to scan</code></p>
-<h2 id="变量声明信息"><a href="#变量声明信息" class="headerlink" title="变量声明信息"></a>变量声明信息</h2><p>在扫描到第0个token的时候，进入这个判断:</p>
+<h2 id="变量声明信息">变量声明信息</h2>
+<p>在扫描到第0个token的时候，进入这个判断:</p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">else</span> <span class="keyword">if</span>( <span class="variable">$token_name</span> === T_VARIABLE</span><br><span class="line">					&amp;&amp; ( <span class="variable">$tokens</span>[<span class="variable">$i</span>+<span class="number">1</span>][<span class="number">0</span>] === <span class="string">&#x27;=&#x27;</span> || <span class="comment">// normal assignment</span></span><br><span class="line">					  (<span class="title function_ invoke__">in_array</span>(<span class="variable">$tokens</span>[<span class="variable">$i</span>+<span class="number">1</span>][<span class="number">0</span>], <span class="variable">$T_ASSIGNMENT</span>))  <span class="comment">// mathematical assignment</span></span><br><span class="line">					  || (<span class="variable">$tokens</span>[<span class="variable">$i</span>-<span class="number">1</span>][<span class="number">0</span>] === T_AS <span class="comment">// foreach($var as $key=&gt;$value)</span></span><br><span class="line">					   || (<span class="variable">$tokens</span>[<span class="variable">$i</span>-<span class="number">1</span>][<span class="number">0</span>] === T_DOUBLE_ARROW</span><br><span class="line">					    &amp;&amp; <span class="variable">$tokens</span>[<span class="variable">$i</span>-<span class="number">2</span>][<span class="number">0</span>] === T_VARIABLE)) </span><br><span class="line">					   || (<span class="variable">$tokens</span>[<span class="variable">$i</span>+<span class="number">1</span>] === <span class="string">&#x27;[&#x27;</span>  <span class="comment">// $foo[&#x27;a&#x27;], hard to check all keys and assignments</span></span><br><span class="line">					   <span class="comment">// example: $a[0][$i+$k] &amp;= $_GET[&#x27;a&#x27;];</span></span><br><span class="line">					   <span class="comment">// easier: the last token was an ending statement or beginning of the file</span></span><br><span class="line">					   &amp;&amp; (<span class="variable">$tokens</span>[<span class="variable">$i</span>-<span class="number">1</span>] === <span class="string">&#x27;&#125;&#x27;</span> || <span class="variable">$tokens</span>[<span class="variable">$i</span>-<span class="number">1</span>] === <span class="string">&#x27;&#123;&#x27;</span> </span><br><span class="line">						|| <span class="variable">$tokens</span>[<span class="variable">$i</span>-<span class="number">1</span>] === <span class="string">&#x27;;&#x27;</span> || !<span class="keyword">isset</span>(<span class="variable">$tokens</span>[<span class="variable">$i</span>-<span class="number">1</span>][<span class="number">0</span>]))) </span><br><span class="line">					  ) </span><br></pre></td></tr></table></figure>
-
-<p>这个条件很长， 为了涵盖所有变量声明的形式，此处是最简单的<code>normal assignment</code>也就是在<code>$tokens[$i+1][0]</code>处发现了<code>=</code>，即0号token是一个变量而1号token是一个’&#x3D;’也就是说这个变量是一个左值，他正在被注册，因此进入该逻辑，new 一个<code>varDeclare</code>来注册这个变量。</p>
+<p>这个条件很长， 为了涵盖所有变量声明的形式，此处是最简单的<code>normal assignment</code>也就是在<code>$tokens[$i+1][0]</code>处发现了<code>=</code>，即0号token是一个变量而1号token是一个'='也就是说这个变量是一个左值，他正在被注册，因此进入该逻辑，new 一个<code>varDeclare</code>来注册这个变量。</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php	</span><br><span class="line">// variable declarations = childs</span><br><span class="line">	class VarDeclare</span><br><span class="line">	&#123;</span><br><span class="line">		public $id;</span><br><span class="line">    	public $value;</span><br><span class="line">    	public $line;	</span><br><span class="line">		public $marker;</span><br><span class="line">		public $dependencies;</span><br><span class="line">		</span><br><span class="line">		function __construct($value = null) </span><br><span class="line">		&#123;</span><br><span class="line">			$this-&gt;id = 0;</span><br><span class="line">			$this-&gt;value = $value;</span><br><span class="line">			$this-&gt;line = &#x27;&#x27;;</span><br><span class="line">			$this-&gt;marker = 0;</span><br><span class="line">			$this-&gt;dependencies = array();</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
-
-
-
 <p>首先进入这个逻辑：</p>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125229.png" alt="截屏2020-08-14 下午5.27.13"></p>
+<figure>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125229.png" alt="截屏2020-08-14 下午5.27.13" /><figcaption aria-hidden="true">截屏2020-08-14 下午5.27.13</figcaption>
+</figure>
 <p>先经过getmultiline的处理（提取整句语句），然后注册一个对象，填数据。</p>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125235.png" alt="截屏2020-08-14 下午5.29.19"></p>
+<figure>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125235.png" alt="截屏2020-08-14 下午5.29.19" /><figcaption aria-hidden="true">截屏2020-08-14 下午5.29.19</figcaption>
+</figure>
 <p>然后把它插入到<code>$var_declares_global</code>中供之后分析使用(如果是函数内部的变量注册到<code>$var_declares_local</code>数组中)。同理，第7个token亦是如此。</p>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125237.png" alt="截屏2020-08-14 下午5.32.23"></p>
+<figure>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125237.png" alt="截屏2020-08-14 下午5.32.23" /><figcaption aria-hidden="true">截屏2020-08-14 下午5.32.23</figcaption>
+</figure>
 <p>这样我们便能拿到所有的变量声明信息。</p>
-<h2 id="PVF分析"><a href="#PVF分析" class="headerlink" title="PVF分析"></a>PVF分析</h2><p>当到走到第四行的<code>system</code>token后判断他是一个PVF。这是后就注册一个<code>VlnTreeNode</code>然后进行污点分析， 因为认为这个污点函数的参数是之前的变量传播的，与后边的token无关，因此触发一次污点分析。</p>
+<h2 id="pvf分析">PVF分析</h2>
+<p>当到走到第四行的<code>system</code>token后判断他是一个PVF。这是后就注册一个<code>VlnTreeNode</code>然后进行污点分析， 因为认为这个污点函数的参数是之前的变量传播的，与后边的token无关，因此触发一次污点分析。</p>
 <p>找到PVF system的token后， rips就开始生成一个<code>VulnTreeNode</code>对象，叫做<code>$new_find</code>，来记录这个污点链。</p>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125240.png" alt="截屏2020-08-12 下午4.34.39"></p>
+<figure>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125240.png" alt="截屏2020-08-12 下午4.34.39" /><figcaption aria-hidden="true">截屏2020-08-12 下午4.34.39</figcaption>
+</figure>
 <p>初始化了name，和lines(第4行的system)。接下来进行污点追踪，我们来看scan_parameter这个函数的标头：</p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">scan_parameter</span>(<span class="params"><span class="variable">$file_name</span>, <span class="variable">$mainparent</span>, <span class="variable">$parent</span>, <span class="variable">$var_name</span>, <span class="variable">$var_declares</span>, <span class="variable">$last_token_id</span>, <span class="variable">$var_declares_global</span>, <span class="variable">$function_params</span>, <span class="variable">$function_obj</span>, <span class="variable">$userinput</span>, <span class="variable">$F_SECURES</span>, <span class="variable">$return_scan</span>=<span class="literal">false</span></span>)</span></span><br><span class="line"><span class="function"></span></span><br></pre></td></tr></table></figure>
-
 <p>开始进入的时候<code>$mainparent</code>和<code>$parent</code> 都是由<code>$new_find</code>传来的:</p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$userinput</span> = <span class="title function_ invoke__">scan_parameter</span>(<span class="variable">$file_name</span>, <span class="variable">$new_find</span>, <span class="variable">$new_find</span>, <span class="variable">$trace_par_var</span>, <span class="variable">$var_declares_global</span>, <span class="variable">$i</span>+<span class="variable">$c</span>, <span class="literal">null</span>, <span class="keyword">array</span>(), <span class="literal">null</span>, <span class="literal">false</span>, <span class="variable">$scan_functions</span>[<span class="variable">$token_value</span>][<span class="number">1</span>]);</span><br></pre></td></tr></table></figure>
-
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125243.png" alt="截屏2020-08-14 下午9.20.34"></p>
-<p>这么进来了，<code>$trace_par_var</code>是第一个参数也就是<code>$b</code>，追踪这一个变量，直到找到相关的declare，然后递归…</p>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125246.png" alt="截屏2020-08-14 下午9.22.15"></p>
-<p>此时栈中有两个<code>scan_parameter</code>了， 第一个是<code>$b</code>，第二个是<code>$a</code>，此时<code>$mainparent</code>不变，而<code>$parent</code>更新， <code>$var_name</code>也是这一次递归的目标变量<code>$a</code>，继续…</p>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125250.png" alt="截屏2020-08-14 下午9.26.29"></p>
+<figure>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125243.png" alt="截屏2020-08-14 下午9.20.34" /><figcaption aria-hidden="true">截屏2020-08-14 下午9.20.34</figcaption>
+</figure>
+<p>这么进来了，<code>$trace_par_var</code>是第一个参数也就是<code>$b</code>，追踪这一个变量，直到找到相关的declare，然后递归...</p>
+<figure>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125246.png" alt="截屏2020-08-14 下午9.22.15" /><figcaption aria-hidden="true">截屏2020-08-14 下午9.22.15</figcaption>
+</figure>
+<p>此时栈中有两个<code>scan_parameter</code>了， 第一个是<code>$b</code>，第二个是<code>$a</code>，此时<code>$mainparent</code>不变，而<code>$parent</code>更新， <code>$var_name</code>也是这一次递归的目标变量<code>$a</code>，继续...</p>
+<figure>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125250.png" alt="截屏2020-08-14 下午9.26.29" /><figcaption aria-hidden="true">截屏2020-08-14 下午9.26.29</figcaption>
+</figure>
 <p>看一下三次递归：</p>
 <ul>
-<li><p>$last_token_id: 13-&gt;7-&gt;0</p>
-</li>
-<li><p>$var_name: $b-&gt;$a-&gt;$_GET[‘a’]</p>
-</li>
+<li><p>$last_token_id: 13-&gt;7-&gt;0</p></li>
+<li><p>$var_name: <span class="math inline">\(b-&gt;\)</span>a-&gt;$_GET['a']</p></li>
 </ul>
 <p>其中还有一些变量的变化还没有仔细去追。总之走到userinput之后，<code>scan_parameter</code>出栈的时候会通过<code>output.php</code>进行记录，然后整个结果展示粗来。</p>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125255.png" alt="截屏2020-08-12 下午4.41.00"></p>
+<figure>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125255.png" alt="截屏2020-08-12 下午4.41.00" /><figcaption aria-hidden="true">截屏2020-08-12 下午4.41.00</figcaption>
+</figure>
 <p>okay~ 大致是这样。</p>
-<h1 id="0x02-总结"><a href="#0x02-总结" class="headerlink" title="0x02 总结"></a>0x02 总结</h1><p>目前已经基本走通了一个基本块内的污点分析，做为一个完整的污点分析，你甭管在什么层面，用什么方法，只要能达到效果就成， 这里在token层面进行分析，判断条件写的也很复杂，主要就是想要通过对token环境的约束覆盖所有的情况来。那么接下来还要考虑控制语句(包括三元运算符)，过程间分析，OOP特性，语言动态特性…，总之，祝你幸福。</p>
+<h1 id="x02-总结">0x02 总结</h1>
+<p>目前已经基本走通了一个基本块内的污点分析，做为一个完整的污点分析，你甭管在什么层面，用什么方法，只要能达到效果就成， 这里在token层面进行分析，判断条件写的也很复杂，主要就是想要通过对token环境的约束覆盖所有的情况来。那么接下来还要考虑控制语句(包括三元运算符)，过程间分析，OOP特性，语言动态特性...，总之，祝你幸福。</p>
 <p>P.S. 本来想写完全分析的，有点长，有空再来篇新的。</p>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125300.jpg" alt="Unknown"></p>
+<figure>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125300.jpg" alt="Unknown" /><figcaption aria-hidden="true">Unknown</figcaption>
+</figure>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2020/08/12/rips/" data-id="cl1elu1nv0013jnw50cul6bh9" data-title="rips" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2020/08/12/rips/" data-id="cl1q1rwck0017ajw54y8z3j8t" data-title="rips" class="article-share-link">Share</a>
       
       
       
@@ -498,101 +897,77 @@
     
     <div class="e-content article-entry" itemprop="articleBody">
       
-        <ol start="7">
-<li><p>Relate Iterative Algorithm to Fixed Point Theorem 4:20</p>
-</li>
-<li><p>May&#x2F;Must Analysis, A Lattice View  26:10</p>
-</li>
-<li><p>MOP and Distributivity 64:30</p>
-</li>
-<li><p>Constant Propagation 80:40</p>
-</li>
+        <ol start="7" type="1">
+<li><p>Relate Iterative Algorithm to Fixed Point Theorem 4:20</p></li>
+<li><p>May/Must Analysis, A Lattice View 26:10</p></li>
+<li><p>MOP and Distributivity 64:30</p></li>
+<li><p>Constant Propagation 80:40</p></li>
 <li><p>Worklist Algorithm 102:00</p>
-<p>总结&amp;欢迎谭添老师</p>
-</li>
+<p>总结&amp;欢迎谭添老师</p></li>
 </ol>
-<h1 id="南大静态分析6"><a href="#南大静态分析6" class="headerlink" title="南大静态分析6"></a>南大静态分析6</h1><p>上回说到为了解决iterative algorithm中的三个问题， 我们引入了数学模型来进行形式化证明。 那么如何让在lattic上呈现的fixed point theorem与iterative algorithm关联起来呢？接下啦我们来看。</p>
+<h1 id="南大静态分析6">南大静态分析6</h1>
+<p>上回说到为了解决iterative algorithm中的三个问题， 我们引入了数学模型来进行形式化证明。 那么如何让在lattic上呈现的fixed point theorem与iterative algorithm关联起来呢？接下啦我们来看。</p>
 <p>首先回顾一下iterative algorithm的三个问题：</p>
-<h2 id="Review-The-Questions-We-Have-Seen-Before"><a href="#Review-The-Questions-We-Have-Seen-Before" class="headerlink" title="Review The Questions We Have Seen Before"></a>Review The Questions We Have Seen Before</h2><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-042842.png" alt="截屏2020-05-30 上午8.34.28 " style="zoom:60%;" />
-
+<h2 id="review-the-questions-we-have-seen-before">Review The Questions We Have Seen Before</h2>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-042842.png" alt="截屏2020-05-30 上午8.34.28 " style="zoom:60%;" /></p>
 <p>我们现在尝试回答三个问题。</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-042846.png" alt="截屏2020-07-29 上午8.56.22 " style="zoom:20%;" />
-
-
-
-
-
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-042846.png" alt="截屏2020-07-29 上午8.56.22 " style="zoom:20%;" /></p>
 <blockquote>
-<ol>
+<ol type="1">
 <li>算法一定能达到不动点吗？(lattice 上单调性问题)</li>
 <li>如果有不动点，只能有一个动点吗</li>
 <li>不定点是解吗</li>
 </ol>
 </blockquote>
-<h2 id="Relate-Iterative-Algorithm-to-Fixed-Point-Theorem"><a href="#Relate-Iterative-Algorithm-to-Fixed-Point-Theorem" class="headerlink" title="Relate Iterative Algorithm to Fixed-Point Theorem"></a>Relate Iterative Algorithm to Fixed-Point Theorem</h2><blockquote>
-<p> 04:20 </p>
+<h2 id="relate-iterative-algorithm-to-fixed-point-theorem">Relate Iterative Algorithm to Fixed-Point Theorem</h2>
+<blockquote>
+<p>04:20</p>
 </blockquote>
-<p>将<code>Iterative Algorithm</code>这个算法与<code>fixed point </code>进行关联(一种很intuition的证明)：</p>
+<p>将<code>Iterative Algorithm</code>这个算法与<code>fixed point</code>进行关联(一种很intuition的证明)：</p>
 <ul>
 <li>Iterative Algorithm</li>
 </ul>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-42857.png" alt="image-20210724073400818" style="zoom:8å0%;" />
-
-
-
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-42857.png" alt="image-20210724073400818" style="zoom:8å0%;" /></p>
 <ul>
 <li>Fixed point:</li>
 </ul>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-042849.png" alt="image-20210724073420227" style="zoom:33%;" />
-
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-042849.png" alt="image-20210724073420227" style="zoom:33%;" /></p>
 <p>将二者的已知条件进行关联， 首先iterative algorithm 也需定义一个Lattice:</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-042854.png" alt="image-20210724092616707" style="zoom:60%;" />
-
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-042854.png" alt="image-20210724092616707" style="zoom:60%;" /></p>
 <p>在算法的k-tuple中， 每一个节点对应一个Lattice, 那么所有节点形成的vector就是一个Lattice的product。 那么整个iterative algorithm作用的是一个product lattice。</p>
 <ul>
-<li><p>在product lattice (L, L, L…L)中， 如果每一个L都是finite的complete lattice（complete lattice不一定finite哦），那么他们构成的product lattice也是finite的complete lattice。</p>
-<p>通过此条我们就可以关联上不动点定理的第二个条件： <code>L is finite</code></p>
-</li>
+<li><p>在product lattice (L, L, L...L)中， 如果每一个L都是finite的complete lattice（complete lattice不一定finite哦），那么他们构成的product lattice也是finite的complete lattice。</p>
+<p>通过此条我们就可以关联上不动点定理的第二个条件： <code>L is finite</code></p></li>
 </ul>
-<p>现在我们来关联不动点定理的第一条件：<code>f: L-&gt;L is monotonic</code>, 如何说明，iterative  algorithm也是单调的呢？</p>
+<p>现在我们来关联不动点定理的第一条件：<code>f: L-&gt;L is monotonic</code>, 如何说明，iterative algorithm也是单调的呢？</p>
 <p>首先，iterative algorithm的function是什么呢？</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-042856.png" alt="image-20210724093452801" style="zoom:70%;" />
-
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-042856.png" alt="image-20210724093452801" style="zoom:70%;" /></p>
 <p>如上所言，在每一次迭代中，都会应用一个<code>function F</code>, 他由两部分构成：</p>
 <ul>
-<li><p>transfer function: 指定的transfer function, 根据IN[B],来进行kill和gen</p>
-</li>
-<li><p>join&#x2F;meet function: 在控制流上，进入下一个program point之前的并&#x2F;交操作</p>
+<li><p>transfer function: 指定的transfer function, 根据IN[B],来进行kill和gen</p></li>
+<li><p>join/meet function: 在控制流上，进入下一个program point之前的并/交操作</p>
 <blockquote>
-<p> e.g., F(iter1) &#x3D; (v1….vk)</p>
-</blockquote>
-</li>
+<p>e.g., F(iter1) = (v1....vk)</p>
+</blockquote></li>
 </ul>
 <p>有了F, 接下来证明他是monotonic的：</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-042901.png" alt="image-20210724094200039" style="zoom:50%;" />
-
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-042901.png" alt="image-20210724094200039" style="zoom:50%;" /></p>
 <p>首先第一条之前也说过，每一个transfer function在固定的program point上，由程序性质所决定kill和gen都是一样的， 所以他是单调的(OUT只会增加，不会减少)。</p>
 <p>再来证明第二条：</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-042902.png" alt="image-20210724094430990" style="zoom:50%;" />
-
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-042902.png" alt="image-20210724094430990" style="zoom:50%;" /></p>
 <p>这里的LXL是两条控制流path在进入program point之前进行merg, 也可以有多个(Actually the binary operator is a basic case), 我们只需要证明这个<code>basic case</code>是单调的就可以了。</p>
 <p>我们来证join是单调的：</p>
 <p>根绝我们之前对单调函数的定义:</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-042905.png" alt="image-20210723224024442" style="zoom:50%;" />
-
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-042905.png" alt="image-20210723224024442" style="zoom:50%;" /></p>
 <p>此时的function是一个join(U)操作， 因此，我们的function是证明:<img src="static-analysis-6-md/image-20210724095135553.png" alt="image-20210724095135553" style="zoom:50%;" />。</p>
 <p>join在lattice求的是任意两个元素的最小上界(least upper bond)，那么<code>yUz</code>是y的upper bound，同时也是z的upper bond。根据upper bound 的定义得到:<img src="static-analysis-6-md/image-20210724095550037.png" alt="image-20210724095550037" style="zoom:50%;" />, 根据偏序关系中的传递性，我们就可以得出: <img src="static-analysis-6-md/image-20210724095708642.png" alt="image-20210724095708642" style="zoom:50%;" />, 然后得到完整的证明:</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-042908.png" alt="image-20210724095809112" style="zoom:67%;" />
-
-<p>因为根据join(U)的定义, yUz是y和z的一个upper bound，那么y &lt;&#x3D; yUz。 之后通过偏序关系(&lt;&#x3D;)的传递性得到: x&lt;&#x3D;yUz。因此，yUz就是x,y,z的一个upper bound。</p>
-<p>根据join的定义xUz是least upper bound of x and z。 那么根据最小上界(least upper bound)的定义： xUz &lt;&#x3D; yUz。(最小上界“小于等于”任何一个上界)。</p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-042908.png" alt="image-20210724095809112" style="zoom:67%;" /></p>
+<p>因为根据join(U)的定义, yUz是y和z的一个upper bound，那么y &lt;= yUz。 之后通过偏序关系(&lt;=)的传递性得到: x&lt;=yUz。因此，yUz就是x,y,z的一个upper bound。</p>
+<p>根据join的定义xUz是least upper bound of x and z。 那么根据最小上界(least upper bound)的定义： xUz &lt;= yUz。(最小上界“小于等于”任何一个上界)。</p>
 <p>因此，现在将fixed point theorem的两个条件都和iterative algorithm有所关联了，那么就可以使用fixed point theorem 来说明之前提到的iterative algorithm for data flow analysis 上的问题。</p>
 <p>给出两个结论，我们的iterative algorithm根据不动点定理：</p>
- <img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-042910.png" alt="image-20210724100647990" style="zoom:70%;" />
-
-
-
-<ol>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-042910.png" alt="image-20210724100647990" style="zoom:70%;" /></p>
+<ol type="1">
 <li>算法保证一定能够达到fixed point</li>
 <li>达到的fixed point 要么是greatest fixed point, 要么是least fixed point</li>
 <li>探讨algorithm的一个复杂度的问题，如果前边两条成立，那么什么时候算法才能达到不动点呢？</li>
@@ -601,83 +976,56 @@
 <blockquote>
 <p>The <code>height of a lattice h</code> is the length of the longest path from Top to Bottom in the lattice.</p>
 </blockquote>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-042914.png" alt="image-20210724101157035" style="zoom:50%;" />
-
-<p>Lattice的高度就是从top到bottom找最长的路径，上图中是h&#x3D;3。</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-042917.png" alt="image-20210724103312667" style="zoom:70%;" />
-
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-042914.png" alt="image-20210724101157035" style="zoom:50%;" /></p>
+<p>Lattice的高度就是从top到bottom找最长的路径，上图中是h=3。</p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-042917.png" alt="image-20210724103312667" style="zoom:70%;" /></p>
 <p>第三个问题，就是说 The maximum iterations i, 最多的迭代次数，使得算法达到不动点(最坏的情况)。</p>
 <p>做一个假设， 每次iteration, 在lattice上的每一步都做一个最微小的变化： lattice只移动移一步(相当于每次只有一个node变化， 且每个node中只有一个0变成1)。</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044847.png" alt="image-20210724103609474" style="zoom:80%;" /> 
-
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044847.png" alt="image-20210724103609474" style="zoom:80%;" /></p>
 <p>每次都只变化一个节点，将一个0变为1，那么最坏的情况就是遍历所有节点，将所有位由0变成1：</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-042920.png" alt="image-20210724104202980" style="zoom:80%;" />
-
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-042920.png" alt="image-20210724104202980" style="zoom:80%;" /></p>
 <p>最多就有h*k次iterations。</p>
 <p>因此回答第三个问题：</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-042923.png" alt="image-20210724104308251" style="zoom:67%;" />
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h2 id="May-and-Must-Analysis-a-Lattice-View"><a href="#May-and-Must-Analysis-a-Lattice-View" class="headerlink" title="May and Must Analysis, a Lattice View"></a>May and Must Analysis, a Lattice View</h2><blockquote>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-042923.png" alt="image-20210724104308251" style="zoom:67%;" /></p>
+<h2 id="may-and-must-analysis-a-lattice-view">May and Must Analysis, a Lattice View</h2>
+<blockquote>
 <p>26:10</p>
 </blockquote>
-<h2 id="映射"><a href="#映射" class="headerlink" title="映射"></a>映射</h2><p>将一个power set做一个直观的映射</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-042927.png" alt="image-20210724110530341" style="zoom:30%;" />
-
+<h2 id="映射">映射</h2>
+<p>将一个power set做一个直观的映射</p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-042927.png" alt="image-20210724110530341" style="zoom:30%;" /></p>
 <p>这里假设this lattice is a reuslt of the product lattice, 因为每一点都有一组k-tuple, 每一个点他都是一个lattice元素，我们要更新的是所有值，所以他是一个product lattice。</p>
-<h3 id="May"><a href="#May" class="headerlink" title="May"></a>May</h3><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-042931.png" alt="截屏2020-08-13 上午8.50.36 " style="zoom:50%;" />
-
+<h3 id="may">May</h3>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-042931.png" alt="截屏2020-08-13 上午8.50.36 " style="zoom:50%;" /></p>
 <p>May analysis, 一般情况下是从bottom往top走， 一个lattice的bottom从may的角度来讲，就是一个<code>unsafe result</code>。 也就是说，</p>
 <blockquote>
 <p>无论是 may analysis 还是 must analysis都是从unsafe的result向safe的result来讲的。</p>
 </blockquote>
 <ul>
-<li><p>Unsafe result : 为什么May analysis的unsafe 是在bottom呢？ 以 reaching definition为例， no definitions can reach 意味着对于每一个variable, 都没有任何一个defintion能够reach到。</p>
-</li>
-<li><p>Safe but useless result: 以reaching definition为例，表示对于每一个variable, 所有的definitions都有可能reach。他是safe的，但是没有用。</p>
-</li>
+<li><p>Unsafe result : 为什么May analysis的unsafe 是在bottom呢？ 以 reaching definition为例， no definitions can reach 意味着对于每一个variable, 都没有任何一个defintion能够reach到。</p></li>
+<li><p>Safe but useless result: 以reaching definition为例，表示对于每一个variable, 所有的definitions都有可能reach。他是safe的，但是没有用。</p></li>
 </ul>
 <p>我们想知道，我们的分析停在unsafe result 和safe but useless result 中间的某个值， 我们需要引入另外一个值： Truth。</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-042934.png" alt="image-20210724114149446" style="zoom:30%;" />
-
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-042934.png" alt="image-20210724114149446" style="zoom:30%;" /></p>
 <p>Truth, 程序动态执行时无论在什么样的书如下所有可能取得值的一个动态值的集合。</p>
 <p>假设Lattice 上{a,c}是一个Truth的集合。 那么就可以画一条边界，如果是May的分析，就把a和c都包含。</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-042937.png" alt="image-20210724114733084" style="zoom:33%;" />
-
-
-
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-042937.png" alt="image-20210724114733084" style="zoom:33%;" /></p>
 <p>如何知道我们的分析会进入safe呢？</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-042939.png" alt="image-20210724114839906" style="zoom:33%;" />
-
-<p>静态分析有两个要素： </p>
-<ol>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-042939.png" alt="image-20210724114839906" style="zoom:33%;" /></p>
+<p>静态分析有两个要素：</p>
+<ol type="1">
 <li>data abstraction</li>
 <li>safe approximation</li>
 </ol>
 <p>我们在设计一个静态分析时，将merg与transfer functie 设置成safe的，也就是说，我们的设计保证了我们的分析结果一定会超过Truth这一点。</p>
 <p>进入safe之后何时停呢？</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-042942.png" alt="image-20210724115204556" style="zoom:33%;" />
-
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-042942.png" alt="image-20210724115204556" style="zoom:33%;" /></p>
 <p>我们的不动点可以有很多，但是虽然有很多不动点， 但是我们使用iterative alogrithm求解出的不动点，由我们之前给出的证明，iterative alogrithm求解出的不动点，一定是最小不动点(least fixed point)。</p>
 <p>那么我们得到的结果精度如何呢?</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-042944.png" alt="image-20210724115547408" style="zoom:30%;" />
-
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-042944.png" alt="image-20210724115547408" style="zoom:30%;" /></p>
 <p>无论是may还是must分析， 都是从准到不准走。 如上图，越往上的不动点越不准的，因为我们使用iterative algorithm能达到的是leaset fixed point, 那就是你能达到的所有结果中，最准的。这就是为什么一旦达到不动点，但是我们达到的fixed points里最准的(但他不一定是truth)。</p>
-<h3 id="MUST"><a href="#MUST" class="headerlink" title="MUST"></a>MUST</h3><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-042948.png" alt="截屏2020-08-13 上午8.54.34 " style="zoom:50%;" />
-
-
-
+<h3 id="must">MUST</h3>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-042948.png" alt="截屏2020-08-13 上午8.54.34 " style="zoom:50%;" /></p>
 <p>Must和May相反，一般是从Top(unsafe result)往下走到Bottom(Safe but unless result)。</p>
 <p>以available expressions为例，他是一个must analysis:</p>
 <ul>
@@ -689,98 +1037,80 @@
 <p>Safe approximate 中safe是先满足的条件，能达到fixed point是后满足的。</p>
 </blockquote>
 <p>合照：</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-042951.png" alt="image-20210724122023792" style="zoom:70%;" />
-
-
-
-
-
-<h2 id="How-Precise-Is-Our-Solution"><a href="#How-Precise-Is-Our-Solution" class="headerlink" title="How Precise Is Our Solution?"></a>How Precise Is Our Solution?</h2><blockquote>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-042951.png" alt="image-20210724122023792" style="zoom:70%;" /></p>
+<h2 id="how-precise-is-our-solution">How Precise Is Our Solution?</h2>
+<blockquote>
 <p>64:30</p>
 </blockquote>
 <p>谈到精度的衡量， 我们就需要一个方法：</p>
 <p>MOP: Meet-Over-All-Paths Solution(MOP)</p>
 <p>其中，meet也包括了join, 就是所有分支汇聚到一点的情况。 具体就是：</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-042954.png" alt="image-20210724151555790" style="zoom:30%;" />
-
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-042954.png" alt="image-20210724151555790" style="zoom:30%;" /></p>
 <p>在control flow graph 中 path就是从entry开始一堆statement构成的Path； 有Path就有Transfer function <code>Fp</code>:</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-042956.png" alt="image-20210724151716351" style="zoom:50%;" />
-
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-042956.png" alt="image-20210724151716351" style="zoom:50%;" /></p>
 <p>就是这条流上每一点的transfer function 的composition。</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-042959.png" alt="image-20210724151920020" style="zoom:20%;" />
-
-<p>MOP(Meet-Over-All-Paths Solution)就是枚举从Entry点到Si的所有path, 然后对每条Path应用<code>Fp</code>， 并将得到的结果join&#x2F;meet起来：</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043000.png" alt="image-20210724152233463" style="zoom:33%;" />
-
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-042959.png" alt="image-20210724151920020" style="zoom:20%;" /></p>
+<p>MOP(Meet-Over-All-Paths Solution)就是枚举从Entry点到Si的所有path, 然后对每条Path应用<code>Fp</code>， 并将得到的结果join/meet起来：</p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043000.png" alt="image-20210724152233463" style="zoom:33%;" /></p>
 <ul>
 <li>not fully precise: 观察一下，所有的paths, may be not executable（动态运行时，无论什么输入之下都不能走的路径），在MOP中merge了此类路径，就是误报，所以就not fully precise。</li>
 </ul>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043003.png" alt="image-20210724152410470" style="zoom:40%;" />
-
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043003.png" alt="image-20210724152410470" style="zoom:40%;" /></p>
 <ul>
 <li><p>Unbounded, and not enumerable: unbound就是说如果有循环的话，静态不可知循环终止(无边界)； not enumerable: 大型程序中，路径可能不可枚举的。</p>
- <img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043006.png" alt="image-20210724152837254" style="zoom:40%;" /></li>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043006.png" alt="image-20210724152837254" style="zoom:40%;" /></p></li>
 </ul>
 <p>所以我们静态得到MOP其实是impractical的。</p>
-<h3 id="Iterative-Algorithm-vs-MOP"><a href="#Iterative-Algorithm-vs-MOP" class="headerlink" title="Iterative Algorithm vs. MOP"></a>Iterative Algorithm vs. MOP</h3><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043008.png" alt="image-20210724153327700" style="zoom:50%;" />
-
+<h3 id="iterative-algorithm-vs.-mop">Iterative Algorithm vs. MOP</h3>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043008.png" alt="image-20210724153327700" style="zoom:50%;" /></p>
 <p>如图， 我们要求S4点的IN:</p>
 <p>使用<code>iteractive algorithm</code>, 在所有merge的时候，用join: <img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043010.png" alt="image-20210724153422673" style="zoom:20%;" /></p>
-<p>而使用<code>MOP(meet-over-all-paths)</code>的方法，是在每条path都算法之后，对每条path进行join:  <img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043014.png" alt="image-20210724153642260" style="zoom:20%;" /></p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043016.png" alt="image-20210724153730294" style="zoom:30%;" />
-
+<p>而使用<code>MOP(meet-over-all-paths)</code>的方法，是在每条path都算法之后，对每条path进行join: <img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043014.png" alt="image-20210724153642260" style="zoom:20%;" /></p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043016.png" alt="image-20210724153730294" style="zoom:30%;" /></p>
 <p>上图我们可以看到，红色部分和黄色部分iterative algorithm 和 MOP其实是一样的，我们进行抽象：</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043020.png" alt="image-20210724153845650" style="zoom:33%;" />
-
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043020.png" alt="image-20210724153845650" style="zoom:33%;" /></p>
 <p>iterative algorithm和MOP有什么关系呢?</p>
-<p> 证明:</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043023.png" alt="image-20210724154810672" style="zoom:30%;" />
-
+<p>证明:</p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043023.png" alt="image-20210724154810672" style="zoom:30%;" /></p>
 <ul>
-<li>根据最小上界(least upper bound)定义, 我们有： x join y即是x的上界又是y的上界 (x&lt;&#x3D;x u y and y &lt;&#x3D; x u y)。</li>
+<li>根据最小上界(least upper bound)定义, 我们有： x join y即是x的上界又是y的上界 (x&lt;=x u y and y &lt;= x u y)。</li>
 <li>因为一个transfer function是单调的，我们有：</li>
 <li><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043024.png" alt="image-20210724155201184" style="zoom:33%;" /></li>
 </ul>
 <p>根据偏序关系， 这就意味着F(x u y) 是F(x)和F(y)的upper bound。</p>
 <ul>
 <li><p>因为F(x)uF(y)是F(x)和F(y)的least upper bound, 所以我们有:</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043028.png" alt="image-20210724155421510" style="zoom:33%;" />
-</li>
-<li><p>左边就是MOP右边就是Ours &#x3D;&gt; MOP &lt;&#x3D; Ours</p>
-</li>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043028.png" alt="image-20210724155421510" style="zoom:33%;" /></p></li>
+<li><p>左边就是MOP右边就是Ours =&gt; MOP &lt;= Ours</p></li>
 </ul>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043029.png" alt="image-20210724155530412" style="zoom:33%;" />
-
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043029.png" alt="image-20210724155530412" style="zoom:33%;" /></p>
 <p>因此， MOP更准。</p>
 <p>上边证明出的MOP和Iteractive Algorithm(Ours)满足一个偏序关系， 那么偏序关系有一个自反性， 如果满足自反性，那么Iteractive Algorithm就可以和MOP的精度相同。</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043035.png" alt="image-20210724155905712" style="zoom:25%;" />
-
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043035.png" alt="image-20210724155905712" style="zoom:25%;" /></p>
 <p>当Function是一个distributive(可分配性)的，就可以和MOP一样准：</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043031.png" alt="image-20210724160020053" style="zoom:30%;" />
-
-<p>之前的4个分析，都是distributive的； 这样一类操作都可以叫做Bit-vector problems(or Gen&#x2F;Kill problems)</p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043031.png" alt="image-20210724160020053" style="zoom:30%;" /></p>
+<p>之前的4个分析，都是distributive的； 这样一类操作都可以叫做Bit-vector problems(or Gen/Kill problems)</p>
 <blockquote>
 <p>这里一类问题的集合操作都可以用集合的union和intersection操作</p>
 </blockquote>
 <p>Bit-vector problems都是distributive的。</p>
 <p>那么有没有不是distributive的呢?(MOP更准)， 这里介绍了: <code>Constant Propagation</code>常量传播问题。</p>
-<h2 id="Constant-Propagation"><a href="#Constant-Propagation" class="headerlink" title="Constant Propagation"></a>Constant Propagation</h2><p>Define: </p>
+<h2 id="constant-propagation">Constant Propagation</h2>
+<p>Define:</p>
 <p>Given a variable x at program point p, determine whether x is <code>guaranteed</code> to hold a constant value at p.</p>
 <p>一个variable在某一点，是否保证x一定指向某一个常量。</p>
 <ul>
 <li>The OUT of each node in CFG, includes a set of pairs(x, v) where x is a variable and v is the value held by x after that node.</li>
 </ul>
-<p> 这里的data flow的每个点上是一个个的pairs, 他代表了variable与value的对应。</p>
+<p>这里的data flow的每个点上是一个个的pairs, 他代表了variable与value的对应。</p>
 <p>设计一个Constant Propagation的data flow analysis framework我们接下来考虑他的方向，格和transfer function:</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043038.png" alt="image-20210724161506207" style="zoom:33%;" />
-
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043038.png" alt="image-20210724161506207" style="zoom:33%;" /></p>
 <ul>
-<li><p>Data flow direction: 数据流的分析方向是前向的。</p>
-</li>
+<li><p>Data flow direction: 数据流的分析方向是前向的。</p></li>
 <li><p>Lattice:</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043041.png" alt="image-20210724165738837" style="zoom:33%;" /></li>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043041.png" alt="image-20210724165738837" style="zoom:33%;" /></p></li>
 </ul>
-<p>Lattice 来考虑两个构成部分:  Domain of the values; Meet Operator。</p>
+<p>Lattice 来考虑两个构成部分: Domain of the values; Meet Operator。</p>
 <p>首先看Domain:</p>
 <ul>
 <li>Bottom: NAC- 所有的variables都不是constants(safe but useless)</li>
@@ -788,53 +1118,42 @@
 </ul>
 <p>再来看Meet:</p>
 <ul>
-<li><p>NAC n V &#x3D; NAC， 不管V是啥，因为时safe的，汇聚点一定是NAC</p>
-</li>
-<li><p>UNDEF n V &#x3D; V， 这里说明一下，一般一个data flow analysis只负责一件事情，这里虽然有uninitialized variables的问题（汇聚后undef的值变成v了）。但是在以constant propagation为目的分析中，不影响。</p>
-</li>
-<li><p>c n v 分两种情况，如果常量相同就是c, 不同就是NAC</p>
-</li>
+<li><p>NAC n V = NAC， 不管V是啥，因为时safe的，汇聚点一定是NAC</p></li>
+<li><p>UNDEF n V = V， 这里说明一下，一般一个data flow analysis只负责一件事情，这里虽然有uninitialized variables的问题（汇聚后undef的值变成v了）。但是在以constant propagation为目的分析中，不影响。</p></li>
+<li><p>c n v 分两种情况，如果常量相同就是c, 不同就是NAC</p></li>
 </ul>
 <p>总结：</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043044.png" alt="image-20210724171008706" style="zoom:33%;" />
-
-
-
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043044.png" alt="image-20210724171008706" style="zoom:33%;" /></p>
 <p>再来看Transfer Function:</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043046.png" alt="image-20210724171459396" style="zoom:33%;" />
-
-
-
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043046.png" alt="image-20210724171459396" style="zoom:33%;" /></p>
 <p>Transfer Function中，比较特殊的是{(x, _)}, 因为元素是一个pair, 所以这里_是一个通配符，表示x无论指向什么，都会减去。</p>
 <p>我们用val(x), 来知道val指向的值：</p>
 <ul>
-<li>s: x &#x3D; c; gen{(x, c)}, x就指向c</li>
-<li>s: x&#x3D; y;(非constant), val(y)</li>
-<li>s: x &#x3D; y op z, 二元操作： 如果y, z 有一个是NAC，就是NAC， 有一个是UNDEF, 就是UNDEF, 如果两个都是常量val(y) op val(z)</li>
+<li>s: x = c; gen{(x, c)}, x就指向c</li>
+<li>s: x= y;(非constant), val(y)</li>
+<li>s: x = y op z, 二元操作： 如果y, z 有一个是NAC，就是NAC， 有一个是UNDEF, 就是UNDEF, 如果两个都是常量val(y) op val(z)</li>
 </ul>
 <p>注意transform function只影响assignment statement。</p>
 <p>下边说明contant propagation 不是distributivity:</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043049.png" alt="image-20210724172107062" style="zoom:33%;" />
-
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043049.png" alt="image-20210724172107062" style="zoom:33%;" /></p>
 <p>可以看到，F（XnY）时C是NAC， F(X)nF(Y)时C是10。</p>
 <blockquote>
 <p>从Lattice上看，此例中NAC在10下边，所以在这个must analysis中越往下越不准的，所以MOP更准一些。</p>
 </blockquote>
-<h2 id="Worklist-Algorithm"><a href="#Worklist-Algorithm" class="headerlink" title="Worklist Algorithm"></a>Worklist Algorithm</h2><p>worklist algorithm是iterative algorithm的一种优化。</p>
+<h2 id="worklist-algorithm">Worklist Algorithm</h2>
+<p>worklist algorithm是iterative algorithm的一种优化。</p>
 <blockquote>
 <p>在实际工作中，不会用iterative algorithm, 而worklist algorithm更实用一些。</p>
 </blockquote>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043052.png" alt="image-20210724172347184 " style="zoom:33%;" />
-
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043052.png" alt="image-20210724172347184 " style="zoom:33%;" /></p>
 <p>这里的终止条件要求，只要有一个basic block变化，就要让所有的basic block 都跑一遍，会有很多冗余。 而worklist的核心，就是只对那些可能变化的BB执行transfer function：</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043056.png" alt="image-20210724172559644" style="zoom:33%;" />
-
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043056.png" alt="image-20210724172559644" style="zoom:33%;" /></p>
 <p>黄色的是新增的， 我们每一次迭代用新的out和之前的out比较， 如果一个out变了，那么意味着所有后继(successors)的IN变了。 我们就讲所有后继的B加入Worklist，就可以避免了大量的冗余计算。✌️～</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2020/07/27/static-analysis-6-md/" data-id="cl1elu1nz001gjnw5bmzg5y6c" data-title="南大静态分析6" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2020/07/27/static-analysis-6-md/" data-id="cl1q1rwcn001iajw52jkahxq7" data-title="南大静态分析6" class="article-share-link">Share</a>
       
       
       
@@ -859,248 +1178,196 @@
     <div class="e-content article-entry" itemprop="articleBody">
       
         <p>放在这，没事儿了我就总结几个</p>
-<h1 id="1-child-nodes"><a href="#1-child-nodes" class="headerlink" title="1 child nodes"></a>1 child nodes</h1><h2 id="AST-VAR"><a href="#AST-VAR" class="headerlink" title="AST_VAR"></a>AST_VAR</h2><p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044304.png" alt="截屏2020-07-14 下午4.07.05"></p>
+<h1 id="child-nodes">1 child nodes</h1>
+<h2 id="ast_var">AST_VAR</h2>
+<figure>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044304.png" alt="截屏2020-07-14 下午4.07.05" /><figcaption aria-hidden="true">截屏2020-07-14 下午4.07.05</figcaption>
+</figure>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$var</span></span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="AST-ECHO"><a href="#AST-ECHO" class="headerlink" title="AST_ECHO"></a>AST_ECHO</h2><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044306.png" alt="截屏2020-07-27 下午3.42.44" style="zoom:50%;" />
-
-
-
-
-
-<h1 id="2-child-nodes"><a href="#2-child-nodes" class="headerlink" title="2 child nodes"></a>2 child nodes</h1><h2 id="AST-CALL"><a href="#AST-CALL" class="headerlink" title="AST_CALL"></a>AST_CALL</h2><blockquote>
+<h2 id="ast_echo">AST_ECHO</h2>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044306.png" alt="截屏2020-07-27 下午3.42.44" style="zoom:50%;" /></p>
+<h1 id="child-nodes-1">2 child nodes</h1>
+<h2 id="ast_call">AST_CALL</h2>
+<blockquote>
 <p>函数调用点</p>
 </blockquote>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044310.png" alt="截屏2020-06-01 下午5.41.28" style="zoom:50%;" />
-
-
-
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044310.png" alt="截屏2020-06-01 下午5.41.28" style="zoom:50%;" /></p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$a</span> = <span class="title function_ invoke__">foo</span>(<span class="string">&#x27;a&#x27;</span>);</span><br></pre></td></tr></table></figure>
-
 <ul>
-<li>child0:  ARG_LIST - 参数列表 </li>
-<li>child1:  调用函数名</li>
+<li>child0: ARG_LIST - 参数列表</li>
+<li>child1: 调用函数名</li>
 </ul>
-<h2 id="AST-DIM"><a href="#AST-DIM" class="headerlink" title="AST_DIM"></a>AST_DIM</h2><blockquote>
+<h2 id="ast_dim">AST_DIM</h2>
+<blockquote>
 <p>数组引用</p>
 </blockquote>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2020-06-29-123109.png" alt="截屏2020-06-01 下午5.48.46" style="zoom:50%;" />
-
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2020-06-29-123109.png" alt="截屏2020-06-01 下午5.48.46" style="zoom:50%;" /></p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$a</span> = foo[<span class="string">&#x27;a&#x27;</span>];</span><br></pre></td></tr></table></figure>
-
-
-
 <ul>
-<li>child0:  数组名</li>
-<li>child1:  索引值</li>
+<li>child0: 数组名</li>
+<li>child1: 索引值</li>
 </ul>
-<h2 id="ZEND-AST-PROP"><a href="#ZEND-AST-PROP" class="headerlink" title="ZEND_AST_PROP"></a>ZEND_AST_PROP</h2><blockquote>
+<h2 id="zend_ast_prop">ZEND_AST_PROP</h2>
+<blockquote>
 <p>属性调用</p>
 </blockquote>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2020-06-29-123113.png" alt="截屏2020-06-20 下午4.39.26" style="zoom:67%;" />
-
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2020-06-29-123113.png" alt="截屏2020-06-20 下午4.39.26" style="zoom:67%;" /></p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$obj</span>-&gt;val;</span><br></pre></td></tr></table></figure>
-
-
-
 <ul>
 <li>child0: objetct_name</li>
 <li>child1: attr</li>
 </ul>
-<h2 id="ZEND-AST-WHILE"><a href="#ZEND-AST-WHILE" class="headerlink" title="ZEND_AST_WHILE"></a>ZEND_AST_WHILE</h2><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2020-06-29-123116.png" alt="截屏2020-06-20 下午4.42.05" style="zoom:67%;" />
-
+<h2 id="zend_ast_while">ZEND_AST_WHILE</h2>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2020-06-29-123116.png" alt="截屏2020-06-20 下午4.42.05" style="zoom:67%;" /></p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span>(<span class="variable">$a</span>==<span class="number">1</span>)&#123;</span><br><span class="line">  [stmt_list]...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-
 <ul>
 <li>child0: condtion</li>
 <li>child1: stmt_list</li>
 </ul>
-<h2 id="AST-IF-ELEMET"><a href="#AST-IF-ELEMET" class="headerlink" title="AST_IF_ELEMET"></a>AST_IF_ELEMET</h2><blockquote>
+<h2 id="ast_if_elemet">AST_IF_ELEMET</h2>
+<blockquote>
 <p>区别于AST_IF</p>
 </blockquote>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2020-07-14-083801.png" alt="截屏2020-07-14 下午4.37.36" style="zoom:67%;" />
-
-
-
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2020-07-14-083801.png" alt="截屏2020-07-14 下午4.37.36" style="zoom:67%;" /></p>
 <p>AST_IF这个list下连接的每一个分支都由一个IF_ELEMENT进入。</p>
 <ul>
 <li>Child0 :条件判定式</li>
 <li>Child1: 代码语句块</li>
 </ul>
-<h2 id="AST-BINARY-OP"><a href="#AST-BINARY-OP" class="headerlink" title="AST_BINARY_OP"></a>AST_BINARY_OP</h2><blockquote>
+<h2 id="ast_binary_op">AST_BINARY_OP</h2>
+<blockquote>
 <p>二元操作</p>
 </blockquote>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2020-07-14-085207.png" alt="截屏2020-07-14 下午4.51.41" style="zoom:67%;" />
-
-
-
-<p>控制流、数据流走判定表达式的话都是直接连这个点。代表整个二元操作表达式。 </p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2020-07-14-085207.png" alt="截屏2020-07-14 下午4.51.41" style="zoom:67%;" /></p>
+<p>控制流、数据流走判定表达式的话都是直接连这个点。代表整个二元操作表达式。</p>
 <p>在PHP-AST这个项目中， 此点有flags字段，决定作用方法：</p>
-<p><a target="_blank" rel="noopener" href="https://github.com/nikic/php-ast/blob/1b5d767dd326f535288786130b2215744feb2cbf/tests/metadata.phpt#L97">https://github.com/nikic/php-ast/blob/1b5d767dd326f535288786130b2215744feb2cbf/tests/metadata.phpt#L97</a></p>
+<p>https://github.com/nikic/php-ast/blob/1b5d767dd326f535288786130b2215744feb2cbf/tests/metadata.phpt#L97</p>
 <ul>
-<li><p>位逻辑运算 BINARY_BITWISE_OR, BINARY_BITWISE_AND, BINARY_BITWISE_XOR, </p>
-</li>
-<li><p>布尔逻辑运算 BINARY_BOOL_AND, BINARY_BOOL_OR, BINARY_BOOL_XOR,</p>
-</li>
-<li><p>算术运算 BINARY_ADD, BINARY_SUB, BINARY_MUL, BINARY_DIV, BINARY_MOD, BINARY_POW, </p>
-</li>
-<li><p>位运算 BINARY_SHIFT_LEFT, BINARY_SHIFT_RIGHT,</p>
-</li>
-<li><p>相等关系运算 BINARY_IS_EQUAL, BINARY_IS_NOT_EQUAL,</p>
-</li>
-<li><p>小于关系运算 BINARY_IS_SMALLER, BINARY_IS_SMALLER_OR_EQUAL, </p>
-</li>
-<li><p>等于运算 BINARY_IS_GREATER, BINARY_IS_GREATER_OR_EQUAL,</p>
-</li>
-<li><p>连接操作 BINARY_CONCAT, </p>
-</li>
-<li><p>其他(就是还不懂) BINARY_COALESCE,BINARY_IS_IDENTICAL, BINARY_IS_NOT_IDENTICAL, BINARY_SPACESHIP</p>
-</li>
+<li><p>位逻辑运算 BINARY_BITWISE_OR, BINARY_BITWISE_AND, BINARY_BITWISE_XOR,</p></li>
+<li><p>布尔逻辑运算 BINARY_BOOL_AND, BINARY_BOOL_OR, BINARY_BOOL_XOR,</p></li>
+<li><p>算术运算 BINARY_ADD, BINARY_SUB, BINARY_MUL, BINARY_DIV, BINARY_MOD, BINARY_POW,</p></li>
+<li><p>位运算 BINARY_SHIFT_LEFT, BINARY_SHIFT_RIGHT,</p></li>
+<li><p>相等关系运算 BINARY_IS_EQUAL, BINARY_IS_NOT_EQUAL,</p></li>
+<li><p>小于关系运算 BINARY_IS_SMALLER, BINARY_IS_SMALLER_OR_EQUAL,</p></li>
+<li><p>等于运算 BINARY_IS_GREATER, BINARY_IS_GREATER_OR_EQUAL,</p></li>
+<li><p>连接操作 BINARY_CONCAT,</p></li>
+<li><p>其他(就是还不懂) BINARY_COALESCE,BINARY_IS_IDENTICAL, BINARY_IS_NOT_IDENTICAL, BINARY_SPACESHIP</p></li>
 </ul>
-<h2 id="AST-ASSIGN"><a href="#AST-ASSIGN" class="headerlink" title="AST_ASSIGN"></a>AST_ASSIGN</h2><p>另一个非常常见的两孩子点，就是赋值语句。当然， 左值和右值。</p>
-<p> 数据流最爱连接的节点：</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2020-07-14-090810.png" alt="截屏2020-07-14 下午5.07.42" style="zoom:67%;" />
-
-
-
-
-
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2020-07-14-090953.png" alt="截屏2020-07-14 下午5.09.18" style="zoom:67%;" />
-
+<h2 id="ast_assign">AST_ASSIGN</h2>
+<p>另一个非常常见的两孩子点，就是赋值语句。当然， 左值和右值。</p>
+<p>数据流最爱连接的节点：</p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2020-07-14-090810.png" alt="截屏2020-07-14 下午5.07.42" style="zoom:67%;" /></p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2020-07-14-090953.png" alt="截屏2020-07-14 下午5.09.18" style="zoom:67%;" /></p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$a</span> = <span class="title function_ invoke__">foo</span>();</span><br></pre></td></tr></table></figure>
-
 <ul>
 <li>0child:左值(通常是变量)</li>
 <li>1child: 右值(一波操作)</li>
 </ul>
 <p>追踪数据流变量在这一级上追踪。</p>
-<h2 id="AST-ARRAY-ELEMENT"><a href="#AST-ARRAY-ELEMENT" class="headerlink" title="AST_ARRAY_ELEMENT"></a>AST_ARRAY_ELEMENT</h2><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044347.png" alt="截屏2020-07-27 下午9.26.11" style="zoom:67%;" />
-
-
-
+<h2 id="ast_array_element">AST_ARRAY_ELEMENT</h2>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044347.png" alt="截屏2020-07-27 下午9.26.11" style="zoom:67%;" /></p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$arr</span> = <span class="keyword">array</span>(</span><br><span class="line">    <span class="string">&#x27;a&#x27;</span> =&gt; <span class="string">&#x27;1&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;b&#x27;</span> =&gt; <span class="string">&#x27;2&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;c&#x27;</span> =&gt; <span class="string">&#x27;3&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;d&#x27;</span> =&gt; <span class="string">&#x27;4&#x27;</span>,</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
-
-
-
-
-
-<h1 id="3-child-nodes"><a href="#3-child-nodes" class="headerlink" title="3 child nodes"></a>3 child nodes</h1><h2 id="AST-METHOD-CALL"><a href="#AST-METHOD-CALL" class="headerlink" title="AST_METHOD_CALL"></a>AST_METHOD_CALL</h2><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2020-06-29-123118.png" alt="截屏2020-06-20 下午4.52.15" style="zoom:67%;" />
-
-
-
+<h1 id="child-nodes-2">3 child nodes</h1>
+<h2 id="ast_method_call">AST_METHOD_CALL</h2>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2020-06-29-123118.png" alt="截屏2020-06-20 下午4.52.15" style="zoom:67%;" /></p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$stu</span>-&gt;<span class="title function_ invoke__">getScore</span>(<span class="string">&#x27;math&#x27;</span>);</span><br></pre></td></tr></table></figure>
-
 <ul>
-<li>child0: var:stu &#x2F;&#x2F;比AST_CALL多一个对象名</li>
-<li>child1: name: getScore </li>
-<li>child2: args:math &#x2F;&#x2F;arg list</li>
+<li>child0: var:stu //比AST_CALL多一个对象名</li>
+<li>child1: name: getScore</li>
+<li>child2: args:math //arg list</li>
 </ul>
-<h2 id="AST-STATIC-CALL"><a href="#AST-STATIC-CALL" class="headerlink" title="AST_STATIC_CALL"></a>AST_STATIC_CALL</h2><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2020-06-29-123122.png" alt="截屏2020-06-20 下午5.00.15" style="zoom:67%;" />
-
-
-
+<h2 id="ast_static_call">AST_STATIC_CALL</h2>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2020-06-29-123122.png" alt="截屏2020-06-20 下午5.00.15" style="zoom:67%;" /></p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">stu::<span class="title function_ invoke__">getScore</span>(<span class="string">&#x27;math&#x27;</span>);</span><br></pre></td></tr></table></figure>
-
 <ul>
-<li>child0: class:stu （直接指向该类） </li>
+<li>child0: class:stu （直接指向该类）</li>
 <li>child1: name: getScore</li>
 <li>child2: args: math</li>
 </ul>
-<h2 id="AST-CONDITIONAL"><a href="#AST-CONDITIONAL" class="headerlink" title="AST_CONDITIONAL"></a>AST_CONDITIONAL</h2><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2020-06-29-123125.png" alt="截屏2020-06-20 下午5.05.39" style="zoom:67%;" />
-
-
-
-
-
-<h1 id="4-child-nodes"><a href="#4-child-nodes" class="headerlink" title="4 child nodes"></a>4 child nodes</h1><h2 id="AST-FOREACH"><a href="#AST-FOREACH" class="headerlink" title="AST_FOREACH"></a>AST_FOREACH</h2><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2020-06-29-123130.png" alt="截屏2020-06-20 下午3.42.11" style="zoom:67%;" />
-
+<h2 id="ast_conditional">AST_CONDITIONAL</h2>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2020-06-29-123125.png" alt="截屏2020-06-20 下午5.05.39" style="zoom:67%;" /></p>
+<h1 id="child-nodes-3">4 child nodes</h1>
+<h2 id="ast_foreach">AST_FOREACH</h2>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2020-06-29-123130.png" alt="截屏2020-06-20 下午3.42.11" style="zoom:67%;" /></p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">foreach</span>(<span class="variable">$arr</span> <span class="keyword">as</span> <span class="variable">$k</span> =&gt; <span class="variable">$v</span>)&#123;</span><br><span class="line">     <span class="keyword">echo</span> <span class="variable">$k</span>.<span class="variable">$v</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
 <ul>
 <li>child0: expr: $arr</li>
 <li>child1: keyVar: $k</li>
 <li>child2: valueVar: $v</li>
 <li>child3: stmts: 代码块list (ZEND_AST_STMT_LIST)</li>
 </ul>
-<h2 id="ZEND-AST-FOR"><a href="#ZEND-AST-FOR" class="headerlink" title="ZEND_AST_FOR"></a>ZEND_AST_FOR</h2><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2020-06-29-123134.png" alt="截屏2020-06-20 下午3.50.18" style="zoom:67%;" />
-
-
-
+<h2 id="zend_ast_for">ZEND_AST_FOR</h2>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2020-06-29-123134.png" alt="截屏2020-06-20 下午3.50.18" style="zoom:67%;" /></p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="variable">$i</span>=<span class="number">0</span>; <span class="variable">$i</span>&lt;=<span class="number">1</span>; <span class="variable">$i</span>++)</span><br><span class="line">&#123;</span><br><span class="line">  <span class="keyword">echo</span> <span class="variable">$i</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
 <ul>
-<li>child0: init: $i&#x3D;0</li>
-<li>child1: condtion: $i&lt;&#x3D;1</li>
+<li>child0: init: $i=0</li>
+<li>child1: condtion: $i&lt;=1</li>
 <li>child2: loop: $i++</li>
-<li>child3:  代码块list (ZEND_AST_STMT_LIST)</li>
+<li>child3: 代码块list (ZEND_AST_STMT_LIST)</li>
 </ul>
-<h1 id="list-nodes"><a href="#list-nodes" class="headerlink" title="list nodes"></a>list nodes</h1><p>AST_ARG_LIST &#x3D; 1    &#x2F;&#x2F;函数参数列表（实参）</p>
-<p>AST_ARRAY &#x2F;&#x2F;数组成员列表</p>
-<img src="PHP-AST/%E6%88%AA%E5%B1%8F2020-07-27%20%E4%B8%8B%E5%8D%889.26.11-5856522.png" alt="截屏2020-07-27 下午9.26.11" style="zoom:67%;" />
-
+<h1 id="list-nodes">list nodes</h1>
+<p>AST_ARG_LIST = 1 //函数参数列表（实参）</p>
+<p>AST_ARRAY //数组成员列表</p>
+<p><img src="PHP-AST/%E6%88%AA%E5%B1%8F2020-07-27%20%E4%B8%8B%E5%8D%889.26.11-5856522.png" alt="截屏2020-07-27 下午9.26.11" style="zoom:67%;" /></p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$arr</span> = <span class="keyword">array</span>(</span><br><span class="line">    <span class="string">&#x27;a&#x27;</span> =&gt; <span class="string">&#x27;1&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;b&#x27;</span> =&gt; <span class="string">&#x27;2&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;c&#x27;</span> =&gt; <span class="string">&#x27;3&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;d&#x27;</span> =&gt; <span class="string">&#x27;4&#x27;</span>,</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
-
-
-
 <p>AST_EXPR_LIST</p>
-<p>AST_STMT_LIST &#x2F;&#x2F;表达式块</p>
-<p>AST_IF &#x2F;&#x2F;if判断条件列表</p>
-<p>AST_SWITCH_LIST </p>
+<p>AST_STMT_LIST //表达式块</p>
+<p>AST_IF //if判断条件列表</p>
+<p>AST_SWITCH_LIST</p>
 <p>AST_CATCH_LIST</p>
-<p>AST_PARAM_LIST &#x2F;&#x2F;形参</p>
+<p>AST_PARAM_LIST //形参</p>
 <p>AST_CLOSURE_USES</p>
 <p>AST_PROP_DECL</p>
 <p>AST_CONST_DECL</p>
 <p>AST_CLASS_CONST</p>
-<p>AST_NAME_LIST<br>AST_TRAIT_ADAPTATIONS<br>AST_USE<br>AST_TYPE_UNION<br>AST_ATTRIBUTE_LIST</p>
-<h2 id="AST-STMT-LIST"><a href="#AST-STMT-LIST" class="headerlink" title="AST_STMT_LIST"></a>AST_STMT_LIST</h2><blockquote>
+<p>AST_NAME_LIST AST_TRAIT_ADAPTATIONS AST_USE AST_TYPE_UNION AST_ATTRIBUTE_LIST</p>
+<h2 id="ast_stmt_list">AST_STMT_LIST</h2>
+<blockquote>
 <p>最常见的块</p>
 </blockquote>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2020-07-14-093758.png" alt="截屏2020-07-14 下午5.30.15" style="zoom:67%;" />
-
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2020-07-14-093758.png" alt="截屏2020-07-14 下午5.30.15" style="zoom:67%;" /></p>
 <p>儿孙满堂， 一般从这个点跳到块中各个语句中。</p>
-<h2 id="AST-IF-LIST"><a href="#AST-IF-LIST" class="headerlink" title="AST_IF_LIST"></a>AST_IF_LIST</h2><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2020-07-14-093754.png" alt="截屏2020-07-14 下午5.14.28" style="zoom:67%;" />
-
-<hr>
+<h2 id="ast_if_list">AST_IF_LIST</h2>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2020-07-14-093754.png" alt="截屏2020-07-14 下午5.14.28" style="zoom:67%;" /></p>
+<hr />
 <p>一个分支结构的入口， 因为分支结构是不确定的， 所以是list，从这个点可以纵览分支结构有几个。一般不连控制流边(控制流边一般练到数据操作表达式点上如BINARY_OP，ASSIGN)。</p>
 <p>下边的每一个分支入口，都是一个AST_IF（二元）:</p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">AST_IF-&gt; <span class="number">0</span>child(AST_IF_ELEMENT0)</span><br><span class="line">       -&gt; <span class="number">1</span>child(AST_IFELEMENT1)</span><br><span class="line"><span class="keyword">if</span>(<span class="number">0</span>child)&#123;</span><br><span class="line">  <span class="number">1</span>child;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">else</span> <span class="number">0</span>child:<span class="literal">null</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="number">1</span>child;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
 <p>注: AST没有else节点，每个分支块都是一个AST_IF。</p>
-<h1 id="declaration-nodes"><a href="#declaration-nodes" class="headerlink" title="declaration nodes"></a>declaration nodes</h1><p>声明式语句</p>
+<h1 id="declaration-nodes">declaration nodes</h1>
+<p>声明式语句</p>
 <table>
 <thead>
-<tr>
-<th>&#x2F;* declaration nodes *&#x2F;</th>
+<tr class="header">
+<th>/* declaration nodes */</th>
 <th></th>
 </tr>
 </thead>
-<tbody><tr>
+<tbody>
+<tr class="odd">
 <td>ZEND_AST_FUNC_DECL</td>
 <td></td>
 </tr>
-<tr>
+<tr class="even">
 <td>ZEND_AST_CLOSURE</td>
 <td></td>
 </tr>
-<tr>
+<tr class="odd">
 <td>ZEND_AST_METHOD</td>
 <td></td>
 </tr>
-<tr>
+<tr class="even">
 <td>ZEND_AST_CLASS</td>
 <td></td>
 </tr>
-<tr>
+<tr class="odd">
 <td>ZEND_AST_ARROW_FUNC</td>
 <td></td>
 </tr>
-</tbody></table>
-<h2 id="控制流起始点："><a href="#控制流起始点：" class="headerlink" title="控制流起始点："></a>控制流起始点：</h2><ul>
+</tbody>
+</table>
+<h2 id="控制流起始点">控制流起始点：</h2>
+<ul>
 <li>AST_CLASS</li>
 <li>AST_FUNC</li>
 </ul>
@@ -1108,7 +1375,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2020/06/01/PHP-AST/" data-id="cl1elu1nh0007jnw56uun7c2i" data-title="" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2020/06/01/PHP-AST/" data-id="cl1q1rwc30005ajw557czfn7n" data-title="" class="article-share-link">Share</a>
       
       
       
@@ -1142,547 +1409,228 @@
     
     <div class="e-content article-entry" itemprop="articleBody">
       
-        <ol>
-<li>Iterative Algorithm, Another View    13:00</li>
+        <ol type="1">
+<li>Iterative Algorithm, Another View 13:00</li>
 <li>Partial Order 27:50</li>
 <li>Upper and Lower Bounds 38:10</li>
 <li>Lattice, Semilattice, Complete and Product Lattice 48:40</li>
 <li>Data Flow Analysis Framework via Lattice 65:40</li>
 <li>Monotonicity and Fixed Point Theorem 74:30</li>
 </ol>
-<hr>
+<hr />
 <p><a target="_blank" rel="noopener" href="https://pascal-group.bitbucket.io/teaching.html">ppt</a></p>
-<h1 id="1-Iterative-Algorithm-Another-View"><a href="#1-Iterative-Algorithm-Another-View" class="headerlink" title="1. Iterative Algorithm, Another View"></a>1. Iterative Algorithm, Another View</h1><blockquote>
-<p>The general iterative  algorithm produces a solution to data flow analysis</p>
+<h1 id="iterative-algorithm-another-view">1. Iterative Algorithm, Another View</h1>
+<blockquote>
+<p>The general iterative algorithm produces a solution to data flow analysis</p>
 </blockquote>
- <img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-124736.png" alt="截屏2020-05-30 上午8.34.28 " style="zoom:67%;" />
-
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-124736.png" alt="截屏2020-05-30 上午8.34.28 " style="zoom:67%;" /></p>
 <p>这是通用的<code>Iterative Algorithm</code>， 思想是假设在一个程序生成的CFG之上，有<code>k</code>个节点，这个算法就会迭代的更新每一个OUT[n]（节点的out信息）。</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-124751.png" alt="截屏2020-05-30 上午8.38.10 " style="zoom:70%;" />
-
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-124751.png" alt="截屏2020-05-30 上午8.38.10 " style="zoom:70%;" /></p>
 <p>在值域<code>V</code>之上(就是我们待分析抽象出的domain)，那么可以定义一个<code>k-tuple</code> 他的每一个元素是每一个节点的OUT[n]，那么一次迭代分析 ，就是要更新这个集合中的值。</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-124754.png" alt="截屏2020-05-30 上午8.39.35 " style="zoom:80%;" />
-
-<p>那么每一次迭代处理就可以理解为在这个集合上，使用我们为了达成目的所设计transfer functions（program point处使用）和control-flow handing(汇合处使用)，来做更新(两种操作一个工作合称F来形式化表述)。F的输入输出为域(即上述集合) </p>
- <img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-124800.png" alt="截屏2020-05-30 上午8.45.46 " style="zoom:60%;" />
-
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-124754.png" alt="截屏2020-05-30 上午8.39.35 " style="zoom:80%;" /></p>
+<p>那么每一次迭代处理就可以理解为在这个集合上，使用我们为了达成目的所设计transfer functions（program point处使用）和control-flow handing(汇合处使用)，来做更新(两种操作一个工作合称F来形式化表述)。F的输入输出为域(即上述集合)</p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-124800.png" alt="截屏2020-05-30 上午8.45.46 " style="zoom:60%;" /></p>
 <p>当F的输入输出不再变化(相同)，停止迭代。</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-124806.png" alt="截屏2020-05-30 上午8.51.52 " style="zoom:60%;" />
-
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-124806.png" alt="截屏2020-05-30 上午8.51.52 " style="zoom:60%;" /></p>
 <p>图示：</p>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-124814.png" alt="截屏2020-05-30 上午8.52.59"></p>
+<figure>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-124814.png" alt="截屏2020-05-30 上午8.52.59" /><figcaption aria-hidden="true">截屏2020-05-30 上午8.52.59</figcaption>
+</figure>
 <p>将算法分为了三个部分：</p>
 <p>红色代表初始化：</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-124819.png" alt="截屏2020-06-04 下午6.47.18 " style="zoom:33%;" />
-
-
-
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-124819.png" alt="截屏2020-06-04 下午6.47.18 " style="zoom:33%;" /></p>
 <p>然后初始化每个位为bottom。进行迭代(绿色部分):</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-124824.png" alt="截屏2020-06-04 下午6.47.37 " style="zoom:33%;" />
-
-<p>每次更新状态，知道状态不再变化，符合了停止条件(黄色部分): </p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-124836.png" alt="截屏2020-06-04 下午6.47.40 " style="zoom:33%;" />
-
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-124824.png" alt="截屏2020-06-04 下午6.47.37 " style="zoom:33%;" /></p>
+<p>每次更新状态，知道状态不再变化，符合了停止条件(黄色部分):</p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-124836.png" alt="截屏2020-06-04 下午6.47.40 " style="zoom:33%;" /></p>
 <p>这里的i+1 与 i 的k-tuple值相同。</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-124841.png" alt="截屏2020-06-04 下午6.49.07 " style="zoom:33%;" />
-
-<p>(所以X是F的不动点, X&#x3D;F(X)（就像之前分析中，输入一个k-tuple(X)后不变了，算法停止）)</p>
-<h1 id="2-Parial-Order"><a href="#2-Parial-Order" class="headerlink" title="2. Parial Order"></a>2. Parial Order</h1><p>首先定义偏序集：</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-124846.png" alt="截屏2020-06-04 下午6.51.34 " style="zoom:50%;" />
-
-
-
-<h3 id="偏序集："><a href="#偏序集：" class="headerlink" title="偏序集："></a>偏序集：</h3><blockquote>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-124841.png" alt="截屏2020-06-04 下午6.49.07 " style="zoom:33%;" /></p>
+<p>(所以X是F的不动点, X=F(X)（就像之前分析中，输入一个k-tuple(X)后不变了，算法停止）)</p>
+<h1 id="parial-order">2. Parial Order</h1>
+<p>首先定义偏序集：</p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-124846.png" alt="截屏2020-06-04 下午6.51.34 " style="zoom:50%;" /></p>
+<h3 id="偏序集">偏序集：</h3>
+<blockquote>
 <p>partial ordering就是一种偏序关系，可以理解为部分之间的关系(集合中不要求任何两个元素之间有关系)</p>
 </blockquote>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-124850.png" alt="截屏2020-06-04 下午6.54.24 " style="zoom:33%;" />
-
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-124850.png" alt="截屏2020-06-04 下午6.54.24 " style="zoom:33%;" /></p>
 <p>这三个性质：</p>
 <p>Reflexivity(自反性)：任意元素，关系可逆</p>
-<p>Antisymmetrry(反对称性)： x偏序于y 且 y 偏序于x &#x3D;&gt; x&#x3D;y</p>
-<p>Transitivity(传递性): …</p>
+<p>Antisymmetrry(反对称性)： x偏序于y 且 y 偏序于x =&gt; x=y</p>
+<p>Transitivity(传递性): ...</p>
 <blockquote>
 <p>小于等于符号: 偏序关系。</p>
 </blockquote>
 <ul>
 <li>例子一：</li>
 </ul>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-124855.png" alt="截屏2020-06-04 下午6.59.24 " style="zoom:33%;" />
-
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-124855.png" alt="截屏2020-06-04 下午6.59.24 " style="zoom:33%;" /></p>
 <p>S这个set是一个整数集，他可不可以是一个p(偏序集)?</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-124900.png" alt="截屏2020-06-04 下午7.00.05 " style="zoom:30%;" />
-
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-124900.png" alt="截屏2020-06-04 下午7.00.05 " style="zoom:30%;" /></p>
 <p>由三条性质，是一个偏序集。</p>
 <ul>
 <li><p>例子二：</p>
 <p>还是整数集set，但是偏序关系改成了小于：</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-124905.png" alt="截屏2020-06-04 下午7.01.38 3" style="zoom:33%;" /></li>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-124905.png" alt="截屏2020-06-04 下午7.01.38 3" style="zoom:33%;" /></p></li>
 </ul>
 <p>不满足偏序关系。</p>
 <ul>
 <li>例子三：</li>
 </ul>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-124910.png" alt="截屏2020-06-04 下午7.02.44 " style="zoom:33%;" />
-
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-124910.png" alt="截屏2020-06-04 下午7.02.44 " style="zoom:33%;" /></p>
 <p>字符型集合</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-124917.png" alt="截屏2020-06-04 下午7.03.26 " style="zoom:33%;" />
-
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-124917.png" alt="截屏2020-06-04 下午7.03.26 " style="zoom:33%;" /></p>
 <p>符合，上边文字在强调偏序(<code>partial</code>)的意义。</p>
 <ul>
 <li><p>例子四：</p>
-<p>这个比较重要，每一个元素很想我们维持的状态抽象。然后箭头是控制流。。。<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-124928.png" alt="截屏2020-06-04 下午7.04.39 " style="zoom:33%;" /></p>
-</li>
+<p>这个比较重要，每一个元素很想我们维持的状态抽象。然后箭头是控制流。。。<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-124928.png" alt="截屏2020-06-04 下午7.04.39 " style="zoom:33%;" /></p></li>
 </ul>
-<h2 id="Upper-and-Lower-Bounds"><a href="#Upper-and-Lower-Bounds" class="headerlink" title="Upper and Lower Bounds"></a>Upper and Lower Bounds</h2><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-124922.png" alt="截屏2020-06-04 下午7.51.49 " style="zoom:33%;" />
-
+<h2 id="upper-and-lower-bounds">Upper and Lower Bounds</h2>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-124922.png" alt="截屏2020-06-04 下午7.51.49 " style="zoom:33%;" /></p>
 <blockquote>
-<p> upper bound 上界</p>
+<p>upper bound 上界</p>
 </blockquote>
-<img src="static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%887.52.47.png" alt="截屏2020-06-04 下午7.52.47 " style="zoom:33%;" />
-
+<p><img src="static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%887.52.47.png" alt="截屏2020-06-04 下午7.52.47 " style="zoom:33%;" /></p>
 <p>偏序集合P中取一子集S，这一子集中任意元素都属于或者包含的(偏序于)。这是对于子集的一个定义，而upper bound 和 lower bound可以有多个， 定义<code>least upper bound</code>和<code>greatest lower bound</code></p>
-<img src="static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%887.57.04.png" alt="截屏2020-06-04 下午7.57.04 " style="zoom:30%;" />
-
-<img src="static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%887.57.18.png" alt="截屏2020-06-04 下午7.57.18 " style="zoom:33%;" />
-
+<p><img src="static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%887.57.04.png" alt="截屏2020-06-04 下午7.57.04 " style="zoom:30%;" /></p>
+<p><img src="static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%887.57.18.png" alt="截屏2020-06-04 下午7.57.18 " style="zoom:33%;" /></p>
 <p>譬如这个子集， 他的upper bound可以是{a, b}也可以是{a,b,c}</p>
-<img src="static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%887.58.17.png" alt="截屏2020-06-04 下午7.58.17 " style="zoom:33%;" />
-
+<p><img src="static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%887.58.17.png" alt="截屏2020-06-04 下午7.58.17 " style="zoom:33%;" /></p>
 <p>一个符号表示：</p>
-<img src="static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%887.58.39.png" alt="截屏2020-06-04 下午7.58.39 " style="zoom:30%;" />
-
-
-
-
-
+<p><img src="static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%887.58.39.png" alt="截屏2020-06-04 下午7.58.39 " style="zoom:30%;" /></p>
 <p>关于lub和glb的性质：</p>
-<ol>
+<ol type="1">
 <li>不是每个偏序集都有<code>lub</code> or <code>glb</code></li>
 </ol>
-<img src="static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%888.01.17.png" alt="截屏2020-06-04 下午8.01.17 " style="zoom:33%;" />
-
-<ol start="2">
+<p><img src="static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%888.01.17.png" alt="截屏2020-06-04 下午8.01.17 " style="zoom:33%;" /></p>
+<ol start="2" type="1">
 <li>如果有，一定是唯一的</li>
 </ol>
-<img src="static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%888.01.40.png" alt="截屏2020-06-04 下午8.01.40 " style="zoom:33%;" />
-
+<p><img src="static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%888.01.40.png" alt="截屏2020-06-04 下午8.01.40 " style="zoom:33%;" /></p>
 <p>(证明： 如果有两个glb，根据glb的性质，有那个公式，然后再根据parital order的反对称性，那么就是他本身)</p>
-<h1 id="Lattice"><a href="#Lattice" class="headerlink" title="Lattice"></a>Lattice</h1><img src="static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%888.04.09.png" alt="截屏2020-06-04 下午8.04.09 " style="zoom:33%;" />
-
-<img src="static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%888.04.14.png" alt="截屏2020-06-04 下午8.04.14 " style="zoom:33%;" />
-
+<h1 id="lattice">Lattice</h1>
+<p><img src="static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%888.04.09.png" alt="截屏2020-06-04 下午8.04.09 " style="zoom:33%;" /></p>
+<p><img src="static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%888.04.14.png" alt="截屏2020-06-04 下午8.04.14 " style="zoom:33%;" /></p>
 <p>就是说如果一个偏序集的最大下界和最小上界都存在， 那么这就是一个Lattice。</p>
 <ul>
 <li>例子1:</li>
 </ul>
-<img src="static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%888.05.42.png" alt="截屏2020-06-04 下午8.05.42 " style="zoom:30%;" />
-
+<p><img src="static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%888.05.42.png" alt="截屏2020-06-04 下午8.05.42 " style="zoom:30%;" /></p>
 <p>这里我们去从整数集合中取一个子集(取集合就意味着划定了边界)。那么他会有glb和lub。</p>
 <ul>
 <li><p>例子2：</p>
-<img src="static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%888.07.46.png" alt="截屏2020-06-04 下午8.07.46 " style="zoom:33%;" /></li>
+<p><img src="static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%888.07.46.png" alt="截屏2020-06-04 下午8.07.46 " style="zoom:33%;" /></p></li>
 </ul>
-<p>这里的S就是所有的这些单词， 可以看到<code>pin </code>和<code>sin</code>没有上界。 虽是偏序集也就够不成一个格。</p>
+<p>这里的S就是所有的这些单词， 可以看到<code>pin</code>和<code>sin</code>没有上界。 虽是偏序集也就够不成一个格。</p>
 <ul>
 <li>例子3:</li>
 </ul>
-<img src="static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%888.09.28.png" alt="截屏2020-06-04 下午8.09.28 " style="zoom:33%;" />
-
+<p><img src="static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%888.09.28.png" alt="截屏2020-06-04 下午8.09.28 " style="zoom:33%;" /></p>
 <p>这玩意就是一个格</p>
-<h2 id="Semilattice"><a href="#Semilattice" class="headerlink" title="Semilattice"></a>Semilattice</h2><p>半格， join半格(有最大下界)和meet半格(有最小上界)</p>
-<img src="static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%888.10.49.png" alt="截屏2020-06-04 下午8.10.49 " style="zoom:33%;" />
-
-
-
-<h2 id="Complete-Lattice"><a href="#Complete-Lattice" class="headerlink" title="Complete Lattice"></a>Complete Lattice</h2><img src="static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%888.11.33.png" alt="截屏2020-06-04 下午8.11.33 " style="zoom:33%;" />
-
+<h2 id="semilattice">Semilattice</h2>
+<p>半格， join半格(有最大下界)和meet半格(有最小上界)</p>
+<p><img src="static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%888.10.49.png" alt="截屏2020-06-04 下午8.10.49 " style="zoom:33%;" /></p>
+<h2 id="complete-lattice">Complete Lattice</h2>
+<p><img src="static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%888.11.33.png" alt="截屏2020-06-04 下午8.11.33 " style="zoom:33%;" /></p>
 <p>比格的定义还要严格，格是要求偏序集中任意两个元素有最小上界和最大下界；全格要求任意两个<code>子集</code>有最小上界和最大下界。</p>
-<img src="static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%888.15.03.png" alt="截屏2020-06-04 下午8.15.03 " style="zoom:33%;" />
-
-
-
+<p><img src="static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%888.15.03.png" alt="截屏2020-06-04 下午8.15.03 " style="zoom:33%;" /></p>
 <ul>
 <li>例子1:</li>
 </ul>
-<img src="static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%888.16.30.png" alt="截屏2020-06-04 下午8.16.30 " style="zoom:33%;" />
-
+<p><img src="static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%888.16.30.png" alt="截屏2020-06-04 下午8.16.30 " style="zoom:33%;" /></p>
 <p>这里一个整数集合中，虽然任取两个数字是有边界的，但是任取两个子集不一定有边界，如正整数这个集合，他是正无穷的。</p>
 <ul>
 <li>例子2:</li>
 </ul>
-<img src="static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%888.19.46.png" alt="截屏2020-06-04 下午8.19.46 " style="zoom:33%;" />
-
-
-
-
-
-<img src="static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%888.20.30.png" alt="截屏2020-06-04 下午8.20.30 " style="zoom:33%;" />
-
+<p><img src="static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%888.19.46.png" alt="截屏2020-06-04 下午8.19.46 " style="zoom:33%;" /></p>
+<p><img src="static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%888.20.30.png" alt="截屏2020-06-04 下午8.20.30 " style="zoom:33%;" /></p>
 <p>每一个有穷的格，都是全格。</p>
 <blockquote>
 <p>数据流分析一般关注的都是全格，因为程序运行通常是有穷的</p>
 </blockquote>
-<h2 id="Product-Lattice"><a href="#Product-Lattice" class="headerlink" title="Product Lattice"></a>Product Lattice</h2><img src="static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%888.22.21.png" alt="截屏2020-06-04 下午8.22.21 " style="zoom:33%;" />
-
- 
-
+<h2 id="product-lattice">Product Lattice</h2>
+<p><img src="static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%888.22.21.png" alt="截屏2020-06-04 下午8.22.21 " style="zoom:33%;" /></p>
 <p>就像iterative algorithm中的k-tuple, 每一个点的L都是一个Lattice。那么整个Ln就是一个<code>Product Lattice</code></p>
-<img src="static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%888.26.04.png" alt="截屏2020-06-04 下午8.26.04 " style="zoom:33%;" />
-
-<img src="static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%888.26.22.png" alt="截屏2020-06-04 下午8.26.22 " style="zoom:33%;" />
-
-
-
-
-
-<p><img src="/static-analysis-5-md/2020-05-27-054002.jpg"></p>
-<h1 id="Data-Flow-Analysis-Framework-via-Lattice"><a href="#Data-Flow-Analysis-Framework-via-Lattice" class="headerlink" title="Data Flow Analysis Framework via Lattice"></a>Data Flow Analysis Framework via Lattice</h1><p>将前边Lattice形式化的定义应用在<code>Data Flow Analysis</code>上</p>
-<img src="static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%888.39.03.png" alt="截屏2020-06-04 下午8.39.03 " style="zoom:33%;" />
-
+<p><img src="static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%888.26.04.png" alt="截屏2020-06-04 下午8.26.04 " style="zoom:33%;" /></p>
+<p><img src="static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%888.26.22.png" alt="截屏2020-06-04 下午8.26.22 " style="zoom:33%;" /></p>
+<p><img src="static-analysis-5-md/2020-05-27-054002.jpg" /></p>
+<h1 id="data-flow-analysis-framework-via-lattice">Data Flow Analysis Framework via Lattice</h1>
+<p>将前边Lattice形式化的定义应用在<code>Data Flow Analysis</code>上</p>
+<p><img src="static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%888.39.03.png" alt="截屏2020-06-04 下午8.39.03 " style="zoom:33%;" /></p>
 <blockquote>
 <p>通用性的Data Flow Analysis 表示：</p>
 <p>一个数据流分析， 需要根据需求设计以下三个方面</p>
-<p>D:  沿着CFG的数据分析方向</p>
-<p>L:  就是那个值域集合，用<code>Lattice</code> 来表示，实际中，在入口点，要么是并集<code>join </code>,要么是交集<code>meet</code>。(根据safe-approximate决定) （所以龙书用了半格?）</p>
+<p>D: 沿着CFG的数据分析方向</p>
+<p>L: 就是那个值域集合，用<code>Lattice</code> 来表示，实际中，在入口点，要么是并集<code>join</code>,要么是交集<code>meet</code>。(根据safe-approximate决定) （所以龙书用了半格?）</p>
 <p>F：transfer functions， 每一个node都有自己的<code>transfer function</code></p>
 </blockquote>
 <p>例子： reach definition ：</p>
-<ol>
+<ol type="1">
 <li>正向分析, 看到s1, s3的out分别是{a}, {b}, 分别体现在左边流图和右边格上对应的黄色区域。</li>
 <li>Safe-approximate: join并集， 体现在绿色区域，在格上又上升了。</li>
 <li>每个点转移函数后，生成out，在格上又上升了，到达上界。</li>
 </ol>
-<img src="static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%888.42.10.png" alt="截屏2020-06-04 下午8.42.10 " style="zoom:33%;" />
-
+<p><img src="static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%888.42.10.png" alt="截屏2020-06-04 下午8.42.10 " style="zoom:33%;" /></p>
 <blockquote>
 <p>may analysis 在格上是往上升的</p>
 </blockquote>
 <p>一句话概括：</p>
-<img src="static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%888.43.36.png" alt="截屏2020-06-04 下午8.43.36 " style="zoom:33%;"/>
-
-
-
-
-
-<h2 id="Review-The-Questions"><a href="#Review-The-Questions" class="headerlink" title="Review The Questions"></a>Review The Questions</h2><img src="static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%888.45.01.png" alt="截屏2020-06-04 下午8.45.01 " style="zoom:30%;" />
-
-<ol>
-<li><p>算法一定能达到不动点吗？(lattice 上单调性问题)</p>
-</li>
-<li><p>如果有不动点，只能有一个动点吗</p>
-</li>
+<p><img src="static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%888.43.36.png" alt="截屏2020-06-04 下午8.43.36 " style="zoom:33%;"/></p>
+<h2 id="review-the-questions">Review The Questions</h2>
+<p><img src="static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-04%20%E4%B8%8B%E5%8D%888.45.01.png" alt="截屏2020-06-04 下午8.45.01 " style="zoom:30%;" /></p>
+<ol type="1">
+<li><p>算法一定能达到不动点吗？(lattice 上单调性问题)</p></li>
+<li><p>如果有不动点，只能有一个动点吗</p></li>
 <li><p>不定点是解吗</p>
 <p>首先回答第一个问题：</p>
-<img src="static-analysis-5-md/image-20210723223615852.png" alt="image-20210723223615852" style="zoom:40%;" />
-
-<p>实际上回答一个lattic函数的单调性问题。</p>
-</li>
+<p><img src="static-analysis-5-md/image-20210723223615852.png" alt="image-20210723223615852" style="zoom:40%;" /></p>
+<p>实际上回答一个lattic函数的单调性问题。</p></li>
 </ol>
-<h1 id="Monotonicity-amp-Fixed-Point-Theorem"><a href="#Monotonicity-amp-Fixed-Point-Theorem" class="headerlink" title="Monotonicity&amp;Fixed-Point Theorem"></a>Monotonicity&amp;Fixed-Point Theorem</h1><p>对于不动点定理的证明， 首先来看函数单调性的定义：</p>
-<img src="static-analysis-5-md/image-20210723224024442.png" alt="image-20210723224024442" style="zoom:50%;" />
-
-
-
+<h1 id="monotonicityfixed-point-theorem">Monotonicity&amp;Fixed-Point Theorem</h1>
+<p>对于不动点定理的证明， 首先来看函数单调性的定义：</p>
+<p><img src="static-analysis-5-md/image-20210723224024442.png" alt="image-20210723224024442" style="zoom:50%;" /></p>
 <blockquote>
-<p>一个function在lattice（阈值）上是单调的，就是在域中任取x,y，都能够使得 x&lt;&#x3D;y &#x3D;&gt; f(x)&lt;&#x3D;f(y)。</p>
+<p>一个function在lattice（阈值）上是单调的，就是在域中任取x,y，都能够使得 x&lt;=y =&gt; f(x)&lt;=f(y)。</p>
 </blockquote>
 <p>再来看不动点定理：</p>
 <p>给定一个complete lattice如果：</p>
-<ol>
-<li><p>Lattice上的函数是单调的，</p>
-</li>
+<ol type="1">
+<li><p>Lattice上的函数是单调的，</p></li>
 <li><p>L是有限的(一个finite lattice一定是complete lattice; 一个complete lattice不一定是finite lattice)</p>
 <p>那么我们能拿到，function迭代到不动点一定是最小不动点（或最大不动点）。</p>
-<img src="static-analysis-5-md/image-20210724053026118.png" alt="image-20210724053026118" style="zoom:50%;" />
-
-
-
-
-
-<p> 需要证明Fix point是存在的并且是最大(小)的不定点：</p>
-<ol>
+<p><img src="static-analysis-5-md/image-20210724053026118.png" alt="image-20210724053026118" style="zoom:50%;" /></p>
+<p>需要证明Fix point是存在的并且是最大(小)的不定点：</p>
+<ol type="1">
 <li>证明不动点存在：</li>
+</ol></li>
 </ol>
-</li>
-</ol>
-<img src="static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-10%20%E4%B8%8B%E5%8D%888.50.46.png" alt="截屏2020-06-10 下午8.50.46 " style="zoom:50%;" />
-
-
-
+<p><img src="static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-10%20%E4%B8%8B%E5%8D%888.50.46.png" alt="截屏2020-06-10 下午8.50.46 " style="zoom:50%;" /></p>
 <ul>
-<li>因为f单调，f(bottom)也是lattice上的值，且bottom&lt;&#x3D;f(bottom)。(bottom最小)</li>
-<li>f(bottom) &lt;&#x3D; f(f(bottom)) &#x3D; f^2(bottom)  (x&lt;&#x3D;y, f(x)&lt;&#x3D;f(y))</li>
-<li>迭代…(上升链)</li>
-<li>L是finite，所以肯定存在一个k值，(最差情况下走到top)，当f^k(bottom)&#x3D;f^k+1(bottom)那么就到达了不动点。(因为Lattic是finitie的, 就限制了上升(下降)链是finite的)</li>
+<li>因为f单调，f(bottom)也是lattice上的值，且bottom&lt;=f(bottom)。(bottom最小)</li>
+<li>f(bottom) &lt;= f(f(bottom)) = f^2(bottom) (x&lt;=y, f(x)&lt;=f(y))</li>
+<li>迭代...(上升链)</li>
+<li>L是finite，所以肯定存在一个k值，(最差情况下走到top)，当f<sup>k(bottom)=f</sup>k+1(bottom)那么就到达了不动点。(因为Lattic是finitie的, 就限制了上升(下降)链是finite的)</li>
 </ul>
-<ol start="2">
+<ol start="2" type="1">
 <li>证明Fix Point是最小(大)的:</li>
 </ol>
-<img src="static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-10%20%E4%B8%8B%E5%8D%888.51.04.png" alt="截屏2020-06-10 下午8.51.04 " style="zoom:50%;" />
-
-
-
-<p>假设存存在另外一个不动点x, 使得x &#x3D; f(x) （不动点定义），定义bottom, 我们有bottom&lt;&#x3D;x； </p>
+<p><img src="static-analysis-5-md/%E6%88%AA%E5%B1%8F2020-06-10%20%E4%B8%8B%E5%8D%888.51.04.png" alt="截屏2020-06-10 下午8.51.04 " style="zoom:50%;" /></p>
+<p>假设存存在另外一个不动点x, 使得x = f(x) （不动点定义），定义bottom, 我们有bottom&lt;=x；</p>
 <p>使用数学归纳法：</p>
 <ul>
-<li><p>初始条件: 因为f是单调的，f(bottom) &lt;&#x3D; f(x)</p>
-</li>
-<li><p>假设f^i(bottom) &lt;&#x3D; f^(x)，那么我们根据monotonic有： f^i+1(bottom) &lt;&#x3D; f^i+1(x).</p>
-</li>
-<li><p>得到结论： f^i(bottom)&lt;&#x3D;f^i(x)</p>
-</li>
-<li><p>因为f^i(bottom)&lt;&#x3D;f^i(x)&#x3D;x, 所以得: f^Fix &#x3D; f^k(bottom) &lt;&#x3D; x(从bottom走到第k次的不动点一定小于不动点x)</p>
-</li>
+<li><p>初始条件: 因为f是单调的，f(bottom) &lt;= f(x)</p></li>
+<li><p>假设f^i(bottom) &lt;= f^(x)，那么我们根据monotonic有： f^i+1(bottom) &lt;= f^i+1(x).</p></li>
+<li><p>得到结论： f<sup>i(bottom)&lt;=f</sup>i(x)</p></li>
+<li><p>因为f<sup>i(bottom)&lt;=f</sup>i(x)=x, 所以得: f^Fix = f^k(bottom) &lt;= x(从bottom走到第k次的不动点一定小于不动点x)</p></li>
 </ul>
 <p>将格上的数学证明关联到Iterative Algorithm，就可以证明我们的iterative algorithm是存在不动点且是最小(大)的了：</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125043.png" alt="image-20210724055841844" style="zoom:50%;" />
-
-
-
-<p>下节课进行关联…</p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125043.png" alt="image-20210724055841844" style="zoom:50%;" /></p>
+<p>下节课进行关联...</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2020/05/18/static-analysis-5-md/" data-id="cl1elu1ny001ejnw55pecako7" data-title="南大静态分析5(Data Flow Analysis - Foundations 1)" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/pl/" rel="tag">pl</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-static-analysis-4-2-md" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2020/05/17/static-analysis-4-2-md/" class="article-date">
-  <time class="dt-published" datetime="2020-05-17T11:00:37.000Z" itemprop="datePublished">2020-05-17</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2020/05/17/static-analysis-4-2-md/">南大静态分析-4(Avaliable Expressions Analsis)</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <h1 id="Available-Expressions-Analysis-（可用表达式分析）"><a href="#Available-Expressions-Analysis-（可用表达式分析）" class="headerlink" title="Available Expressions Analysis （可用表达式分析）"></a>Available Expressions Analysis （可用表达式分析）</h1><blockquote>
-<p>must analysis </p>
-</blockquote>
-<p>如果说一个表达式 <code>x op y </code> 在 program point <code>p</code> 上是available的，那么</p>
-<ol>
-<li>从流图入口点到点<code>p</code>的所有路径，都必须经过表达式<code>x op y</code>。(该表达式结点在流图上支配p点)</li>
-<li>在上一次计算该表达式后， 没有再定义过x或者y</li>
-</ol>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043138.png" alt="截屏2020-05-17 下午8.16.00 " style="zoom:50%;" />
-
-<p>在程序优化中， 我们就可以在p出直接利用上一次的表达式计算结果来替换该表达式。也可以用来探测全域公共子表达式。</p>
-<p>例子：</p>
-<p>表达式可利用</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043142.png" alt="image-20201209145609833 " style="zoom:20%;" />
-
-<p>表达式不可利用</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043145.png" alt="image-20201209145630745 " style="zoom:20%;" />
-
-
-
-<h2 id="Abstraction-数据抽象"><a href="#Abstraction-数据抽象" class="headerlink" title="Abstraction(数据抽象)"></a>Abstraction(数据抽象)</h2><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043148.png" alt="截屏2020-05-17 下午8.16.43 " style="zoom:70%;" />
-
-<p>在流图中抽象每条表达式，可利用状态为一个位。0代表不可利用。 </p>
-<h2 id="Safe-approximation"><a href="#Safe-approximation" class="headerlink" title="Safe-approximation"></a>Safe-approximation</h2><p>有了定义，有了抽象，下面就要进行评估-&gt;先看汇聚点怎么merge，再制定transfer function。</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043153.png" alt="截屏2020-05-17 下午9.43.38 " style="zoom:67%;" />
-
-
-
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043156.png" alt="截屏2020-05-17 下午9.46.53"></p>
-<p>must analysis所有的path都要满足这一条件:</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043159.png" alt="截屏2020-05-17 下午9.47.55 " style="zoom:67%;" />
-
-<p>是一种 under-approximation，可以有漏报，可以是safe的。</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043202.png" alt="截屏2020-05-17 下午9.49.19 " style="zoom:80%;" />
-
-<p>这里如果b删了， 这里要做交。但是有情况，如x流下来时是<code>x=3</code>而恰好左边的BB中<code>x=3</code>。那么就是一个漏报。</p>
-<h2 id="Algorithm-of-Available-Expressions-Analysis"><a href="#Algorithm-of-Available-Expressions-Analysis" class="headerlink" title="Algorithm of Available Expressions Analysis"></a>Algorithm of Available Expressions Analysis</h2><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043205.png" alt="截屏2020-05-17 下午9.51.13 " style="zoom:67%;" />
-
-<ul>
-<li>正向分析， boundary是<code>OUT[entry]= 空</code>;</li>
-<li>因为是must analysis,汇聚点做交，仅此<code>OUT[B] = U</code></li>
-</ul>
-<p>CASE:</p>
-<p>初始化：</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043213.png" alt="截屏2020-05-17 下午9.52.56 " style="zoom:80%;" />
-
-<p>第一次迭代：</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043216.png" alt="截屏2020-05-17 下午9.53.57 " style="zoom:80%;" />
-
-<p>第二次迭代：</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043222.png" alt="截屏2020-05-17 下午9.54.44 " style="zoom:80%;" />
-
-
-
-<h1 id="总结三个算法"><a href="#总结三个算法" class="headerlink" title="总结三个算法"></a>总结三个算法</h1><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043226.png" alt="截屏2020-05-17 下午9.56.10 " style="zoom:80%;" />
-
-
-
-<ul>
-<li>设计一个数据流分析算法， 首先要描述场景， 从场景中抽象出我们需要的数据，然后设计<code>safe approximation</code>，转化成算法；还有就是理解算法是如何停止的。</li>
-</ul>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://example.com/2020/05/17/static-analysis-4-2-md/" data-id="cl1elu1nx001ajnw5787x9lfx" data-title="南大静态分析-4(Avaliable Expressions Analsis)" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/pl/" rel="tag">pl</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-static-analysis-4" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2020/05/12/static-analysis-4/" class="article-date">
-  <time class="dt-published" datetime="2020-05-12T12:38:44.000Z" itemprop="datePublished">2020-05-12</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2020/05/12/static-analysis-4/">南大静态分析-4(Live Variables Analysis)</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>前言：</p>
-<p><code>reaching definitions</code>, <code>live variables</code>和<code>avaliable expressions</code>  都是可以表示为对一个<code>bit array</code>（ <code>bit map, bit set, bit string, or bit vector</code>）迭代求解。 如<code>reaching definitions</code>, using a bit for a definition position in the program. 因此这一类问题也称 为<code>Bit vector problems</code><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Data-flow_analysis">https://en.wikipedia.org/wiki/Data-flow_analysis</a>。</p>
-<blockquote>
-<p>Live Variables Analysis:  06:10</p>
-<p>Available Expressions Analysis: </p>
-<p>总结： </p>
-</blockquote>
-<h1 id="Live-Variables-Analysis-活跃变量分析"><a href="#Live-Variables-Analysis-活跃变量分析" class="headerlink" title="Live Variables Analysis(活跃变量分析)"></a>Live Variables Analysis(活跃变量分析)</h1><blockquote>
-<p>May analysis</p>
-</blockquote>
-<p>活跃变量分析， 如果一个变量v在程序点p开始的路径里被使用过，那么在这条路径上，变量v就是一个Live Variables。 这种分析常常用作寄存器优化，将那些从某一程序点不活跃的变量(即之后不再使用的变量)，做为寄存器替换对象。</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125636.png" alt="截屏2020-05-14 下午9.29.10 z" style="zoom:50%;" />
-
-<blockquote>
-<ol>
-<li>v在路径上被使用过</li>
-<li>v没有被重定义</li>
-</ol>
-</blockquote>
-<h2 id="目标抽象"><a href="#目标抽象" class="headerlink" title="目标抽象"></a>目标抽象</h2><p>关注的抽象应该是<code>live variables</code>，即活跃变量。我们设立一个数据结构来表示程序中所有的变量活跃状态。</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125640.png" alt="截屏2020-05-14 下午9.30.51 " style="zoom:50%;" />
-
-<p>比特位表示状态，比如有100个variables，每一个比特位代表一个变量。形成bit vector, 每一个program point上分配一个(bit vectors)。 有了抽象的状态表示，接下来做safe-approximation制定transfer function 和control flow analysis来操作这些状态位。</p>
-<h2 id="方法设计"><a href="#方法设计" class="headerlink" title="方法设计"></a>方法设计</h2><p>我们的程序在流动之后，如何变换我们的标志位，使得我们得到的结果safe?</p>
-<p>即如何设计transfer function和control flow 合并。</p>
-<h3 id="分析方向"><a href="#分析方向" class="headerlink" title="分析方向"></a>分析方向</h3><p>前向分析和后向分析都是可以的， 但是在live variables的分析中， 我没每个program point的bit vector表示的是路径上所有变量在之后是否被用了，如果是forward分析的话， 从entry点开始向下，我们在每一个program point上不能确定每个variable是否在之后的语句中被use了， 此时如果再往下走，发现某一个variable被use了，那么需要向上传播这个消息来通知之前program point此变量在后边被use了。 但是backward的话，从exit开始进入，先找到的是variable的use点，后找definition信息， 因此变量被use了这个信息就可以随着后向数据流propagate, 从而节省了开销。</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125645.png" alt="截屏2020-05-14 下午9.36.52 " style="zoom:50%;" />
-
-<h3 id="汇聚点处理"><a href="#汇聚点处理" class="headerlink" title="汇聚点处理"></a>汇聚点处理</h3><p>看这里在BB[P]处有一个<code>v=3</code> 的表达式，BB[B]不知道。而在BB[S1]处用到了<code>v</code>， 在backward中走到BB[B]，BB[S1]和BB[S2]汇合，看图中抽象公式，要处理在merge处的近似，因为是may analysis所以使用Union。(不放过任何一条path)</p>
-<p>然后就是核心的设计Transfer function：</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125649.png" alt="截屏2020-05-15 下午6.51.57 " style="zoom:50%;" />
-
-<p>刚才我们说过， 在此数据流分析中， 我们采用backward, <code>v</code>在BB[S1]中被使用了，且在汇合处，我们做union操作，所以得到有<code>OUT[B] = &#123;v&#125;</code>，现在在程序中， 我们要backward过一个条任意语句(假设Baisc Block中只有一条statement,即以单条statement为分析单位)。我们要设计transfer function，得出上出program proint处的IN[B]，即OUT[B]-&gt;IN[B]。</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125652.png" alt="截屏2020-05-15 下午7.00.47 " style="zoom:70%;" />
-
-<p>这里有一个场景，现在<code>v=3</code>寄存 器<code>R</code>中待着，经过我们的<code>live</code>分析，如果走过该点，经过我们设计的transfer function，IN[B] &#x3D; { v }， 那么这个值就在寄存器里待着。如果IN[B] &#x3D; {}，那么就把它从寄存器中拿出。因为我们的目的是分析数据流中，变量的<code>live </code>情况，由前面的定义如果BB[P]处的变量v是live的：</p>
-<ol>
-<li>BB[B]中v被使用过？</li>
-<li>BB[B]中v没有被重新定义？</li>
-</ol>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125655.png" alt="截屏2020-05-15 下午8.00.26 " style="zoom:80%;" />
-
-<p>因为我们是在backward分析IN[B]这个<code>program point</code>的状态，来决定<code>v=3</code>是否被寄存器丢掉，即<code>IN[B]</code>这一点的事关<code>v</code>在未来是否会被使用到。看在第一个情况中，与<code>v</code>无关，但是我们知道OUT[B]这一点我们union出了<code>OUT[B]=&#123;v&#125;</code>，因为是<code>backward</code>分析，即接下来<code>v</code>会被使用到(BB[S1]处)。那么这一点中，<code>v</code>没有被重新定义，那么<code>IN[B]=&#123;v&#125;</code></p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125658.png" alt="截屏2020-05-15 下午8.09.19 " style="zoom:80%;" />
-
-<p>这里面<code>v</code>被使用了，离着<code>v=3</code>更近，这种情况下，即使<code>OUT[B]=&#123;&#125;</code>，也会有<code>IN[B]=&#123;v&#125;</code>。</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125700.png" alt="截屏2020-05-15 下午8.11.14 z" style="zoom:80%;" />
-
-<p>这里<code>v=2</code>，v是<code>lval</code>左值，那么这个defition中v被重新定义了，上边<code>v=3</code>就不live了，因为没有被使用过，就被<code>redefine</code>了。此时<code>IN[B]=&#123;&#125;</code>，依据这个状态，从这个<code>program point</code>开始，寄存器中的<code>3</code>可以拿掉了。</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125701.png" alt="截屏2020-05-15 下午8.18.10" style="zoom:80%;" />
-
-<p>再想象一下寄存器中的那个3，<code>v=v-1</code>中，右边的表达式是一个使用了寄存器中该值的二元操作。因此在这一时刻，我们需要使用寄存器中的3，那么<code>IN[B]=&#123;v&#125;</code>。</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125703.png" alt="截屏2020-05-15 下午8.21.04 " style="zoom:80%;" />
-
-<p>这里case5是先写后读，case6是先读后写。在先写的时候 ，寄存器完全可以舍去<code>3</code> 。因为没有用到，还要重新读，而在case6中，寄存器中的<code>3</code>先被user了一下，所以在被<code>redefine</code>之前，有<code>use</code>，就是<code>live</code>咯。</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125707.png" alt="截屏2020-05-15 下午8.28.22 " style="zoom:80%;" />
-
-<p>这里就定义了经过BB时的transfer function。</p>
-<p>设计好了，就开始用算法动起来。</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125709.png" alt="截屏2020-05-15 下午8.31.52 " style="zoom:50%;" />
-
-<blockquote>
-<p>这里的定义，我理解的是因为transfer function是从下往上一句一句走的，那么先走到define被删掉了，然后use就又加上了。所以正序来看，先use后define就是live的。</p>
-</blockquote>
-<ul>
-<li><p>INPUT:  CFG</p>
-</li>
-<li><p>OUTPUT: 每一个program  point的标志位的状态</p>
-</li>
-<li><p>METHOD: 第一句的边界条件，因为是backward的，所以是IN[exit]，这里设置是空。（未来没有变量会被用到了）。然后所有BB初始化为空，求到所有的IN[B]不回被change了(反向)。</p>
-</li>
-</ul>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125710.png" alt="截屏2020-05-15 下午9.22.50 " style="zoom:50%;" />
-
-<p>STEP:</p>
-<ol>
-<li>抽象7个变量位7个特位</li>
-<li>分配给每一个program point(IN处)，并初始化为零。</li>
-<li>第一次迭代(backward)开始</li>
-<li>B5: <code>z=2p</code> ，<code>p</code>被use加上，<code>z</code>被redefine删除&#x3D;》0001000</li>
-<li>B3: <code>x= x-3</code>x 先被use后被redfine，需要加上&#x3D;〉1001000</li>
-<li>B4: B4的OUT需要先union一下两个后继节点(successor)的IN，即(IN[B2]+IN[B5])，然后transfer &#x3D;》 0101000</li>
-<li>B2: IN[B4]+IN[B3] &#x3D; 1101000，加m,减y，加k，减m &#x3D;&gt; 1101001</li>
-<li>B1: +q+z-y+p-x&#x3D;&gt;0111001</li>
-</ol>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125715.png" alt="截屏2020-05-15 下午9.34.54 " style="zoom:50%;" />
-
-<ol start="9">
-<li><p>因为上一轮即初始化IN[]都为0，现在变了，依据算法进行第二轮迭代。</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125719.png" alt="截屏2020-05-15 下午9.37.49 " style="zoom:50%;" /></li>
-</ol>
-<p>10.第二轮后IN[B4]变了，下一轮：</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125725.png" alt="截屏2020-05-15 下午9.38.29 " style="zoom:50%;" />
-
-<ol start="11">
-<li>第三轮没有IN转变。</li>
-</ol>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://example.com/2020/05/12/static-analysis-4/" data-id="cl1elu1ny001bjnw5a3ew0m4j" data-title="南大静态分析-4(Live Variables Analysis)" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2020/05/18/static-analysis-5-md/" data-id="cl1q1rwcn001gajw58wsy0rzz" data-title="南大静态分析5(Data Flow Analysis - Foundations 1)" class="article-share-link">Share</a>
       
       
       
@@ -1733,7 +1681,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/02/">February 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/01/">January 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/12/">December 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">September 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">August 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">April 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">February 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">January 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/04/">April 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/03/">March 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/02/">February 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/01/">January 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/12/">December 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">September 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">August 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">April 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">February 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">January 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li></ul>
     </div>
   </div>
 
@@ -1746,6 +1694,14 @@
       <ul>
         
           <li>
+            <a href="/2022/04/06/taint-2/">PHP污点分析</a>
+          </li>
+        
+          <li>
+            <a href="/2022/03/31/nlp-1/">NLP入门(一)</a>
+          </li>
+        
+          <li>
             <a href="/2022/02/24/web/">Web应用系中注入类漏洞调研</a>
           </li>
         
@@ -1755,14 +1711,6 @@
         
           <li>
             <a href="/2022/02/06/logic-machine/">Logic Machine</a>
-          </li>
-        
-          <li>
-            <a href="/2022/01/26/fuz/">Fuzzing(TODO)</a>
-          </li>
-        
-          <li>
-            <a href="/2022/01/01/bayes/">信念传播(Belief propagation)</a>
           </li>
         
       </ul>

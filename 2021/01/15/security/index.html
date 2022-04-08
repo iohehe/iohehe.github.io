@@ -6,12 +6,12 @@
   
   <title>安全性分析 | Penlab</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="description" content="这是我最后一次抄ppt了(认真脸) 0x01 安全信息安全基本功，(完整性、保密性、可用性)… 首先讨论一个基本问题，什么是安全：  Achieving some goals in the presence of adversaries 在有敌人的情况下仍要达到某个特殊目标   在cyber世界， 我们的坏人不言而喻， 我们的目标保护我们的计算机系统在有坏人的情况下还能正常运行，而且数据不会泄露。">
+  <meta name="description" content="这是我最后一次抄ppt了(认真脸) 0x01 安全 信息安全基本功，(完整性、保密性、可用性)... 首先讨论一个基本问题，什么是安全：  Achieving some goals in the presence of adversaries 在有敌人的情况下仍要达到某个特殊目标   在cyber世界， 我们的坏人不言而喻， 我们的目标保护我们的计算机系统在有坏人的情况下还能正常运行，而且数据不会">
 <meta property="og:type" content="article">
 <meta property="og:title" content="安全性分析">
 <meta property="og:url" content="http://example.com/2021/01/15/security/index.html">
 <meta property="og:site_name" content="Penlab">
-<meta property="og:description" content="这是我最后一次抄ppt了(认真脸) 0x01 安全信息安全基本功，(完整性、保密性、可用性)… 首先讨论一个基本问题，什么是安全：  Achieving some goals in the presence of adversaries 在有敌人的情况下仍要达到某个特殊目标   在cyber世界， 我们的坏人不言而喻， 我们的目标保护我们的计算机系统在有坏人的情况下还能正常运行，而且数据不会泄露。">
+<meta property="og:description" content="这是我最后一次抄ppt了(认真脸) 0x01 安全 信息安全基本功，(完整性、保密性、可用性)... 首先讨论一个基本问题，什么是安全：  Achieving some goals in the presence of adversaries 在有敌人的情况下仍要达到某个特殊目标   在cyber世界， 我们的坏人不言而喻， 我们的目标保护我们的计算机系统在有坏人的情况下还能正常运行，而且数据不会">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://tva1.sinaimg.cn/large/008eGmZEgy1gmru5lf4ghj306006hq2u.jpg">
 <meta property="og:image" content="http://example.com/2021/01/15/security/debreach/image-20210118143612640.png">
@@ -130,179 +130,153 @@
     <div class="e-content article-entry" itemprop="articleBody">
       
         <p>这是我<del>最后一次</del>抄ppt了(认真脸)</p>
-<h1 id="0x01-安全"><a href="#0x01-安全" class="headerlink" title="0x01 安全"></a>0x01 安全</h1><p>信息安全基本功，(完整性、保密性、可用性)…</p>
+<h1 id="x01-安全">0x01 安全</h1>
+<p>信息安全基本功，(完整性、保密性、可用性)...</p>
 <p>首先讨论一个基本问题，什么是安全：</p>
 <blockquote>
 <p>Achieving some goals in the presence of adversaries</p>
 <p>在有敌人的情况下仍要达到某个特殊目标</p>
 </blockquote>
-<p><img src="https://tva1.sinaimg.cn/large/008eGmZEgy1gmru5lf4ghj306006hq2u.jpg"></p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEgy1gmru5lf4ghj306006hq2u.jpg" /></p>
 <p>在cyber世界， 我们的坏人不言而喻， 我们的目标保护我们的计算机系统在有坏人的情况下还能正常运行，而且数据不会泄露。</p>
-<img src="debreach/image-20210118143612640.png" alt="image-20210118143612640" style="zoom:33%;" />
-
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045327.png" alt="image-20210118143702213" style="zoom:33%;" />
-
+<p><img src="debreach/image-20210118143612640.png" alt="image-20210118143612640" style="zoom:33%;" /></p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045327.png" alt="image-20210118143702213" style="zoom:33%;" /></p>
 <p>我们来关注注入问题和信息泄露问题，为啥呢？ 因为他们属于一大类问题： 信息流的问题。</p>
-<h1 id="0x02-信息流安全"><a href="#0x02-信息流安全" class="headerlink" title="0x02 信息流安全"></a>0x02 信息流安全</h1><img src="debreach/image-20210118143903537.png" alt="image-20210118143903537" style="zoom:33%;" />
-
+<h1 id="x02-信息流安全">0x02 信息流安全</h1>
+<p><img src="debreach/image-20210118143903537.png" alt="image-20210118143903537" style="zoom:33%;" /></p>
 <p>在一个wechat登录界面中， 密码是一个敏感信息， 合法的信息流动是将密码从客户端流到服务器(可信赖一方)。</p>
 <p>如果敏感信息流到了怀仁手上，是我们不想要的。</p>
 <p>如何保护保护信息呢？</p>
 <p>最常用的手段是访问控制(Access Control), 应用程序需要有授权才能访问一个信息， 它关心的是信息任何被访问。 但是信息一旦被访问， 如何操作就不在其管辖范围。</p>
 <p>而信息流安全(Information Flow Security), 会追踪信息的流动， 保证程序以安全的方式处理这些信息。 关注的是信息是如何传播的， 在端到端之间的信息流动中保证数据的安全。</p>
 <p>所以说一个实际的信息系统，想要保护信息安全，就既要有访问控制机制，又要有信息流安全检查[1]。</p>
-<h2 id="什么是信息流"><a href="#什么是信息流" class="headerlink" title="什么是信息流"></a>什么是信息流</h2><blockquote>
-<p> Information flow: if the information in variable x is transferred to variable y, then there is information flow x-&gt;y [2]</p>
+<h2 id="什么是信息流">什么是信息流</h2>
+<blockquote>
+<p>Information flow: if the information in variable x is transferred to variable y, then there is information flow x-&gt;y [2]</p>
 </blockquote>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045337.png" alt="image-20210118145110826" style="zoom:33%;" />
-
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045337.png" alt="image-20210118145110826" style="zoom:33%;" /></p>
 <p>信息载体(变量x)，传入了y, 这就是系统中的一个信息流动。</p>
-<h2 id="信息流和Security结合"><a href="#信息流和Security结合" class="headerlink" title="信息流和Security结合"></a>信息流和Security结合</h2><p>要考虑信息流和安全结合起来， 需要考虑两点， 第一我们就要给信息流的载体，变量进行一个安全分级， 第二点我们需要在安全等级的基础上制定信息流动的策略。</p>
-<h3 id="Security-Levels"><a href="#Security-Levels" class="headerlink" title="Security Levels"></a>Security Levels</h3><p>最简单说是将变量分为两级:</p>
-<ol>
-<li><p>H, meaning <code>high</code> security, secret information (秘密信息)</p>
-</li>
+<h2 id="信息流和security结合">信息流和Security结合</h2>
+<p>要考虑信息流和安全结合起来， 需要考虑两点， 第一我们就要给信息流的载体，变量进行一个安全分级， 第二点我们需要在安全等级的基础上制定信息流动的策略。</p>
+<h3 id="security-levels">Security Levels</h3>
+<p>最简单说是将变量分为两级:</p>
+<ol type="1">
+<li><p>H, meaning <code>high</code> security, secret information (秘密信息)</p></li>
 <li><p>L, meaning <code>low</code>security, public observable information (系统以外可已观测到的)</p>
-<img src="debreach/image-20210118145706312.png" alt="image-20210118145706312" style="zoom: 50%;" /></li>
+<p><img src="debreach/image-20210118145706312.png" alt="image-20210118145706312" style="zoom: 50%;" /></p></li>
 </ol>
 <p>以上代码 broadcast(l)就是可以被广播出去的信息， h就是不能被信息系统之外不允许被观测到的。</p>
 <p>这种安全等级可以抽象为格来表述的[3]。</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045349.png" alt="image-20210118150635775" style="zoom:67%;" />
-
-
-
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045349.png" alt="image-20210118150635775" style="zoom:67%;" /></p>
 <p>格可以很复杂， 而且它可能不是线性上升的。</p>
-<img src="debreach/image-20210118150709113.png" alt="image-20210118150709113" style="zoom:50%;" />
-
+<p><img src="debreach/image-20210118150709113.png" alt="image-20210118150709113" style="zoom:50%;" /></p>
 <p>现在有了安全等级分类， 下一步就是制定策略</p>
-<h3 id="Information-Flow-Policy"><a href="#Information-Flow-Policy" class="headerlink" title="Information Flow Policy"></a>Information Flow Policy</h3><p>信息流安全策略是限制这个信息流如何在不同安全等级中进行流动的。这里介绍一种不干涉策略(Noninterreference policy)[4]， 他的思想是： </p>
+<h3 id="information-flow-policy">Information Flow Policy</h3>
+<p>信息流安全策略是限制这个信息流如何在不同安全等级中进行流动的。这里介绍一种不干涉策略(Noninterreference policy)[4]， 他的思想是：</p>
 <blockquote>
-<p> 高安全等级的变量不能影响到信息流中地安全等级的变量。就是说你不能够在信息可观测的底安全等级变量中，观测到高安全等级信息。</p>
+<p>高安全等级的变量不能影响到信息流中地安全等级的变量。就是说你不能够在信息可观测的底安全等级变量中，观测到高安全等级信息。</p>
 </blockquote>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045404.png" alt="image-20210118151455095" style="zoom: 50%;" />
-
-
-
-<p>嗯…</p>
-<img src="debreach/image-20210118151610860.png" alt="image-20210118151610860" style="zoom:50%;" />
-
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045404.png" alt="image-20210118151455095" style="zoom: 50%;" /></p>
+<p>嗯...</p>
+<p><img src="debreach/image-20210118151610860.png" alt="image-20210118151610860" style="zoom:50%;" /></p>
 <p>看这些例子， 总之，高密集变量不能赋值给地密级遍历中。</p>
-<img src="debreach/image-20210118151657627.png" alt="image-20210118151657627" style="zoom:50%;" />
-
-
-
+<p><img src="debreach/image-20210118151657627.png" alt="image-20210118151657627" style="zoom:50%;" /></p>
 <p>就是保证格上始终是按照边上升的</p>
-<img src="debreach/image-20210118151733378.png" alt="image-20210118151733378" style="zoom:50%;" />
-
-
-
-
-
-<h1 id="0x03-Confidentiality-保密性-and-Integrity-完整性"><a href="#0x03-Confidentiality-保密性-and-Integrity-完整性" class="headerlink" title="0x03 Confidentiality(保密性) and Integrity(完整性)"></a>0x03 Confidentiality(保密性) and Integrity(完整性)</h1><p>从信息泄露的角度讲，需要阻止的信息流是从高到低， 但是完整性与保密性正好相反， 他要阻止的是从低安全流向高安全从而破坏高安全信息的完整性[5]。</p>
-<img src="debreach/image-20210118152255244.png" alt="image-20210118152255244" style="zoom:50%;" />
-
-<p>完整性涵盖了一大类漏洞，如注入漏洞, 注入漏洞…还是注入漏洞。</p>
-<img src="debreach/image-20210118152448073.png" alt="image-20210118152448073" style="zoom:50%;" />
-
+<p><img src="debreach/image-20210118151733378.png" alt="image-20210118151733378" style="zoom:50%;" /></p>
+<h1 id="x03-confidentiality保密性-and-integrity完整性">0x03 Confidentiality(保密性) and Integrity(完整性)</h1>
+<p>从信息泄露的角度讲，需要阻止的信息流是从高到低， 但是完整性与保密性正好相反， 他要阻止的是从低安全流向高安全从而破坏高安全信息的完整性[5]。</p>
+<p><img src="debreach/image-20210118152255244.png" alt="image-20210118152255244" style="zoom:50%;" /></p>
+<p>完整性涵盖了一大类漏洞，如注入漏洞, 注入漏洞...还是注入漏洞。</p>
+<p><img src="debreach/image-20210118152448073.png" alt="image-20210118152448073" style="zoom:50%;" /></p>
 <p>从而可见， 保密性和完整性是信息流安全中的一体两面。 如此， 我们可以用一种手段解决这两种问题。</p>
-<h2 id="扩展安全性概念"><a href="#扩展安全性概念" class="headerlink" title="扩展安全性概念"></a>扩展安全性概念</h2><p>完整性要保证数据在信息系统中的准确性(accuracy)、完全性(completeness)、一致性(consistency)</p>
+<h2 id="扩展安全性概念">扩展安全性概念</h2>
+<p>完整性要保证数据在信息系统中的准确性(accuracy)、完全性(completeness)、一致性(consistency)</p>
 <ul>
-<li><p>Accuracy </p>
-<p>可信的关键数据应该不被污染(操作才能正常， 如信息流安全中的各种注入)</p>
-</li>
+<li><p>Accuracy</p>
+<p>可信的关键数据应该不被污染(操作才能正常， 如信息流安全中的各种注入)</p></li>
 <li><p>Completeness</p>
-<p>数据库应该存储所有完整的数据</p>
-</li>
+<p>数据库应该存储所有完整的数据</p></li>
 <li><p>Consistency</p>
-<p>文件传输系统发送方和接收方内容必须一致。</p>
-</li>
+<p>文件传输系统发送方和接收方内容必须一致。</p></li>
 </ul>
 <p>完整性需要保证整个系统运行是正确的。</p>
-<h1 id="0x04-显式流-Explicit-Flows-和隐藏信道-Covert-Channels"><a href="#0x04-显式流-Explicit-Flows-和隐藏信道-Covert-Channels" class="headerlink" title="0x04 显式流(Explicit Flows)和隐藏信道(Covert Channels)"></a>0x04 显式流(Explicit Flows)和隐藏信道(Covert Channels)</h1><p>该部分讨论了信息流中，信息的传播方式，所有的流都是显示传播的吗(沿数据流图传播)。 当然还有侧信道(隐藏信道)或者隐式流。</p>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045431.png" alt="image-20210118153545945"></p>
+<h1 id="x04-显式流explicit-flows和隐藏信道covert-channels">0x04 显式流(Explicit Flows)和隐藏信道(Covert Channels)</h1>
+<p>该部分讨论了信息流中，信息的传播方式，所有的流都是显示传播的吗(沿数据流图传播)。 当然还有侧信道(隐藏信道)或者隐式流。</p>
+<figure>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045431.png" alt="image-20210118153545945" /><figcaption aria-hidden="true">image-20210118153545945</figcaption>
+</figure>
 <p>控制流可以被敏感信息影响， 通过控制流的方式去泄漏信息。</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045440.png" alt="image-20210118160246443" style="zoom:50%;" />
-
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045440.png" alt="image-20210118160246443" style="zoom:50%;" /></p>
 <p>以上例子是一些隐藏信道[6]。</p>
 <ul>
-<li><p>Implicit flows:  隐式流， 不是为了传递信息，仍然能够利用控制信息传递出敏感信息。</p>
-</li>
-<li><p>Termination channels： 终止信息， 通过程序是否终止传递敏感信息</p>
-</li>
-<li><p>Timing channels: 时间通道，根据运行时间的区别，获得隐藏信息</p>
-</li>
+<li><p>Implicit flows: 隐式流， 不是为了传递信息，仍然能够利用控制信息传递出敏感信息。</p></li>
+<li><p>Termination channels： 终止信息， 通过程序是否终止传递敏感信息</p></li>
+<li><p>Timing channels: 时间通道，根据运行时间的区别，获得隐藏信息</p></li>
 <li><p>Exceptions: 通过异常泄露数据</p>
-<p>…</p>
-</li>
-<li><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045448.png" alt="image-20210118160625484" style="zoom:50%;" /></li>
+<p>...</p></li>
+<li><p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045448.png" alt="image-20210118160625484" style="zoom:50%;" /></p></li>
 </ul>
 <p>虽然隐式流比较难以发现， 但是隐藏信道泄露出的数据往往是有限的。</p>
-<h1 id="0x05-Taint-Analysis"><a href="#0x05-Taint-Analysis" class="headerlink" title="0x05 Taint Analysis"></a>0x05 Taint Analysis</h1><p>污点分析是目前大量使用的信息流安全问题的分析方法。</p>
+<h1 id="x05-taint-analysis">0x05 Taint Analysis</h1>
+<p>污点分析是目前大量使用的信息流安全问题的分析方法。</p>
 <p>思路：将数据分为两类， 其中将关注的一类数据打上标记，关注这些数据的传播。</p>
-<h2 id="source"><a href="#source" class="headerlink" title="source"></a>source</h2><p>污点数据的源头， 污点数据的来源往往是某些特定方法的返回值。</p>
-<h2 id="sink"><a href="#sink" class="headerlink" title="sink"></a>sink</h2><p>污点分析关心的是，从source打上标记的污点数据，是否会流向特殊的sink。</p>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045450.png" alt="image-20210118161205249"></p>
+<h2 id="source">source</h2>
+<p>污点数据的源头， 污点数据的来源往往是某些特定方法的返回值。</p>
+<h2 id="sink">sink</h2>
+<p>污点分析关心的是，从source打上标记的污点数据，是否会流向特殊的sink。</p>
+<figure>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045450.png" alt="image-20210118161205249" /><figcaption aria-hidden="true">image-20210118161205249</figcaption>
+</figure>
 <p>两个例子：</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045553.png" alt="image-20210118161501315" style="zoom:50%;" />
-
-
-
-<h2 id="Taint-and-Pointer-Analysis-Together"><a href="#Taint-and-Pointer-Analysis-Together" class="headerlink" title="Taint and Pointer Analysis, Together"></a>Taint and Pointer Analysis, Together</h2><p>2017年的P&#x2F;Taint论文正式提出要将指针分析和污点分析结合起来[7]。</p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045553.png" alt="image-20210118161501315" style="zoom:50%;" /></p>
+<h2 id="taint-and-pointer-analysis-together">Taint and Pointer Analysis, Together</h2>
+<p>2017年的P/Taint论文正式提出要将指针分析和污点分析结合起来[7]。</p>
 <p>污点分析本质上是追踪程序中的污点数据， 而指针分析的本质上是跟踪程序中的抽象对象如何在程序中流动。</p>
 <p>那么我们就可以看作一类问题：</p>
 <ul>
-<li>Treat tainted data as (artificial) objects                                 —&gt; 将污点数据看作一类特殊的object</li>
-<li>Treats source as allocation sites(of tainted data)                —&gt; 将source看作是敏感数据的allocation site</li>
-<li>Leverages pointer analysis to propagate tainted data.     —-&gt; 借助指针分析追踪污点数据</li>
+<li>Treat tainted data as (artificial) objects ---&gt; 将污点数据看作一类特殊的object</li>
+<li>Treats source as allocation sites(of tainted data) ---&gt; 将source看作是敏感数据的allocation site</li>
+<li>Leverages pointer analysis to propagate tainted data. ----&gt; 借助指针分析追踪污点数据</li>
 </ul>
 <p>那么通过上下文不敏感指针分析为例，来改造成一个污点分析。</p>
-<h2 id="Define"><a href="#Define" class="headerlink" title="Define"></a>Define</h2><ol>
-<li><p>Domain: </p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045501.png" alt="image-20210118162349114" style="zoom:50%;" /></li>
+<h2 id="define">Define</h2>
+<ol type="1">
+<li><p>Domain:</p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045501.png" alt="image-20210118162349114" style="zoom:50%;" /></p></li>
 </ol>
 <p>在指针分析的Domain(varibales, Fields, Objects)的基础上加入一类Tainted data。 （ti表示来自于程序中call site i中的数据）</p>
 <p>(可以右边图中看到原先指针分析中的All objects(堆上的object), 现在分为两类，tainted data也看作一个T字头的objects。。。)</p>
-<ol start="2">
+<ol start="2" type="1">
 <li><p>Inputs:</p>
 <ul>
-<li><p>Source: 一类方法关注他的return </p>
-</li>
-<li><p>Sink:   另一类方法， 关注他的参数中是否传入了taint</p>
-</li>
-</ul>
-</li>
+<li><p>Source: 一类方法关注他的return</p></li>
+<li><p>Sink: 另一类方法， 关注他的参数中是否传入了taint</p></li>
+</ul></li>
 <li><p>Outputs:</p>
 <ul>
 <li>TaintFlows: 输出一个集合， 元素是&lt;ti, m&gt;这个pairs, 表示在call site i处会有一个污点数据t,将流到sink方法m当中。</li>
-</ul>
-</li>
+</ul></li>
 </ol>
-<h2 id="Rules"><a href="#Rules" class="headerlink" title="Rules"></a>Rules</h2><p> 污点分析借助指针分析做的，</p>
-<h1 id="0x06-使用Datalog实现污点分析操作"><a href="#0x06-使用Datalog实现污点分析操作" class="headerlink" title="0x06 使用Datalog实现污点分析操作"></a>0x06 使用Datalog实现污点分析操作</h1><h2 id="Datalog"><a href="#Datalog" class="headerlink" title="Datalog"></a>Datalog</h2><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045547.png" alt="image-20210126115602820" style="zoom:50%;" />
-
+<h2 id="rules">Rules</h2>
+<p>污点分析借助指针分析做的，</p>
+<h1 id="x06-使用datalog实现污点分析操作">0x06 使用Datalog实现污点分析操作</h1>
+<h2 id="datalog">Datalog</h2>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045547.png" alt="image-20210126115602820" style="zoom:50%;" /></p>
 <p>简单说一下Datalog是一门逻辑声明式编程语言，他的操作元素是一系列的谓词(predicate)，为此中是一个一个的fact。最初输入的谓词叫做EDB, 而推出来的是IDB。而对于谓词逻辑推导叫做Rules，Rules左边是头部，通过一个一个的原子操作(包含relational和arithmetic)复合逻辑运算(逗号是与，还有或非)得到头部(头部可以是多个谓词)。</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">//  symbol declare</span><br><span class="line">.type P &lt;: symbol</span><br><span class="line">.type A &lt;: number</span><br><span class="line"></span><br><span class="line">// EDB predict</span><br><span class="line">.decl Age(person: P, age: A)</span><br><span class="line"></span><br><span class="line">// facts</span><br><span class="line">Age(&quot;Xiaoming&quot;, 18).</span><br><span class="line">Age(&quot;Xiaohong&quot;, 23).</span><br><span class="line">Age(&quot;Alan&quot;, 16).</span><br><span class="line">Age(&quot;Abao&quot;, 31).</span><br><span class="line"></span><br><span class="line">// IDB predict</span><br><span class="line">.decl Audlt(person: P, age: A) output</span><br><span class="line"></span><br><span class="line">// rules</span><br><span class="line">Audlt(person, age) :- Age(person, age), age&gt;=18.</span><br></pre></td></tr></table></figure>
-
-
-
 <p>上文就是使用souffle实现的图示的datalog关系，可以看到灰常的直观，那么他的输出IDB为：</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045511.png" alt="image-20210126120329197" style="zoom:50%;" />
-
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045511.png" alt="image-20210126120329197" style="zoom:50%;" /></p>
 <p>以为datalog支持谓词推出自己的facts(递归)， 因此支持很多复杂的操作， 如指针分析：</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045538.png" alt="image-20210126120426056" style="zoom: 33%;" />
-
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045538.png" alt="image-20210126120426056" style="zoom: 33%;" /></p>
 <p>如上是一个简单的过程内指针分析, 它的推导出的内容：</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045531.png" alt="image-20210126120514215" style="zoom:33%;" />
-
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045534.png" alt="image-20210126120520304" style="zoom:50%;" />
-
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045531.png" alt="image-20210126120514215" style="zoom:33%;" /></p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045534.png" alt="image-20210126120520304" style="zoom:50%;" /></p>
 <p>看和表中是一毛一样。</p>
 <p>然后再演示一个过程间的：</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045619.png" alt="image-20210126141708850" style="zoom:50%;" />
-
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045619.png" alt="image-20210126141708850" style="zoom:50%;" /></p>
 <p>目标代码中，为了处理第五行里的call, 需要4个东西：</p>
-<ol>
-<li><p>Dispatch： </p>
+<ol type="1">
+<li><p>Dispatch：</p>
 <p>EDB需要增加</p>
 <ul>
 <li>VCall(l:S, x:V, k:M) 记录l点的call方法k, x接收</li>
@@ -313,40 +287,35 @@
 <ul>
 <li>CallGraph(l:S, m:M), l点的call</li>
 <li>Reachable(m:M), 记录可达方法</li>
-</ul>
-</li>
+</ul></li>
 <li><p>传参数</p>
 <p>EDB增加：</p>
 <ul>
 <li>Argument(l:S, i:N, a:V), l点的调用的实参列表</li>
 <li>Parameter(m:M, i:N, p:V), 形参列表</li>
-</ul>
-</li>
+</ul></li>
 <li><p>传返回值</p>
 <p>EDB增加:</p>
-<p>MethodReturn(m:M, ret:V), 方法的return </p>
+<p>MethodReturn(m:M, ret:V), 方法的return</p>
 <p>CallReturn(l:S, r:V), 接受返回值</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045623.png" alt="image-20210126170849123" style="zoom: 33%;" /></li>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045623.png" alt="image-20210126170849123" style="zoom: 33%;" /></p></li>
 </ol>
 <p>污点分析还需要改点。</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045647.png" alt="image-20210126171038704" style="zoom:25%;" />
-
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045655.png" alt="image-20210126171054264" style="zoom: 33%;" />
-
-
-
-<h1 id="reference"><a href="#reference" class="headerlink" title="reference"></a>reference</h1><p>[1] A practical system needs both access and flow control to satisfy all security requirements. – D.Denning, 1976</p>
-<p>[2] Dorothy E.Denning and Peter J.Denning, “Certification of Programs for Secure Information Flow”. CACM 1977</p>
-<p>[3] Dorothy E.Denning, “A Lattice Model of Secure Information Flow”. CACM 1976</p>
-<p>[4] J.A. Goguen and J.Meseguer, “Security policies and security models”. S&amp;P 1982</p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045647.png" alt="image-20210126171038704" style="zoom:25%;" /></p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045655.png" alt="image-20210126171054264" style="zoom: 33%;" /></p>
+<h1 id="reference">reference</h1>
+<p>[1] A practical system needs both access and flow control to satisfy all security requirements. -- D.Denning, 1976</p>
+<p>[2] Dorothy E.Denning and Peter J.Denning, "Certification of Programs for Secure Information Flow". CACM 1977</p>
+<p>[3] Dorothy E.Denning, "A Lattice Model of Secure Information Flow". CACM 1976</p>
+<p>[4] J.A. Goguen and J.Meseguer, "Security policies and security models". S&amp;P 1982</p>
 <p>[5] Ken Biba, “<em>Integrity Considerations for Secure Computer Systems</em>”. Technical Report, ESD-TR-76-372, USAF Electronic Systems Division, Bed-ford, MA, 1977.</p>
 <p>[6] <em>Butler W. Lampson, “</em>A Note on the Confinement Problem*”. CACM 1973.</p>
-<p>[7] <em>Neville Grech and Yannis Smaragdakis, “</em>P&#x2F;Taint: Unified Points-to and Taint Analysis*”. OOPSLA 2017.</p>
+<p>[7] <em>Neville Grech and Yannis Smaragdakis, “</em>P/Taint: Unified Points-to and Taint Analysis*”. OOPSLA 2017.</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2021/01/15/security/" data-id="cl1elu1nv0014jnw58zhj6mht" data-title="安全性分析" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2021/01/15/security/" data-id="cl1q1rwcj0012ajw5c2phe6lf" data-title="安全性分析" class="article-share-link">Share</a>
       
       
       
@@ -407,7 +376,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/02/">February 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/01/">January 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/12/">December 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">September 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">August 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">April 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">February 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">January 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/04/">April 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/03/">March 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/02/">February 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/01/">January 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/12/">December 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">September 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">August 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">April 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">February 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">January 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li></ul>
     </div>
   </div>
 
@@ -420,6 +389,14 @@
       <ul>
         
           <li>
+            <a href="/2022/04/06/taint-2/">PHP污点分析</a>
+          </li>
+        
+          <li>
+            <a href="/2022/03/31/nlp-1/">NLP入门(一)</a>
+          </li>
+        
+          <li>
             <a href="/2022/02/24/web/">Web应用系中注入类漏洞调研</a>
           </li>
         
@@ -429,14 +406,6 @@
         
           <li>
             <a href="/2022/02/06/logic-machine/">Logic Machine</a>
-          </li>
-        
-          <li>
-            <a href="/2022/01/26/fuz/">Fuzzing(TODO)</a>
-          </li>
-        
-          <li>
-            <a href="/2022/01/01/bayes/">信念传播(Belief propagation)</a>
           </li>
         
       </ul>

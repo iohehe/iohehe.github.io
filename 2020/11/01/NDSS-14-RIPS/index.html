@@ -110,88 +110,71 @@
         <p>文章题目： Simulation of Built-in PHP Feature for Precise Static Code Analysis.</p>
 <p>作者： Johannes Dahse &amp; Toorstem Holz</p>
 <p>RIPS研究PHP静态分析几乎绕不开的工具， 一是选择的时间点好，2014年左右PHP还是比较火的。二是工具确实不多。 这篇文章发了14年的NDSS，还是有些东西值得借鉴的。</p>
-<h2 id="技术背景"><a href="#技术背景" class="headerlink" title="技术背景"></a>技术背景</h2><p>首先， 作者在技术背景部分分析了一些PHP这种highly dynamic lanuage的痛点。</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125738.png" alt="image-20201101153514155" style="zoom: 25%;" />
-
+<h2 id="技术背景">技术背景</h2>
+<p>首先， 作者在技术背景部分分析了一些PHP这种highly dynamic lanuage的痛点。</p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125738.png" alt="image-20201101153514155" style="zoom: 25%;" /></p>
 <ul>
-<li><p>1） 动态类型&#x2F;弱类型</p>
+<li><p>1） 动态类型/弱类型</p>
 <p>脚本语言在变量声明时不用声明类型的确给静态分析带来不少麻烦，而动态类型指的是在运行时类型是可以变得(its variables are not bound to a specific data type).</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$var1</span> = <span class="number">1</span>; <span class="variable">$var2</span> = <span class="string">&#x27;test&#x27;</span>;</span><br><span class="line"><span class="variable">$var2</span> = <span class="variable">$var1</span> + <span class="variable">$var2</span>; <span class="comment">//1 </span></span><br></pre></td></tr></table></figure>
-
-
-</li>
-<li><ol start="2">
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$var1</span> = <span class="number">1</span>; <span class="variable">$var2</span> = <span class="string">&#x27;test&#x27;</span>;</span><br><span class="line"><span class="variable">$var2</span> = <span class="variable">$var1</span> + <span class="variable">$var2</span>; <span class="comment">//1 </span></span><br></pre></td></tr></table></figure></li>
+<li><ol start="2" type="1">
 <li>variable Variables</li>
 </ol>
 <p>这个貌似是PHP独有的，叫$$特性？</p>
- <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$name</span> = <span class="string">&quot;x&quot;</span>;</span><br><span class="line"><span class="variable">$x</span> = <span class="string">&quot;test&quot;</span>;</span><br><span class="line"><span class="keyword">echo</span> <span class="variable">$$name</span>; <span class="comment">//test</span></span><br><span class="line"><span class="variable">$y</span> = $&#123;<span class="title function_ invoke__">getVar</span>()&#125;; <span class="comment">//变量名可以是一个表达式ZZ</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><ol start="3">
+<p><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$name</span> = <span class="string">&quot;x&quot;</span>;</span><br><span class="line"><span class="variable">$x</span> = <span class="string">&quot;test&quot;</span>;</span><br><span class="line"><span class="keyword">echo</span> <span class="variable">$$name</span>; <span class="comment">//test</span></span><br><span class="line"><span class="variable">$y</span> = $&#123;<span class="title function_ invoke__">getVar</span>()&#125;; <span class="comment">//变量名可以是一个表达式ZZ</span></span><br></pre></td></tr></table></figure></p></li>
+<li><ol start="3" type="1">
 <li><p>Dynamic Arrays</p>
 <p>动态数组，PHP的数组是hash table实现的。可以存任何不同的数据类型，而且在初始化的时候key值可以省略在运行时指定。</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125750.png" alt="image-20201101154933544" style="zoom: 50%;" /></li>
-</ol>
-</li>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125750.png" alt="image-20201101154933544" style="zoom: 50%;" /></p></li>
+</ol></li>
 </ul>
-<p>注意这里新添加的自动索引了6, 神不神奇？会按照“4”开始算，把”4”改成”664”就是’e’的索引就是666。（还是说脚本语言的不规范性）</p>
+<p>注意这里新添加的自动索引了6, 神不神奇？会按照“4”开始算，把"4"改成"664"就是'e'的索引就是666。（还是说脚本语言的不规范性）</p>
 <ul>
-<li><ol start="4">
+<li><ol start="4" type="1">
 <li><p>Dynamic Constants</p>
-<p>通过define()在于形式动态定一个常量， 通过constant()运行时访问。</p>
-</li>
-</ol>
-</li>
-<li><ol start="5">
+<p>通过define()在于形式动态定一个常量， 通过constant()运行时访问。</p></li>
+</ol></li>
+<li><ol start="5" type="1">
 <li>Dynamic Function</li>
 </ol>
 <p>function动态调用， 这个说的就太多了。</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125752.png" alt="image-20201101155917397" style="zoom:50%;" /></li>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125752.png" alt="image-20201101155917397" style="zoom:50%;" /></p></li>
 </ul>
 <p>第2行向我们讲述了， 不仅变量名可以是表达式， 方法名也可以是表达式； 第三行是一个回调函数，在动态的时候才知道执行啥。另外，还有<code>fun_get_arg()</code>和<code>func_get_args()</code>在运行时动态从call site拿参数; <code>create_function()</code>动态创建一个方法体org。</p>
 <ul>
-<li><ol start="6">
-<li><p>Dynamic Code </p>
-<p>动态执行代码， 通过<code>eval</code>, <code>assert</code>，小马常用到。这些代码在动态运行时才能知道， 给静态分析增加了难度。</p>
-</li>
-</ol>
-</li>
-<li><ol start="7">
-<li><p>Dynamic includes </p>
-<p>这个吐糟也比较多， 大型PHP项目尝尝被分割成若干文件和目录，他们的拼接为静态分析也增加了难度。类似<code>include</code>，使用这种操作，将文件中的代码返回到include处。尤其是现在又加了惰性加载机制。autoload()这种在静态分析目前只有猜了。</p>
-</li>
-</ol>
-</li>
-<li><ol start="8">
+<li><ol start="6" type="1">
+<li><p>Dynamic Code</p>
+<p>动态执行代码， 通过<code>eval</code>, <code>assert</code>，小马常用到。这些代码在动态运行时才能知道， 给静态分析增加了难度。</p></li>
+</ol></li>
+<li><ol start="7" type="1">
+<li><p>Dynamic includes</p>
+<p>这个吐糟也比较多， 大型PHP项目尝尝被分割成若干文件和目录，他们的拼接为静态分析也增加了难度。类似<code>include</code>，使用这种操作，将文件中的代码返回到include处。尤其是现在又加了惰性加载机制。autoload()这种在静态分析目前只有猜了。</p></li>
+</ol></li>
+<li><ol start="8" type="1">
 <li>Built-in Functinos</li>
 </ol>
-<p>   本文关注和要解决的主要challenge。不像Java, PHP的内建函数都是用C写的， 在ZEND执行时调用。大约有228个扩展5701个内建函数， 他们在静态分析PHP代码时无法被hook到，这就导致了分析的不精确。</p>
-</li>
+本文关注和要解决的主要challenge。不像Java, PHP的内建函数都是用C写的， 在ZEND执行时调用。大约有228个扩展5701个内建函数， 他们在静态分析PHP代码时无法被hook到，这就导致了分析的不精确。</li>
 </ul>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125756.png" alt="image-20201101162437988" style="zoom:50%;" />
-
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125756.png" alt="image-20201101162437988" style="zoom:50%;" /></p>
 <p>如图，第二个位置月份可以是字符型， 这里如果要能探测到XSS就要对list(), printf()进行精确建模。</p>
 <ul>
-<li><ol start="9">
+<li><ol start="9" type="1">
 <li><p>Superglobals</p>
-<p> 我们的超全局变量， 需要精确的标明哪些可控。开发者经常忽略FILES和SERVER的安全性。</p>
-</li>
-</ol>
-</li>
+<p>我们的超全局变量， 需要精确的标明哪些可控。开发者经常忽略FILES和SERVER的安全性。</p></li>
+</ol></li>
 </ul>
-<h2 id="方法设计"><a href="#方法设计" class="headerlink" title="方法设计"></a>方法设计</h2><h3 id="纵览"><a href="#纵览" class="headerlink" title="纵览"></a>纵览</h3><ol>
-<li><p>还是文件为单位， 首相将散乱在文件中的代码解析成main AST(脚本语言通常没有main方法做入口)， 然后将user-defined function们收集起来， 将函数名， 参数等信息存入分析环境， 然后将其函数体构建成separate AST独立于main AST。</p>
-</li>
-<li><p>有了 AST， 下一步构建CFG(控制流图)， 分析AST如果发现<code>conditional jump</code> ,  就开辟一个新的基本块(<code>basic block</code>);并使用<code>basic edge</code>相连接。</p>
-</li>
-<li><p>有了CFG， 下一步构建PDG(数据依赖图)咯， 以基本块为单位，每当一个BB产生， 就分析一下他的<code>adta flow</code> 。</p>
-</li>
-<li><p>实现Intra(过程内)和Inter(过程间)分析，当遇到<code>call site</code> 就在环境中找到该方法名并进入其AST进行分析，从而实现<code>inter</code>能力。</p>
-</li>
-<li><p>实现污点分析。</p>
-</li>
+<h2 id="方法设计">方法设计</h2>
+<h3 id="纵览">纵览</h3>
+<ol type="1">
+<li><p>还是文件为单位， 首相将散乱在文件中的代码解析成main AST(脚本语言通常没有main方法做入口)， 然后将user-defined function们收集起来， 将函数名， 参数等信息存入分析环境， 然后将其函数体构建成separate AST独立于main AST。</p></li>
+<li><p>有了 AST， 下一步构建CFG(控制流图)， 分析AST如果发现<code>conditional jump</code> , 就开辟一个新的基本块(<code>basic block</code>);并使用<code>basic edge</code>相连接。</p></li>
+<li><p>有了CFG， 下一步构建PDG(数据依赖图)咯， 以基本块为单位，每当一个BB产生， 就分析一下他的<code>adta flow</code> 。</p></li>
+<li><p>实现Intra(过程内)和Inter(过程间)分析，当遇到<code>call site</code> 就在环境中找到该方法名并进入其AST进行分析，从而实现<code>inter</code>能力。</p></li>
+<li><p>实现污点分析。</p></li>
 </ol>
 <p>(说的挺复杂，开源版的RIPS的基础分析能力还是以分析tokens流并以各种数据结构辅助追踪为主)</p>
-<h2 id="创新点"><a href="#创新点" class="headerlink" title="创新点"></a>创新点</h2><p>那么本paper novel在什么地方呢：</p>
+<h2 id="创新点">创新点</h2>
+<p>那么本paper novel在什么地方呢：</p>
 <ul>
 <li>在污点分析时添加了sanitization tags来表明数据被过滤</li>
 <li>为952个内建方法建模，从而更精准的把控整个分析流的变化</li>
@@ -200,74 +183,71 @@
 <li>实现了后向污点分析，每一个基本块的分析结果，cache到一个变量里。</li>
 <li>使用上下文敏感字符分析(context-sensitive stirng analysis)来精炼污点分析结果，基于当前环境。</li>
 </ul>
-<h2 id="CFGBuilder"><a href="#CFGBuilder" class="headerlink" title="CFGBuilder"></a>CFGBuilder</h2><p>要构建一个CFG, 先定义statements, 划分基本块。</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125759.png" alt="image-20201102203138487" style="zoom:50%;" />
-
-<p>这里作者定义了几种划分基本块的stmt， 配合算法：  </p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125801.png" alt="image-20201102203339071" style="zoom:50%;" />
-
-<p> 中间的循环AST上的每一个点，如果遇到四种stmt的情况。 </p>
+<h2 id="cfgbuilder">CFGBuilder</h2>
+<p>要构建一个CFG, 先定义statements, 划分基本块。</p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125759.png" alt="image-20201102203138487" style="zoom:50%;" /></p>
+<p>这里作者定义了几种划分基本块的stmt， 配合算法：</p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125801.png" alt="image-20201102203339071" style="zoom:50%;" /></p>
+<p>中间的循环AST上的每一个点，如果遇到四种stmt的情况。</p>
 <ul>
-<li><p>JSTMT, 遇到IF, Switch, Try, Ternary, LogicalOr（后两个没见过）， 就递归分析每个分支下的基本块。将入口条件加到基本块头。</p>
-</li>
-<li><p>LSTMT, 生成循环基本块</p>
-</li>
-<li><p>SSTMT, 停止，基本块下的stmts不可达</p>
-</li>
+<li><p>JSTMT, 遇到IF, Switch, Try, Ternary, LogicalOr（后两个没见过）， 就递归分析每个分支下的基本块。将入口条件加到基本块头。</p></li>
+<li><p>LSTMT, 生成循环基本块</p></li>
+<li><p>SSTMT, 停止，基本块下的stmts不可达</p></li>
 <li><p>RSTMT, return,到达return或者是探测到程序退出，就不和下一个基本块建立连接。</p>
-<p>这里增量在<code>simluate()</code>方法上，来看。</p>
-</li>
+<p>这里增量在<code>simluate()</code>方法上，来看。</p></li>
 </ul>
-<h2 id="simulating-Basic-Blocks"><a href="#simulating-Basic-Blocks" class="headerlink" title="simulating Basic Blocks"></a>simulating Basic Blocks</h2><p>静态分析能干的事，就是编译器或者解释器能干的事。 RIPS为获取基本块内的data flow, 在控制流的基础上进行所谓的simulating，实现simulating:</p>
-<ol>
-<li>制定symbols:   值-val, 变量名-varibale, 常量-constant, 数组-ArrayDimFetch… 每一个symbol都会有几个状态(type, encoding, sanitization)，通过观察状态变化做到对类型，编码以及sanitize的敏感。</li>
+<h2 id="simulating-basic-blocks">simulating Basic Blocks</h2>
+<p>静态分析能干的事，就是编译器或者解释器能干的事。 RIPS为获取基本块内的data flow, 在控制流的基础上进行所谓的simulating，实现simulating:</p>
+<ol type="1">
+<li>制定symbols: 值-val, 变量名-varibale, 常量-constant, 数组-ArrayDimFetch... 每一个symbol都会有几个状态(type, encoding, sanitization)，通过观察状态变化做到对类型，编码以及sanitize的敏感。</li>
 </ol>
 <p>2）Block Summary: 此过程就是将制定的符号集在块中使用进行后向追踪。生成一些块属性(block Summary):</p>
 <pre><code>  * DataFlow - 记录变量/数组的assign
   * Constants - 记录常量的assign
   * GlobalDefines - 记录名称，加入global scope
   * ReturnValue - 记录块中的返回值(每个块一个返回， return和exit后的代码丢弃)
-  * registerGlobals - 记录使用extract()或者import_request_varibales()注册变量
-</code></pre>
+  * registerGlobals - 记录使用extract()或者import_request_varibales()注册变量</code></pre>
 <p>在每个块的后向data flow分析后记录以上内容， 生成block summary.</p>
-<ol start="3">
-<li><p>Data Flow Analysis</p>
-</li>
-<li><p>Simulating Includes and Dynamic Code： php 的includes是一个动态表达式，通过路径去找，找到加入，若无正则匹配。eval同理。</p>
-</li>
-<li><p>Simulating Built-in Functions:</p>
-</li>
+<ol start="3" type="1">
+<li><p>Data Flow Analysis</p></li>
+<li><p>Simulating Includes and Dynamic Code： php 的includes是一个动态表达式，通过路径去找，找到加入，若无正则匹配。eval同理。</p></li>
+<li><p>Simulating Built-in Functions:</p></li>
 </ol>
-<p>​     本文重点。 对621个内建函数进行数据流建模， configured name and effected parameters. 分类如下：</p>
+<p>​ 本文重点。 对621个内建函数进行数据流建模， configured name and effected parameters. 分类如下：</p>
 <ul>
-<li>Alphanumeric(284):  返回值只有字母数字组成的，effectively sanitize. 如: md5(), strlen()</li>
+<li>Alphanumeric(284): 返回值只有字母数字组成的，effectively sanitize. 如: md5(), strlen()</li>
 <li>Argument(122): 原样返回实参或部分的, 如： trim(), strrev()</li>
 <li>escape(20): mysql_real_escap_string()这种， 遇到将symbol中的sanitization属性打上SQLI_SQ 和 SQLI_DO标签(如果没遇到就SQLI_NQ)</li>
-<li>Substring(6): substr(), chunk_split()这种，返回实参字串的。 </li>
-<li>Encode(18):  urlencode(), base64_encode() …</li>
-<li>Decode(25): urldecode(), base64_decode()…</li>
+<li>Substring(6): substr(), chunk_split()这种，返回实参字串的。</li>
+<li>Encode(18): urlencode(), base64_encode() ...</li>
+<li>Decode(25): urldecode(), base64_decode()...</li>
 <li>Callbacks(51): 回调函数，如果调用函数名事字符串，就调用分析。如果是变量，正则猜测。</li>
 </ul>
-<h2 id="Intra-produral-Analysis"><a href="#Intra-produral-Analysis" class="headerlink" title="Intra-produral Analysis"></a>Intra-produral Analysis</h2><p>实现intra</p>
-<h2 id="Inter-procedural-Analysis"><a href="#Inter-procedural-Analysis" class="headerlink" title="Inter-procedural Analysis"></a>Inter-procedural Analysis</h2><p>实现inter</p>
-<h2 id="Simluating-Block-Edges"><a href="#Simluating-Block-Edges" class="headerlink" title="Simluating Block Edges"></a>Simluating Block Edges</h2><p>块与块之间的simluating, 考虑validation的情况</p>
+<h2 id="intra-produral-analysis">Intra-produral Analysis</h2>
+<p>实现intra</p>
+<h2 id="inter-procedural-analysis">Inter-procedural Analysis</h2>
+<p>实现inter</p>
+<h2 id="simluating-block-edges">Simluating Block Edges</h2>
+<p>块与块之间的simluating, 考虑validation的情况</p>
 <ul>
-<li>operators(6): isset(), empty()…</li>
-<li>Type  checks(21): is_numeric()…</li>
-<li>File checks(11): is_file()…</li>
+<li>operators(6): isset(), empty()...</li>
+<li>Type checks(21): is_numeric()...</li>
+<li>File checks(11): is_file()...</li>
 <li>Whitelists(3): array_search()</li>
 <li>Regex(8): 正则</li>
 </ul>
 <p>（原来validatation的情况可以放到块与块间，这样就和sanitization的情况分开来去了）。</p>
-<h2 id="Taint-Analysis"><a href="#Taint-Analysis" class="headerlink" title="Taint Analysis"></a>Taint Analysis</h2><p>污点分析探测漏洞的过程略。:&gt;</p>
-<h2 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h2><p>之前看这篇觉得没啥东西， 仔细分析来东西还是挺多的， 毕竟顶会。</p>
+<h2 id="taint-analysis">Taint Analysis</h2>
+<p>污点分析探测漏洞的过程略。:&gt;</p>
+<h2 id="后记">后记</h2>
+<p>之前看这篇觉得没啥东西， 仔细分析来东西还是挺多的， 毕竟顶会。</p>
 <p>他几乎把所有语言特性层和面向过程层的东西讲到了， 缺少OO层的分析，也是后来不上人针对发文的。</p>
-<p>(为什么看起来这么高大上的东西开源版本用起来和…一样)</p>
+<p>(为什么看起来这么高大上的东西开源版本用起来和...一样)</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2020/11/01/NDSS-14-RIPS/" data-id="cl1elu1ng0005jnw5en4balw0" data-title="Simulation of Built-in PHP Feature for Precise Static Code Analysis" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2020/11/01/NDSS-14-RIPS/" data-id="cl1q1rwc50007ajw5373td459" data-title="Simulation of Built-in PHP Feature for Precise Static Code Analysis" class="article-share-link">Share</a>
       
       
       
@@ -330,7 +310,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/02/">February 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/01/">January 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/12/">December 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">September 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">August 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">April 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">February 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">January 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/04/">April 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/03/">March 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/02/">February 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/01/">January 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/12/">December 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">September 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">August 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">April 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">February 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">January 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li></ul>
     </div>
   </div>
 
@@ -343,6 +323,14 @@
       <ul>
         
           <li>
+            <a href="/2022/04/06/taint-2/">PHP污点分析</a>
+          </li>
+        
+          <li>
+            <a href="/2022/03/31/nlp-1/">NLP入门(一)</a>
+          </li>
+        
+          <li>
             <a href="/2022/02/24/web/">Web应用系中注入类漏洞调研</a>
           </li>
         
@@ -352,14 +340,6 @@
         
           <li>
             <a href="/2022/02/06/logic-machine/">Logic Machine</a>
-          </li>
-        
-          <li>
-            <a href="/2022/01/26/fuz/">Fuzzing(TODO)</a>
-          </li>
-        
-          <li>
-            <a href="/2022/01/01/bayes/">信念传播(Belief propagation)</a>
           </li>
         
       </ul>

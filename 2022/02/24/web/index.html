@@ -6,12 +6,12 @@
   
   <title>Web应用系中注入类漏洞调研 | Penlab</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="description" content="本文基于Securing web applications from injection and logic vulnerabilities: Approaches and chanlleengs[1] 首先给出一张典型的Web架构图， 分为前后端两个部分，从Architecture,Software,以及Technology三个方面去说的。  Web漏洞分类Web系统面临的主要攻击有:    -">
+  <meta name="description" content="本文基于Securing web applications from injection and logic vulnerabilities: Approaches and chanlleengs[1] 首先给出一张典型的Web架构图， 分为前后端两个部分，从Architecture,Software,以及Technology三个方面去说的。  Web漏洞分类 Web系统面临的主要攻击有: - 不">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Web应用系中注入类漏洞调研">
 <meta property="og:url" content="http://example.com/2022/02/24/web/index.html">
 <meta property="og:site_name" content="Penlab">
-<meta property="og:description" content="本文基于Securing web applications from injection and logic vulnerabilities: Approaches and chanlleengs[1] 首先给出一张典型的Web架构图， 分为前后端两个部分，从Architecture,Software,以及Technology三个方面去说的。  Web漏洞分类Web系统面临的主要攻击有:    -">
+<meta property="og:description" content="本文基于Securing web applications from injection and logic vulnerabilities: Approaches and chanlleengs[1] 首先给出一张典型的Web架构图， 分为前后端两个部分，从Architecture,Software,以及Technology三个方面去说的。  Web漏洞分类 Web系统面临的主要攻击有: - 不">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044203.jpg">
 <meta property="og:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044206.jpg">
@@ -106,36 +106,44 @@
       
         <p>本文基于Securing web applications from injection and logic vulnerabilities: Approaches and chanlleengs[1]</p>
 <p>首先给出一张典型的Web架构图， 分为前后端两个部分，从Architecture,Software,以及Technology三个方面去说的。</p>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044203.jpg"></p>
-<h1 id="Web漏洞分类"><a href="#Web漏洞分类" class="headerlink" title="Web漏洞分类"></a>Web漏洞分类</h1><p>Web系统面临的主要攻击有:<br>    - 不充分地输入验证(improper input validation)，缺少或者错误的输入验证，可触发**注入类漏洞(Injecton Vulnerabilities)<strong>。<br>        - 不充分地身份验证(improper authentication and authorization mechanisms)，错误地实现身份验证(authentication functions)与会话管理(access-control policies)。可触发</strong>业务逻辑类漏洞(Business Logic Vulnerabilities)<strong>。<br>        - 不充分地会话管理(improper managerment of session information)，与session令牌的使用有关，可触发</strong>会话管理类漏洞(Session Manangement Vulnerabilities)**。</p>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044206.jpg"></p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044203.jpg" /></p>
+<h1 id="web漏洞分类">Web漏洞分类</h1>
+<p>Web系统面临的主要攻击有: - 不充分地输入验证(improper input validation)，缺少或者错误的输入验证，可触发<strong>注入类漏洞(Injecton Vulnerabilities)</strong>。 - 不充分地身份验证(improper authentication and authorization mechanisms)，错误地实现身份验证(authentication functions)与会话管理(access-control policies)。可触发<strong>业务逻辑类漏洞(Business Logic Vulnerabilities)</strong>。 - 不充分地会话管理(improper managerment of session information)，与session令牌的使用有关，可触发<strong>会话管理类漏洞(Session Manangement Vulnerabilities)</strong>。</p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044206.jpg" /></p>
 <p>根据上图，总结一下，Web系统里最常见也是流行度最广的漏洞类型有三类： 注入类、业务逻辑类、会话管理类。</p>
 <p>本文主要介绍注入。</p>
-<h1 id="注入漏洞"><a href="#注入漏洞" class="headerlink" title="注入漏洞"></a>注入漏洞</h1><p>注入类漏洞本质上是攻击者可以通过操纵用作某种查询的user-input parameters，来改变该查询的语法。从而造成了应用系统的安全问题。主要引发该类漏洞的原因是缺少输入验证或者验证不充分。主要的注入漏洞有XSS和SQL注入两种。</p>
-<h1 id="相关工作"><a href="#相关工作" class="headerlink" title="相关工作"></a>相关工作</h1><p>(先整理XSS)</p>
-<h2 id="XSS"><a href="#XSS" class="headerlink" title="XSS"></a>XSS</h2><p>尽管已经有很多XSS漏洞相关的工作了，但是XSS攻击在Web系统中仍然十分的流行。<br>Weinberger et al.的工作生成web开发框架不能够很好地提供XSS的防护(在上下文敏感分析方面)，以及不能够应对DOM-based XSS攻击。另一方面，taint-based的漏洞挖掘方法不能够handle动态特性与object-oriented code。</p>
-<p>防止XSS可以通过secure coding pratices以及使用secure development frameworks。 目前的漏洞探测方法聚焦于identifying missing sanitization routines 以及 analyzing the effectiveness of sanitization routes。</p>
-<h3 id="XSS安全编程-Secure-programming"><a href="#XSS安全编程-Secure-programming" class="headerlink" title="XSS安全编程(Secure programming)"></a>XSS安全编程(Secure programming)</h3><p>XSS漏洞可通过安全编程(secure coding practices)来排除，如：sanitization of untrusted input for removing the harmful properties. 具体方法包括<code>强制输入限制(impose restrictions on user-input)</code>, <code>采用转义序列表示特殊字符(use escape sequences for referencing special characters)</code>，以及<code>从输入中更换或者移除恶意字符串replacement or removal of malicious characters from the input</code>。</p>
-<h3 id="XSS漏洞挖掘-Vulnerability-detecion"><a href="#XSS漏洞挖掘-Vulnerability-detecion" class="headerlink" title="XSS漏洞挖掘(Vulnerability detecion)"></a>XSS漏洞挖掘(Vulnerability detecion)</h3><ul>
+<h1 id="注入漏洞">注入漏洞</h1>
+<p>注入类漏洞本质上是攻击者可以通过操纵用作某种查询的user-input parameters，来改变该查询的语法。从而造成了应用系统的安全问题。主要引发该类漏洞的原因是缺少输入验证或者验证不充分。主要的注入漏洞有XSS和SQL注入两种。</p>
+<h1 id="相关工作">相关工作</h1>
+<p>(先整理XSS)</p>
+<h2 id="xss">XSS</h2>
+<p>尽管已经有很多XSS漏洞相关的工作了，但是XSS攻击在Web系统中仍然十分的流行。 Weinberger et al.的工作生成web开发框架不能够很好地提供XSS的防护(在上下文敏感分析方面)，以及不能够应对DOM-based XSS攻击。另一方面，taint-based的漏洞挖掘方法不能够handle动态特性与object-oriented code。</p>
+<p>防止XSS可以通过secure coding pratices以及使用secure development frameworks。 目前的漏洞探测方法聚焦于identifying missing sanitization routines 以及 analyzing the effectiveness of sanitization routes。 ### XSS安全编程(Secure programming) XSS漏洞可通过安全编程(secure coding practices)来排除，如：sanitization of untrusted input for removing the harmful properties. 具体方法包括<code>强制输入限制(impose restrictions on user-input)</code>, <code>采用转义序列表示特殊字符(use escape sequences for referencing special characters)</code>，以及<code>从输入中更换或者移除恶意字符串replacement or removal of malicious characters from the input</code>。</p>
+<h3 id="xss漏洞挖掘vulnerability-detecion">XSS漏洞挖掘(Vulnerability detecion)</h3>
+<ul>
 <li>Di lucca et al.提出对web页面进行控制流图构建的XSS挖掘方法。</li>
-<li>尽管XSS漏洞的主要原因是input sanitization function实现的不正确。很少有web应用程序没有包含input sanitizers for filtering out malicious characters. </li>
-<li>污点分析使用用的发现缺少input sanitization的手段。他用来跟踪user-input流并加测untrusted input是否应用于HTML output statements.Pixy是比较早的一个工作，使用过程内，上下文敏感的数据流分析来验证漏洞。Pixy验证user-input在到达sink之前，是不是被sanitized了，but cannot guarantee the correctness of sanitization。<br>对于消毒方法的正确性验证(Correctness of sanitization routines)，可以使用<em>string taint analysis</em>方法，Wassermann and Su使用该方法验证input string。<br>在黑盒方面，Kals et al. 开发了黑盒漏洞扫描系统，用来探测SQL注入和XSS漏洞，该工作使用一个爬虫进行web页面爬取，使用攻击载荷填写form field，</li>
+<li>尽管XSS漏洞的主要原因是input sanitization function实现的不正确。很少有web应用程序没有包含input sanitizers for filtering out malicious characters.</li>
+<li>污点分析使用用的发现缺少input sanitization的手段。他用来跟踪user-input流并加测untrusted input是否应用于HTML output statements.Pixy是比较早的一个工作，使用过程内，上下文敏感的数据流分析来验证漏洞。Pixy验证user-input在到达sink之前，是不是被sanitized了，but cannot guarantee the correctness of sanitization。 对于消毒方法的正确性验证(Correctness of sanitization routines)，可以使用<em>string taint analysis</em>方法，Wassermann and Su使用该方法验证input string。 在黑盒方面，Kals et al. 开发了黑盒漏洞扫描系统，用来探测SQL注入和XSS漏洞，该工作使用一个爬虫进行web页面爬取，使用攻击载荷填写form field，</li>
 </ul>
-<h3 id="XSS漏洞防护-Vulnerability-prevention"><a href="#XSS漏洞防护-Vulnerability-prevention" class="headerlink" title="XSS漏洞防护(Vulnerability prevention)"></a>XSS漏洞防护(Vulnerability prevention)</h3><h3 id="XSS漏洞预测-Vulnerability-prediction"><a href="#XSS漏洞预测-Vulnerability-prediction" class="headerlink" title="XSS漏洞预测(Vulnerability prediction)"></a>XSS漏洞预测(Vulnerability prediction)</h3><h3 id="XSS攻击发现-Attack-detection"><a href="#XSS攻击发现-Attack-detection" class="headerlink" title="XSS攻击发现(Attack detection)"></a>XSS攻击发现(Attack detection)</h3><h3 id="XSS攻击防护-Attack-prevention"><a href="#XSS攻击防护-Attack-prevention" class="headerlink" title="XSS攻击防护(Attack prevention)"></a>XSS攻击防护(Attack prevention)</h3><ul>
+<h3 id="xss漏洞防护vulnerability-prevention">XSS漏洞防护(Vulnerability prevention)</h3>
+<h3 id="xss漏洞预测vulnerability-prediction">XSS漏洞预测(Vulnerability prediction)</h3>
+<h3 id="xss攻击发现attack-detection">XSS攻击发现(Attack detection)</h3>
+<h3 id="xss攻击防护attack-prevention">XSS攻击防护(Attack prevention)</h3>
+<ul>
 <li>保护Web应用程序免受XSS漏洞影响的缓解机制：</li>
 </ul>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044209.jpg"></p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044209.jpg" /></p>
 <ul>
 <li>保护Web应用程序免受XSS攻击的缓解机制：</li>
 </ul>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044212.jpg"></p>
-<p>对于XSS防护机制，在web应用服务端存在以下问题：<br>    1. 性能开销，大多数防护都是设置为HTTP请求与响应间的中间代理。<br>    2. 他涉及检测应用程序的源代码以防止攻击。<br>    3. 一些方法需要开发者人为定义安全策略。</p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044212.jpg" /></p>
+<p>对于XSS防护机制，在web应用服务端存在以下问题： 1. 性能开销，大多数防护都是设置为HTTP请求与响应间的中间代理。 2. 他涉及检测应用程序的源代码以防止攻击。 3. 一些方法需要开发者人为定义安全策略。</p>
 <p><a target="_blank" rel="noopener" href="https://www.sciencedirect.com/science/article/pii/S0950584916300234">参考1</a></p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2022/02/24/web/" data-id="cl1elu1o2001rjnw5gansees1" data-title="Web应用系中注入类漏洞调研" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2022/02/24/web/" data-id="cl1q1rwcq001rajw58y82gsnq" data-title="Web应用系中注入类漏洞调研" class="article-share-link">Share</a>
       
       
       
@@ -144,6 +152,15 @@
   
     
 <nav id="article-nav">
+  
+    <a href="/2022/03/31/nlp-1/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          NLP入门(一)
+        
+      </div>
+    </a>
   
   
     <a href="/2022/02/18/data-mining/" id="article-nav-older" class="article-nav-link-wrap">
@@ -187,7 +204,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/02/">February 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/01/">January 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/12/">December 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">September 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">August 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">April 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">February 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">January 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/04/">April 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/03/">March 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/02/">February 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/01/">January 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/12/">December 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">September 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">August 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">April 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">February 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">January 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li></ul>
     </div>
   </div>
 
@@ -200,6 +217,14 @@
       <ul>
         
           <li>
+            <a href="/2022/04/06/taint-2/">PHP污点分析</a>
+          </li>
+        
+          <li>
+            <a href="/2022/03/31/nlp-1/">NLP入门(一)</a>
+          </li>
+        
+          <li>
             <a href="/2022/02/24/web/">Web应用系中注入类漏洞调研</a>
           </li>
         
@@ -209,14 +234,6 @@
         
           <li>
             <a href="/2022/02/06/logic-machine/">Logic Machine</a>
-          </li>
-        
-          <li>
-            <a href="/2022/01/26/fuz/">Fuzzing(TODO)</a>
-          </li>
-        
-          <li>
-            <a href="/2022/01/01/bayes/">信念传播(Belief propagation)</a>
           </li>
         
       </ul>
