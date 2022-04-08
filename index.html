@@ -32,7 +32,11 @@
 <link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
 
   
-<meta name="generator" content="Hexo 6.1.0"></head>
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.1.0"></head>
 
 <body>
   <div id="container">
@@ -46,7 +50,7 @@
       </h1>
       
         <h2 id="subtitle-wrap">
-          <a href="/" id="subtitle">机械的艺术</a>
+          <a href="/" id="subtitle">The Art of Flow</a>
         </h2>
       
     </div>
@@ -105,7 +109,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2022/04/06/taint-2/" data-id="cl1q1rwcp001oajw55mrggip8" data-title="PHP污点分析" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2022/04/06/taint-2/" data-id="cl1q2upzc001ox7w545lia8ib" data-title="PHP污点分析" class="article-share-link">Share</a>
       
       
       
@@ -147,7 +151,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2022/03/31/nlp-1/" data-id="cl1q1rwcg000tajw58zx3eova" data-title="NLP入门(一)" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2022/03/31/nlp-1/" data-id="cl1q2upz0000sx7w57ybw99oh" data-title="NLP入门(一)" class="article-share-link">Share</a>
       
       
       
@@ -220,7 +224,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2022/02/24/web/" data-id="cl1q1rwcq001rajw58y82gsnq" data-title="Web应用系中注入类漏洞调研" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2022/02/24/web/" data-id="cl1q2upzd001sx7w53ttn7hwm" data-title="Web应用系中注入类漏洞调研" class="article-share-link">Share</a>
       
       
       
@@ -281,7 +285,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2022/02/18/data-mining/" data-id="cl1q1rwcb000jajw577f8cvyv" data-title="data_mining" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2022/02/18/data-mining/" data-id="cl1q2upyw000kx7w534hx55je" data-title="data_mining" class="article-share-link">Share</a>
       
       
       
@@ -320,7 +324,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2022/02/06/logic-machine/" data-id="cl1q1rwce000pajw587b063m3" data-title="Logic Machine" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2022/02/06/logic-machine/" data-id="cl1q2upyz000px7w56hpjfgsg" data-title="Logic Machine" class="article-share-link">Share</a>
       
       
       
@@ -384,7 +388,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2022/01/26/fuz/" data-id="cl1q1rwcd000oajw5dkhje863" data-title="Fuzzing(TODO)" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2022/01/26/fuz/" data-id="cl1q2upyy000ox7w5cov92xo0" data-title="Fuzzing(TODO)" class="article-share-link">Share</a>
       
       
       
@@ -435,10 +439,13 @@ P(A|B) = \frac{P(A)P(B|A)}{P(B)} \tag{1}
 P(X,Y)=P(X|Y)\cdot P(Y)
 \]</span> 如果有多个随机变量<span class="math inline">\(X_1...X_n\)</span>的话: <span class="math display">\[
 P(X_n,...,X_1) = P(Xn|X_{n-1},...,X_1)\cdot P(X_{n-1},....,X_1)
-\]</span> 其中可以继续拆分，如(n=4): <span class="math display">\[
+\]</span> 其中可以继续拆分，如(n=4):</p>
+<p><span class="math display">\[
 P(X_4, X_3, X_2, X_1) = P(X_4|X_3,X_2,X_1)\cdot P(X_3, X_2, X_1) 
 = P(X_4|X_3,X_2,X_1)\cdot P(X_3|X_2,X_1)\cdot P(X_2, X_1) =...
-\]</span> 通过公式进行抽象就是过程: <span class="math display">\[
+\]</span></p>
+<p>通过公式进行抽象就是过程:</p>
+<p><span class="math display">\[
 P \Bigg( \bigcap_{k=1}^nX_k \Bigg) = \prod_{k=1}^nP\Bigg(X_k\Bigg| \bigcap_{j=1}^{k=1}X_j \Bigg)
 \]</span></p>
 <h3 id="贝叶斯网络">贝叶斯网络</h3>
@@ -447,13 +454,26 @@ P \Bigg( \bigcap_{k=1}^nX_k \Bigg) = \prod_{k=1}^nP\Bigg(X_k\Bigg| \bigcap_{j=1}
 <img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125418.png" alt="image-20220101161019281" /><figcaption aria-hidden="true">image-20220101161019281</figcaption>
 </figure>
 <p>给定一个关键词"Asia"</p>
+<p><span class="math display">\[\begin{equation} \label{eq2}
+\begin{aligned}
+a &amp;= b + c \\
+  &amp;= d + e + f + g \\
+  &amp;= h + i
+\end{aligned}
+\end{equation}\]</span></p>
+<p><span class="math display">\[\begin{equation}  \label{eq2}\begin{aligned}
+a &amp;= b + c \\
+  &amp;= d + e + f + g \\
+  &amp;= h + i
+\end{aligned}
+\end{equation}\]</span></p>
 <h2 id="参考">参考</h2>
 <p>https://longaspire.github.io/blog/%E5%9B%A0%E5%AD%90%E5%9B%BE%E4%BB%8B%E7%BB%8D/</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2022/01/01/bayes/" data-id="cl1q1rwc8000cajw596061yd8" data-title="信念传播(Belief propagation)" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2022/01/01/bayes/" data-id="cl1q2upyt000ex7w55565baoc" data-title="信念传播(Belief propagation)" class="article-share-link">Share</a>
       
       
       
@@ -580,7 +600,7 @@ P \Bigg( \bigcap_{k=1}^nX_k \Bigg) = \prod_{k=1}^nP\Bigg(X_k\Bigg| \bigcap_{j=1}
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2021/12/31/org/" data-id="cl1q1rwcf000sajw5btju8ggh" data-title="org使用入门" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2021/12/31/org/" data-id="cl1q2upz1000tx7w5dv2abdz1" data-title="org使用入门" class="article-share-link">Share</a>
       
       
       
@@ -657,7 +677,7 @@ P \Bigg( \bigcap_{k=1}^nX_k \Bigg) = \prod_{k=1}^nP\Bigg(X_k\Bigg| \bigcap_{j=1}
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2021/12/30/datalog/" data-id="cl1q1rwcc000lajw523h24wd7" data-title="datalog" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2021/12/30/datalog/" data-id="cl1q2upyx000lx7w5ceka7ykg" data-title="datalog" class="article-share-link">Share</a>
       
       
       
@@ -700,7 +720,7 @@ P \Bigg( \bigcap_{k=1}^nX_k \Bigg) = \prod_{k=1}^nP\Bigg(X_k\Bigg| \bigcap_{j=1}
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2021/12/25/why/" data-id="cl1q1rwcq001sajw5d3vf5ot3" data-title="我为什么很少写安全相关的东西" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2021/12/25/why/" data-id="cl1q2upze001ux7w5fn6a6j4m" data-title="我为什么很少写安全相关的东西" class="article-share-link">Share</a>
       
       
       
@@ -822,6 +842,7 @@ P \Bigg( \bigcap_{k=1}^nX_k \Bigg) = \prod_{k=1}^nP\Bigg(X_k\Bigg| \bigcap_{j=1}
 
 
 <script src="/js/script.js"></script>
+
 
 
 
