@@ -94,12 +94,12 @@
 
 
 
-<meta name="description" content="Available Expressions Analysis （可用表达式分析）  must analysis  如果说一个表达式 x op y 在 program point p 上是available的，那么  从流图入口点到点p的所有路径，都必须经过表达式x op y。(该表达式结点在流图上支配p点) 在上一次计算该表达式后， 没有再定义过x或者y   在程序优化中， 我们就可以在p出直接">
+<meta name="description" content="Available Expressions Analysis （可用表达式分析）  must analysis  如果说一个表达式 x op y 在 program point p 上是available的，那么  从流图入口点到点p的所有路径，都必须经过表达式x op y。(该表达式结点在流图上支配p点) 在上一次计算该表达式后， 没有再定义过x或者y   在程序优化中， 我们就可以在p出直接利">
 <meta property="og:type" content="article">
 <meta property="og:title" content="南大静态分析-4(Avaliable Expressions Analsis)">
 <meta property="og:url" content="http://example.com/2020/05/17/static-analysis-4-2-md/index.html">
 <meta property="og:site_name" content="Penlab">
-<meta property="og:description" content="Available Expressions Analysis （可用表达式分析）  must analysis  如果说一个表达式 x op y 在 program point p 上是available的，那么  从流图入口点到点p的所有路径，都必须经过表达式x op y。(该表达式结点在流图上支配p点) 在上一次计算该表达式后， 没有再定义过x或者y   在程序优化中， 我们就可以在p出直接">
+<meta property="og:description" content="Available Expressions Analysis （可用表达式分析）  must analysis  如果说一个表达式 x op y 在 program point p 上是available的，那么  从流图入口点到点p的所有路径，都必须经过表达式x op y。(该表达式结点在流图上支配p点) 在上一次计算该表达式后， 没有再定义过x或者y   在程序优化中， 我们就可以在p出直接利">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043138.png">
 <meta property="og:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043142.png">
@@ -346,49 +346,51 @@
       
 
       
-        <h1 id="available-expressions-analysis-可用表达式分析"><a class="markdownIt-Anchor" href="#available-expressions-analysis-可用表达式分析"></a> Available Expressions Analysis （可用表达式分析）</h1>
+        <h1 id="available-expressions-analysis-可用表达式分析">Available Expressions Analysis （可用表达式分析）</h1>
 <blockquote>
 <p>must analysis</p>
 </blockquote>
 <p>如果说一个表达式 <code>x op y</code> 在 program point <code>p</code> 上是available的，那么</p>
-<ol>
+<ol type="1">
 <li>从流图入口点到点<code>p</code>的所有路径，都必须经过表达式<code>x op y</code>。(该表达式结点在流图上支配p点)</li>
 <li>在上一次计算该表达式后， 没有再定义过x或者y</li>
 </ol>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043138.png" alt="截屏2020-05-17 下午8.16.00 " style="zoom:50%;" />
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043138.png" alt="截屏2020-05-17 下午8.16.00 " style="zoom:50%;" /></p>
 <p>在程序优化中， 我们就可以在p出直接利用上一次的表达式计算结果来替换该表达式。也可以用来探测全域公共子表达式。</p>
 <p>例子：</p>
 <p>表达式可利用</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043142.png" alt="image-20201209145609833 " style="zoom:20%;" />
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043142.png" alt="image-20201209145609833 " style="zoom:20%;" /></p>
 <p>表达式不可利用</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043145.png" alt="image-20201209145630745 " style="zoom:20%;" />
-<h2 id="abstraction数据抽象"><a class="markdownIt-Anchor" href="#abstraction数据抽象"></a> Abstraction(数据抽象)</h2>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043148.png" alt="截屏2020-05-17 下午8.16.43 " style="zoom:70%;" />
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043145.png" alt="image-20201209145630745 " style="zoom:20%;" /></p>
+<h2 id="abstraction数据抽象">Abstraction(数据抽象)</h2>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043148.png" alt="截屏2020-05-17 下午8.16.43 " style="zoom:70%;" /></p>
 <p>在流图中抽象每条表达式，可利用状态为一个位。0代表不可利用。</p>
-<h2 id="safe-approximation"><a class="markdownIt-Anchor" href="#safe-approximation"></a> Safe-approximation</h2>
+<h2 id="safe-approximation">Safe-approximation</h2>
 <p>有了定义，有了抽象，下面就要进行评估-&gt;先看汇聚点怎么merge，再制定transfer function。</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043153.png" alt="截屏2020-05-17 下午9.43.38 " style="zoom:67%;" />
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043156.png" alt="截屏2020-05-17 下午9.46.53" /></p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043153.png" alt="截屏2020-05-17 下午9.43.38 " style="zoom:67%;" /></p>
+<figure>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043156.png" alt="截屏2020-05-17 下午9.46.53" /><figcaption aria-hidden="true">截屏2020-05-17 下午9.46.53</figcaption>
+</figure>
 <p>must analysis所有的path都要满足这一条件:</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043159.png" alt="截屏2020-05-17 下午9.47.55 " style="zoom:67%;" />
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043159.png" alt="截屏2020-05-17 下午9.47.55 " style="zoom:67%;" /></p>
 <p>是一种 under-approximation，可以有漏报，可以是safe的。</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043202.png" alt="截屏2020-05-17 下午9.49.19 " style="zoom:80%;" />
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043202.png" alt="截屏2020-05-17 下午9.49.19 " style="zoom:80%;" /></p>
 <p>这里如果b删了， 这里要做交。但是有情况，如x流下来时是<code>x=3</code>而恰好左边的BB中<code>x=3</code>。那么就是一个漏报。</p>
-<h2 id="algorithm-of-available-expressions-analysis"><a class="markdownIt-Anchor" href="#algorithm-of-available-expressions-analysis"></a> Algorithm of Available Expressions Analysis</h2>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043205.png" alt="截屏2020-05-17 下午9.51.13 " style="zoom:67%;" />
+<h2 id="algorithm-of-available-expressions-analysis">Algorithm of Available Expressions Analysis</h2>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043205.png" alt="截屏2020-05-17 下午9.51.13 " style="zoom:67%;" /></p>
 <ul>
 <li>正向分析， boundary是<code>OUT[entry]= 空</code>;</li>
 <li>因为是must analysis,汇聚点做交，仅此<code>OUT[B] = U</code></li>
 </ul>
 <p>CASE:</p>
 <p>初始化：</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043213.png" alt="截屏2020-05-17 下午9.52.56 " style="zoom:80%;" />
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043213.png" alt="截屏2020-05-17 下午9.52.56 " style="zoom:80%;" /></p>
 <p>第一次迭代：</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043216.png" alt="截屏2020-05-17 下午9.53.57 " style="zoom:80%;" />
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043216.png" alt="截屏2020-05-17 下午9.53.57 " style="zoom:80%;" /></p>
 <p>第二次迭代：</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043222.png" alt="截屏2020-05-17 下午9.54.44 " style="zoom:80%;" />
-<h1 id="总结三个算法"><a class="markdownIt-Anchor" href="#总结三个算法"></a> 总结三个算法</h1>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043226.png" alt="截屏2020-05-17 下午9.56.10 " style="zoom:80%;" />
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043222.png" alt="截屏2020-05-17 下午9.54.44 " style="zoom:80%;" /></p>
+<h1 id="总结三个算法">总结三个算法</h1>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043226.png" alt="截屏2020-05-17 下午9.56.10 " style="zoom:80%;" /></p>
 <ul>
 <li>设计一个数据流分析算法， 首先要描述场景， 从场景中抽象出我们需要的数据，然后设计<code>safe approximation</code>，转化成算法；还有就是理解算法是如何停止的。</li>
 </ul>
@@ -559,7 +561,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#available-expressions-analysis-%E5%8F%AF%E7%94%A8%E8%A1%A8%E8%BE%BE%E5%BC%8F%E5%88%86%E6%9E%90"><span class="nav-number">1.</span> <span class="nav-text"> Available Expressions Analysis （可用表达式分析）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#abstraction%E6%95%B0%E6%8D%AE%E6%8A%BD%E8%B1%A1"><span class="nav-number">1.1.</span> <span class="nav-text"> Abstraction(数据抽象)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#safe-approximation"><span class="nav-number">1.2.</span> <span class="nav-text"> Safe-approximation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#algorithm-of-available-expressions-analysis"><span class="nav-number">1.3.</span> <span class="nav-text"> Algorithm of Available Expressions Analysis</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93%E4%B8%89%E4%B8%AA%E7%AE%97%E6%B3%95"><span class="nav-number">2.</span> <span class="nav-text"> 总结三个算法</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#available-expressions-analysis-%E5%8F%AF%E7%94%A8%E8%A1%A8%E8%BE%BE%E5%BC%8F%E5%88%86%E6%9E%90"><span class="nav-number">1.</span> <span class="nav-text">Available Expressions Analysis （可用表达式分析）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#abstraction%E6%95%B0%E6%8D%AE%E6%8A%BD%E8%B1%A1"><span class="nav-number">1.1.</span> <span class="nav-text">Abstraction(数据抽象)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#safe-approximation"><span class="nav-number">1.2.</span> <span class="nav-text">Safe-approximation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#algorithm-of-available-expressions-analysis"><span class="nav-number">1.3.</span> <span class="nav-text">Algorithm of Available Expressions Analysis</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93%E4%B8%89%E4%B8%AA%E7%AE%97%E6%B3%95"><span class="nav-number">2.</span> <span class="nav-text">总结三个算法</span></a></li></ol></div>
             
 
           </div>

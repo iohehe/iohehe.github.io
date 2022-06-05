@@ -78,7 +78,7 @@
 <link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="Penlab" />
 
 
 
@@ -333,11 +333,16 @@
       
         
           
-            <figure class="highlight latex"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">$</span>RMSE = 1 - <span class="keyword">\dfrac</span>&#123;<span class="keyword">\sum</span><span class="built_in">_</span>&#123;i=1&#125;<span class="built_in">^</span>n (y<span class="built_in">_</span>i - <span class="keyword">\hat</span>&#123;y&#125;<span class="built_in">_</span>i)<span class="built_in">^</span>2&#125; &#123;<span class="keyword">\sum</span><span class="built_in">_</span>&#123;i=1&#125;<span class="built_in">^</span>n (y<span class="built_in">_</span>i - <span class="keyword">\bar</span>&#123;y&#125;)<span class="built_in">^</span>2&#125;<span class="built_in">$</span></span><br></pre></td></tr></table></figure>
-<figure class="highlight latex"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">$</span>RMSE = 1 - <span class="keyword">\dfrac</span>&#123;<span class="keyword">\sum</span><span class="built_in">_</span>&#123;i=1&#125;<span class="built_in">^</span>n (y<span class="built_in">_</span>i - <span class="keyword">\hat</span>&#123;y&#125;<span class="keyword">\_</span>i)<span class="built_in">^</span>2&#125; &#123;<span class="keyword">\sum</span><span class="built_in">_</span>&#123;i=1&#125;<span class="built_in">^</span>n (y<span class="built_in">_</span>i - <span class="keyword">\bar</span>&#123;y&#125;)<span class="built_in">^</span>2&#125;<span class="built_in">$</span></span><br></pre></td></tr></table></figure>
-<p><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>R</mi><mi>M</mi><mi>S</mi><mi>E</mi><mo>=</mo><mn>1</mn><mo>−</mo><mo>∑</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">RMSE = 1 - \sum{2}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.00773em;">R</span><span class="mord mathdefault" style="margin-right:0.10903em;">M</span><span class="mord mathdefault" style="margin-right:0.05764em;">S</span><span class="mord mathdefault" style="margin-right:0.05764em;">E</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.72777em;vertical-align:-0.08333em;"></span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1.00001em;vertical-align:-0.25001em;"></span><span class="mop op-symbol small-op" style="position:relative;top:-0.0000050000000000050004em;">∑</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord">2</span></span></span></span></span></p>
-
-          
+          1$RMSE = 1 - \dfrac&#123;\sum_&#123;i=1&#125;^n (y_i - \hat&#123;y&#125;_i)^2&#125; &#123;\sum_&#123;i=1&#125;^n (y_i - \bar&#123;y&#125;)^2&#125;$
+1$
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2022/06/05/test-math/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -455,14 +460,17 @@
       
         
           
-            <h1 id="0x01-污点分析和程序切片有什么不同"><a class="markdownIt-Anchor" href="#0x01-污点分析和程序切片有什么不同"></a> 0x01  污点分析和程序切片有什么不同?</h1>
-<p><a target="_blank" rel="noopener" href="https://reverseengineering.stackexchange.com/questions/13481/what-is-the-difference-between-program-slicing-and-taint-analysis">问题来源</a></p>
-<p><strong>Program Slicing</strong>: 程序切片会减少程序规模，在给定一个输入，不影响输出的情况下，给出程序的一个reduced representant.(保留core functionality, 丢弃clumpy/insignificant attachments)。</p>
-<p><strong>Taint Analysis</strong>: traces the path of information through an application and observes all the objects which are affected/visited/influenced by the corresponding information.<br />
-(我觉得这句写的真好，所以不翻译)<br />
-Therefore a specific input is labeled or tagged, so it could be tracked during its execution.</p>
-
-          
+          0x01 污点分析和程序切片有什么不同?
+问题来源
+Program Slicing: 程序切片会减少程序规模，在给定一个输入，不影响输出的情况下，给出程序的一个reduced representant.(保留core functionality, 丢弃clumpy/insignificant att
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2022/04/06/taint-2/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -580,12 +588,19 @@ Therefore a specific input is labeled or tagged, so it could be tracked during i
       
         
           
-            <p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-074053.jpg" alt="" /></p>
-<p>​																			Photo by <a target="_blank" rel="noopener" href="https://unsplash.com/@domhowlett?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Dominic Howlett</a> on <a target="_blank" rel="noopener" href="https://unsplash.com/?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Unsplash</a></p>
-<h1 id="tf-idf"><a class="markdownIt-Anchor" href="#tf-idf"></a> TF-IDF</h1>
-<p>tf-idf(term frequency-inverse document frequency, 词频-) ,</p>
+          
+​ Photo by Dominic Howlett on Unsplash
+TF-IDF
+tf-idf(term frequency-inverse document frequency, 词频-) ,
 
           
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2022/03/31/nlp-1/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -703,54 +718,16 @@ Therefore a specific input is labeled or tagged, so it could be tracked during i
       
         
           
-            <p>本文基于Securing web applications from injection and logic vulnerabilities: Approaches and chanlleengs[1]</p>
-<p>首先给出一张典型的Web架构图， 分为前后端两个部分，从Architecture,Software,以及Technology三个方面去说的。</p>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044203.jpg" alt="" /></p>
-<h1 id="web漏洞分类"><a class="markdownIt-Anchor" href="#web漏洞分类"></a> Web漏洞分类</h1>
-<p>Web系统面临的主要攻击有:<br />
-- 不充分地输入验证(improper input validation)，缺少或者错误的输入验证，可触发<strong>注入类漏洞(Injecton Vulnerabilities)</strong>。<br />
-- 不充分地身份验证(improper authentication and authorization mechanisms)，错误地实现身份验证(authentication functions)与会话管理(access-control policies)。可触发<strong>业务逻辑类漏洞(Business Logic Vulnerabilities)</strong>。<br />
-- 不充分地会话管理(improper managerment of session information)，与session令牌的使用有关，可触发<strong>会话管理类漏洞(Session Manangement Vulnerabilities)</strong>。</p>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044206.jpg" alt="" /></p>
-<p>根据上图，总结一下，Web系统里最常见也是流行度最广的漏洞类型有三类： 注入类、业务逻辑类、会话管理类。</p>
-<p>本文主要介绍注入。</p>
-<h1 id="注入漏洞"><a class="markdownIt-Anchor" href="#注入漏洞"></a> 注入漏洞</h1>
-<p>注入类漏洞本质上是攻击者可以通过操纵用作某种查询的user-input parameters，来改变该查询的语法。从而造成了应用系统的安全问题。主要引发该类漏洞的原因是缺少输入验证或者验证不充分。主要的注入漏洞有XSS和SQL注入两种。</p>
-<h1 id="相关工作"><a class="markdownIt-Anchor" href="#相关工作"></a> 相关工作</h1>
-<p>(先整理XSS)</p>
-<h2 id="xss"><a class="markdownIt-Anchor" href="#xss"></a> XSS</h2>
-<p>尽管已经有很多XSS漏洞相关的工作了，但是XSS攻击在Web系统中仍然十分的流行。<br />
-Weinberger et al.的工作生成web开发框架不能够很好地提供XSS的防护(在上下文敏感分析方面)，以及不能够应对DOM-based XSS攻击。另一方面，taint-based的漏洞挖掘方法不能够handle动态特性与object-oriented code。</p>
-<p>防止XSS可以通过secure coding pratices以及使用secure development frameworks。 目前的漏洞探测方法聚焦于identifying missing sanitization routines 以及 analyzing the effectiveness of sanitization routes。</p>
-<h3 id="xss安全编程secure-programming"><a class="markdownIt-Anchor" href="#xss安全编程secure-programming"></a> XSS安全编程(Secure programming)</h3>
-<p>XSS漏洞可通过安全编程(secure coding practices)来排除，如：sanitization of untrusted input for removing the harmful properties. 具体方法包括<code>强制输入限制(impose restrictions on user-input)</code>, <code>采用转义序列表示特殊字符(use escape sequences for referencing special characters)</code>，以及<code>从输入中更换或者移除恶意字符串replacement or removal of malicious characters from the input</code>。</p>
-<h3 id="xss漏洞挖掘vulnerability-detecion"><a class="markdownIt-Anchor" href="#xss漏洞挖掘vulnerability-detecion"></a> XSS漏洞挖掘(Vulnerability detecion)</h3>
-<ul>
-<li>Di lucca et al.提出对web页面进行控制流图构建的XSS挖掘方法。</li>
-<li>尽管XSS漏洞的主要原因是input sanitization function实现的不正确。很少有web应用程序没有包含input sanitizers for filtering out malicious characters.</li>
-<li>污点分析使用用的发现缺少input sanitization的手段。他用来跟踪user-input流并加测untrusted input是否应用于HTML output statements.Pixy是比较早的一个工作，使用过程内，上下文敏感的数据流分析来验证漏洞。Pixy验证user-input在到达sink之前，是不是被sanitized了，but cannot guarantee the correctness of sanitization。<br />
-对于消毒方法的正确性验证(Correctness of sanitization routines)，可以使用<em>string taint analysis</em>方法，Wassermann and Su使用该方法验证input string。<br />
-在黑盒方面，Kals et al. 开发了黑盒漏洞扫描系统，用来探测SQL注入和XSS漏洞，该工作使用一个爬虫进行web页面爬取，使用攻击载荷填写form field，</li>
-</ul>
-<h3 id="xss漏洞防护vulnerability-prevention"><a class="markdownIt-Anchor" href="#xss漏洞防护vulnerability-prevention"></a> XSS漏洞防护(Vulnerability prevention)</h3>
-<h3 id="xss漏洞预测vulnerability-prediction"><a class="markdownIt-Anchor" href="#xss漏洞预测vulnerability-prediction"></a> XSS漏洞预测(Vulnerability prediction)</h3>
-<h3 id="xss攻击发现attack-detection"><a class="markdownIt-Anchor" href="#xss攻击发现attack-detection"></a> XSS攻击发现(Attack detection)</h3>
-<h3 id="xss攻击防护attack-prevention"><a class="markdownIt-Anchor" href="#xss攻击防护attack-prevention"></a> XSS攻击防护(Attack prevention)</h3>
-<ul>
-<li>保护Web应用程序免受XSS漏洞影响的缓解机制：</li>
-</ul>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044209.jpg" alt="" /></p>
-<ul>
-<li>保护Web应用程序免受XSS攻击的缓解机制：</li>
-</ul>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044212.jpg" alt="" /></p>
-<p>对于XSS防护机制，在web应用服务端存在以下问题：<br />
-1. 性能开销，大多数防护都是设置为HTTP请求与响应间的中间代理。<br />
-2. 他涉及检测应用程序的源代码以防止攻击。<br />
-3. 一些方法需要开发者人为定义安全策略。</p>
-<p><a target="_blank" rel="noopener" href="https://www.sciencedirect.com/science/article/pii/S0950584916300234">参考1</a></p>
-
-          
+          本文基于Securing web applications from injection and logic vulnerabilities: Approaches and chanlleengs[1]
+首先给出一张典型的Web架构图， 分为前后端两个部分，从Architecture,Softwar
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2022/02/24/web/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -868,43 +845,18 @@ Weinberger et al.的工作生成web开发框架不能够很好地提供XSS的防
       
         
           
-            <p>数据工程发现代漏洞的一个重要方法。 Fabs博士的博士论文就是通过发现代码中的pattern来进行漏洞挖掘(从代码问题时尚)。在传统方法不能够很好地处理的瓶颈问题上，在代码上使用数据工程发现facts不失是一个好的方法。</p>
-<h1 id="数据工程"><a class="markdownIt-Anchor" href="#数据工程"></a> 数据工程</h1>
-<p><a target="_blank" rel="noopener" href="https://c.d2l.ai/stanford-cs329p/syllabus.html">主要参考自李沐实用机器学习</a></p>
-<p>数据工程大致分为三个阶段： 数据收集、 特征工程、模型训练。<br />
-针对数据，我们要做的大致有：</p>
-<ul>
-<li>从哪获得数据(数据来源):数据收集</li>
-<li>数据中的噪声大(数据内容)： 数据清理</li>
-<li>数据不是模型想要的格式(数据格式)： 数据变换</li>
-<li>数据训练比较难(数据效果)： 特征工程</li>
-</ul>
-<h2 id="数据收集data-collection"><a class="markdownIt-Anchor" href="#数据收集data-collection"></a> 数据收集(Data Collection)</h2>
-<p><a target="_blank" rel="noopener" href="https://arxiv.org/pdf/1811.03402.pdf">相关文献</a></p>
-<p>数据收集的目标是构成目标数据集</p>
-<p>针对目标系统，数据的收集大致分为：获取数据、标注数据、数据质量优化。<br />
-看一张总图：</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125846.png" style="zoom:67%;" />
-<p>paper给出的一个分析流程:</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125852.png" style="zoom:67%;" />
-<p>先从section2</p>
-<h3 id="获取数据"><a class="markdownIt-Anchor" href="#获取数据"></a> 获取数据</h3>
-<p>从流程上将就是section2中的内容回答三个问题:<br />
-- Have enough data?  有足够数据进入下一步标注<br />
-- Are there external datasets? 如果有差不多的数据集就去搜集并修改<br />
-- Have data generation method? 想办法生成数据。</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-02-18-023846.png" style="zoom:50%;" />
-<p>从三个角度的技术分析：</p>
-<h4 id="data-discovery-从外部获取已有数据集方法"><a class="markdownIt-Anchor" href="#data-discovery-从外部获取已有数据集方法"></a> <strong>Data Discovery</strong>: 从外部获取已有数据集，方法</h4>
-<p>Data Discovery 通常有两步：<br />
-1.找已经共享标注好的数据集(Data Sharing)，可以去许多的共享平台(如DataHub, kaggle)寻找之前工作整理好的数据集。也可以去CKAN， Quandl， DataMarket等购买。Google Fusion Tables也是一个数据云端管理整合平台，也可以去寻找。</p>
-<ol start="2">
-<li>Data Searching: 如果在以上这些平台没有找到你想要的数据集，就要自己去寻找了， data lakes的出现使得data searching普遍起来。</li>
-</ol>
-<h4 id="augmentation-另一种获取数据的方式是augmentation-对已有数据进行修改得到"><a class="markdownIt-Anchor" href="#augmentation-另一种获取数据的方式是augmentation-对已有数据进行修改得到"></a> <strong><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Data_augmentation">Augmentation</a></strong>: 另一种获取数据的方式是Augmentation, 对已有数据进行修改得到。</h4>
-<h3 id="标注数据"><a class="markdownIt-Anchor" href="#标注数据"></a> 标注数据</h3>
-
-          
+          数据工程发现代漏洞的一个重要方法。 Fabs博士的博士论文就是通过发现代码中的pattern来进行漏洞挖掘(从代码问题时尚)。在传统方法不能够很好地处理的瓶颈问题上，在代码上使用数据工程发现facts不失是一个好的方法。
+数据工程
+主要参考自李沐实用机器学习
+数据工程大致分为三个阶段： 数据收集、 
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2022/02/18/data-mining/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -1022,9 +974,15 @@ Weinberger et al.的工作生成web开发框架不能够很好地提供XSS的防
       
         
           
-            <p>我发现如果沿着计算机发展的脉络回溯，追溯到最初的那些人们。莱布尼茨、希伯尔、罗素、维特根斯坦、邱奇、图灵、哥德尔…我能想到的这些人，好像都在尝试寻找一种究极的符号系统来描述真理。通过这个系统所形成真正精确而无歧义的语言，无论是数学问题还是哲学问题，通过这种语言进行逻辑推导总可以清晰地获得最终地答案。 而如果将这套语言系统编制在一套机械中，并通过机械运动进行逻辑推导，那么这样一台机器便可以无限地接近这个世界的原理甚至能够创造出一个世界(我瞎扯别信)。 然而，不完备定理给这样一台机器存在的可能性沉重地打击，现代计算机可以看成这样一台&quot;完美&quot;机器地&quot;不完美&quot;实现。 但是我觉得这并不是结束，这恰恰是一个开始。</p>
-
-          
+          我发现如果沿着计算机发展的脉络回溯，追溯到最初的那些人们。莱布尼茨、希伯尔、罗素、维特根斯坦、邱奇、图灵、哥德尔...我能想到的这些人，好像都在尝试寻找一种究极的符号系统来描述真理。通过这个系统所形成真正精确而无歧义的语言，无论是数学问题还是哲学问题，通过这种语言进行逻辑推导总可以清晰地获得最终地答
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2022/02/06/logic-machine/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -1142,39 +1100,22 @@ Weinberger et al.的工作生成web开发框架不能够很好地提供XSS的防
       
         
           
-            <p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-01-26-083104.jpg" alt="" /></p>
-<p>本来我是不太喜欢Fuzzing的，觉得太暴力了，没有静态分析优雅(不是)。 但是现在想想这种想法有够无聊，能挖到洞就是好方法。</p>
-<p>本文是介绍一篇2019年的综述:</p>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-01-26-083635.png" alt="" /></p>
-<p>文章可以在arxiv上找到。</p>
-<p>本文首先在high-level上对Fuzzing下定义:</p>
-<blockquote>
-<p>fuzzing refers to a process of repeatedly running a program with generated inputs that may be syntactically or semantically malformed.</p>
-</blockquote>
-<p>就是生成一堆<code>语法</code>和<code>语义</code>上的畸形数据。</p>
-<p><em>fuzz</em>来自于1990年Miller et al.的工作。fuzz起初指的是<code>generates a stream of random characters to be consumed by a target program</code>。</p>
-<h1 id="fuzzing-fuzz-testing"><a class="markdownIt-Anchor" href="#fuzzing-fuzz-testing"></a> Fuzzing &amp; Fuzz Testing</h1>
-<p>这里给出一些Fuzz的基本概念。</p>
-<blockquote>
-<p>Definition 1 (Fuzzing). Fuzzing 执行PUT<br />
-Definition 2 (Fuzz Testing).<br />
-Definition 3 (Fuzzer)<br />
-Definition 4 (Fuzz Campaign)<br />
-Definition 5 (Bug Oracle)<br />
-Definition 6 (Fuzz Configuration)</p>
-</blockquote>
-<h1 id="算法"><a class="markdownIt-Anchor" href="#算法"></a> 算法</h1>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-01-26-090624.png" style="zoom:50%;" />
-<h1 id="preprocess预处理"><a class="markdownIt-Anchor" href="#preprocess预处理"></a> PREPROCESS(预处理)</h1>
-<h1 id="scheduling"><a class="markdownIt-Anchor" href="#scheduling"></a> SCHEDULING()</h1>
-<h1 id="input-generationinput生成"><a class="markdownIt-Anchor" href="#input-generationinput生成"></a> INPUT GENERATION(INPUT生成)</h1>
-<h1 id="input-evaluationinput评估"><a class="markdownIt-Anchor" href="#input-evaluationinput评估"></a> INPUT EVALUATION(INPUT评估)</h1>
-<h2 id="bug-oracles"><a class="markdownIt-Anchor" href="#bug-oracles"></a> Bug Oracles</h2>
-<h2 id="execution-optimizations"><a class="markdownIt-Anchor" href="#execution-optimizations"></a> Execution Optimizations</h2>
-<h2 id="triage"><a class="markdownIt-Anchor" href="#triage"></a> Triage</h2>
-<h1 id="configuration-uupdating"><a class="markdownIt-Anchor" href="#configuration-uupdating"></a> CONFIGURATION UUPDATING</h1>
-
           
+本来我是不太喜欢Fuzzing的，觉得太暴力了，没有静态分析优雅(不是)。 但是现在想想这种想法有够无聊，能挖到洞就是好方法。
+本文是介绍一篇2019年的综述:
+
+文章可以在arxiv上找到。
+本文首先在high-level上对Fuzzing下定义:
+
+fuzzing refers to a pr
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2022/01/26/fuz/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -1292,54 +1233,22 @@ Definition 6 (Fuzz Configuration)</p>
       
         
           
-            <p>本文为了理清贝叶斯网络， 信念传播以及因子图之间的关系。</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-01-01-084717.jpg" alt="img " style="zoom:30%;" />
-<blockquote>
-<p>对于inference problems,信念传播(BP)是一种重要的解决方法</p>
-</blockquote>
-<h2 id="条件概率"><a class="markdownIt-Anchor" href="#条件概率"></a> 条件概率</h2>
-<p>条件概率就是求在B发生的概率下A发生的概率<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>P</mi><mo stretchy="false">(</mo><mi>A</mi><mi mathvariant="normal">∣</mi><mi>B</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">P(A|B)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.13889em;">P</span><span class="mopen">(</span><span class="mord mathdefault">A</span><span class="mord">∣</span><span class="mord mathdefault" style="margin-right:0.05017em;">B</span><span class="mclose">)</span></span></span></span> 。</p>
-<p class='katex-block'><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mtable width="100%"><mtr><mtd width="50%"></mtd><mtd><mrow><mi>P</mi><mo stretchy="false">(</mo><mi>A</mi><mi mathvariant="normal">∣</mi><mi>B</mi><mo stretchy="false">)</mo><mo>=</mo><mfrac><mrow><mi>P</mi><mo stretchy="false">(</mo><mi>A</mi><mo stretchy="false">)</mo><mi>P</mi><mo stretchy="false">(</mo><mi>B</mi><mi mathvariant="normal">∣</mi><mi>A</mi><mo stretchy="false">)</mo></mrow><mrow><mi>P</mi><mo stretchy="false">(</mo><mi>B</mi><mo stretchy="false">)</mo></mrow></mfrac></mrow></mtd><mtd width="50%"></mtd><mtd><mtext>(1)</mtext></mtd></mtr></mtable><annotation encoding="application/x-tex">P(A|B) = \frac{P(A)P(B|A)}{P(B)} \tag{1}
-</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.13889em;">P</span><span class="mopen">(</span><span class="mord mathdefault">A</span><span class="mord">∣</span><span class="mord mathdefault" style="margin-right:0.05017em;">B</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:2.363em;vertical-align:-0.936em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.427em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.13889em;">P</span><span class="mopen">(</span><span class="mord mathdefault" style="margin-right:0.05017em;">B</span><span class="mclose">)</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.13889em;">P</span><span class="mopen">(</span><span class="mord mathdefault">A</span><span class="mclose">)</span><span class="mord mathdefault" style="margin-right:0.13889em;">P</span><span class="mopen">(</span><span class="mord mathdefault" style="margin-right:0.05017em;">B</span><span class="mord">∣</span><span class="mord mathdefault">A</span><span class="mclose">)</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.936em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span><span class="tag"><span class="strut" style="height:2.363em;vertical-align:-0.936em;"></span><span class="mord text"><span class="mord">(</span><span class="mord"><span class="mord">1</span></span><span class="mord">)</span></span></span></span></span></span></p>
-<h2 id="贝叶斯网络介绍"><a class="markdownIt-Anchor" href="#贝叶斯网络介绍"></a> 贝叶斯网络介绍</h2>
-<p>一个贝叶斯网络是一个__有向无环图(DAG)__，也叫信念网络(belief network)。</p>
-<p>贝叶斯网络常常用作是医疗诊断，语言识别等专家系统。</p>
-<h3 id="链式规则"><a class="markdownIt-Anchor" href="#链式规则"></a> 链式规则</h3>
-<p>对于一两个随机变量<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>X</mi></mrow><annotation encoding="application/x-tex">X</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.07847em;">X</span></span></span></span>, <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>Y</mi></mrow><annotation encoding="application/x-tex">Y</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.22222em;">Y</span></span></span></span>,为了找到他们的联合分布，我们可以定义如下条件概率:</p>
-<p class='katex-block'><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>P</mi><mo stretchy="false">(</mo><mi>X</mi><mo separator="true">,</mo><mi>Y</mi><mo stretchy="false">)</mo><mo>=</mo><mi>P</mi><mo stretchy="false">(</mo><mi>X</mi><mi mathvariant="normal">∣</mi><mi>Y</mi><mo stretchy="false">)</mo><mo>⋅</mo><mi>P</mi><mo stretchy="false">(</mo><mi>Y</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">P(X,Y)=P(X|Y)\cdot P(Y)
-</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.13889em;">P</span><span class="mopen">(</span><span class="mord mathdefault" style="margin-right:0.07847em;">X</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathdefault" style="margin-right:0.22222em;">Y</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.13889em;">P</span><span class="mopen">(</span><span class="mord mathdefault" style="margin-right:0.07847em;">X</span><span class="mord">∣</span><span class="mord mathdefault" style="margin-right:0.22222em;">Y</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">⋅</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.13889em;">P</span><span class="mopen">(</span><span class="mord mathdefault" style="margin-right:0.22222em;">Y</span><span class="mclose">)</span></span></span></span></span></p>
-<p>如果有多个随机变量<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>X</mi><mn>1</mn></msub><mi mathvariant="normal">.</mi><mi mathvariant="normal">.</mi><mi mathvariant="normal">.</mi><msub><mi>X</mi><mi>n</mi></msub></mrow><annotation encoding="application/x-tex">X_1...X_n</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.07847em;">X</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.07847em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mord">.</span><span class="mord">.</span><span class="mord">.</span><span class="mord"><span class="mord mathdefault" style="margin-right:0.07847em;">X</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.151392em;"><span style="top:-2.5500000000000003em;margin-left:-0.07847em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">n</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>的话:</p>
-<p class='katex-block'><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>P</mi><mo stretchy="false">(</mo><msub><mi>X</mi><mi>n</mi></msub><mo separator="true">,</mo><mi mathvariant="normal">.</mi><mi mathvariant="normal">.</mi><mi mathvariant="normal">.</mi><mo separator="true">,</mo><msub><mi>X</mi><mn>1</mn></msub><mo stretchy="false">)</mo><mo>=</mo><mi>P</mi><mo stretchy="false">(</mo><mi>X</mi><mi>n</mi><mi mathvariant="normal">∣</mi><msub><mi>X</mi><mrow><mi>n</mi><mo>−</mo><mn>1</mn></mrow></msub><mo separator="true">,</mo><mi mathvariant="normal">.</mi><mi mathvariant="normal">.</mi><mi mathvariant="normal">.</mi><mo separator="true">,</mo><msub><mi>X</mi><mn>1</mn></msub><mo stretchy="false">)</mo><mo>⋅</mo><mi>P</mi><mo stretchy="false">(</mo><msub><mi>X</mi><mrow><mi>n</mi><mo>−</mo><mn>1</mn></mrow></msub><mo separator="true">,</mo><mi mathvariant="normal">.</mi><mi mathvariant="normal">.</mi><mi mathvariant="normal">.</mi><mi mathvariant="normal">.</mi><mo separator="true">,</mo><msub><mi>X</mi><mn>1</mn></msub><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">P(X_n,...,X_1) = P(Xn|X_{n-1},...,X_1)\cdot P(X_{n-1},....,X_1)
-</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.13889em;">P</span><span class="mopen">(</span><span class="mord"><span class="mord mathdefault" style="margin-right:0.07847em;">X</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.151392em;"><span style="top:-2.5500000000000003em;margin-left:-0.07847em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">n</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord">.</span><span class="mord">.</span><span class="mord">.</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.07847em;">X</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.07847em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.13889em;">P</span><span class="mopen">(</span><span class="mord mathdefault" style="margin-right:0.07847em;">X</span><span class="mord mathdefault">n</span><span class="mord">∣</span><span class="mord"><span class="mord mathdefault" style="margin-right:0.07847em;">X</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.301108em;"><span style="top:-2.5500000000000003em;margin-left:-0.07847em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathdefault mtight">n</span><span class="mbin mtight">−</span><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.208331em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord">.</span><span class="mord">.</span><span class="mord">.</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.07847em;">X</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.07847em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">⋅</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.13889em;">P</span><span class="mopen">(</span><span class="mord"><span class="mord mathdefault" style="margin-right:0.07847em;">X</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.301108em;"><span style="top:-2.5500000000000003em;margin-left:-0.07847em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathdefault mtight">n</span><span class="mbin mtight">−</span><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.208331em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord">.</span><span class="mord">.</span><span class="mord">.</span><span class="mord">.</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.07847em;">X</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.07847em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span></span></p>
-<p>其中可以继续拆分，如(n=4):</p>
-<p class='katex-block'><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>P</mi><mo stretchy="false">(</mo><msub><mi>X</mi><mn>4</mn></msub><mo separator="true">,</mo><msub><mi>X</mi><mn>3</mn></msub><mo separator="true">,</mo><msub><mi>X</mi><mn>2</mn></msub><mo separator="true">,</mo><msub><mi>X</mi><mn>1</mn></msub><mo stretchy="false">)</mo><mo>=</mo><mi>P</mi><mo stretchy="false">(</mo><msub><mi>X</mi><mn>4</mn></msub><mi mathvariant="normal">∣</mi><msub><mi>X</mi><mn>3</mn></msub><mo separator="true">,</mo><msub><mi>X</mi><mn>2</mn></msub><mo separator="true">,</mo><msub><mi>X</mi><mn>1</mn></msub><mo stretchy="false">)</mo><mo>⋅</mo><mi>P</mi><mo stretchy="false">(</mo><msub><mi>X</mi><mn>3</mn></msub><mo separator="true">,</mo><msub><mi>X</mi><mn>2</mn></msub><mo separator="true">,</mo><msub><mi>X</mi><mn>1</mn></msub><mo stretchy="false">)</mo><mo>=</mo><mi>P</mi><mo stretchy="false">(</mo><msub><mi>X</mi><mn>4</mn></msub><mi mathvariant="normal">∣</mi><msub><mi>X</mi><mn>3</mn></msub><mo separator="true">,</mo><msub><mi>X</mi><mn>2</mn></msub><mo separator="true">,</mo><msub><mi>X</mi><mn>1</mn></msub><mo stretchy="false">)</mo><mo>⋅</mo><mi>P</mi><mo stretchy="false">(</mo><msub><mi>X</mi><mn>3</mn></msub><mi mathvariant="normal">∣</mi><msub><mi>X</mi><mn>2</mn></msub><mo separator="true">,</mo><msub><mi>X</mi><mn>1</mn></msub><mo stretchy="false">)</mo><mo>⋅</mo><mi>P</mi><mo stretchy="false">(</mo><msub><mi>X</mi><mn>2</mn></msub><mo separator="true">,</mo><msub><mi>X</mi><mn>1</mn></msub><mo stretchy="false">)</mo><mo>=</mo><mi mathvariant="normal">.</mi><mi mathvariant="normal">.</mi><mi mathvariant="normal">.</mi></mrow><annotation encoding="application/x-tex">P(X_4, X_3, X_2, X_1) = P(X_4|X_3,X_2,X_1)\cdot P(X_3, X_2, X_1) 
-= P(X_4|X_3,X_2,X_1)\cdot P(X_3|X_2,X_1)\cdot P(X_2, X_1) =...
-</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.13889em;">P</span><span class="mopen">(</span><span class="mord"><span class="mord mathdefault" style="margin-right:0.07847em;">X</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.07847em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">4</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.07847em;">X</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.07847em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">3</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.07847em;">X</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.07847em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.07847em;">X</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.07847em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.13889em;">P</span><span class="mopen">(</span><span class="mord"><span class="mord mathdefault" style="margin-right:0.07847em;">X</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.07847em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">4</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mord">∣</span><span class="mord"><span class="mord mathdefault" style="margin-right:0.07847em;">X</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.07847em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">3</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.07847em;">X</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.07847em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.07847em;">X</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.07847em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">⋅</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.13889em;">P</span><span class="mopen">(</span><span class="mord"><span class="mord mathdefault" style="margin-right:0.07847em;">X</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.07847em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">3</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.07847em;">X</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.07847em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.07847em;">X</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.07847em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.13889em;">P</span><span class="mopen">(</span><span class="mord"><span class="mord mathdefault" style="margin-right:0.07847em;">X</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.07847em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">4</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mord">∣</span><span class="mord"><span class="mord mathdefault" style="margin-right:0.07847em;">X</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.07847em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">3</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.07847em;">X</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.07847em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.07847em;">X</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.07847em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">⋅</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.13889em;">P</span><span class="mopen">(</span><span class="mord"><span class="mord mathdefault" style="margin-right:0.07847em;">X</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.07847em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">3</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mord">∣</span><span class="mord"><span class="mord mathdefault" style="margin-right:0.07847em;">X</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.07847em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.07847em;">X</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.07847em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">⋅</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.13889em;">P</span><span class="mopen">(</span><span class="mord"><span class="mord mathdefault" style="margin-right:0.07847em;">X</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.07847em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.07847em;">X</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.07847em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.10556em;vertical-align:0em;"></span><span class="mord">.</span><span class="mord">.</span><span class="mord">.</span></span></span></span></span></p>
-<p>通过公式进行抽象就是过程:</p>
-<p class='katex-block'><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>P</mi><mo fence="false">(</mo><munderover><mo>⋂</mo><mrow><mi>k</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></munderover><msub><mi>X</mi><mi>k</mi></msub><mo fence="false">)</mo><mo>=</mo><munderover><mo>∏</mo><mrow><mi>k</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></munderover><mi>P</mi><mo fence="false">(</mo><msub><mi>X</mi><mi>k</mi></msub><mo fence="false">∣</mo><munderover><mo>⋂</mo><mrow><mi>j</mi><mo>=</mo><mn>1</mn></mrow><mrow><mi>k</mi><mo>=</mo><mn>1</mn></mrow></munderover><msub><mi>X</mi><mi>j</mi></msub><mo fence="false">)</mo></mrow><annotation encoding="application/x-tex">P \Bigg( \bigcap_{k=1}^nX_k \Bigg) = \prod_{k=1}^nP\Bigg(X_k\Bigg| \bigcap_{j=1}^{k=1}X_j \Bigg)
-</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:3.0521130000000003em;vertical-align:-1.302113em;"></span><span class="mord mathdefault" style="margin-right:0.13889em;">P</span><span class="mord"><span class="delimsizing size4">(</span></span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mop op-limits"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.6513970000000002em;"><span style="top:-1.8478869999999998em;margin-left:0em;"><span class="pstrut" style="height:3.05em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathdefault mtight" style="margin-right:0.03148em;">k</span><span class="mrel mtight">=</span><span class="mord mtight">1</span></span></span></span><span style="top:-3.0500049999999996em;"><span class="pstrut" style="height:3.05em;"></span><span><span class="mop op-symbol large-op">⋂</span></span></span><span style="top:-4.300005em;margin-left:0em;"><span class="pstrut" style="height:3.05em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">n</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.302113em;"><span></span></span></span></span></span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.07847em;">X</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.33610799999999996em;"><span style="top:-2.5500000000000003em;margin-left:-0.07847em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight" style="margin-right:0.03148em;">k</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mord"><span class="delimsizing size4">)</span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:3.2498900000000006em;vertical-align:-1.4137769999999998em;"></span><span class="mop op-limits"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.6513970000000002em;"><span style="top:-1.8478869999999998em;margin-left:0em;"><span class="pstrut" style="height:3.05em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathdefault mtight" style="margin-right:0.03148em;">k</span><span class="mrel mtight">=</span><span class="mord mtight">1</span></span></span></span><span style="top:-3.0500049999999996em;"><span class="pstrut" style="height:3.05em;"></span><span><span class="mop op-symbol large-op">∏</span></span></span><span style="top:-4.300005em;margin-left:0em;"><span class="pstrut" style="height:3.05em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">n</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.302113em;"><span></span></span></span></span></span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathdefault" style="margin-right:0.13889em;">P</span><span class="mord"><span class="delimsizing size4">(</span></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.07847em;">X</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.33610799999999996em;"><span style="top:-2.5500000000000003em;margin-left:-0.07847em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight" style="margin-right:0.03148em;">k</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mord"><span class="delimsizing mult"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.7799749999999999em;"><span style="top:-1.355975em;"><span class="pstrut" style="height:2.606em;"></span><span class="delimsizinginner delim-size1"><span>∣</span></span></span><span style="top:-1.9619749999999998em;"><span class="pstrut" style="height:2.606em;"></span><span class="delimsizinginner delim-size1"><span>∣</span></span></span><span style="top:-2.5679749999999997em;"><span class="pstrut" style="height:2.606em;"></span><span class="delimsizinginner delim-size1"><span>∣</span></span></span><span style="top:-3.173975em;"><span class="pstrut" style="height:2.606em;"></span><span class="delimsizinginner delim-size1"><span>∣</span></span></span><span style="top:-3.779975em;"><span class="pstrut" style="height:2.606em;"></span><span class="delimsizinginner delim-size1"><span>∣</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.250025em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mop op-limits"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.8361130000000006em;"><span style="top:-1.872331em;margin-left:0em;"><span class="pstrut" style="height:3.05em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathdefault mtight" style="margin-right:0.05724em;">j</span><span class="mrel mtight">=</span><span class="mord mtight">1</span></span></span></span><span style="top:-3.050005em;"><span class="pstrut" style="height:3.05em;"></span><span><span class="mop op-symbol large-op">⋂</span></span></span><span style="top:-4.3000050000000005em;margin-left:0em;"><span class="pstrut" style="height:3.05em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathdefault mtight" style="margin-right:0.03148em;">k</span><span class="mrel mtight">=</span><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.4137769999999998em;"><span></span></span></span></span></span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.07847em;">X</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.311664em;"><span style="top:-2.5500000000000003em;margin-left:-0.07847em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight" style="margin-right:0.05724em;">j</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.286108em;"><span></span></span></span></span></span></span><span class="mord"><span class="delimsizing size4">)</span></span></span></span></span></span></p>
-<h3 id="贝叶斯网络"><a class="markdownIt-Anchor" href="#贝叶斯网络"></a> 贝叶斯网络</h3>
-<p>比如下图贝叶斯网络：</p>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125418.png" alt="image-20220101161019281" /></p>
-<p>给定一个关键词&quot;Asia&quot;</p>
-<p class='katex-block katex-error' title='ParseError: KaTeX parse error: No such environment: equation at position 7: \begin{̲e̲q̲u̲a̲t̲i̲o̲n̲}̲ \label{eq2}
-\b…'>\begin{equation} \label{eq2}
-\begin{aligned}
-a &amp;= b + c \\
-  &amp;= d + e + f + g \\
-  &amp;= h + i
-\end{aligned}
-\end{equation}</p>
-<p class='katex-block katex-error' title='ParseError: KaTeX parse error: No such environment: equation at position 7: \begin{̲e̲q̲u̲a̲t̲i̲o̲n̲}̲  \label{eq2}\b…'>\begin{equation}  \label{eq2}\begin{aligned}
-a &amp;= b + c \\
-  &amp;= d + e + f + g \\
-  &amp;= h + i
-\end{aligned}
-\end{equation}</p>
-<h2 id="参考"><a class="markdownIt-Anchor" href="#参考"></a> 参考</h2>
-<p><a target="_blank" rel="noopener" href="https://longaspire.github.io/blog/%E5%9B%A0%E5%AD%90%E5%9B%BE%E4%BB%8B%E7%BB%8D/">https://longaspire.github.io/blog/因子图介绍/</a></p>
+          本文为了理清贝叶斯网络， 信念传播以及因子图之间的关系。
 
-          
+
+对于inference problems,信念传播(BP)是一种重要的解决方法
+
+条件概率
+条件概率就是求在B发生的概率下A发生的概率\(P(A|B)\) 。 \[
+P(A|B) = \frac{P(A)P(B|A)}{P(B)} \ta
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2022/01/01/bayes/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -1457,75 +1366,21 @@ a &amp;= b + c \\
       
         
           
-            <p>新的一年打算使用org mod 做日程计划。Good Luck~</p>
-<p>我目前使用的版本是spacemacs。</p>
-<p>原教程: <a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=PVsSOmUB7ic">https://www.youtube.com/watch?v=PVsSOmUB7ic</a></p>
-<h2 id="1-create-nodes-and-subtrees"><a class="markdownIt-Anchor" href="#1-create-nodes-and-subtrees"></a> 1. Create nodes and subtrees</h2>
-<p>创建一个org文件：</p>
-<ol>
-<li>Create a new buffer: <code>SPC b N-n</code></li>
-<li>Change into org mode: <code>M-x org mode</code></li>
-</ol>
-<p>写一个Title:</p>
-<p><code>SPC-is</code>(i即是插入，可以选择插入的标签)</p>
-<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#+TITLE: 标题</span></span><br><span class="line"><span class="comment">#+DESCRIPTION: 描述</span></span><br></pre></td></tr></table></figure>
-<p>Create the Tree:</p>
-<p>​	使用*+SPC（同markdown）</p>
-<p>​		使用**+SPC子note</p>
-<p>(也可以使用命令<code>,is</code>(sub level)或者<code>,ih</code>(same level))</p>
-<blockquote>
-<p>Tips: 使用tab可折叠一个tree, 使用shift+tab全局折叠/展开</p>
-</blockquote>
-<blockquote>
-<p>Tips2: 窗口据中: <code>SPC+w+c+c</code>,取消再来一次</p>
-</blockquote>
-<p>subtree:</p>
-<p><code>,sn</code>:进入一颗子树</p>
-<p>返回整个文件: 视频里说的是<code>,sN</code>,但是我这里是<code>,sw</code>,总之看<code>,s</code>选项中的wide</p>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2021-12-31-065024.png" alt="image-20211231145019900" /></p>
-<h2 id="2-formatting-text"><a class="markdownIt-Anchor" href="#2-formatting-text"></a> 2. Formatting Text</h2>
-<p>使用<code>,+x</code>面板来做formatting Text。</p>
-<p>使用vim的viwe模式选中文本(spacemacs太强了), 然后可以做格式化操作了</p>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044132.png" alt="image-20211231145648418" /></p>
-<blockquote>
-<p>还可以使用vim中的ys(surround)</p>
-</blockquote>
-<ul>
-<li>插入代码：</li>
-</ul>
-<p><code>SPC i s</code>, 选择<code>EXAMPLE</code>标签</p>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2021-12-31-070459.png" alt="image-20211231150457798" /></p>
-<h2 id="3-add-todo-and-timestamps"><a class="markdownIt-Anchor" href="#3-add-todo-and-timestamps"></a> 3. Add TODO and timestamps</h2>
-<h4 id="list"><a class="markdownIt-Anchor" href="#list"></a> List</h4>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">- item 1</span><br><span class="line">- item 2</span><br><span class="line">也可以</span><br><span class="line">1. item 1</span><br><span class="line">2. item 2</span><br></pre></td></tr></table></figure>
-<p>在list前加<code>[ ]</code>, 并点击<code>C-c C-c</code>， 就可以给item加一个check</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">1. [ ] item 1</span><br><span class="line">1. [X] item 1 //点击C-c C-c后</span><br></pre></td></tr></table></figure>
-<p>在list的上级note中加<code>[/]</code>,然后<code>C-c C-c</code>:</p>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2021-12-31-091433.png" alt="image-20211231171431548" /></p>
-<p>做完了一条item就<code>C-c C-c</code>。</p>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2021-12-31-091447.png" alt="image-20211231171445473" /></p>
-<h4 id="todo"><a class="markdownIt-Anchor" href="#todo"></a> TODO</h4>
-<p>将一条note变为<code>TODO</code>： <code>shift+left</code> (<code>shift+right</code> remove it), 再来一遍就由TODO变为DONE</p>
-<p>设置优先级: <code>shift+up</code>:</p>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044143.png" alt="image-20211231171934954" /></p>
-<h4 id="agenda"><a class="markdownIt-Anchor" href="#agenda"></a> Agenda</h4>
-<p>设置aganda 使用<code>,d</code>，如schedule <code>,ds</code>:</p>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044145.png" alt="image-20211231172132119" /></p>
-<p>可以通过方向键任意选择。同样在问不去也可以通过<code>shift + 方向键</code>选择。</p>
-<h2 id="4-browse-the-agenda"><a class="markdownIt-Anchor" href="#4-browse-the-agenda"></a> 4. Browse the agenda</h2>
-<p>加载org-agenda:</p>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044149.png" alt="image-20211231172757425" /></p>
-<p>点击<code>,a</code>, 就会看到一个新的agenda view, 可以做很多事，比如使用t来查看TODO:</p>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044151.png" alt="image-20211231172937596" /></p>
-<p><code>,aa</code>可以看我们的agenda</p>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044154.png" alt="image-20211231173256006" /></p>
-<p>可以在配置中改颜色和新的keywords。 这个暂时不需要。</p>
-<h2 id="5-search"><a class="markdownIt-Anchor" href="#5-search"></a> 5. search</h2>
-<p><code>,ss</code>进入search, 如<code>,sst</code>找到所有的todo:</p>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044157.png" alt="image-20211231190225564" /></p>
-<p>先介绍这么多，后续的逐渐熟悉。</p>
+          新的一年打算使用org mod 做日程计划。Good Luck~
+我目前使用的版本是spacemacs。
+原教程: https://www.youtube.com/watch?v=PVsSOmUB7ic
+1. Create nodes and subtrees
+创建一个org文件：
 
-          
+Create 
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2021/12/31/org/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -1643,41 +1498,19 @@ a &amp;= b + c \\
       
         
           
-            <h1 id="datalog学习"><a class="markdownIt-Anchor" href="#datalog学习"></a> DataLog学习</h1>
-<p>一直听说用datalog来做程序分析很NB，所以一直想学习他的使用方式。</p>
-<p>参考: <a target="_blank" rel="noopener" href="https://souffle-lang.github.io/tutorial">https://souffle-lang.github.io/tutorial</a></p>
-<h2 id="有向图可达性分析"><a class="markdownIt-Anchor" href="#有向图可达性分析"></a> 有向图可达性分析</h2>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">.<span class="function">decl <span class="title">edge</span><span class="params">(n: symbol, m: symbol)</span></span></span><br><span class="line"><span class="function"><span class="title">edge</span><span class="params">(<span class="string">&quot;a&quot;</span>, <span class="string">&quot;b&quot;</span>)</span>. <span class="comment">/* facts of edge */</span></span></span><br><span class="line"><span class="function"><span class="title">edge</span><span class="params">(<span class="string">&quot;b&quot;</span>, <span class="string">&quot;c&quot;</span>)</span>.</span></span><br><span class="line"><span class="function"><span class="title">edge</span><span class="params">(<span class="string">&quot;c&quot;</span>, <span class="string">&quot;b&quot;</span>)</span>.</span></span><br><span class="line"><span class="function"><span class="title">edge</span><span class="params">(<span class="string">&quot;c&quot;</span>, <span class="string">&quot;d&quot;</span>)</span>.</span></span><br><span class="line"><span class="function">.decl <span class="title">reachable</span> <span class="params">(n: symbol, m: symbol)</span></span></span><br><span class="line"><span class="function">.output reachable <span class="comment">// output relation reachable</span></span></span><br><span class="line"><span class="function"><span class="title">reachable</span><span class="params">(x, y)</span>:- edge(x, y). // base rule</span></span><br><span class="line"><span class="function">reachable(x, z):- edge(x, y), reachable(y, z). // inductive rule</span></span><br></pre></td></tr></table></figure>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2021-12-30-111626.png" alt="image-20211230141036143" /></p>
-<p>对于这样一个有向图，做可达性分析， 只要做好了顶点之间的边的关系，您不需要dfs, bfs,几行代码就可以搞定：</p>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2021-12-30-111627.png" alt="image-20211230141323656" /></p>
-<p>这全靠着datalog支持递归。</p>
-<p>比如第二条规则</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">reacheable</span>(x, z) :- <span class="built_in">reachable</span>(x, y),<span class="built_in">reachable</span>(y, z).</span><br></pre></td></tr></table></figure>
-<p>其中你告诉引擎, 如果一个符号x连接y,  y连接z，那么x, z相连。 比如a到d, 引擎先根据第一条推导出a-&gt;b，b-&gt;c, c-&gt;d,然后开始递归，即然a-&gt;b, b-&gt;c那么a-&gt;c,即然a-&gt;c, c-&gt;d那么a-&gt;d。</p>
-<h2 id="二叉树同级节点"><a class="markdownIt-Anchor" href="#二叉树同级节点"></a> 二叉树同级节点</h2>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2021-12-30-111622.jpg" alt="Example graph" /></p>
-<p>给定一颗二叉树，找出同级节点： 如b, c同级; d, f同级。</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">.<span class="function">decl <span class="title">Parent</span><span class="params">(n: symbol, m: symbol)</span></span></span><br><span class="line"><span class="function"><span class="title">Parent</span><span class="params">(<span class="string">&quot;d&quot;</span>, <span class="string">&quot;b&quot;</span>)</span>.</span></span><br><span class="line"><span class="function"><span class="title">Parent</span><span class="params">(<span class="string">&quot;e&quot;</span>, <span class="string">&quot;b&quot;</span>)</span>.</span></span><br><span class="line"><span class="function"><span class="title">Parent</span><span class="params">(<span class="string">&quot;f&quot;</span>, <span class="string">&quot;c&quot;</span>)</span>.</span></span><br><span class="line"><span class="function"><span class="title">Parent</span><span class="params">(<span class="string">&quot;g&quot;</span>, <span class="string">&quot;c&quot;</span>)</span>.</span></span><br><span class="line"><span class="function"><span class="title">Parent</span><span class="params">(<span class="string">&quot;b&quot;</span>, <span class="string">&quot;a&quot;</span>)</span>.</span></span><br><span class="line"><span class="function"><span class="title">Parent</span><span class="params">(<span class="string">&quot;c&quot;</span>, <span class="string">&quot;a&quot;</span>)</span>.</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">.decl <span class="title">Person</span><span class="params">(n: symbol)</span></span></span><br><span class="line"><span class="function"><span class="title">Person</span><span class="params">(x)</span> :- Parent(x, _).   // 从子中提取person</span></span><br><span class="line"><span class="function">Person(x) :- Parent(_, x).   // 从父母中提取person</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">.decl SameGeneration(n: symbol, m:symbol)</span></span><br><span class="line"><span class="function">SameGeneration(x, x) :- Person(x). // 做一个自身到自身的关系映射, 做为初始化</span></span><br><span class="line"><span class="function">SameGeneration(x, y) :=</span> <span class="built_in">Parent</span>(x, p), <span class="built_in">SameGeneration</span>(p, q), <span class="built_in">Parent</span>(y, q). <span class="comment">// 逻辑： 如果p是x的父母，p和q同级，那么q的孩子y和x也同级(父父同级-&gt;子子同级)</span></span><br><span class="line"></span><br><span class="line">.output SameGeneration</span><br></pre></td></tr></table></figure>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2021-12-30-111629.png" alt="image-20211230143847717" style="zoom:50%;" />
-<p>注：自己和自己一定同级。</p>
-<h2 id="0x03-data-flow-analysis"><a class="markdownIt-Anchor" href="#0x03-data-flow-analysis"></a> 0x03 Data-flow analysis</h2>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2021-12-30-111616.jpg" alt="Reaching definition example" style="zoom:50%;" />
-<p>这里有一个程序流图，做一个数据流分析。</p>
-<blockquote>
-<p>Data-flow analysis(DFA) aims to determine <em>static</em> properties of programs.</p>
-</blockquote>
-<p>正向来分析变量v的<code>reaching definition</code>:</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// define control flow graph</span></span><br><span class="line"><span class="comment">// via the Edge relation</span></span><br><span class="line">.<span class="function">decl <span class="title">Edge</span><span class="params">(n: symbol, m: symbol)</span></span></span><br><span class="line"><span class="function"><span class="title">Edge</span><span class="params">(<span class="string">&quot;start&quot;</span>, <span class="string">&quot;b1&quot;</span>)</span>.</span></span><br><span class="line"><span class="function"><span class="title">Edge</span><span class="params">(<span class="string">&quot;b1&quot;</span>, <span class="string">&quot;b2&quot;</span>)</span>.</span></span><br><span class="line"><span class="function"><span class="title">Edge</span><span class="params">(<span class="string">&quot;b1&quot;</span>, <span class="string">&quot;b3&quot;</span>)</span>.</span></span><br><span class="line"><span class="function"><span class="title">Edge</span><span class="params">(<span class="string">&quot;b2&quot;</span>, <span class="string">&quot;b4&quot;</span>)</span>.</span></span><br><span class="line"><span class="function"><span class="title">Edge</span><span class="params">(<span class="string">&quot;b3&quot;</span>, <span class="string">&quot;b4&quot;</span>)</span>.</span></span><br><span class="line"><span class="function"><span class="title">Edge</span><span class="params">(<span class="string">&quot;b4&quot;</span>, <span class="string">&quot;b1&quot;</span>)</span>.</span></span><br><span class="line"><span class="function"><span class="title">Edge</span><span class="params">(<span class="string">&quot;b4&quot;</span>, <span class="string">&quot;end&quot;</span>)</span>.</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"><span class="comment">// 两个define点互为gen,kill</span></span></span><br><span class="line"><span class="function"><span class="comment">// Generating Definitions </span></span></span><br><span class="line"><span class="function">.decl <span class="title">GenDef</span><span class="params">(n: symbol, d:symbol)</span>   </span></span><br><span class="line"><span class="function"><span class="title">GenDef</span><span class="params">(<span class="string">&quot;b2&quot;</span>, <span class="string">&quot;d1&quot;</span>)</span>.</span></span><br><span class="line"><span class="function"><span class="title">GenDef</span><span class="params">(<span class="string">&quot;b4&quot;</span>, <span class="string">&quot;d2&quot;</span>)</span>.</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"><span class="comment">// Killing Definitions</span></span></span><br><span class="line"><span class="function">.decl <span class="title">KillDef</span><span class="params">(n: symbol, d:symbol)</span></span></span><br><span class="line"><span class="function"><span class="title">KillDef</span><span class="params">(<span class="string">&quot;b4&quot;</span>, <span class="string">&quot;d1&quot;</span>)</span>.</span></span><br><span class="line"><span class="function"><span class="title">KillDef</span><span class="params">(<span class="string">&quot;b2&quot;</span>, <span class="string">&quot;d2&quot;</span>)</span>.</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"><span class="comment">// Reachable</span></span></span><br><span class="line"><span class="function">.decl <span class="title">Reachable</span><span class="params">(n: symbol, d:symbol)</span>  </span></span><br><span class="line"><span class="function"><span class="title">Reachable</span><span class="params">(u,d)</span> :- GenDef(u,d).    </span></span><br><span class="line"><span class="function">Reachable(v,d) :- Edge(u,v), Reachable(u,d), !KillDef(u,d).</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">.output Reachable</span></span><br></pre></td></tr></table></figure>
-<p>推导式:</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Reachable</span>(u,d) :- <span class="built_in">GenDef</span>(u,d).    <span class="comment">// 初始化define点, 相当于Gen_B</span></span><br><span class="line"><span class="built_in">Reachable</span>(v, d) :- <span class="built_in">Edge</span>(u, v), <span class="built_in">Reachable</span>(u, d), !<span class="built_in">KillDef</span>(u, d). <span class="comment">//相当于(IN[B]-killB)</span></span><br></pre></td></tr></table></figure>
-<p>递归地实现了reaching definition 的迭代数据流算法:</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2021-12-30-111607.png" alt="截屏2020-05-09 下午9.11.28 " style="zoom:50%;" />
-<blockquote>
-<p>参考南大程序分析第三节</p>
-</blockquote>
-
-          
+          DataLog学习
+一直听说用datalog来做程序分析很NB，所以一直想学习他的使用方式。
+参考: https://souffle-lang.github.io/tutorial
+有向图可达性分析
+123456789.decl edge(n: symbol, m: symbol)edge(&quo
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2021/12/30/datalog/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>

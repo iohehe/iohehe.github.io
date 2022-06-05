@@ -78,7 +78,7 @@
 <link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="Penlab" />
 
 
 
@@ -335,10 +335,10 @@
       
 
       
-        <p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-01-26-083104.jpg" alt="" /></p>
+        <p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-01-26-083104.jpg" /></p>
 <p>本来我是不太喜欢Fuzzing的，觉得太暴力了，没有静态分析优雅(不是)。 但是现在想想这种想法有够无聊，能挖到洞就是好方法。</p>
 <p>本文是介绍一篇2019年的综述:</p>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-01-26-083635.png" alt="" /></p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-01-26-083635.png" /></p>
 <p>文章可以在arxiv上找到。</p>
 <p>本文首先在high-level上对Fuzzing下定义:</p>
 <blockquote>
@@ -346,26 +346,21 @@
 </blockquote>
 <p>就是生成一堆<code>语法</code>和<code>语义</code>上的畸形数据。</p>
 <p><em>fuzz</em>来自于1990年Miller et al.的工作。fuzz起初指的是<code>generates a stream of random characters to be consumed by a target program</code>。</p>
-<h1 id="fuzzing-fuzz-testing"><a class="markdownIt-Anchor" href="#fuzzing-fuzz-testing"></a> Fuzzing &amp; Fuzz Testing</h1>
+<h1 id="fuzzing-fuzz-testing">Fuzzing &amp; Fuzz Testing</h1>
 <p>这里给出一些Fuzz的基本概念。</p>
 <blockquote>
-<p>Definition 1 (Fuzzing). Fuzzing 执行PUT<br />
-Definition 2 (Fuzz Testing).<br />
-Definition 3 (Fuzzer)<br />
-Definition 4 (Fuzz Campaign)<br />
-Definition 5 (Bug Oracle)<br />
-Definition 6 (Fuzz Configuration)</p>
+<p>Definition 1 (Fuzzing). Fuzzing 执行PUT Definition 2 (Fuzz Testing). Definition 3 (Fuzzer) Definition 4 (Fuzz Campaign) Definition 5 (Bug Oracle) Definition 6 (Fuzz Configuration)</p>
 </blockquote>
-<h1 id="算法"><a class="markdownIt-Anchor" href="#算法"></a> 算法</h1>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-01-26-090624.png" style="zoom:50%;" />
-<h1 id="preprocess预处理"><a class="markdownIt-Anchor" href="#preprocess预处理"></a> PREPROCESS(预处理)</h1>
-<h1 id="scheduling"><a class="markdownIt-Anchor" href="#scheduling"></a> SCHEDULING()</h1>
-<h1 id="input-generationinput生成"><a class="markdownIt-Anchor" href="#input-generationinput生成"></a> INPUT GENERATION(INPUT生成)</h1>
-<h1 id="input-evaluationinput评估"><a class="markdownIt-Anchor" href="#input-evaluationinput评估"></a> INPUT EVALUATION(INPUT评估)</h1>
-<h2 id="bug-oracles"><a class="markdownIt-Anchor" href="#bug-oracles"></a> Bug Oracles</h2>
-<h2 id="execution-optimizations"><a class="markdownIt-Anchor" href="#execution-optimizations"></a> Execution Optimizations</h2>
-<h2 id="triage"><a class="markdownIt-Anchor" href="#triage"></a> Triage</h2>
-<h1 id="configuration-uupdating"><a class="markdownIt-Anchor" href="#configuration-uupdating"></a> CONFIGURATION UUPDATING</h1>
+<h1 id="算法">算法</h1>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-01-26-090624.png" style="zoom:50%;" /></p>
+<h1 id="preprocess预处理">PREPROCESS(预处理)</h1>
+<h1 id="scheduling">SCHEDULING()</h1>
+<h1 id="input-generationinput生成">INPUT GENERATION(INPUT生成)</h1>
+<h1 id="input-evaluationinput评估">INPUT EVALUATION(INPUT评估)</h1>
+<h2 id="bug-oracles">Bug Oracles</h2>
+<h2 id="execution-optimizations">Execution Optimizations</h2>
+<h2 id="triage">Triage</h2>
+<h1 id="configuration-uupdating">CONFIGURATION UUPDATING</h1>
 
       
     </div>
@@ -527,7 +522,7 @@ Definition 6 (Fuzz Configuration)</p>
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#fuzzing-fuzz-testing"><span class="nav-number">1.</span> <span class="nav-text"> Fuzzing &amp; Fuzz Testing</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AE%97%E6%B3%95"><span class="nav-number">2.</span> <span class="nav-text"> 算法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#preprocess%E9%A2%84%E5%A4%84%E7%90%86"><span class="nav-number">3.</span> <span class="nav-text"> PREPROCESS(预处理)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#scheduling"><span class="nav-number">4.</span> <span class="nav-text"> SCHEDULING()</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#input-generationinput%E7%94%9F%E6%88%90"><span class="nav-number">5.</span> <span class="nav-text"> INPUT GENERATION(INPUT生成)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#input-evaluationinput%E8%AF%84%E4%BC%B0"><span class="nav-number">6.</span> <span class="nav-text"> INPUT EVALUATION(INPUT评估)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#bug-oracles"><span class="nav-number">6.1.</span> <span class="nav-text"> Bug Oracles</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#execution-optimizations"><span class="nav-number">6.2.</span> <span class="nav-text"> Execution Optimizations</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#triage"><span class="nav-number">6.3.</span> <span class="nav-text"> Triage</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#configuration-uupdating"><span class="nav-number">7.</span> <span class="nav-text"> CONFIGURATION UUPDATING</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#fuzzing-fuzz-testing"><span class="nav-number">1.</span> <span class="nav-text">Fuzzing &amp; Fuzz Testing</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AE%97%E6%B3%95"><span class="nav-number">2.</span> <span class="nav-text">算法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#preprocess%E9%A2%84%E5%A4%84%E7%90%86"><span class="nav-number">3.</span> <span class="nav-text">PREPROCESS(预处理)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#scheduling"><span class="nav-number">4.</span> <span class="nav-text">SCHEDULING()</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#input-generationinput%E7%94%9F%E6%88%90"><span class="nav-number">5.</span> <span class="nav-text">INPUT GENERATION(INPUT生成)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#input-evaluationinput%E8%AF%84%E4%BC%B0"><span class="nav-number">6.</span> <span class="nav-text">INPUT EVALUATION(INPUT评估)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#bug-oracles"><span class="nav-number">6.1.</span> <span class="nav-text">Bug Oracles</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#execution-optimizations"><span class="nav-number">6.2.</span> <span class="nav-text">Execution Optimizations</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#triage"><span class="nav-number">6.3.</span> <span class="nav-text">Triage</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#configuration-uupdating"><span class="nav-number">7.</span> <span class="nav-text">CONFIGURATION UUPDATING</span></a></li></ol></div>
             
 
           </div>

@@ -78,7 +78,7 @@
 <link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="Penlab" />
 
 
 
@@ -94,12 +94,12 @@
 
 
 
-<meta name="description" content="0x01 从soundness到soundiness  The typical reasons for such choices are engineering compromises: implementers of such tools are well aware of how they could handle complex language features soundly (e.g">
+<meta name="description" content="0x01 从soundness到soundiness  The typical reasons for such choices are engineering compromises: implementers of such tools are well aware of how they could handle complex language features soundly (e.g.">
 <meta property="og:type" content="article">
 <meta property="og:title" content="soundiness">
 <meta property="og:url" content="http://example.com/2021/02/02/soundiness/index.html">
 <meta property="og:site_name" content="Penlab">
-<meta property="og:description" content="0x01 从soundness到soundiness  The typical reasons for such choices are engineering compromises: implementers of such tools are well aware of how they could handle complex language features soundly (e.g">
+<meta property="og:description" content="0x01 从soundness到soundiness  The typical reasons for such choices are engineering compromises: implementers of such tools are well aware of how they could handle complex language features soundly (e.g.">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043246.png">
 <meta property="og:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043248.png">
@@ -339,26 +339,28 @@
       
 
       
-        <h1 id="0x01-从soundness到soundiness"><a class="markdownIt-Anchor" href="#0x01-从soundness到soundiness"></a> 0x01 从soundness到soundiness</h1>
+        <h1 id="x01-从soundness到soundiness">0x01 从soundness到soundiness</h1>
 <blockquote>
 <p>The typical reasons for such choices are engineering compromises: implementers of such tools are well aware of how they could handle complex language features soundly (e.g., by assuming that a complex language feature can exhibit any behavior), but do not do so because this would make the analysis unscalable or imprecise to the point of being useless. Therefore, the dominant practice is one of treating soundness as an engineering choice.[1]</p>
 </blockquote>
-<p>目前，所有的静态分析工具都希望他们的工具能覆盖所有的情况(soundness), but现在的程序结构越来越复杂…势必有很多问题，是当前静态分析技术无法解决的(称之为Hard Language Feature)。</p>
+<p>目前，所有的静态分析工具都希望他们的工具能覆盖所有的情况(soundness), but现在的程序结构越来越复杂...势必有很多问题，是当前静态分析技术无法解决的(称之为Hard Language Feature)。</p>
 <p>首先， 我们来看什么是soundness</p>
 <blockquote>
-<h2 id="soundness"><a class="markdownIt-Anchor" href="#soundness"></a> Soundness</h2>
+<h2 id="soundness">Soundness</h2>
 <p>Conservative approximation: the analysis captures all program behaviors, or the analysis result all possible executions of the program.</p>
 </blockquote>
 <p>这里的Conservative其实就是Over, 可以看到理想的soundness理论上分析处出实际程序运行时所有的路径和情形。</p>
-<p>然而，无论是当前学术界和工业界都无法达到soundness。但是这些文章或技术一般都不会说自己是unsoundness的，因为通常unsoundness是故意的忽略掉分析一些行为，以达到更高效率的目的。 而这一些技术是想soundness的，但是又无法达到理想的soundness，在这种情形下，这些文章就会产生一些误导。 如一些分析工具，文章说的很好， 但是实际用起来有很多的情况cover不了导致大量误报造成结果直接不可用…</p>
+<p>然而，无论是当前学术界和工业界都无法达到soundness。但是这些文章或技术一般都不会说自己是unsoundness的，因为通常unsoundness是故意的忽略掉分析一些行为，以达到更高效率的目的。 而这一些技术是想soundness的，但是又无法达到理想的soundness，在这种情形下，这些文章就会产生一些误导。 如一些分析工具，文章说的很好， 但是实际用起来有很多的情况cover不了导致大量误报造成结果直接不可用...</p>
 <p>在想sound，sound不了。我又不是unsound的，这种情况下，就产生了soundy分析的概念。15年提出[2]的，呼吁将这一类分析结果，是soundiness的。</p>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043246.png" alt="truthiness" /></p>
-<h1 id="0x02-hard-language-features"><a class="markdownIt-Anchor" href="#0x02-hard-language-features"></a> 0x02 hard language features</h1>
+<figure>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043246.png" alt="truthiness" /><figcaption aria-hidden="true">truthiness</figcaption>
+</figure>
+<h1 id="x02-hard-language-features">0x02 hard language features</h1>
 <p>几乎所有现代语言中，都有一些对于静态分析来比较hard 的点：</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043248.png" alt="image-20210202094033999" style="zoom: 50%;" />
-<h2 id="java-reflection"><a class="markdownIt-Anchor" href="#java-reflection"></a> Java Reflection</h2>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043248.png" alt="image-20210202094033999" style="zoom: 50%;" /></p>
+<h2 id="java-reflection">Java Reflection</h2>
 <p>以反射为例：</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043251.png" alt="image-20210202094244020" style="zoom:20%;" />
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043251.png" alt="image-20210202094244020" style="zoom:20%;" /></p>
 <p>反射的提出为了使得软件架构低耦合，高复用的目的。 如MVC框架中，框架要和web程序解耦，就需要通过反射去调用控制器中的方法，而不是改框架调用控制器。</p>
 <p>在Java中， 反射使用的是对Class, method, field分别生成Metaobject, 然后使用这些metaobject来调用反射API接口来动态的达到静态调用效果。</p>
 <p>反射是很重要的， 那么，如何静态分析呢？05年的APLAS提出了<code>String Constant analysis + Pointer Analysis</code>。</p>
@@ -378,25 +380,25 @@
 <p>这个工作的问题可以总结为： 名字不知道，啥也不知道。</p>
 <p>在14年ECOOP, 南大李樾和谭添老师做了一个工作[4] (膜)，他们的方法 <code>Type Inference+String analysis+Pointer Analysis</code></p>
 <p>他们的方法为：生时不可解， 用时亦可推。</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043313.png" alt="image-20210202113047743" style="zoom:20%;" />
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043313.png" alt="image-20210202113047743" style="zoom:20%;" /></p>
 <p>通过反射使用点，结合java强大的类型系统，去推到这个方法的线索(如有几个参数， 这些参数是什么类型)[5]。</p>
 <p>目前解决这些问题还是使用动态方式比较通用，如[6]去跑java的测试用例，得到的信息供给静态分析使用， 此类工作(Assisted by Dynamic Analysis)快，准。但是soundness做的不够好。</p>
-<h2 id="native-code"><a class="markdownIt-Anchor" href="#native-code"></a> Native Code</h2>
+<h2 id="native-code">Native Code</h2>
 <p>Native Code 是另外一种hard analysis的情况。 核心就是一种跨语言的调用，如何去静态分析。</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043328.png" alt="image-20210202114600176" style="zoom:25%;" />
-<p>Java中提供了native关键字去声明调用JNI(Java Native Interface), 他是一套java调用底层平台c/c<ins>功能的接口， 没有函数体。实现逻辑在c/c</ins>中。这种机制能够使JVM同本地的动态链接库进行交互。</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043335.png" alt="image-20210202114857543" style="zoom:33%;" />
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043328.png" alt="image-20210202114600176" style="zoom:25%;" /></p>
+<p>Java中提供了native关键字去声明调用JNI(Java Native Interface), 他是一套java调用底层平台c/c++功能的接口， 没有函数体。实现逻辑在c/c++中。这种机制能够使JVM同本地的动态链接库进行交互。</p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043335.png" alt="image-20210202114857543" style="zoom:33%;" /></p>
 <p>那么这种跨语言，如何去做程序分析呢？</p>
-<p>现在通常分析器通常去进行手工建模(Manually models the critical native code)…</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043344.png" alt="image-20210202115838235" style="zoom:20%;" />
+<p>现在通常分析器通常去进行手工建模(Manually models the critical native code)...</p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043344.png" alt="image-20210202115838235" style="zoom:20%;" /></p>
 <p>这里是对调用c/c++中的arraycopy进行手工建模成java逻辑， 然后转化为三地址码。</p>
 <p>最近的工作[7] (ISSTA2020), 有直接在二进制上分析跨语言的调用。</p>
-<h1 id="reference"><a class="markdownIt-Anchor" href="#reference"></a> reference</h1>
+<h1 id="reference">reference</h1>
 <p><a target="_blank" rel="noopener" href="http://soundiness.org/#Introduction">[1] http://soundiness.org/#Introduction</a></p>
 <p><a target="_blank" rel="noopener" href="https://dl.acm.org/doi/10.1145/2644805">[2] https://dl.acm.org/doi/10.1145/2644805</a></p>
 <p><a target="_blank" rel="noopener" href="https://www.semanticscholar.org/paper/Reflection-Analysis-for-Java-Livshits-Whaley/aa15b4f072b5d9f8f72b41b39c060ee5b5fb2807">[3] https://www.semanticscholar.org/paper/Reflection-Analysis-for-Java-Livshits-Whaley/aa15b4f072b5d9f8f72b41b39c060ee5b5fb2807</a></p>
 <p><a target="_blank" rel="noopener" href="https://yuleisui.github.io/publications/ecoop14.pdf">[4] https://yuleisui.github.io/publications/ecoop14.pdf</a></p>
-<p><a target="_blank" rel="noopener" href="https://www.semanticscholar.org/paper/Understanding-and-Analyzing-Java-Reflection-Li-Tan/3e358882af7a2e782fdb02c0ccf260f00728aff0">[5] https://www.semanticscholar.org/paper/Understanding-and-Analyzing-Java-Reflection-Li-Tan/3e358882af7a2e782fdb02c0ccf260f00728aff0 </a></p>
+<p><a target="_blank" rel="noopener" href="https://www.semanticscholar.org/paper/Understanding-and-Analyzing-Java-Reflection-Li-Tan/3e358882af7a2e782fdb02c0ccf260f00728aff0">[5] https://www.semanticscholar.org/paper/Understanding-and-Analyzing-Java-Reflection-Li-Tan/3e358882af7a2e782fdb02c0ccf260f00728aff0</a></p>
 <p><a target="_blank" rel="noopener" href="https://www.semanticscholar.org/paper/Taming-reflection%3A-Aiding-static-analysis-in-the-of-Bodden-Sewe/1753d3e97fdbe7799b9625cb873b77eef506a608">[6] https://www.semanticscholar.org/paper/Taming-reflection%3A-Aiding-static-analysis-in-the-of-Bodden-Sewe/1753d3e97fdbe7799b9625cb873b77eef506a608</a></p>
 <p><a target="_blank" rel="noopener" href="https://www.semanticscholar.org/paper/Identifying-Java-calls-in-native-code-via-binary-Fourtounis-Triantafyllou/8da9ef89f6b211193e2376a7d289f6b087f7cb5c">[7] https://www.semanticscholar.org/paper/Identifying-Java-calls-in-native-code-via-binary-Fourtounis-Triantafyllou/8da9ef89f6b211193e2376a7d289f6b087f7cb5c</a></p>
 
@@ -560,7 +562,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#0x01-%E4%BB%8Esoundness%E5%88%B0soundiness"><span class="nav-number">1.</span> <span class="nav-text"> 0x01 从soundness到soundiness</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#soundness"><span class="nav-number">1.1.</span> <span class="nav-text"> Soundness</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x02-hard-language-features"><span class="nav-number">2.</span> <span class="nav-text"> 0x02 hard language features</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#java-reflection"><span class="nav-number">2.1.</span> <span class="nav-text"> Java Reflection</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#native-code"><span class="nav-number">2.2.</span> <span class="nav-text"> Native Code</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#reference"><span class="nav-number">3.</span> <span class="nav-text"> reference</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#x01-%E4%BB%8Esoundness%E5%88%B0soundiness"><span class="nav-number">1.</span> <span class="nav-text">0x01 从soundness到soundiness</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#soundness"><span class="nav-number">1.1.</span> <span class="nav-text">Soundness</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#x02-hard-language-features"><span class="nav-number">2.</span> <span class="nav-text">0x02 hard language features</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#java-reflection"><span class="nav-number">2.1.</span> <span class="nav-text">Java Reflection</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#native-code"><span class="nav-number">2.2.</span> <span class="nav-text">Native Code</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#reference"><span class="nav-number">3.</span> <span class="nav-text">reference</span></a></li></ol></div>
             
 
           </div>
