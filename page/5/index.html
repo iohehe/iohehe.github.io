@@ -33,9 +33,7 @@
 
   
 <!-- hexo injector head_end start -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.min.css">
-
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
 <!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.1.0"></head>
 
 <body>
@@ -78,6 +76,70 @@
 
       <div class="outer">
         <section id="main">
+  
+    <article id="post-php_file_vul" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2019/11/08/php_file_vul/" class="article-date">
+  <time class="dt-published" datetime="2019-11-07T16:00:00.000Z" itemprop="datePublished">2019-11-08</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2019/11/08/php_file_vul/">PHP文件操作漏洞总结</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="x01-文件包含漏洞">0x01 文件包含漏洞</h1>
+<p><code>include()</code>、<code>include_once()</code>、<code>require()</code>、<code>require_once()</code>均有可能造成文件包含漏洞，其中前两者在遇到错误时仍会向下执行，而后两者在报错后直接退出程序。</p>
+<p>当执行者四个函数时，可无视文件类型，直接当作php脚本来执行。(只要能让php 解析器识别出来是php代码文本就成)。</p>
+<h2 id="文件包含截断">文件包含截断</h2>
+<p>有些包含可能文件路径里设置了前后缀不可控，这时候需要截断。其中前缀主要采用url编码,绕过对<code>../</code>的限制，后缀主要采用截断的方式。</p>
+<h2 id="截断">00截断</h2>
+<p>(C语言中一些字符串处理时，用0字节()作为字符串结束符？)</p>
+<p>00截断需要满足两个条件：</p>
+<ul>
+<li>php版本小于5.3.4</li>
+<li>magic_quotes_gpc=off</li>
+</ul>
+<p>如wechall上的<a target="_blank" rel="noopener" href="http://www.wechall.net/challenge/training/php/lfi/up/index.php">这道LFI</a>，</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">###############################</span></span><br><span class="line"><span class="comment">### Here is your exploit :) ###</span></span><br><span class="line"><span class="comment">###############################</span></span><br><span class="line"><span class="variable">$code</span> = <span class="string">&#x27;$filename = \&#x27;pages/\&#x27;.(isset($_GET[&quot;file&quot;])?$_GET[&quot;file&quot;]:&quot;welcome&quot;).\&#x27;.html\&#x27;;&#x27;</span>;</span><br><span class="line"><span class="variable">$code_emulate_pnb</span> = <span class="string">&#x27;$filename = Common::substrUntil($filename, &quot;\\0&quot;);&#x27;</span>; <span class="comment"># Emulate Poison Null Byte for PHP&gt;=5.3.4</span></span><br><span class="line"><span class="variable">$code2</span> = <span class="string">&#x27;include $filename;&#x27;</span>;</span><br><span class="line"><span class="comment">### End of exploit ###</span></span><br><span class="line">...</span><br><span class="line"><span class="keyword">if</span> (<span class="title function_ invoke__">lfiIsSafeDir</span>(<span class="variable">$filename</span>) === <span class="literal">true</span>) &#123; <span class="keyword">eval</span>(<span class="variable">$code2</span>); &#125; <span class="comment"># Eval the second line, when safe.</span></span><br><span class="line">...</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">lfiIsSafeDir</span>(<span class="params"><span class="variable">$filename</span></span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">        <span class="variable">$valid</span> = <span class="keyword">array</span>(</span><br><span class="line">                <span class="string">&#x27;pages&#x27;</span>,</span><br><span class="line">                <span class="string">&#x27;pages/../..&#x27;</span>,</span><br><span class="line">                <span class="string">&#x27;pages/..&#x27;</span>,</span><br><span class="line">        );</span><br><span class="line">        <span class="variable">$d</span> = <span class="title function_ invoke__">dirname</span>(<span class="variable">$filename</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="title function_ invoke__">in_array</span>(<span class="variable">$d</span>, <span class="variable">$valid</span>, <span class="literal">true</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>虽然我觉得这并不是一个太好的例子...这里比较奇葩，在$filename=pages/[可控].html，soultion.php和index.php差了一层，然而构造的时候内部又拼接了一层<code>pages</code>所以payload:</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">../../solution.php%00</span><br></pre></td></tr></table></figure>
+<h2 id="截断-1">./截断</h2>
+<p>"."或者 "/"截断，在一定的长度时将被截断。win系统和nix</p>
+<ul>
+<li>目录字符串， windows下256个字节，Linux下4096个字节回答道最大值。最大长度之后的字符将被丢弃。</li>
+</ul>
+<h2 id="伪截断">伪截断</h2>
+<p>远程包含里，URL里"?"或者"#"号后为参数不为资源一部分。如提交“action=http://www.penlab.me/shell.php?”，这里的“？”实现了伪截断。</p>
+<hr />
+<h2 id="x02-总结">0x02 总结</h2>
+<p>文件包含拿的是“脚本”，文件读取拿的是“数据”，因此不具有执行权。如果统一看作"资源"，那么这些资源又可以分为远程和本地，其中本地资源通过路径来访问，而远程的需要使用URL来访问之。远程文件包含需要开启<code>allow_url_include = On</code>（&gt;=5.2 Off）和<code>allow_url_fopen=On</code>(默认On)。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2019/11/08/php_file_vul/" data-id="cl1q2wlhu000u47w57abi6kg3" data-title="PHP文件操作漏洞总结" class="article-share-link">Share</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
   
     <article id="post-php_source" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
@@ -831,7 +893,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/04/">April 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/03/">March 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/02/">February 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/01/">January 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/12/">December 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">September 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">August 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">April 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">February 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">January 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/06/">June 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/04/">April 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/03/">March 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/02/">February 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/01/">January 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/12/">December 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">September 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">August 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">April 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">February 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">January 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li></ul>
     </div>
   </div>
 
@@ -842,6 +904,10 @@
     <h3 class="widget-title">Recent Posts</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2022/06/05/test-math/">test_math</a>
+          </li>
         
           <li>
             <a href="/2022/04/06/taint-2/">PHP污点分析</a>
@@ -857,10 +923,6 @@
         
           <li>
             <a href="/2022/02/18/data-mining/">data_mining</a>
-          </li>
-        
-          <li>
-            <a href="/2022/02/06/logic-machine/">Logic Machine</a>
           </li>
         
       </ul>
