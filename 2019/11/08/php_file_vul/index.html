@@ -1,113 +1,343 @@
 <!DOCTYPE html>
-<html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
 <head>
-  <meta charset="utf-8">
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   
   
-  <title>PHP文件操作漏洞总结 | Penlab</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="description" content="0x01 文件包含漏洞 include()、include_once()、require()、require_once()均有可能造成文件包含漏洞，其中前两者在遇到错误时仍会向下执行，而后两者在报错后直接退出程序。 当执行者四个函数时，可无视文件类型，直接当作php脚本来执行。(只要能让php 解析器识别出来是php代码文本就成)。 文件包含截断 有些包含可能文件路径里设置了前后缀不可控，这时候需">
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="0x01 文件包含漏洞 include()、include_once()、require()、require_once()均有可能造成文件包含漏洞，其中前两者在遇到错误时仍会向下执行，而后两者在报错后直接退出程序。 当执行者四个函数时，可无视文件类型，直接当作php脚本来执行。(只要能让php 解析器识别出来是php代码文本就成)。  文件包含截断 有些包含可能文件路径里设置了前后缀不可控，这时">
 <meta property="og:type" content="article">
 <meta property="og:title" content="PHP文件操作漏洞总结">
 <meta property="og:url" content="http://example.com/2019/11/08/php_file_vul/index.html">
 <meta property="og:site_name" content="Penlab">
-<meta property="og:description" content="0x01 文件包含漏洞 include()、include_once()、require()、require_once()均有可能造成文件包含漏洞，其中前两者在遇到错误时仍会向下执行，而后两者在报错后直接退出程序。 当执行者四个函数时，可无视文件类型，直接当作php脚本来执行。(只要能让php 解析器识别出来是php代码文本就成)。 文件包含截断 有些包含可能文件路径里设置了前后缀不可控，这时候需">
+<meta property="og:description" content="0x01 文件包含漏洞 include()、include_once()、require()、require_once()均有可能造成文件包含漏洞，其中前两者在遇到错误时仍会向下执行，而后两者在报错后直接退出程序。 当执行者四个函数时，可无视文件类型，直接当作php脚本来执行。(只要能让php 解析器识别出来是php代码文本就成)。  文件包含截断 有些包含可能文件路径里设置了前后缀不可控，这时">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2019-11-07T16:00:00.000Z">
 <meta property="article:modified_time" content="2022-03-30T06:25:22.787Z">
 <meta property="article:author" content="iohex">
 <meta name="twitter:card" content="summary">
-  
-    <link rel="alternate" href="/atom.xml" title="Penlab" type="application/atom+xml">
-  
-  
-    <link rel="shortcut icon" href="/favicon.png">
-  
-  
-    
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
 
-  
-  
-<link rel="stylesheet" href="/css/style.css">
 
-  
-    
-<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
 
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://example.com/2019/11/08/php_file_vul/"/>
+
+
+
+
+
+  <title>PHP文件操作漏洞总结 | Penlab</title>
   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <!-- hexo injector head_end start -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
 <!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.1.0"></head>
 
-<body>
-  <div id="container">
-    <div id="wrap">
-      <header id="header">
-  <div id="banner"></div>
-  <div id="header-outer" class="outer">
-    <div id="header-title" class="inner">
-      <h1 id="logo-wrap">
-        <a href="/" id="logo">Penlab</a>
-      </h1>
-      
-        <h2 id="subtitle-wrap">
-          <a href="/" id="subtitle">The Art of Flow</a>
-        </h2>
-      
-    </div>
-    <div id="header-inner" class="inner">
-      <nav id="main-nav">
-        <a id="main-nav-toggle" class="nav-icon"></a>
-        
-          <a class="main-nav-link" href="/">Home</a>
-        
-          <a class="main-nav-link" href="/archives">Archives</a>
-        
-      </nav>
-      <nav id="sub-nav">
-        
-          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
-        
-        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
-      </nav>
-      <div id="search-form-wrap">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
-      </div>
-    </div>
-  </div>
-</header>
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
 
-      <div class="outer">
-        <section id="main"><article id="post-php_file_vul" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2019/11/08/php_file_vul/" class="article-date">
-  <time class="dt-published" datetime="2019-11-07T16:00:00.000Z" itemprop="datePublished">2019-11-08</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
   
-    <h1 class="p-name article-title" itemprop="headline name">
-      PHP文件操作漏洞总结
-    </h1>
+  
+    
   
 
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Penlab</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">The Art of Flow</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2019/11/08/php_file_vul/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Penlab">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">PHP文件操作漏洞总结</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-11-08T00:00:00+08:00">
+                2019-11-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
       </header>
     
-    <div class="e-content article-entry" itemprop="articleBody">
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
       
-        <h1 id="x01-文件包含漏洞">0x01 文件包含漏洞</h1>
+      
+
+      
+        <h1 id="0x01-文件包含漏洞"><a class="markdownIt-Anchor" href="#0x01-文件包含漏洞"></a> 0x01 文件包含漏洞</h1>
 <p><code>include()</code>、<code>include_once()</code>、<code>require()</code>、<code>require_once()</code>均有可能造成文件包含漏洞，其中前两者在遇到错误时仍会向下执行，而后两者在报错后直接退出程序。</p>
 <p>当执行者四个函数时，可无视文件类型，直接当作php脚本来执行。(只要能让php 解析器识别出来是php代码文本就成)。</p>
-<h2 id="文件包含截断">文件包含截断</h2>
+<h2 id="文件包含截断"><a class="markdownIt-Anchor" href="#文件包含截断"></a> 文件包含截断</h2>
 <p>有些包含可能文件路径里设置了前后缀不可控，这时候需要截断。其中前缀主要采用url编码,绕过对<code>../</code>的限制，后缀主要采用截断的方式。</p>
-<h2 id="截断">00截断</h2>
-<p>(C语言中一些字符串处理时，用0字节()作为字符串结束符？)</p>
+<h2 id="00截断"><a class="markdownIt-Anchor" href="#00截断"></a> 00截断</h2>
+<p>(C语言中一些字符串处理时，用0字节(\x00)作为字符串结束符？)</p>
 <p>00截断需要满足两个条件：</p>
 <ul>
 <li>php版本小于5.3.4</li>
@@ -115,162 +345,356 @@
 </ul>
 <p>如wechall上的<a target="_blank" rel="noopener" href="http://www.wechall.net/challenge/training/php/lfi/up/index.php">这道LFI</a>，</p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">###############################</span></span><br><span class="line"><span class="comment">### Here is your exploit :) ###</span></span><br><span class="line"><span class="comment">###############################</span></span><br><span class="line"><span class="variable">$code</span> = <span class="string">&#x27;$filename = \&#x27;pages/\&#x27;.(isset($_GET[&quot;file&quot;])?$_GET[&quot;file&quot;]:&quot;welcome&quot;).\&#x27;.html\&#x27;;&#x27;</span>;</span><br><span class="line"><span class="variable">$code_emulate_pnb</span> = <span class="string">&#x27;$filename = Common::substrUntil($filename, &quot;\\0&quot;);&#x27;</span>; <span class="comment"># Emulate Poison Null Byte for PHP&gt;=5.3.4</span></span><br><span class="line"><span class="variable">$code2</span> = <span class="string">&#x27;include $filename;&#x27;</span>;</span><br><span class="line"><span class="comment">### End of exploit ###</span></span><br><span class="line">...</span><br><span class="line"><span class="keyword">if</span> (<span class="title function_ invoke__">lfiIsSafeDir</span>(<span class="variable">$filename</span>) === <span class="literal">true</span>) &#123; <span class="keyword">eval</span>(<span class="variable">$code2</span>); &#125; <span class="comment"># Eval the second line, when safe.</span></span><br><span class="line">...</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">lfiIsSafeDir</span>(<span class="params"><span class="variable">$filename</span></span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">        <span class="variable">$valid</span> = <span class="keyword">array</span>(</span><br><span class="line">                <span class="string">&#x27;pages&#x27;</span>,</span><br><span class="line">                <span class="string">&#x27;pages/../..&#x27;</span>,</span><br><span class="line">                <span class="string">&#x27;pages/..&#x27;</span>,</span><br><span class="line">        );</span><br><span class="line">        <span class="variable">$d</span> = <span class="title function_ invoke__">dirname</span>(<span class="variable">$filename</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="title function_ invoke__">in_array</span>(<span class="variable">$d</span>, <span class="variable">$valid</span>, <span class="literal">true</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>虽然我觉得这并不是一个太好的例子...这里比较奇葩，在$filename=pages/[可控].html，soultion.php和index.php差了一层，然而构造的时候内部又拼接了一层<code>pages</code>所以payload:</p>
+<p>虽然我觉得这并不是一个太好的例子…这里比较奇葩，在$filename=pages/[可控].html，soultion.php和index.php差了一层，然而构造的时候内部又拼接了一层<code>pages</code>所以payload:</p>
 <figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">../../solution.php%00</span><br></pre></td></tr></table></figure>
-<h2 id="截断-1">./截断</h2>
-<p>"."或者 "/"截断，在一定的长度时将被截断。win系统和nix</p>
+<h2 id="截断"><a class="markdownIt-Anchor" href="#截断"></a> ./截断</h2>
+<p>&quot;.&quot;或者 &quot;/&quot;截断，在一定的长度时将被截断。win系统和nix</p>
 <ul>
 <li>目录字符串， windows下256个字节，Linux下4096个字节回答道最大值。最大长度之后的字符将被丢弃。</li>
 </ul>
-<h2 id="伪截断">伪截断</h2>
-<p>远程包含里，URL里"?"或者"#"号后为参数不为资源一部分。如提交“action=http://www.penlab.me/shell.php?”，这里的“？”实现了伪截断。</p>
+<h2 id="伪截断"><a class="markdownIt-Anchor" href="#伪截断"></a> 伪截断</h2>
+<p>远程包含里，URL里&quot;?“或者”#&quot;号后为参数不为资源一部分。如提交“action=http://www.penlab.me/shell.php?”，这里的“？”实现了伪截断。</p>
 <hr />
-<h2 id="x02-总结">0x02 总结</h2>
-<p>文件包含拿的是“脚本”，文件读取拿的是“数据”，因此不具有执行权。如果统一看作"资源"，那么这些资源又可以分为远程和本地，其中本地资源通过路径来访问，而远程的需要使用URL来访问之。远程文件包含需要开启<code>allow_url_include = On</code>（&gt;=5.2 Off）和<code>allow_url_fopen=On</code>(默认On)。</p>
+<h2 id="0x02-总结"><a class="markdownIt-Anchor" href="#0x02-总结"></a> 0x02 总结</h2>
+<p>文件包含拿的是“脚本”，文件读取拿的是“数据”，因此不具有执行权。如果统一看作&quot;资源&quot;，那么这些资源又可以分为远程和本地，其中本地资源通过路径来访问，而远程的需要使用URL来访问之。远程文件包含需要开启<code>allow_url_include = On</code>（&gt;=5.2 Off）和<code>allow_url_fopen=On</code>(默认On)。</p>
 
       
     </div>
-    <footer class="article-footer">
-      <a data-url="http://example.com/2019/11/08/php_file_vul/" data-id="cl1q2wlhu000u47w57abi6kg3" data-title="PHP文件操作漏洞总结" class="article-share-link">Share</a>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
       
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/11/05/php_source/" rel="next" title="PHP数据传入点分析">
+                <i class="fa fa-chevron-left"></i> PHP数据传入点分析
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/12/05/tp5-container/" rel="prev" title="tp5学习-容器">
+                tp5学习-容器 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
       
       
     </footer>
   </div>
   
-    
-<nav id="article-nav">
-  
-    <a href="/2019/12/05/tp5-container/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Newer</strong>
-      <div class="article-nav-title">
-        
-          tp5学习-容器
-        
-      </div>
-    </a>
   
   
-    <a href="/2019/11/05/php_source/" id="article-nav-older" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Older</strong>
-      <div class="article-nav-title">PHP数据传入点分析</div>
-    </a>
-  
-</nav>
-
-  
-</article>
+  </article>
 
 
-</section>
-        
-          <aside id="sidebar">
-  
-    
 
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Tags</h3>
-    <div class="widget">
-      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/paper/" rel="tag">paper</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/php/" rel="tag">php</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pl/" rel="tag">pl</a></li></ul>
-    </div>
-  </div>
-
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Tag Cloud</h3>
-    <div class="widget tagcloud">
-      <a href="/tags/paper/" style="font-size: 15px;">paper</a> <a href="/tags/php/" style="font-size: 10px;">php</a> <a href="/tags/pl/" style="font-size: 20px;">pl</a>
-    </div>
-  </div>
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Archives</h3>
-    <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/06/">June 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/04/">April 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/03/">March 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/02/">February 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/01/">January 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/12/">December 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">September 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">August 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">April 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">February 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">January 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li></ul>
-    </div>
-  </div>
-
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Recent Posts</h3>
-    <div class="widget">
-      <ul>
-        
-          <li>
-            <a href="/2022/06/05/test-math/">test_math</a>
-          </li>
-        
-          <li>
-            <a href="/2022/04/06/taint-2/">PHP污点分析</a>
-          </li>
-        
-          <li>
-            <a href="/2022/03/31/nlp-1/">NLP入门(一)</a>
-          </li>
-        
-          <li>
-            <a href="/2022/02/24/web/">Web应用系中注入类漏洞调研</a>
-          </li>
-        
-          <li>
-            <a href="/2022/02/18/data-mining/">data_mining</a>
-          </li>
-        
-      </ul>
-    </div>
-  </div>
-
-  
-</aside>
-        
-      </div>
-      <footer id="footer">
-  
-  <div class="outer">
-    <div id="footer-info" class="inner">
+    <div class="post-spread">
       
-      &copy; 2022 iohex<br>
-      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
     </div>
   </div>
-</footer>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="" />
+          <p class="site-author-name" itemprop="name"></p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">50</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">3</span>
+                <span class="site-state-item-name">tags</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#0x01-%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E6%BC%8F%E6%B4%9E"><span class="nav-number">1.</span> <span class="nav-text"> 0x01 文件包含漏洞</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E6%88%AA%E6%96%AD"><span class="nav-number">1.1.</span> <span class="nav-text"> 文件包含截断</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#00%E6%88%AA%E6%96%AD"><span class="nav-number">1.2.</span> <span class="nav-text"> 00截断</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%88%AA%E6%96%AD"><span class="nav-number">1.3.</span> <span class="nav-text"> .&#x2F;截断</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BC%AA%E6%88%AA%E6%96%AD"><span class="nav-number">1.4.</span> <span class="nav-text"> 伪截断</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x02-%E6%80%BB%E7%BB%93"><span class="nav-number">1.5.</span> <span class="nav-text"> 0x02 总结</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
 
     </div>
-    <nav id="mobile-nav">
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
   
-    <a href="/" class="mobile-nav-link">Home</a>
-  
-    <a href="/archives" class="mobile-nav-link">Archives</a>
-  
-</nav>
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">iohex</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" target="_blank" rel="noopener" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
     
 
+  </div>
 
-<script src="/js/jquery-3.4.1.min.js"></script>
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
 
 
 
   
-<script src="/fancybox/jquery.fancybox.min.js"></script>
-
-
-
-
-<script src="/js/script.js"></script>
 
 
 
 
 
 
-  </div>
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+
+  
+
+  
+
 </body>
 </html>

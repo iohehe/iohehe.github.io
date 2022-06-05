@@ -1,109 +1,339 @@
 <!DOCTYPE html>
-<html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
 <head>
-  <meta charset="utf-8">
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   
   
-  <title>tp5学习-容器 | Penlab</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="description" content="0x01 基础设计模式 参考大话PHP设计模式 。 单例模式 单例模式就是只有一个实例化存在。  拥有一个构造函数，并且为private 拥有一个静态成员变量用来保持类的实例 拥有一个访问这个实例的静态方法  123456789101112131415161718192021222324252627&lt;?phpclass test_instance&amp;#123;    public static">
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="0x01 基础设计模式 参考大话PHP设计模式 。  单例模式 单例模式就是只有一个实例化存在。  拥有一个构造函数，并且为private 拥有一个静态成员变量用来保持类的实例 拥有一个访问这个实例的静态方法  123456789101112131415161718192021222324252627&lt;?phpclass test_instance&amp;#123;    public stat">
 <meta property="og:type" content="article">
 <meta property="og:title" content="tp5学习-容器">
 <meta property="og:url" content="http://example.com/2019/12/05/tp5-container/index.html">
 <meta property="og:site_name" content="Penlab">
-<meta property="og:description" content="0x01 基础设计模式 参考大话PHP设计模式 。 单例模式 单例模式就是只有一个实例化存在。  拥有一个构造函数，并且为private 拥有一个静态成员变量用来保持类的实例 拥有一个访问这个实例的静态方法  123456789101112131415161718192021222324252627&lt;?phpclass test_instance&amp;#123;    public static">
+<meta property="og:description" content="0x01 基础设计模式 参考大话PHP设计模式 。  单例模式 单例模式就是只有一个实例化存在。  拥有一个构造函数，并且为private 拥有一个静态成员变量用来保持类的实例 拥有一个访问这个实例的静态方法  123456789101112131415161718192021222324252627&lt;?phpclass test_instance&amp;#123;    public stat">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2019-12-04T16:00:00.000Z">
 <meta property="article:modified_time" content="2022-03-30T06:25:22.482Z">
 <meta property="article:author" content="iohex">
 <meta name="twitter:card" content="summary">
-  
-    <link rel="alternate" href="/atom.xml" title="Penlab" type="application/atom+xml">
-  
-  
-    <link rel="shortcut icon" href="/favicon.png">
-  
-  
-    
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
 
-  
-  
-<link rel="stylesheet" href="/css/style.css">
 
-  
-    
-<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
 
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://example.com/2019/12/05/tp5-container/"/>
+
+
+
+
+
+  <title>tp5学习-容器 | Penlab</title>
   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <!-- hexo injector head_end start -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
 <!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.1.0"></head>
 
-<body>
-  <div id="container">
-    <div id="wrap">
-      <header id="header">
-  <div id="banner"></div>
-  <div id="header-outer" class="outer">
-    <div id="header-title" class="inner">
-      <h1 id="logo-wrap">
-        <a href="/" id="logo">Penlab</a>
-      </h1>
-      
-        <h2 id="subtitle-wrap">
-          <a href="/" id="subtitle">The Art of Flow</a>
-        </h2>
-      
-    </div>
-    <div id="header-inner" class="inner">
-      <nav id="main-nav">
-        <a id="main-nav-toggle" class="nav-icon"></a>
-        
-          <a class="main-nav-link" href="/">Home</a>
-        
-          <a class="main-nav-link" href="/archives">Archives</a>
-        
-      </nav>
-      <nav id="sub-nav">
-        
-          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
-        
-        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
-      </nav>
-      <div id="search-form-wrap">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
-      </div>
-    </div>
-  </div>
-</header>
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
 
-      <div class="outer">
-        <section id="main"><article id="post-tp5-container" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2019/12/05/tp5-container/" class="article-date">
-  <time class="dt-published" datetime="2019-12-04T16:00:00.000Z" itemprop="datePublished">2019-12-05</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
   
-    <h1 class="p-name article-title" itemprop="headline name">
-      tp5学习-容器
-    </h1>
+  
+    
   
 
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Penlab</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">The Art of Flow</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2019/12/05/tp5-container/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Penlab">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">tp5学习-容器</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-12-05T00:00:00+08:00">
+                2019-12-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
       </header>
     
-    <div class="e-content article-entry" itemprop="articleBody">
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
       
-        <h1 id="x01-基础设计模式">0x01 基础设计模式</h1>
+      
+
+      
+        <h1 id="0x01-基础设计模式"><a class="markdownIt-Anchor" href="#0x01-基础设计模式"></a> 0x01 基础设计模式</h1>
 <p>参考<a target="_blank" rel="noopener" href="https://www.kancloud.cn/webjust/php_patterns/324646">大话PHP设计模式</a> 。</p>
-<h2 id="单例模式">单例模式</h2>
+<h2 id="单例模式"><a class="markdownIt-Anchor" href="#单例模式"></a> 单例模式</h2>
 <p>单例模式就是只有一个实例化存在。</p>
 <ul>
 <li>拥有一个构造函数，并且为private</li>
@@ -112,25 +342,27 @@
 </ul>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">test_instance</span></span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">static</span> <span class="variable">$is_instance</span> = <span class="literal">null</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">            <span class="keyword">echo</span> <span class="string">&quot;new a instance&quot;</span>;</span><br><span class="line">            <span class="keyword">echo</span> <span class="string">&quot;&lt;br /&gt;&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">static</span> <span class="function"><span class="keyword">function</span> <span class="title">isInstance</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="built_in">self</span>::<span class="variable">$is_instance</span>===<span class="literal">null</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="built_in">self</span>::<span class="variable">$is_instance</span> = <span class="keyword">new</span> <span class="title function_ invoke__">test_instance</span>();</span><br><span class="line">            <span class="keyword">return</span> <span class="built_in">self</span>::<span class="variable">$is_instance</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">        &#123;</span><br><span class="line">           <span class="keyword">return</span> <span class="built_in">self</span>::<span class="variable">$is_instance</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 这里不能 new了， 要访问公共静态方法new实例进$is_instance</span></span><br><span class="line"><span class="variable">$a</span> = test_instance::<span class="title function_ invoke__">isInstance</span>();</span><br><span class="line"><span class="variable">$b</span> = test_instance::<span class="title function_ invoke__">isInstance</span>();</span><br><span class="line"><span class="variable">$c</span> = test_instance::<span class="title function_ invoke__">isInstance</span>();</span><br></pre></td></tr></table></figure>
 <p>这是后只能访问一次构造函数，因此只有一个实例。这里的实例化方法<code>isInstance</code>和标量<code>$is_instance</code>都要是静态方法。(为了防止实例化，<code>isInstance</code>静态方法，这时候要用<code>$is_instance</code>也是没有被实例化的静态方法)。</p>
-<h2 id="工厂模式">工厂模式</h2>
+<h2 id="工厂模式"><a class="markdownIt-Anchor" href="#工厂模式"></a> 工厂模式</h2>
 <p>如果一个类名进行了修改， 使用工厂模式不用把每一处的new都修改， 而是直接修改工厂方法即可。作为一个统一的调度。</p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Factory</span></span>&#123;</span><br><span class="line">  <span class="built_in">static</span> <span class="function"><span class="keyword">function</span> <span class="title">createDatabase</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="variable">$db</span> = <span class="keyword">new</span> <span class="title class_">Database</span>();</span><br><span class="line">    <span class="keyword">return</span> <span class="variable">$db</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># $db = new Database();</span></span><br><span class="line"><span class="variable">$db</span> = <span class="title function_ invoke__">createDatabase</span>();</span><br></pre></td></tr></table></figure>
 <p>引入了工厂模式，我们不需要在业务层去修改代码了。这样有利于整个软件框架稳定，比如在model层调用不同的Driver实例化。使用工厂模式只要在工厂中选择想使用的数据库Driver就可以实现切换。</p>
 <p>思想就是业务层不用new具体的类了，而是调用统一接口。由接口new并返回。工厂模式是许多高级模式里惯用的模式，如注册树模式。</p>
-<h2 id="注册树模式">注册树模式</h2>
+<h2 id="注册树模式"><a class="markdownIt-Anchor" href="#注册树模式"></a> 注册树模式</h2>
 <ul>
-<li><p>注册树模式通过将对象实例注册到一棵全局的对象树上， 需要的时候从对象树上采摘下来使用。</p>
-<p>一个软件的底层有许多不同的类库， 在业务层， 我们要调用这些类库的使用。 这些底层类很乱不便于管理，这里就使用注册树模式，便于管理。（类似于配置函数生成的配置静态变量,这种操作应用于类上）</p>
+<li>
+<p>注册树模式通过将对象实例注册到一棵全局的对象树上， 需要的时候从对象树上采摘下来使用。</p>
+<p>一个软件的底层有许多不同的类库， 在业务层， 我们要调用这些类库的使用。  这些底层类很乱不便于管理，这里就使用注册树模式，便于管理。（类似于配置函数生成的配置静态变量,这种操作应用于类上）</p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">regTree</span></span>&#123;</span><br><span class="line">  <span class="comment">//注册树池子</span></span><br><span class="line">  <span class="keyword">protected</span> <span class="built_in">static</span> <span class="variable">$objects</span> = <span class="literal">null</span>;</span><br><span class="line">  </span><br><span class="line">  <span class="comment">//挂载</span></span><br><span class="line">  <span class="keyword">public</span> <span class="built_in">static</span> <span class="function"><span class="keyword">function</span> <span class="title">_set</span>(<span class="params"><span class="variable">$key</span>, <span class="variable">$object</span></span>)</span>&#123;</span><br><span class="line">    <span class="built_in">self</span>::<span class="variable">$objects</span>[<span class="variable">$key</span>] = <span class="variable">$object</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="comment">//获取</span></span><br><span class="line">  <span class="keyword">public</span> <span class="built_in">static</span> <span class="function"><span class="keyword">function</span> <span class="title">_get</span>(<span class="params"><span class="variable">$key</span>,</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!<span class="keyword">isset</span>(<span class="built_in">self</span>::<span class="variable">$objects</span>[<span class="variable">$key</span>]))</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="built_in">self</span>::<span class="variable">$objects</span>[<span class="variable">$keys</span>] = <span class="keyword">new</span> <span class="variable">$key</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">self</span>::<span class="variable">$objects</span>[<span class="variable">$key</span>];</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="comment">//注销</span></span><br><span class="line">  <span class="keyword">public</span> <span class="built_in">static</span> <span class="function"><span class="keyword">function</span> <span class="title">_unset</span>(<span class="params"><span class="variable">$key</span></span>)</span>&#123;</span><br><span class="line">   				<span class="keyword">unset</span>(<span class="built_in">self</span>::<span class="variable">$objects</span>[<span class="variable">$key</span>]); </span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>此时我们需要使用底层函数的时候就不需要去new了，而是像读配置一样，去注册树这个<code>配置数组</code>中去读。</p>
 <p>set:</p>
 <p><code>$a =new target();</code></p>
 <p><code>regTree::_set('target', $a);</code></p>
 <p>get:</p>
-<p><code>$target = regTree::_get('target');</code></p></li>
+<p><code>$target = regTree::_get('target');</code></p>
+</li>
 </ul>
 <p>简单的思想，大概就是这样了。。。</p>
-<h1 id="x02-容器">0x02 容器</h1>
+<h1 id="0x02-容器"><a class="markdownIt-Anchor" href="#0x02-容器"></a> 0x02 容器</h1>
 <p>TP5的容器类位于<code>think/thinkphp/librarythink/Container.php</code></p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> <span class="title">ArrayAccess</span>;</span><br><span class="line"><span class="keyword">use</span> <span class="title">ArrayIterator</span>;</span><br><span class="line"><span class="keyword">use</span> <span class="title">Closure</span>;</span><br><span class="line"><span class="keyword">use</span> <span class="title">Countable</span>;</span><br><span class="line"><span class="keyword">use</span> <span class="title">InvalidArgumentException</span>;</span><br><span class="line"><span class="keyword">use</span> <span class="title">IteratorAggregate</span>;</span><br><span class="line"><span class="keyword">use</span> <span class="title">ReflectionClass</span>;</span><br><span class="line"><span class="keyword">use</span> <span class="title">ReflectionException</span>;</span><br><span class="line"><span class="keyword">use</span> <span class="title">ReflectionFunction</span>;</span><br><span class="line"><span class="keyword">use</span> <span class="title">ReflectionMethod</span>;</span><br><span class="line"><span class="keyword">use</span> <span class="title">think</span>\<span class="title">exception</span>\<span class="title">ClassNotFoundException</span>;</span><br></pre></td></tr></table></figure>
 <p>这里可以看出使用了反射机制。还使用了一堆PHP的内置接口。</p>
@@ -159,147 +391,341 @@
 
       
     </div>
-    <footer class="article-footer">
-      <a data-url="http://example.com/2019/12/05/tp5-container/" data-id="cl1q2wli4001s47w553u22vmw" data-title="tp5学习-容器" class="article-share-link">Share</a>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
       
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/11/08/php_file_vul/" rel="next" title="PHP文件操作漏洞总结">
+                <i class="fa fa-chevron-left"></i> PHP文件操作漏洞总结
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/12/28/burp_ex_1/" rel="prev" title="burp插件入门">
+                burp插件入门 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
       
       
     </footer>
   </div>
   
-    
-<nav id="article-nav">
-  
-    <a href="/2019/12/28/burp_ex_1/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Newer</strong>
-      <div class="article-nav-title">
-        
-          burp插件入门
-        
-      </div>
-    </a>
   
   
-    <a href="/2019/11/08/php_file_vul/" id="article-nav-older" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Older</strong>
-      <div class="article-nav-title">PHP文件操作漏洞总结</div>
-    </a>
-  
-</nav>
-
-  
-</article>
+  </article>
 
 
-</section>
-        
-          <aside id="sidebar">
-  
-    
 
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Tags</h3>
-    <div class="widget">
-      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/paper/" rel="tag">paper</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/php/" rel="tag">php</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pl/" rel="tag">pl</a></li></ul>
-    </div>
-  </div>
-
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Tag Cloud</h3>
-    <div class="widget tagcloud">
-      <a href="/tags/paper/" style="font-size: 15px;">paper</a> <a href="/tags/php/" style="font-size: 10px;">php</a> <a href="/tags/pl/" style="font-size: 20px;">pl</a>
-    </div>
-  </div>
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Archives</h3>
-    <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/06/">June 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/04/">April 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/03/">March 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/02/">February 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/01/">January 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/12/">December 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">September 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">August 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">April 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">February 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">January 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li></ul>
-    </div>
-  </div>
-
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Recent Posts</h3>
-    <div class="widget">
-      <ul>
-        
-          <li>
-            <a href="/2022/06/05/test-math/">test_math</a>
-          </li>
-        
-          <li>
-            <a href="/2022/04/06/taint-2/">PHP污点分析</a>
-          </li>
-        
-          <li>
-            <a href="/2022/03/31/nlp-1/">NLP入门(一)</a>
-          </li>
-        
-          <li>
-            <a href="/2022/02/24/web/">Web应用系中注入类漏洞调研</a>
-          </li>
-        
-          <li>
-            <a href="/2022/02/18/data-mining/">data_mining</a>
-          </li>
-        
-      </ul>
-    </div>
-  </div>
-
-  
-</aside>
-        
-      </div>
-      <footer id="footer">
-  
-  <div class="outer">
-    <div id="footer-info" class="inner">
+    <div class="post-spread">
       
-      &copy; 2022 iohex<br>
-      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
     </div>
   </div>
-</footer>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="" />
+          <p class="site-author-name" itemprop="name"></p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">50</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">3</span>
+                <span class="site-state-item-name">tags</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#0x01-%E5%9F%BA%E7%A1%80%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F"><span class="nav-number">1.</span> <span class="nav-text"> 0x01 基础设计模式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F"><span class="nav-number">1.1.</span> <span class="nav-text"> 单例模式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F"><span class="nav-number">1.2.</span> <span class="nav-text"> 工厂模式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B3%A8%E5%86%8C%E6%A0%91%E6%A8%A1%E5%BC%8F"><span class="nav-number">1.3.</span> <span class="nav-text"> 注册树模式</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x02-%E5%AE%B9%E5%99%A8"><span class="nav-number">2.</span> <span class="nav-text"> 0x02 容器</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
 
     </div>
-    <nav id="mobile-nav">
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
   
-    <a href="/" class="mobile-nav-link">Home</a>
-  
-    <a href="/archives" class="mobile-nav-link">Archives</a>
-  
-</nav>
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">iohex</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" target="_blank" rel="noopener" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
     
 
+  </div>
 
-<script src="/js/jquery-3.4.1.min.js"></script>
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
 
 
 
   
-<script src="/fancybox/jquery.fancybox.min.js"></script>
-
-
-
-
-<script src="/js/script.js"></script>
 
 
 
 
 
 
-  </div>
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+
+  
+
+  
+
 </body>
 </html>

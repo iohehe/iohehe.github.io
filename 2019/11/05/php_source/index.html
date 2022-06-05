@@ -1,17 +1,105 @@
 <!DOCTYPE html>
-<html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
 <head>
-  <meta charset="utf-8">
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   
   
-  <title>PHP数据传入点分析 | Penlab</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="description" content="0x01 globals输入 用户操作一个web站点通常需要传入变量，变量“污染”了代码，造成注入问题。用户的输入的数据大致可分为有结构(数组)和无结构两种(字符串，NULL)。 GPC输入  最常见的方式， 用户输入的内容直接赋给一个变量：  123456789&#x2F;&#x2F; 取值赋给变量$var &#x3D; $_GET[&amp;#x27;value&amp;#x27;];&#x2F;&#x2F; 名值皆赋给变量foreach($_GET as">
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="php," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="0x01 globals输入 用户操作一个web站点通常需要传入变量，变量“污染”了代码，造成注入问题。用户的输入的数据大致可分为有结构(数组)和无结构两种(字符串，NULL)。  GPC输入  最常见的方式， 用户输入的内容直接赋给一个变量：  123456789&#x2F;&#x2F; 取值赋给变量$var &#x3D; $_GET[&amp;#x27;value&amp;#x27;];&#x2F;&#x2F; 名值皆赋给变量foreach($_GET">
 <meta property="og:type" content="article">
 <meta property="og:title" content="PHP数据传入点分析">
 <meta property="og:url" content="http://example.com/2019/11/05/php_source/index.html">
 <meta property="og:site_name" content="Penlab">
-<meta property="og:description" content="0x01 globals输入 用户操作一个web站点通常需要传入变量，变量“污染”了代码，造成注入问题。用户的输入的数据大致可分为有结构(数组)和无结构两种(字符串，NULL)。 GPC输入  最常见的方式， 用户输入的内容直接赋给一个变量：  123456789&#x2F;&#x2F; 取值赋给变量$var &#x3D; $_GET[&amp;#x27;value&amp;#x27;];&#x2F;&#x2F; 名值皆赋给变量foreach($_GET as">
+<meta property="og:description" content="0x01 globals输入 用户操作一个web站点通常需要传入变量，变量“污染”了代码，造成注入问题。用户的输入的数据大致可分为有结构(数组)和无结构两种(字符串，NULL)。  GPC输入  最常见的方式， 用户输入的内容直接赋给一个变量：  123456789&#x2F;&#x2F; 取值赋给变量$var &#x3D; $_GET[&amp;#x27;value&amp;#x27;];&#x2F;&#x2F; 名值皆赋给变量foreach($_GET">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043858.png">
 <meta property="og:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043920.png">
@@ -21,94 +109,236 @@
 <meta property="article:tag" content="php">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043858.png">
-  
-    <link rel="alternate" href="/atom.xml" title="Penlab" type="application/atom+xml">
-  
-  
-    <link rel="shortcut icon" href="/favicon.png">
-  
-  
-    
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
 
-  
-  
-<link rel="stylesheet" href="/css/style.css">
 
-  
-    
-<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
 
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://example.com/2019/11/05/php_source/"/>
+
+
+
+
+
+  <title>PHP数据传入点分析 | Penlab</title>
   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <!-- hexo injector head_end start -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
 <!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.1.0"></head>
 
-<body>
-  <div id="container">
-    <div id="wrap">
-      <header id="header">
-  <div id="banner"></div>
-  <div id="header-outer" class="outer">
-    <div id="header-title" class="inner">
-      <h1 id="logo-wrap">
-        <a href="/" id="logo">Penlab</a>
-      </h1>
-      
-        <h2 id="subtitle-wrap">
-          <a href="/" id="subtitle">The Art of Flow</a>
-        </h2>
-      
-    </div>
-    <div id="header-inner" class="inner">
-      <nav id="main-nav">
-        <a id="main-nav-toggle" class="nav-icon"></a>
-        
-          <a class="main-nav-link" href="/">Home</a>
-        
-          <a class="main-nav-link" href="/archives">Archives</a>
-        
-      </nav>
-      <nav id="sub-nav">
-        
-          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
-        
-        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
-      </nav>
-      <div id="search-form-wrap">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
-      </div>
-    </div>
-  </div>
-</header>
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
 
-      <div class="outer">
-        <section id="main"><article id="post-php_source" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2019/11/05/php_source/" class="article-date">
-  <time class="dt-published" datetime="2019-11-04T16:00:00.000Z" itemprop="datePublished">2019-11-05</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
   
-    <h1 class="p-name article-title" itemprop="headline name">
-      PHP数据传入点分析
-    </h1>
+  
+    
   
 
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Penlab</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">The Art of Flow</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2019/11/05/php_source/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Penlab">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">PHP数据传入点分析</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-11-05T00:00:00+08:00">
+                2019-11-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
       </header>
     
-    <div class="e-content article-entry" itemprop="articleBody">
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
       
-        <p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043858.png" alt="截屏2020-06-06 上午8.28.40" style="zoom: 67%;" /></p>
-<h1 id="x01-globals输入">0x01 globals输入</h1>
+      
+
+      
+        <img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043858.png" alt="截屏2020-06-06 上午8.28.40" style="zoom: 67%;" />
+<h1 id="0x01-globals输入"><a class="markdownIt-Anchor" href="#0x01-globals输入"></a> 0x01 globals输入</h1>
 <p>用户操作一个web站点通常需要传入变量，变量“污染”了代码，造成注入问题。用户的输入的数据大致可分为有结构(数组)和无结构两种(字符串，NULL)。</p>
-<h2 id="gpc输入">GPC输入</h2>
+<h2 id="gpc输入"><a class="markdownIt-Anchor" href="#gpc输入"></a> GPC输入</h2>
 <ul>
 <li>最常见的方式， 用户输入的内容直接赋给一个变量：</li>
 </ul>
@@ -121,188 +351,390 @@
 <ul>
 <li>import_request_variables</li>
 </ul>
-<p>​ <a target="_blank" rel="noopener" href="https://www.php.net/manual/zh/function.import-request-variables.php">php.net</a>原文中说明，将 GET／POST／Cookie 变量导入到全局作用域中。如果你禁止了 <a target="_blank" rel="noopener" href="https://www.php.net/manual/zh/ini.core.php#ini.register-globals">register_globals</a>，但又想用到一些全局变量，那么此函数就很有用。(<code>register_globals</code>是PHP的一个特性。)</p>
+<p>​       <a target="_blank" rel="noopener" href="https://www.php.net/manual/zh/function.import-request-variables.php">php.net</a>原文中说明，将 GET／POST／Cookie 变量导入到全局作用域中。如果你禁止了 <a target="_blank" rel="noopener" href="https://www.php.net/manual/zh/ini.core.php#ini.register-globals">register_globals</a>，但又想用到一些全局变量，那么此函数就很有用。(<code>register_globals</code>是PHP的一个特性。)</p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//?xss=666 =&gt; 666</span></span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="variable">$xss</span> = <span class="number">123</span>;</span><br><span class="line"><span class="title function_ invoke__">import_request_variables</span>(<span class="string">&#x27;G&#x27;</span>);</span><br><span class="line"><span class="keyword">echo</span> <span class="variable">$xss</span>;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
 <p>但是这个特性已经在php5.4.0移除。</p>
 <ul>
 <li>$_REQUEST</li>
 </ul>
-<p>​ $_REQUEST中也可包含<code>GPC</code>的内容，在注册后，数组是独立的处理起来互不影响，如果过滤其中一个而没有过滤另一个就有可能造成绕过：</p>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043920.png" alt="屏幕快照 2019-11-05 下午3.59.00" style="zoom: 67%;" /></p>
-<p>​ (POEM-RIPS SECURITY CALENDAR 2017 )</p>
-<h1 id="x02-server输入">0x02 SERVER输入</h1>
+<p>​      $_REQUEST中也可包含<code>GPC</code>的内容，在注册后，数组是独立的处理起来互不影响，如果过滤其中一个而没有过滤另一个就有可能造成绕过：</p>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043920.png" alt="屏幕快照 2019-11-05 下午3.59.00" style="zoom: 67%;" />
+<p>​                                                                                  (POEM-RIPS SECURITY CALENDAR 2017 )</p>
+<h1 id="0x02-server输入"><a class="markdownIt-Anchor" href="#0x02-server输入"></a> 0x02 SERVER输入</h1>
 <p>如通过<code>$_SERVER['REQUEST_URI']</code>或<code>$_SERVER['QUERY_STRING']</code>。真实案例(<a target="_blank" rel="noopener" href="https://bugs.leavesongs.com/php/%E8%B4%B7%E9%BD%90%E4%B9%90%E7%B3%BB%E7%BB%9F%E6%9C%80%E6%96%B0%E7%89%88sql%E6%B3%A8%E5%85%A5%EF%BC%88%E6%97%A0%E9%9C%80%E7%99%BB%E5%BD%95%E7%BB%95%E8%BF%87waf%E5%8F%AFunion-select%E8%B7%A8%E8%A1%A8%E6%9F%A5%E8%AF%A2%EF%BC%89/">贷齐乐系统最新版SQL注入（无需登录绕过WAF可union select跨表查询）</a>)</p>
 <ul>
-<li><p>parse_str</p>
+<li>
+<p>parse_str</p>
 <p>此函数解析字符串中的<code>QUERY STRING</code> 如果没有设置第二个变量<code>result</code>则可能导致变量覆盖。</p>
 <p>函数原型：</p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="title function_ invoke__">parse_str</span> ( <span class="keyword">string</span> <span class="variable">$encoded_string</span> [, <span class="keyword">array</span> &amp;<span class="variable">$result</span> ] ) : <span class="keyword">void</span></span><br></pre></td></tr></table></figure>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//?xss=666 =&gt; 666</span></span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="variable">$xss</span>= <span class="number">123</span>;</span><br><span class="line"><span class="title function_ invoke__">parse_str</span>(<span class="variable">$_SERVER</span>[<span class="string">&#x27;QUERY_STRING&#x27;</span>])</span><br><span class="line"><span class="keyword">echo</span> <span class="variable">$xss</span>;</span><br></pre></td></tr></table></figure></li>
-<li><p>mb_parse_str</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//?xss=666 =&gt; 666</span></span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="variable">$xss</span>= <span class="number">123</span>;</span><br><span class="line"><span class="title function_ invoke__">parse_str</span>(<span class="variable">$_SERVER</span>[<span class="string">&#x27;QUERY_STRING&#x27;</span>])</span><br><span class="line"><span class="keyword">echo</span> <span class="variable">$xss</span>;</span><br></pre></td></tr></table></figure>
+</li>
+<li>
+<p>mb_parse_str</p>
 <p>与parse_str类似，解析 GET/POST/COOKIE 数据并设置全局变量</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//?xss=666 =&gt; 666</span></span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="variable">$xss</span> = <span class="number">123</span>;</span><br><span class="line"><span class="title function_ invoke__">mb_parse_str</span>(<span class="variable">$_SERVER</span>[<span class="string">&#x27;QUERY_STRING&#x27;</span>] );</span><br><span class="line"><span class="keyword">echo</span> <span class="variable">$xss</span>;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></li>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//?xss=666 =&gt; 666</span></span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="variable">$xss</span> = <span class="number">123</span>;</span><br><span class="line"><span class="title function_ invoke__">mb_parse_str</span>(<span class="variable">$_SERVER</span>[<span class="string">&#x27;QUERY_STRING&#x27;</span>] );</span><br><span class="line"><span class="keyword">echo</span> <span class="variable">$xss</span>;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+</li>
 </ul>
-<h1 id="x03-其他">0x03 其他</h1>
+<h1 id="0x03-其他"><a class="markdownIt-Anchor" href="#0x03-其他"></a> 0x03 其他</h1>
 <ul>
 <li>getenv()得到变量</li>
 <li>$HTTP_RAW_POST_DATA与PHP输入、输出流</li>
 </ul>
-<h1 id="案例分析">案例分析</h1>
+<h1 id="案例分析"><a class="markdownIt-Anchor" href="#案例分析"></a> 案例分析</h1>
 <p>让我们看一下，脚本实际如何在用户请求中提取信息。</p>
-<h2 id="thinkphp5">thinkPHP5</h2>
+<h2 id="thinkphp5"><a class="markdownIt-Anchor" href="#thinkphp5"></a> thinkPHP5</h2>
 <p>获取某个get变量</p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="title class_">Reuqest</span>::<span class="title function_ invoke__">instance</span>()-&gt;<span class="title function_ invoke__">get</span>(<span class="string">&#x27;name&#x27;</span>);</span><br></pre></td></tr></table></figure>
 <p>定位到get方法：</p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 设置获取GET参数</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@access</span> public</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span>  mixed         $name 变量名</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span>  mixed         $default 默认值</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span>  string|array  $filter 过滤方法</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> mixed</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">get</span>(<span class="params"><span class="variable">$name</span> = <span class="string">&#x27;&#x27;</span>, <span class="variable">$default</span> = <span class="literal">null</span>, <span class="variable">$filter</span> = <span class="string">&#x27;&#x27;</span></span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">empty</span>(<span class="variable language_">$this</span>-&gt;get)) &#123;</span><br><span class="line">        <span class="variable language_">$this</span>-&gt;get = <span class="variable">$_GET</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (<span class="title function_ invoke__">is_array</span>(<span class="variable">$name</span>)) &#123;</span><br><span class="line">        <span class="variable language_">$this</span>-&gt;param      = [];</span><br><span class="line">        <span class="keyword">return</span> <span class="variable language_">$this</span>-&gt;get = <span class="title function_ invoke__">array_merge</span>(<span class="variable">$this</span>-&gt;get, <span class="variable">$name</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="variable language_">$this</span>-&gt;<span class="title function_ invoke__">input</span>(<span class="variable">$this</span>-&gt;get, <span class="variable">$name</span>, <span class="variable">$default</span>, <span class="variable">$filter</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>我们想从请求中拿$_GET['name']的值， <span class="math inline">\(\_GET的值被统一收集到了\)</span>this-&gt;get这个field中来。 在return时，从$this-&gt;input中取值。</p>
+<p>我们想从请求中拿$_GET[‘name’]的值， <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi mathvariant="normal">_</mi><mi>G</mi><mi>E</mi><mi>T</mi><mi mathvariant="normal">的</mi><mi mathvariant="normal">值</mi><mi mathvariant="normal">被</mi><mi mathvariant="normal">统</mi><mi mathvariant="normal">一</mi><mi mathvariant="normal">收</mi><mi mathvariant="normal">集</mi><mi mathvariant="normal">到</mi><mi mathvariant="normal">了</mi></mrow><annotation encoding="application/x-tex">\_GET的值被统一收集到了</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.99333em;vertical-align:-0.31em;"></span><span class="mord" style="margin-right:0.02778em;">_</span><span class="mord mathdefault">G</span><span class="mord mathdefault" style="margin-right:0.05764em;">E</span><span class="mord mathdefault" style="margin-right:0.13889em;">T</span><span class="mord cjk_fallback">的</span><span class="mord cjk_fallback">值</span><span class="mord cjk_fallback">被</span><span class="mord cjk_fallback">统</span><span class="mord cjk_fallback">一</span><span class="mord cjk_fallback">收</span><span class="mord cjk_fallback">集</span><span class="mord cjk_fallback">到</span><span class="mord cjk_fallback">了</span></span></span></span>this-&gt;get这个field中来。 在return时，从$this-&gt;input中取值。</p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">  * 获取变量 支持过滤和默认值</span></span><br><span class="line"><span class="comment">  * <span class="doctag">@access</span> public</span></span><br><span class="line"><span class="comment">  * <span class="doctag">@param</span>  array         $data 数据源</span></span><br><span class="line"><span class="comment">  * <span class="doctag">@param</span>  string|false  $name 字段名</span></span><br><span class="line"><span class="comment">  * <span class="doctag">@param</span>  mixed         $default 默认值</span></span><br><span class="line"><span class="comment">  * <span class="doctag">@param</span>  string|array  $filter 过滤函数</span></span><br><span class="line"><span class="comment">  * <span class="doctag">@return</span> mixed</span></span><br><span class="line"><span class="comment">  */</span></span><br><span class="line"> <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">input</span>(<span class="params"><span class="variable">$data</span> = [], <span class="variable">$name</span> = <span class="string">&#x27;&#x27;</span>, <span class="variable">$default</span> = <span class="literal">null</span>, <span class="variable">$filter</span> = <span class="string">&#x27;&#x27;</span></span>)</span></span><br><span class="line"><span class="function"> </span>&#123;</span><br><span class="line">     <span class="keyword">if</span> (<span class="literal">false</span> === <span class="variable">$name</span>) &#123;</span><br><span class="line">         <span class="comment">// 获取原始数据</span></span><br><span class="line">         <span class="keyword">return</span> <span class="variable">$data</span>;</span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line">     <span class="variable">$name</span> = (<span class="keyword">string</span>) <span class="variable">$name</span>;</span><br><span class="line">     <span class="keyword">if</span> (<span class="string">&#x27;&#x27;</span> != <span class="variable">$name</span>) &#123;</span><br><span class="line">         <span class="comment">// 解析name</span></span><br><span class="line">         <span class="keyword">if</span> (<span class="title function_ invoke__">strpos</span>(<span class="variable">$name</span>, <span class="string">&#x27;/&#x27;</span>)) &#123;</span><br><span class="line">             <span class="keyword">list</span>(<span class="variable">$name</span>, <span class="variable">$type</span>) = <span class="title function_ invoke__">explode</span>(<span class="string">&#x27;/&#x27;</span>, <span class="variable">$name</span>);</span><br><span class="line">         &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">             <span class="variable">$type</span> = <span class="string">&#x27;s&#x27;</span>;</span><br><span class="line">         &#125;</span><br><span class="line">         <span class="comment">// 按.拆分成多维数组进行判断</span></span><br><span class="line">         <span class="keyword">foreach</span> (<span class="title function_ invoke__">explode</span>(<span class="string">&#x27;.&#x27;</span>, <span class="variable">$name</span>) <span class="keyword">as</span> <span class="variable">$val</span>) &#123;</span><br><span class="line">             <span class="keyword">if</span> (<span class="keyword">isset</span>(<span class="variable">$data</span>[<span class="variable">$val</span>])) &#123;</span><br><span class="line">                 <span class="variable">$data</span> = <span class="variable">$data</span>[<span class="variable">$val</span>];</span><br><span class="line">             &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                 <span class="comment">// 无输入数据，返回默认值</span></span><br><span class="line">                 <span class="keyword">return</span> <span class="variable">$default</span>;</span><br><span class="line">             &#125;</span><br><span class="line">         &#125;</span><br><span class="line">         <span class="keyword">if</span> (<span class="title function_ invoke__">is_object</span>(<span class="variable">$data</span>)) &#123;</span><br><span class="line">             <span class="keyword">return</span> <span class="variable">$data</span>;</span><br><span class="line">         &#125;</span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line">     <span class="comment">// 解析过滤器</span></span><br><span class="line">     <span class="variable">$filter</span> = <span class="variable language_">$this</span>-&gt;<span class="title function_ invoke__">getFilter</span>(<span class="variable">$filter</span>, <span class="variable">$default</span>);</span><br><span class="line"></span><br><span class="line">     <span class="keyword">if</span> (<span class="title function_ invoke__">is_array</span>(<span class="variable">$data</span>)) &#123;</span><br><span class="line">         <span class="title function_ invoke__">array_walk_recursive</span>(<span class="variable">$data</span>, [<span class="variable">$this</span>, <span class="string">&#x27;filterValue&#x27;</span>], <span class="variable">$filter</span>);</span><br><span class="line">         <span class="title function_ invoke__">reset</span>(<span class="variable">$data</span>);</span><br><span class="line">     &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">         <span class="variable language_">$this</span>-&gt;<span class="title function_ invoke__">filterValue</span>(<span class="variable">$data</span>, <span class="variable">$name</span>, <span class="variable">$filter</span>);</span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line">     <span class="keyword">if</span> (<span class="keyword">isset</span>(<span class="variable">$type</span>) &amp;&amp; <span class="variable">$data</span> !== <span class="variable">$default</span>) &#123;</span><br><span class="line">         <span class="comment">// 强制类型转换</span></span><br><span class="line">         <span class="variable language_">$this</span>-&gt;<span class="title function_ invoke__">typeCast</span>(<span class="variable">$data</span>, <span class="variable">$type</span>);</span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line">     <span class="keyword">return</span> <span class="variable">$data</span>;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
 <p>一个比较的输入封装， 有默认输出、数组处理， 过滤选择、类型转化等部分。(这里的$filter可控的话就是那个漏洞了)</p>
 
       
     </div>
-    <footer class="article-footer">
-      <a data-url="http://example.com/2019/11/05/php_source/" data-id="cl1q2wlhv000x47w53lz24lhg" data-title="PHP数据传入点分析" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/php/" rel="tag">php</a></li></ul>
+    
+    
+    
 
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/php/" rel="tag"># php</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/09/22/pl/" rel="next" title="闲谈PL">
+                <i class="fa fa-chevron-left"></i> 闲谈PL
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/11/08/php_file_vul/" rel="prev" title="PHP文件操作漏洞总结">
+                PHP文件操作漏洞总结 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
     </footer>
   </div>
   
-    
-<nav id="article-nav">
-  
-    <a href="/2019/11/08/php_file_vul/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Newer</strong>
-      <div class="article-nav-title">
-        
-          PHP文件操作漏洞总结
-        
-      </div>
-    </a>
   
   
-    <a href="/2019/09/22/pl/" id="article-nav-older" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Older</strong>
-      <div class="article-nav-title">闲谈PL</div>
-    </a>
-  
-</nav>
-
-  
-</article>
+  </article>
 
 
-</section>
-        
-          <aside id="sidebar">
-  
-    
 
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Tags</h3>
-    <div class="widget">
-      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/paper/" rel="tag">paper</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/php/" rel="tag">php</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pl/" rel="tag">pl</a></li></ul>
-    </div>
-  </div>
-
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Tag Cloud</h3>
-    <div class="widget tagcloud">
-      <a href="/tags/paper/" style="font-size: 15px;">paper</a> <a href="/tags/php/" style="font-size: 10px;">php</a> <a href="/tags/pl/" style="font-size: 20px;">pl</a>
-    </div>
-  </div>
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Archives</h3>
-    <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/06/">June 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/04/">April 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/03/">March 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/02/">February 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/01/">January 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/12/">December 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">September 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">August 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">April 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">February 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">January 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li></ul>
-    </div>
-  </div>
-
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Recent Posts</h3>
-    <div class="widget">
-      <ul>
-        
-          <li>
-            <a href="/2022/06/05/test-math/">test_math</a>
-          </li>
-        
-          <li>
-            <a href="/2022/04/06/taint-2/">PHP污点分析</a>
-          </li>
-        
-          <li>
-            <a href="/2022/03/31/nlp-1/">NLP入门(一)</a>
-          </li>
-        
-          <li>
-            <a href="/2022/02/24/web/">Web应用系中注入类漏洞调研</a>
-          </li>
-        
-          <li>
-            <a href="/2022/02/18/data-mining/">data_mining</a>
-          </li>
-        
-      </ul>
-    </div>
-  </div>
-
-  
-</aside>
-        
-      </div>
-      <footer id="footer">
-  
-  <div class="outer">
-    <div id="footer-info" class="inner">
+    <div class="post-spread">
       
-      &copy; 2022 iohex<br>
-      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
     </div>
   </div>
-</footer>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="" />
+          <p class="site-author-name" itemprop="name"></p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">50</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">3</span>
+                <span class="site-state-item-name">tags</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#0x01-globals%E8%BE%93%E5%85%A5"><span class="nav-number">1.</span> <span class="nav-text"> 0x01 globals输入</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#gpc%E8%BE%93%E5%85%A5"><span class="nav-number">1.1.</span> <span class="nav-text"> GPC输入</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x02-server%E8%BE%93%E5%85%A5"><span class="nav-number">2.</span> <span class="nav-text"> 0x02 SERVER输入</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x03-%E5%85%B6%E4%BB%96"><span class="nav-number">3.</span> <span class="nav-text"> 0x03 其他</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%A1%88%E4%BE%8B%E5%88%86%E6%9E%90"><span class="nav-number">4.</span> <span class="nav-text"> 案例分析</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#thinkphp5"><span class="nav-number">4.1.</span> <span class="nav-text"> thinkPHP5</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
 
     </div>
-    <nav id="mobile-nav">
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
   
-    <a href="/" class="mobile-nav-link">Home</a>
-  
-    <a href="/archives" class="mobile-nav-link">Archives</a>
-  
-</nav>
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">iohex</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" target="_blank" rel="noopener" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" target="_blank" rel="noopener" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
     
 
+  </div>
 
-<script src="/js/jquery-3.4.1.min.js"></script>
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
 
 
 
   
-<script src="/fancybox/jquery.fancybox.min.js"></script>
-
-
-
-
-<script src="/js/script.js"></script>
 
 
 
 
 
 
-  </div>
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+
+  
+
+  
+
 </body>
 </html>
