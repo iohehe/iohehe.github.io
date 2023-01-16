@@ -94,12 +94,12 @@
 
 
 
-<meta name="description" content="原文链接 本文发表自RAID2020年，作者来自微软、东北大学和纽约大学。一项对反射型XSS的实证分析研究。  本文从XSSED和OPENBUGBOUNTY两个网站收集了近十年来的反射型XSS提交的payload。 两个测试集OBB的比较新一些。  image-20201030162110612  在此即上进行EXP分析，设计了一个验证系统。证明这些反射型的EXP是可以被精确的识别出来的。  im">
+<meta name="description" content="原文链接 本文发表自RAID2020年，作者来自微软、东北大学和纽约大学。一项对反射型XSS的实证分析研究。  本文从XSSED和OPENBUGBOUNTY两个网站收集了近十年来的反射型XSS提交的payload。 两个测试集OBB的比较新一些。  在此即上进行EXP分析，设计了一个验证系统。证明这些反射型的EXP是可以被精确的识别出来的。  整个系统分为动态和静态两个佐证部分，尝试识别出每个ex">
 <meta property="og:type" content="article">
 <meta property="og:title" content="What&#39;s in an Exploit? An Empirical Analysis of Reflected Server XSS Exploitation Techniques">
 <meta property="og:url" content="http://example.com/2020/10/26/RAID-2020_Relfected_Server_XSS/index.html">
 <meta property="og:site_name" content="Penlab">
-<meta property="og:description" content="原文链接 本文发表自RAID2020年，作者来自微软、东北大学和纽约大学。一项对反射型XSS的实证分析研究。  本文从XSSED和OPENBUGBOUNTY两个网站收集了近十年来的反射型XSS提交的payload。 两个测试集OBB的比较新一些。  image-20201030162110612  在此即上进行EXP分析，设计了一个验证系统。证明这些反射型的EXP是可以被精确的识别出来的。  im">
+<meta property="og:description" content="原文链接 本文发表自RAID2020年，作者来自微软、东北大学和纽约大学。一项对反射型XSS的实证分析研究。  本文从XSSED和OPENBUGBOUNTY两个网站收集了近十年来的反射型XSS提交的payload。 两个测试集OBB的比较新一些。  在此即上进行EXP分析，设计了一个验证系统。证明这些反射型的EXP是可以被精确的识别出来的。  整个系统分为动态和静态两个佐证部分，尝试识别出每个ex">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045716.png">
 <meta property="og:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045726.png">
@@ -344,63 +344,55 @@
       
         <p><a target="_blank" rel="noopener" href="https://github.com/iohehe/research/RAID-2020-xss-stats-paper/xss-stats-paper.pdf">原文链接</a></p>
 <p>本文发表自RAID2020年，作者来自微软、东北大学和纽约大学。一项对反射型XSS的实证分析研究。</p>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045716.png" alt="image-20201030143613662" style="zoom:33%;" /></p>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045716.png" alt="image-20201030143613662" style="zoom:33%;" />
 <p>本文从XSSED和OPENBUGBOUNTY两个网站收集了近十年来的反射型XSS提交的payload。 两个测试集OBB的比较新一些。</p>
-<figure>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045726.png" alt="image-20201030162110612" /><figcaption aria-hidden="true">image-20201030162110612</figcaption>
-</figure>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045726.png" alt="image-20201030162110612" /></p>
 <p>在此即上进行EXP分析，设计了一个验证系统。证明这些反射型的EXP是可以被精确的识别出来的。</p>
-<figure>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045729.png" alt="image-20201030162154660" /><figcaption aria-hidden="true">image-20201030162154660</figcaption>
-</figure>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045729.png" alt="image-20201030162154660" /></p>
 <p>整个系统分为动态和静态两个佐证部分，尝试识别出每个exp的trick:</p>
 <ul>
-<li><p>静态：</p>
-<p>静态部分是:EXP Extraction ​到​ ​S​t​a​ti​c​ ​F​e​a​t​ur​e​ ​E​x​t​ra​c​t​i​on。​ 其实我觉得还带是正则。</p></li>
-<li><p>动态：</p>
+<li>
+<p>静态：</p>
+<p>静态部分是:EXP Extraction ​到​ ​S​t​a​ti​c​ ​F​e​a​t​ur​e​ ​E​x​t​ra​c​t​i​on。​ 其实我觉得还带是正则。</p>
+</li>
+<li>
+<p>动态：</p>
 <p>动态部分是：EXP Execution 到 Dynamic Feature Extraction。 将收集的response的page使用chrome和FireFox加载，在沙箱环境中观察，因为有一些触发条件需要特定操作或者加载资源，因此作者分了四个round，后三个round需要操作(Mouse Move, Mouse Click, Network Error)，通过在response page中插桩，观察XSS执行里的trick。</p>
-<figure>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045734.png" alt="image-20201030173010493" /><figcaption aria-hidden="true">image-20201030173010493</figcaption>
-</figure></li>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045734.png" alt="image-20201030173010493" /></p>
+</li>
 </ul>
 <p>下面来看看对payload的一些分统计：</p>
-<ol type="1">
-<li><p>Context( Escaping and Creation)技术:</p>
-<figure>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045732.png" alt="image-20201030163940277" /><figcaption aria-hidden="true">image-20201030163940277</figcaption>
-</figure></li>
+<ol>
+<li>
+<p>Context( Escaping and Creation)技术:</p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045732.png" alt="image-20201030163940277" /></p>
+</li>
 </ol>
-<p>这一类主要是指逃逸+构造，日常使用中确实最多。细分为： HTML环境注释逃逸法、 JS环境注视逃逸法、属性环境标签闭合逃逸+构造标签、属性环境属性闭合+构造属性、JS环境代码续接。 （我瞎编的:expressionless:)​</p>
-<ol start="2" type="1">
+<p>这一类主要是指逃逸+构造，日常使用中确实最多。细分为： HTML环境注释逃逸法、 JS环境注视逃逸法、属性环境标签闭合逃逸+构造标签、属性环境属性闭合+构造属性、JS环境代码续接。 （我瞎编的😑)​</p>
+<ol start="2">
 <li>Synatx Confusion技术</li>
 </ol>
-<figure>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045740.png" alt="image-20201030164425916" /><figcaption aria-hidden="true">image-20201030164425916</figcaption>
-</figure>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045740.png" alt="image-20201030164425916" /></p>
 <p>这一类就是语法混淆，包括： 方法名的额外括号、大小写混淆、 unicode编码混淆(乱入：注意方法括号不能unicode)、第四个厉害了没听说过、 空白符混淆、 斜杠替换空格(还有alert(/xss/))、 标签解析混淆(频率还很高，mark!)</p>
-<ol start="3" type="1">
+<ol start="3">
 <li>Control Flow Modification技术</li>
 </ol>
 <p>此技术在OBB的测试集中使用比较多。也就是有48.2%的</p>
-<figure>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045744.png" alt="image-20201030165941047" /><figcaption aria-hidden="true">image-20201030165941047</figcaption>
-</figure>
-<p>这个分类粒度是控制流更改(可能喝上两种不是一个维度)。主要是躲过&lt;script&gt;标签过，有1, 自动触发事件 2，exploit-triggered events(咋翻译？) 3,用户交互事件 4, 将事件赋给一个变量！ 5，抛异常！！</p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045744.png" alt="image-20201030165941047" /></p>
+<p>这个分类粒度是控制流更改(可能喝上两种不是一个维度)。主要是躲过&lt;script&gt;标签过，有1, 自动触发事件 2，exploit-triggered events(咋翻译？) 3,用户交互事件  4, 将事件赋给一个变量！ 5，抛异常！！</p>
 <p>这个类型分的有点混乱，可能我还没看仔细。</p>
-<ol start="4" type="1">
-<li><p>字符解释技术</p>
-<figure>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045746.png" alt="image-20201030171318469" /><figcaption aria-hidden="true">image-20201030171318469</figcaption>
-</figure>
-<p>能够将字符当作JS代码解释的方法， 1，document.write 2, eval 3, setTimeout 4, top (写一遍加深印象...)</p></li>
+<ol start="4">
+<li>
+<p>字符解释技术</p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045746.png" alt="image-20201030171318469" /></p>
+<p>能够将字符当作JS代码解释的方法， 1，document.write 2, eval 3, setTimeout 4, top (写一遍加深印象…)</p>
+</li>
 </ol>
-<h2 id="总结">总结</h2>
-<figure>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045749.png" alt="image-20201030171651652" /><figcaption aria-hidden="true">image-20201030171651652</figcaption>
-</figure>
-<p>En...还是闭合标签感觉爽些。</p>
-<h2 id="tips">Tips</h2>
-<p>看完这篇文章其他部分没仔细看， 光学姿势去了...</p>
+<h2 id="总结"><a class="markdownIt-Anchor" href="#总结"></a> 总结</h2>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045749.png" alt="image-20201030171651652" /></p>
+<p>En…还是闭合标签感觉爽些。</p>
+<h2 id="tips"><a class="markdownIt-Anchor" href="#tips"></a> Tips</h2>
+<p>看完这篇文章其他部分没仔细看， 光学姿势去了…</p>
 <ul>
 <li>可能有些位置就是可以用多种方法，最近趋于喜欢直接用svg做注入</li>
 <li>是时候总结一波姿势了</li>
@@ -524,7 +516,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">50</span>
+                <span class="site-state-item-count">53</span>
                 <span class="site-state-item-name">posts</span>
               </a>
             </div>
@@ -572,7 +564,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">1.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tips"><span class="nav-number">2.</span> <span class="nav-text">Tips</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">1.</span> <span class="nav-text"> 总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tips"><span class="nav-number">2.</span> <span class="nav-text"> Tips</span></a></li></ol></div>
             
 
           </div>
@@ -595,7 +587,7 @@
         <div class="copyright" >
   
   &copy; 
-  <span itemprop="copyrightYear">2022</span>
+  <span itemprop="copyrightYear">2023</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>

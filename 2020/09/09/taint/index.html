@@ -335,18 +335,18 @@
 
       
         <p>如下是一个典型污点分析算法：</p>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044109.png" alt="截屏2020-09-09 上午9.38.59" style="zoom: 67%;" /></p>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044109.png" alt="截屏2020-09-09 上午9.38.59" style="zoom: 67%;" />
 <p>一般地，污点分析会选择后向追踪。如果前向按照程序执行的方向追踪，即从sources找sinks往往会有很多误报。 从sinks后向找的话首先定位了漏洞点了。后向的话就是在一个赋值过程中<code>左值为污点传播给右值(lval-&gt;rval)</code> 那么一个后向算法的实现：</p>
 <ul>
 <li>第一步： 根据设定的sinks列表， 在程序中全局定位所有的sinkNodes的位置</li>
 <li>第二步： 对每一个sinkNode进行后向追随，看有没有能够达到我们设定为sources的静态路径， 有就存为vulnerablePaths</li>
 </ul>
 <p>关键在于对每一个sink点如何追溯， 这里先不考虑地22行的filter。找到&lt;sink, source&gt;路径，核心是一个递归过程。这个过程的原操作是在数据流上向后走到下一个传播点，并将其标注为污点(taint)。 那么这个过程何时停？ 根据第18行，即当追到一个taint就是我们的sources，当然输出一条vulnerablePath。 当追到了Parameters时，此时此过程中的污点传播已经到头，说明污点已经传入了他的caller中，将此路径保存，停止污点追溯，回到他的caller中，如果caller中构造了vulnerablePaths，在讲这种由return传播到parameter的过程路径拼接。</p>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044114.jpg" alt="WechatIMG10" style="zoom:67%;" /></p>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044114.jpg" alt="WechatIMG10" style="zoom:67%;" />
 <p>上图描述了从sink开始找到一个赋值语句，转移函数在这里要回答右值是否标为污点？但是他的表达式中有一个call，要回答这个问题就我们就要分析这个调用。</p>
 <p>如果将这个call看作一个黑盒的话，首先它一定要有返回值，如果没有返回值， 那么就没有数据传到sink点了(这里考虑的是显式传播，不考虑控制流的影响)。其次，要看我们的taint点，是否做为实参传入，如果做为实参传入，且从return点能够从数据流后向走到Parameters(这个taint的传入位置)，那么就做为一个子过程，拼接到path上(path+call_path)。 还有就是自过程中包含source，那么这个source直接就通过return和sink拼接成vulpath了。</p>
 <p>递归过程:</p>
-<ol type="1">
+<ol>
 <li>检查call中是否有返回</li>
 <li>有返回值，标注污点传入的参数位置</li>
 <li>将返回点做为sink，后向污点分析，如果遇到source,输出vul_path；走到标注的参数，返回路径；遇到call继续递归该过程。</li>
@@ -366,12 +366,14 @@
 <li>foo_1标记第一个Parameter</li>
 <li>foo_1有return，从return开始追踪</li>
 <li><code>return $foo_1_res</code>: 标记$foo_1_param为污点</li>
-<li><code>$foo_1_res = "&lt;a&gt;".$foo_1_param."&lt;/a&gt;";</code>：标记$foo_1_param为污点</li>
+<li><code>$foo_1_res = &quot;&lt;a&gt;&quot;.$foo_1_param.&quot;&lt;/a&gt;&quot;;</code>：标记$foo_1_param为污点</li>
 <li><code>function foo_1($foo_1_param)</code>: 污点传入标记的Parameter, 返回call_path</li>
-</ul></li>
+</ul>
+</li>
 <li><code>$foo_2_res = foo_1($foo_2_param);</code>: 拼接call_path,标记$foo_2_res为污点</li>
 <li><code>function foo_2($foo_2_param)</code>: 污点传入标记的Parameter, 返回call_path</li>
-</ul></li>
+</ul>
+</li>
 <li><code>$pass_1 = foo_2($pass_2)</code>: 标记$pass_1为污点</li>
 <li><code>$pass_2 = $_GET['id'];</code>: 找到source点，输出vulPath</li>
 </ul>
@@ -479,7 +481,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">50</span>
+                <span class="site-state-item-count">53</span>
                 <span class="site-state-item-name">posts</span>
               </a>
             </div>
@@ -534,7 +536,7 @@
         <div class="copyright" >
   
   &copy; 
-  <span itemprop="copyrightYear">2022</span>
+  <span itemprop="copyrightYear">2023</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>

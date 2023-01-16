@@ -94,12 +94,12 @@
 
 
 
-<meta name="description" content="课程链接 0x01 Compilers and Static Analyzers 编译器工作原理， 开始贴ppt：  IR之前前端， 之后称后端。 前端是词法、语法、简单的语义检查。 后端是在IR上分析一些高级的程序属性。（其实我觉得编译过程任何一个阶段的输出表示，都可以叫做IR(中间表示)，一般IR指的是编译后段处理的目标内容形式，一般用3AC(三地址码)表示）。 0x02 AST vs. IR">
+<meta name="description" content="课程链接  0x01 Compilers and Static Analyzers 编译器工作原理， 开始贴ppt：  IR之前前端， 之后称后端。 前端是词法、语法、简单的语义检查。 后端是在IR上分析一些高级的程序属性。（其实我觉得编译过程任何一个阶段的输出表示，都可以叫做IR(中间表示)，一般IR指的是编译后段处理的目标内容形式，一般用3AC(三地址码)表示）。  0x02 AST vs.">
 <meta property="og:type" content="article">
 <meta property="og:title" content="南大静态分析-2">
 <meta property="og:url" content="http://example.com/2020/05/04/static-analysis-2/index.html">
 <meta property="og:site_name" content="Penlab">
-<meta property="og:description" content="课程链接 0x01 Compilers and Static Analyzers 编译器工作原理， 开始贴ppt：  IR之前前端， 之后称后端。 前端是词法、语法、简单的语义检查。 后端是在IR上分析一些高级的程序属性。（其实我觉得编译过程任何一个阶段的输出表示，都可以叫做IR(中间表示)，一般IR指的是编译后段处理的目标内容形式，一般用3AC(三地址码)表示）。 0x02 AST vs. IR">
+<meta property="og:description" content="课程链接  0x01 Compilers and Static Analyzers 编译器工作原理， 开始贴ppt：  IR之前前端， 之后称后端。 前端是词法、语法、简单的语义检查。 后端是在IR上分析一些高级的程序属性。（其实我觉得编译过程任何一个阶段的输出表示，都可以叫做IR(中间表示)，一般IR指的是编译后段处理的目标内容形式，一般用3AC(三地址码)表示）。  0x02 AST vs.">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045807.png">
 <meta property="og:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045811.png">
@@ -346,13 +346,13 @@
 
       
         <p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1zE411s77Z">课程链接</a></p>
-<h1 id="x01-compilers-and-static-analyzers">0x01 Compilers and Static Analyzers</h1>
+<h1 id="0x01-compilers-and-static-analyzers"><a class="markdownIt-Anchor" href="#0x01-compilers-and-static-analyzers"></a> 0x01 Compilers and Static Analyzers</h1>
 <p>编译器工作原理， 开始贴ppt：</p>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045807.png" alt="截屏2020-05-04 下午8.53.05 " style="zoom:50%;" /></p>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045807.png" alt="截屏2020-05-04 下午8.53.05 " style="zoom:50%;" />
 <p>IR之前前端， 之后称后端。 前端是词法、语法、简单的语义检查。 后端是在IR上分析一些高级的程序属性。（其实我觉得编译过程任何一个阶段的输出表示，都可以叫做IR(中间表示)，一般IR指的是编译后段处理的目标内容形式，一般用3AC(三地址码)表示）。</p>
-<h1 id="x02-ast-vs.-ir">0x02 AST vs. IR</h1>
-<p>重点来了， AST 和 IR做为编译过程中两个重要的中间表示，各自有什么意义与区别呢？ 我们继续贴ppt...</p>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045811.png" alt="截屏2020-05-04 下午8.58.04 " style="zoom:50%;" /></p>
+<h1 id="0x02-ast-vs-ir"><a class="markdownIt-Anchor" href="#0x02-ast-vs-ir"></a> 0x02 AST vs. IR</h1>
+<p>重点来了， AST 和 IR做为编译过程中两个重要的中间表示，各自有什么意义与区别呢？ 我们继续贴ppt…</p>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045811.png" alt="截屏2020-05-04 下午8.58.04 " style="zoom:50%;" />
 <p>这里提出了几点：</p>
 <p>AST 贴合于上层代码，依赖于语言。 而IR贴近于底层，不依赖语言。 (多种语言可以翻译成同一种3AC?)。还有一个重要特点就是AST缺少控制流信息， 而3AC包含了控制流信息。</p>
 <blockquote>
@@ -363,56 +363,72 @@
 <li>Compiler-generated temporary: t1, t2</li>
 </ul>
 </blockquote>
-<h2 id="常见3ac三地址码形式">常见3AC(三地址码)形式</h2>
+<h2 id="常见3ac三地址码形式"><a class="markdownIt-Anchor" href="#常见3ac三地址码形式"></a> 常见3AC(三地址码)形式</h2>
 <ul>
-<li><p>x = y <code>bop</code> z</p></li>
-<li><p>x = <code>top</code> y</p></li>
-<li><p>x = y</p></li>
-<li><p>goto <code>L</code></p></li>
-<li><p>if x got <code>L</code></p></li>
-<li><p>if x <code>rop</code> y goto L</p></li>
+<li>
+<p>x = y <code>bop</code> z</p>
+</li>
+<li>
+<p>x = <code>top</code> y</p>
+</li>
+<li>
+<p>x = y</p>
+</li>
+<li>
+<p>goto <code>L</code></p>
+</li>
+<li>
+<p>if x got <code>L</code></p>
+</li>
+<li>
+<p>if x <code>rop</code> y goto L</p>
+</li>
 </ul>
 <p>其中， x, y, z表示地址。 <code>bop</code>是二元运算符或逻辑运算符； <code>uop</code> 是一元操作符；<code>L</code>是地址的label； <code>rop</code> 关系操作符。 <code>goto L</code> 无条件跳转； <code>if...goto L</code>:条件跳转。</p>
-<p>soot介绍略...</p>
-<h1 id="x03-static-single-assignmentssa">0x03 Static Single Assignment(SSA)</h1>
+<p>soot介绍略…</p>
+<h1 id="0x03-static-single-assignmentssa"><a class="markdownIt-Anchor" href="#0x03-static-single-assignmentssa"></a> 0x03 Static Single Assignment(SSA)</h1>
 <ul>
 <li>Give each definition a fresh name</li>
 <li>Propagate fresh name to subsequent use</li>
 <li>Ever variable has exactly one definition</li>
 </ul>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045815.png" alt="截屏2020-05-04 下午9.16.05 " style="zoom:50%;" /></p>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045817.png" alt="截屏2020-05-04 下午9.17.15 " style="zoom:50%;" /></p>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045815.png" alt="截屏2020-05-04 下午9.16.05 " style="zoom:50%;" />
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045817.png" alt="截屏2020-05-04 下午9.17.15 " style="zoom:50%;" />
 <p>每一个variable在不同语句都给一个地址， 在control flow 汇合处就是这个变量的集合。</p>
-<h1 id="x04-control-flow-analysis">0x04 Control Flow Analysis</h1>
-<p>重点来了...</p>
+<h1 id="0x04-control-flow-analysis"><a class="markdownIt-Anchor" href="#0x04-control-flow-analysis"></a> 0x04 Control Flow Analysis</h1>
+<p>重点来了…</p>
 <p>之前构造了3AC，那么在后端中需要在此之上构建控制流图进行控制流分析。 控制流图中， 每一个节点为一个基本快。</p>
-<h2 id="basic-blokcsbb">Basic Blokcs(BB)</h2>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045822.png" alt="截屏2020-05-04 下午9.21.28 " style="zoom:50%;" /></p>
+<h2 id="basic-blokcsbb"><a class="markdownIt-Anchor" href="#basic-blokcsbb"></a> Basic Blokcs(BB)</h2>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045822.png" alt="截屏2020-05-04 下午9.21.28 " style="zoom:50%;" />
 <p>一个基本块应该满足，唯一一个<strong>入口</strong>进，唯一一个<strong>出口</strong>出。</p>
 <blockquote>
 <p>入口必须是第一条指令， 而出口必须是最后一条， 这样最大的块就是一个BB。</p>
 </blockquote>
-<h2 id="构建basic-block">构建basic block</h2>
+<h2 id="构建basic-block"><a class="markdownIt-Anchor" href="#构建basic-block"></a> 构建basic block</h2>
 <p>按视频给出的算法：</p>
 <p>首先，标出跳转语句的目标</p>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045825.png" alt="截屏2020-05-04 下午9.32.58 " style="zoom:50%;" /></p>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045825.png" alt="截屏2020-05-04 下午9.32.58 " style="zoom:50%;" />
 <p>之后，标出紧接着jump之后的指令</p>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045827.png" alt="截屏2020-05-04 下午9.34.26 " style="zoom:50%;" /></p>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045827.png" alt="截屏2020-05-04 下午9.34.26 " style="zoom:50%;" />
 <p>找到了所有的leaders之后，构造基本块。</p>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045831.png" alt="截屏2020-05-04 下午9.36.17 " style="zoom:50%;" /></p>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045831.png" alt="截屏2020-05-04 下午9.36.17 " style="zoom:50%;" />
 <p>有了基本块， 建立控制流的边。</p>
-<h2 id="构建control-flow-graphcfg">构建Control Flow Graph(CFG)</h2>
-<ol type="1">
-<li><p>There is a conditional or unconditional jump from the end of A to the beginning of B(跳转添边)</p></li>
-<li><p>B immediately follows A in the original order of instructions(依序添边) and A does not end in an unconditional jump(且A块出口并没有无条件跳转)</p></li>
+<h2 id="构建control-flow-graphcfg"><a class="markdownIt-Anchor" href="#构建control-flow-graphcfg"></a> 构建Control Flow Graph(CFG)</h2>
+<ol>
+<li>
+<p>There is a conditional or unconditional jump from the end of A to the beginning of B(跳转添边)</p>
+</li>
+<li>
+<p>B immediately follows A in the original order of instructions(依序添边) and A does not end in an unconditional jump(且A块出口并没有无条件跳转)</p>
+</li>
 </ol>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045835.png" alt="截屏2020-05-04 下午9.43.32 " style="zoom:50%;" /></p>
-<ol start="3" type="1">
+   <img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045835.png" alt="截屏2020-05-04 下午9.43.32 " style="zoom:50%;" />
+<ol start="3">
 <li>It is normal to replace the jumps to instruction labels by jumps to basic blocks(很自然的将指令跳转转化为basic block 跳转)</li>
 </ol>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045837.png" alt="截屏2020-05-04 下午9.47.18 " style="zoom:50%;" /></p>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045837.png" alt="截屏2020-05-04 下午9.47.18 " style="zoom:50%;" />
 <p>（这里将goto 目标都换成了基本块label）</p>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045839.png" alt="截屏2020-05-04 下午9.49.11 " style="zoom:50%;" /></p>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045839.png" alt="截屏2020-05-04 下午9.49.11 " style="zoom:50%;" />
 <p>加上了CFG的入口和出口，形成一个完整的CFG。</p>
 <blockquote>
 <p>说明:</p>
@@ -423,8 +439,8 @@
 <li>入口节点加入第一个，指向第一条执行的指令</li>
 </ul>
 </blockquote>
-<h3 id="算法">算法</h3>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045843.png" alt="image-20211111072257404" style="zoom:50%;" /></p>
+<h3 id="算法"><a class="markdownIt-Anchor" href="#算法"></a> 算法</h3>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-045843.png" alt="image-20211111072257404" style="zoom:50%;" />
 
       
     </div>
@@ -544,7 +560,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">50</span>
+                <span class="site-state-item-count">53</span>
                 <span class="site-state-item-name">posts</span>
               </a>
             </div>
@@ -592,7 +608,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#x01-compilers-and-static-analyzers"><span class="nav-number">1.</span> <span class="nav-text">0x01 Compilers and Static Analyzers</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#x02-ast-vs.-ir"><span class="nav-number">2.</span> <span class="nav-text">0x02 AST vs. IR</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%B8%E8%A7%813ac%E4%B8%89%E5%9C%B0%E5%9D%80%E7%A0%81%E5%BD%A2%E5%BC%8F"><span class="nav-number">2.1.</span> <span class="nav-text">常见3AC(三地址码)形式</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#x03-static-single-assignmentssa"><span class="nav-number">3.</span> <span class="nav-text">0x03 Static Single Assignment(SSA)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#x04-control-flow-analysis"><span class="nav-number">4.</span> <span class="nav-text">0x04 Control Flow Analysis</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#basic-blokcsbb"><span class="nav-number">4.1.</span> <span class="nav-text">Basic Blokcs(BB)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9E%84%E5%BB%BAbasic-block"><span class="nav-number">4.2.</span> <span class="nav-text">构建basic block</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9E%84%E5%BB%BAcontrol-flow-graphcfg"><span class="nav-number">4.3.</span> <span class="nav-text">构建Control Flow Graph(CFG)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AE%97%E6%B3%95"><span class="nav-number">4.3.1.</span> <span class="nav-text">算法</span></a></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#0x01-compilers-and-static-analyzers"><span class="nav-number">1.</span> <span class="nav-text"> 0x01 Compilers and Static Analyzers</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x02-ast-vs-ir"><span class="nav-number">2.</span> <span class="nav-text"> 0x02 AST vs. IR</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%B8%E8%A7%813ac%E4%B8%89%E5%9C%B0%E5%9D%80%E7%A0%81%E5%BD%A2%E5%BC%8F"><span class="nav-number">2.1.</span> <span class="nav-text"> 常见3AC(三地址码)形式</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x03-static-single-assignmentssa"><span class="nav-number">3.</span> <span class="nav-text"> 0x03 Static Single Assignment(SSA)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x04-control-flow-analysis"><span class="nav-number">4.</span> <span class="nav-text"> 0x04 Control Flow Analysis</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#basic-blokcsbb"><span class="nav-number">4.1.</span> <span class="nav-text"> Basic Blokcs(BB)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9E%84%E5%BB%BAbasic-block"><span class="nav-number">4.2.</span> <span class="nav-text"> 构建basic block</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9E%84%E5%BB%BAcontrol-flow-graphcfg"><span class="nav-number">4.3.</span> <span class="nav-text"> 构建Control Flow Graph(CFG)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AE%97%E6%B3%95"><span class="nav-number">4.3.1.</span> <span class="nav-text"> 算法</span></a></li></ol></li></ol></li></ol></div>
             
 
           </div>
@@ -615,7 +631,7 @@
         <div class="copyright" >
   
   &copy; 
-  <span itemprop="copyrightYear">2022</span>
+  <span itemprop="copyrightYear">2023</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>

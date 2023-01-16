@@ -94,12 +94,12 @@
 
 
 
-<meta name="description" content="0x01 Github平台的信息 Github做为全球最大的代码托管(tongxingjiaoyou)平台，有着令人惊讶的数据量。您除了会在其中泄露一些个人信息，最重要的就是源码。你的项目可能出卖了你。最有名的事件大概就是18年8月发生的华住5亿数据泄露。此事件的缘起，据说就是开发人员将数据库的套接字与口令直接上传到了github库中。  如今，各种Github泄露监控软件如雨后春笋板的出现。说道">
+<meta name="description" content="0x01 Github平台的信息 Github做为全球最大的代码托管(tongxingjiaoyou)平台，有着令人惊讶的数据量。您除了会在其中泄露一些个人信息，最重要的就是源码。你的项目可能出卖了你。最有名的事件大概就是18年8月发生的华住5亿数据泄露。此事件的缘起，据说就是开发人员将数据库的套接字与口令直接上传到了github库中。  如今，各种Github泄露监控软件如雨后春笋板的出现。说">
 <meta property="og:type" content="article">
 <meta property="og:title" content="git隐私泄露">
 <meta property="og:url" content="http://example.com/2019/03/25/Git_Leak/index.html">
 <meta property="og:site_name" content="Penlab">
-<meta property="og:description" content="0x01 Github平台的信息 Github做为全球最大的代码托管(tongxingjiaoyou)平台，有着令人惊讶的数据量。您除了会在其中泄露一些个人信息，最重要的就是源码。你的项目可能出卖了你。最有名的事件大概就是18年8月发生的华住5亿数据泄露。此事件的缘起，据说就是开发人员将数据库的套接字与口令直接上传到了github库中。  如今，各种Github泄露监控软件如雨后春笋板的出现。说道">
+<meta property="og:description" content="0x01 Github平台的信息 Github做为全球最大的代码托管(tongxingjiaoyou)平台，有着令人惊讶的数据量。您除了会在其中泄露一些个人信息，最重要的就是源码。你的项目可能出卖了你。最有名的事件大概就是18年8月发生的华住5亿数据泄露。此事件的缘起，据说就是开发人员将数据库的套接字与口令直接上传到了github库中。  如今，各种Github泄露监控软件如雨后春笋板的出现。说">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044026.jpg">
 <meta property="og:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044035.png">
@@ -338,44 +338,62 @@
       
 
       
-        <h3 id="x01-github平台的信息">0x01 Github平台的信息</h3>
+        <h3 id="0x01-github平台的信息"><a class="markdownIt-Anchor" href="#0x01-github平台的信息"></a> 0x01 Github平台的信息</h3>
 <p>Github做为全球最大的代码托管(tongxingjiaoyou)平台，有着令人惊讶的数据量。您除了会在其中泄露一些个人信息，最重要的就是源码。你的项目可能出卖了你。最有名的事件大概就是18年8月发生的华住5亿数据泄露。此事件的缘起，据说就是开发人员将数据库的套接字与口令直接上传到了github库中。</p>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044026.jpg" alt="img" style="zoom:75%;" /></p>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044026.jpg" alt="img" style="zoom:75%;" />
 <p>如今，各种Github泄露监控软件如雨后春笋板的出现。说道Github信息泄露，就不得不说今年ndss上发布的那篇-“How Bad Can It Git? Characterizing Secret Leakage in Public GitHub Repositories ”，哈哈哈哈哈哈哈。</p>
-<h3 id="x02-论文">0x02 论文</h3>
+<h3 id="0x02-论文"><a class="markdownIt-Anchor" href="#0x02-论文"></a> 0x02 论文</h3>
 <ul>
-<li><p>原文作者：Michael Meli, Matthew R.McNiece, Bradley Reaves</p></li>
-<li><p>原文标题：How Bad Can It Git? Characterizing Secret Leakage in Public GitHub Repositories</p></li>
-<li><p>原文会议：the 26th Annual Network and Distributed System Security Symposium, NDSS 2019</p></li>
+<li>
+<p>原文作者：Michael Meli, Matthew R.McNiece, Bradley Reaves</p>
+</li>
+<li>
+<p>原文标题：How Bad Can It Git? Characterizing Secret Leakage in Public GitHub Repositories</p>
+</li>
+<li>
+<p>原文会议：the 26th Annual Network and Distributed System Security Symposium, NDSS 2019</p>
+</li>
 </ul>
 <p>该团队来自北卡罗来纳州立大学(NCSU)，主要关心的是在开源代码库中，私有证书的管理。这篇文章六个月内扫描了Github上13%的公共代码库，发现了超过10万代码库泄露了API令牌和加密密钥。</p>
 <p>API Key作为接口间通信的长期身份认证令牌，一旦泄漏即可绕过认证系统。</p>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044035.png" alt="1" style="zoom:67%;" /></p>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044035.png" alt="1" style="zoom:67%;" />
 <p>本文获取这些敏感信息的过程如下：</p>
 <ul>
-<li><p>0: 总结这些敏感信息的规律，称之为Distinct Secrets。</p></li>
-<li><p>1(1a, 1b): 总结根据这些规律通过GitHub API 和 Google Github Snapshot（两者互补）收集潜在的代码和数据文件。形成Candidate Files。</p></li>
-<li><p>2: 对Candidate Files中的Distinct Secrets进行正则，形成Candidate Secrets。</p></li>
-<li><p>3:（3a, 3b, 3c）对Candidate Secrets进行三层过滤(熵)，形成Valid Secret。</p></li>
+<li>
+<p>0: 总结这些敏感信息的规律，称之为Distinct Secrets。</p>
+</li>
+<li>
+<p>1(1a, 1b): 总结根据这些规律通过GitHub API 和 Google Github Snapshot（两者互补）收集潜在的代码和数据文件。形成Candidate Files。</p>
+</li>
+<li>
+<p>2: 对Candidate Files中的Distinct Secrets进行正则，形成Candidate Secrets。</p>
+</li>
+<li>
+<p>3:（3a, 3b, 3c）对Candidate Secrets进行三层过滤(熵\词法\结构模式)，形成Valid Secret。</p>
+</li>
 </ul>
 <p>本系统遵循这些敏感信息的内容是有规律可循的。下表为一些有迹可循的popular API keys和Asymmetric Private Keys。</p>
-<p><img src="/media/Other_Git_Leak/2.png" alt="2" style="zoom:50%;" /></p>
+<img src="/media/Other_Git_Leak/2.png" alt="2" style="zoom:50%;" />
 <p>从文中看，这个系统的实验效果还是比较好的。文章从以下几个方面进行分析。</p>
 <ul>
 <li>私有或者公有隐私信息</li>
 </ul>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044046.png" alt="3" style="zoom:50%;" /></p>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044046.png" alt="3" style="zoom:50%;" />
 <p>从这张表可以看出，在实际数据采集分析后。目标隐私信息的私密度非常的高。</p>
 <ul>
-<li><p>平行泄露</p>
-<p>即有些应用不能单方面的使用必须有"multi-factor"才能触发。如Google OAuth IDs必须同时找到OAuth Secret。而研究表明这种"parallel secrets"通常会在隐私数据前后五行内平行泄露。</p></li>
+<li>
+<p>平行泄露</p>
+<p>即有些应用不能单方面的使用必须有&quot;multi-factor&quot;才能触发。如Google OAuth IDs必须同时找到OAuth Secret。而研究表明这种&quot;parallel secrets&quot;通常会在隐私数据前后五行内平行泄露。</p>
+</li>
 </ul>
-<p><img src="/media/Other_Git_Leak/4.png" alt="4" style="zoom:50%;" /></p>
+<img src="/media/Other_Git_Leak/4.png" alt="4" style="zoom:50%;" />
 <ul>
-<li><p>隐私存活周期</p>
-<p>研究者功能总泄密项目，观察所有者是否会发现，监控每小时探测一次。发现大约6%的用户在泄密一小时后发现并删除。19%会在两周后移除。然而这些删除掉的隐私通常仍然可以在git历史中访问。</p></li>
+<li>
+<p>隐私存活周期</p>
+<p>研究者功能总泄密项目，观察所有者是否会发现，监控每小时探测一次。发现大约6%的用户在泄密一小时后发现并删除。19%会在两周后移除。然而这些删除掉的隐私通常仍然可以在git历史中访问。</p>
+</li>
 </ul>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044057.png" alt="5" style="zoom:67%;" /></p>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044057.png" alt="5" style="zoom:67%;" />
 <ul>
 <li>文章还分析了RSA Key Leakage, Number of Encrypted Keys以及OpenVPN Config等隐私数据泄露。总之，公共开源项目中泄露的大量的私密信息。NCSU团队表示，他们在10万个GitHub项目中总共发现了575,456个API和密钥，其中201,642个是独立的。</li>
 </ul>
@@ -492,7 +510,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">50</span>
+                <span class="site-state-item-count">53</span>
                 <span class="site-state-item-name">posts</span>
               </a>
             </div>
@@ -540,7 +558,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#x01-github%E5%B9%B3%E5%8F%B0%E7%9A%84%E4%BF%A1%E6%81%AF"><span class="nav-number">1.</span> <span class="nav-text">0x01 Github平台的信息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#x02-%E8%AE%BA%E6%96%87"><span class="nav-number">2.</span> <span class="nav-text">0x02 论文</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#0x01-github%E5%B9%B3%E5%8F%B0%E7%9A%84%E4%BF%A1%E6%81%AF"><span class="nav-number">1.</span> <span class="nav-text"> 0x01 Github平台的信息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#0x02-%E8%AE%BA%E6%96%87"><span class="nav-number">2.</span> <span class="nav-text"> 0x02 论文</span></a></li></ol></div>
             
 
           </div>
@@ -563,7 +581,7 @@
         <div class="copyright" >
   
   &copy; 
-  <span itemprop="copyrightYear">2022</span>
+  <span itemprop="copyrightYear">2023</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
