@@ -94,12 +94,12 @@
 
 
 
-<meta name="description" content="Relate Iterative Algorithm to Fixed Point Theorem 4:20   May&#x2F;Must Analysis, A Lattice View  26:10   MOP and Distributivity 64:30   Constant Propagation 80:40   Worklist Algorithm 102:00 总结&amp;欢迎谭添老">
+<meta name="description" content="Relate Iterative Algorithm to Fixed Point Theorem 4:20 May&#x2F;Must Analysis, A Lattice View 26:10 MOP and Distributivity 64:30 Constant Propagation 80:40 Worklist Algorithm 102:00 总结&amp;欢迎谭添老师  南大静态分析6">
 <meta property="og:type" content="article">
 <meta property="og:title" content="南大静态分析6">
 <meta property="og:url" content="http://example.com/2020/07/27/static-analysis-6-md/index.html">
 <meta property="og:site_name" content="Penlab">
-<meta property="og:description" content="Relate Iterative Algorithm to Fixed Point Theorem 4:20   May&#x2F;Must Analysis, A Lattice View  26:10   MOP and Distributivity 64:30   Constant Propagation 80:40   Worklist Algorithm 102:00 总结&amp;欢迎谭添老">
+<meta property="og:description" content="Relate Iterative Algorithm to Fixed Point Theorem 4:20 May&#x2F;Must Analysis, A Lattice View 26:10 MOP and Distributivity 64:30 Constant Propagation 80:40 Worklist Algorithm 102:00 总结&amp;欢迎谭添老师  南大静态分析6">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-042842.png">
 <meta property="og:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-042846.png">
@@ -384,39 +384,29 @@
       
 
       
-        <ol start="7">
-<li>
-<p>Relate Iterative Algorithm to Fixed Point Theorem 4:20</p>
-</li>
-<li>
-<p>May/Must Analysis, A Lattice View  26:10</p>
-</li>
-<li>
-<p>MOP and Distributivity 64:30</p>
-</li>
-<li>
-<p>Constant Propagation 80:40</p>
-</li>
-<li>
-<p>Worklist Algorithm 102:00</p>
-<p>总结&amp;欢迎谭添老师</p>
-</li>
+        <ol start="7" type="1">
+<li><p>Relate Iterative Algorithm to Fixed Point Theorem 4:20</p></li>
+<li><p>May/Must Analysis, A Lattice View 26:10</p></li>
+<li><p>MOP and Distributivity 64:30</p></li>
+<li><p>Constant Propagation 80:40</p></li>
+<li><p>Worklist Algorithm 102:00</p>
+<p>总结&amp;欢迎谭添老师</p></li>
 </ol>
-<h1 id="南大静态分析6"><a class="markdownIt-Anchor" href="#南大静态分析6"></a> 南大静态分析6</h1>
+<h1 id="南大静态分析6">南大静态分析6</h1>
 <p>上回说到为了解决iterative algorithm中的三个问题， 我们引入了数学模型来进行形式化证明。 那么如何让在lattic上呈现的fixed point theorem与iterative algorithm关联起来呢？接下啦我们来看。</p>
 <p>首先回顾一下iterative algorithm的三个问题：</p>
-<h2 id="review-the-questions-we-have-seen-before"><a class="markdownIt-Anchor" href="#review-the-questions-we-have-seen-before"></a> Review The Questions We Have Seen Before</h2>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-042842.png" alt="截屏2020-05-30 上午8.34.28 " style="zoom:60%;" />
+<h2 id="review-the-questions-we-have-seen-before">Review The Questions We Have Seen Before</h2>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-042842.png" alt="截屏2020-05-30 上午8.34.28 " style="zoom:60%;" /></p>
 <p>我们现在尝试回答三个问题。</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-042846.png" alt="截屏2020-07-29 上午8.56.22 " style="zoom:20%;" />
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-042846.png" alt="截屏2020-07-29 上午8.56.22 " style="zoom:20%;" /></p>
 <blockquote>
-<ol>
+<ol type="1">
 <li>算法一定能达到不动点吗？(lattice 上单调性问题)</li>
 <li>如果有不动点，只能有一个动点吗</li>
 <li>不定点是解吗</li>
 </ol>
 </blockquote>
-<h2 id="relate-iterative-algorithm-to-fixed-point-theorem"><a class="markdownIt-Anchor" href="#relate-iterative-algorithm-to-fixed-point-theorem"></a> Relate Iterative Algorithm to Fixed-Point Theorem</h2>
+<h2 id="relate-iterative-algorithm-to-fixed-point-theorem">Relate Iterative Algorithm to Fixed-Point Theorem</h2>
 <blockquote>
 <p>04:20</p>
 </blockquote>
@@ -424,53 +414,47 @@
 <ul>
 <li>Iterative Algorithm</li>
 </ul>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-42857.png" alt="image-20210724073400818" style="zoom:8å0%;" />
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-42857.png" alt="image-20210724073400818" style="zoom:8å0%;" /></p>
 <ul>
 <li>Fixed point:</li>
 </ul>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-042849.png" alt="image-20210724073420227" style="zoom:33%;" />
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-042849.png" alt="image-20210724073420227" style="zoom:33%;" /></p>
 <p>将二者的已知条件进行关联， 首先iterative algorithm 也需定义一个Lattice:</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-042854.png" alt="image-20210724092616707" style="zoom:60%;" />
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-042854.png" alt="image-20210724092616707" style="zoom:60%;" /></p>
 <p>在算法的k-tuple中， 每一个节点对应一个Lattice, 那么所有节点形成的vector就是一个Lattice的product。 那么整个iterative algorithm作用的是一个product lattice。</p>
 <ul>
-<li>
-<p>在product lattice (L, L, L…L)中， 如果每一个L都是finite的complete lattice（complete lattice不一定finite哦），那么他们构成的product lattice也是finite的complete lattice。</p>
-<p>通过此条我们就可以关联上不动点定理的第二个条件： <code>L is finite</code></p>
-</li>
+<li><p>在product lattice (L, L, L...L)中， 如果每一个L都是finite的complete lattice（complete lattice不一定finite哦），那么他们构成的product lattice也是finite的complete lattice。</p>
+<p>通过此条我们就可以关联上不动点定理的第二个条件： <code>L is finite</code></p></li>
 </ul>
-<p>现在我们来关联不动点定理的第一条件：<code>f: L-&gt;L is monotonic</code>, 如何说明，iterative  algorithm也是单调的呢？</p>
+<p>现在我们来关联不动点定理的第一条件：<code>f: L-&gt;L is monotonic</code>, 如何说明，iterative algorithm也是单调的呢？</p>
 <p>首先，iterative algorithm的function是什么呢？</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-042856.png" alt="image-20210724093452801" style="zoom:70%;" />
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-042856.png" alt="image-20210724093452801" style="zoom:70%;" /></p>
 <p>如上所言，在每一次迭代中，都会应用一个<code>function F</code>, 他由两部分构成：</p>
 <ul>
-<li>
-<p>transfer function: 指定的transfer function, 根据IN[B],来进行kill和gen</p>
-</li>
-<li>
-<p>join/meet function: 在控制流上，进入下一个program point之前的并/交操作</p>
+<li><p>transfer function: 指定的transfer function, 根据IN[B],来进行kill和gen</p></li>
+<li><p>join/meet function: 在控制流上，进入下一个program point之前的并/交操作</p>
 <blockquote>
-<p>e.g., F(iter1) = (v1…vk)</p>
-</blockquote>
-</li>
+<p>e.g., F(iter1) = (v1....vk)</p>
+</blockquote></li>
 </ul>
 <p>有了F, 接下来证明他是monotonic的：</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-042901.png" alt="image-20210724094200039" style="zoom:50%;" />
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-042901.png" alt="image-20210724094200039" style="zoom:50%;" /></p>
 <p>首先第一条之前也说过，每一个transfer function在固定的program point上，由程序性质所决定kill和gen都是一样的， 所以他是单调的(OUT只会增加，不会减少)。</p>
 <p>再来证明第二条：</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-042902.png" alt="image-20210724094430990" style="zoom:50%;" />
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-042902.png" alt="image-20210724094430990" style="zoom:50%;" /></p>
 <p>这里的LXL是两条控制流path在进入program point之前进行merg, 也可以有多个(Actually the binary operator is a basic case), 我们只需要证明这个<code>basic case</code>是单调的就可以了。</p>
 <p>我们来证join是单调的：</p>
 <p>根绝我们之前对单调函数的定义:</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-042905.png" alt="image-20210723224024442" style="zoom:50%;" />
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-042905.png" alt="image-20210723224024442" style="zoom:50%;" /></p>
 <p>此时的function是一个join(U)操作， 因此，我们的function是证明:<img src="static-analysis-6-md/image-20210724095135553.png" alt="image-20210724095135553" style="zoom:50%;" />。</p>
 <p>join在lattice求的是任意两个元素的最小上界(least upper bond)，那么<code>yUz</code>是y的upper bound，同时也是z的upper bond。根据upper bound 的定义得到:<img src="static-analysis-6-md/image-20210724095550037.png" alt="image-20210724095550037" style="zoom:50%;" />, 根据偏序关系中的传递性，我们就可以得出: <img src="static-analysis-6-md/image-20210724095708642.png" alt="image-20210724095708642" style="zoom:50%;" />, 然后得到完整的证明:</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-042908.png" alt="image-20210724095809112" style="zoom:67%;" />
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-042908.png" alt="image-20210724095809112" style="zoom:67%;" /></p>
 <p>因为根据join(U)的定义, yUz是y和z的一个upper bound，那么y &lt;= yUz。 之后通过偏序关系(&lt;=)的传递性得到: x&lt;=yUz。因此，yUz就是x,y,z的一个upper bound。</p>
 <p>根据join的定义xUz是least upper bound of x and z。 那么根据最小上界(least upper bound)的定义： xUz &lt;= yUz。(最小上界“小于等于”任何一个上界)。</p>
 <p>因此，现在将fixed point theorem的两个条件都和iterative algorithm有所关联了，那么就可以使用fixed point theorem 来说明之前提到的iterative algorithm for data flow analysis 上的问题。</p>
 <p>给出两个结论，我们的iterative algorithm根据不动点定理：</p>
- <img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-042910.png" alt="image-20210724100647990" style="zoom:70%;" />
-<ol>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-042910.png" alt="image-20210724100647990" style="zoom:70%;" /></p>
+<ol type="1">
 <li>算法保证一定能够达到fixed point</li>
 <li>达到的fixed point 要么是greatest fixed point, 要么是least fixed point</li>
 <li>探讨algorithm的一个复杂度的问题，如果前边两条成立，那么什么时候算法才能达到不动点呢？</li>
@@ -479,60 +463,56 @@
 <blockquote>
 <p>The <code>height of a lattice h</code> is the length of the longest path from Top to Bottom in the lattice.</p>
 </blockquote>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-042914.png" alt="image-20210724101157035" style="zoom:50%;" />
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-042914.png" alt="image-20210724101157035" style="zoom:50%;" /></p>
 <p>Lattice的高度就是从top到bottom找最长的路径，上图中是h=3。</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-042917.png" alt="image-20210724103312667" style="zoom:70%;" />
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-042917.png" alt="image-20210724103312667" style="zoom:70%;" /></p>
 <p>第三个问题，就是说 The maximum iterations i, 最多的迭代次数，使得算法达到不动点(最坏的情况)。</p>
 <p>做一个假设， 每次iteration, 在lattice上的每一步都做一个最微小的变化： lattice只移动移一步(相当于每次只有一个node变化， 且每个node中只有一个0变成1)。</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044847.png" alt="image-20210724103609474" style="zoom:80%;" /> 
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044847.png" alt="image-20210724103609474" style="zoom:80%;" /></p>
 <p>每次都只变化一个节点，将一个0变为1，那么最坏的情况就是遍历所有节点，将所有位由0变成1：</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-042920.png" alt="image-20210724104202980" style="zoom:80%;" />
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-042920.png" alt="image-20210724104202980" style="zoom:80%;" /></p>
 <p>最多就有h*k次iterations。</p>
 <p>因此回答第三个问题：</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-042923.png" alt="image-20210724104308251" style="zoom:67%;" />
-<h2 id="may-and-must-analysis-a-lattice-view"><a class="markdownIt-Anchor" href="#may-and-must-analysis-a-lattice-view"></a> May and Must Analysis, a Lattice View</h2>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-042923.png" alt="image-20210724104308251" style="zoom:67%;" /></p>
+<h2 id="may-and-must-analysis-a-lattice-view">May and Must Analysis, a Lattice View</h2>
 <blockquote>
 <p>26:10</p>
 </blockquote>
-<h2 id="映射"><a class="markdownIt-Anchor" href="#映射"></a> 映射</h2>
+<h2 id="映射">映射</h2>
 <p>将一个power set做一个直观的映射</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-042927.png" alt="image-20210724110530341" style="zoom:30%;" />
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-042927.png" alt="image-20210724110530341" style="zoom:30%;" /></p>
 <p>这里假设this lattice is a reuslt of the product lattice, 因为每一点都有一组k-tuple, 每一个点他都是一个lattice元素，我们要更新的是所有值，所以他是一个product lattice。</p>
-<h3 id="may"><a class="markdownIt-Anchor" href="#may"></a> May</h3>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-042931.png" alt="截屏2020-08-13 上午8.50.36 " style="zoom:50%;" />
+<h3 id="may">May</h3>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-042931.png" alt="截屏2020-08-13 上午8.50.36 " style="zoom:50%;" /></p>
 <p>May analysis, 一般情况下是从bottom往top走， 一个lattice的bottom从may的角度来讲，就是一个<code>unsafe result</code>。 也就是说，</p>
 <blockquote>
 <p>无论是 may analysis 还是 must analysis都是从unsafe的result向safe的result来讲的。</p>
 </blockquote>
 <ul>
-<li>
-<p>Unsafe result : 为什么May analysis的unsafe 是在bottom呢？ 以 reaching definition为例， no definitions can reach 意味着对于每一个variable, 都没有任何一个defintion能够reach到。</p>
-</li>
-<li>
-<p>Safe but useless result: 以reaching definition为例，表示对于每一个variable, 所有的definitions都有可能reach。他是safe的，但是没有用。</p>
-</li>
+<li><p>Unsafe result : 为什么May analysis的unsafe 是在bottom呢？ 以 reaching definition为例， no definitions can reach 意味着对于每一个variable, 都没有任何一个defintion能够reach到。</p></li>
+<li><p>Safe but useless result: 以reaching definition为例，表示对于每一个variable, 所有的definitions都有可能reach。他是safe的，但是没有用。</p></li>
 </ul>
 <p>我们想知道，我们的分析停在unsafe result 和safe but useless result 中间的某个值， 我们需要引入另外一个值： Truth。</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-042934.png" alt="image-20210724114149446" style="zoom:30%;" />
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-042934.png" alt="image-20210724114149446" style="zoom:30%;" /></p>
 <p>Truth, 程序动态执行时无论在什么样的书如下所有可能取得值的一个动态值的集合。</p>
 <p>假设Lattice 上{a,c}是一个Truth的集合。 那么就可以画一条边界，如果是May的分析，就把a和c都包含。</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-042937.png" alt="image-20210724114733084" style="zoom:33%;" />
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-042937.png" alt="image-20210724114733084" style="zoom:33%;" /></p>
 <p>如何知道我们的分析会进入safe呢？</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-042939.png" alt="image-20210724114839906" style="zoom:33%;" />
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-042939.png" alt="image-20210724114839906" style="zoom:33%;" /></p>
 <p>静态分析有两个要素：</p>
-<ol>
+<ol type="1">
 <li>data abstraction</li>
 <li>safe approximation</li>
 </ol>
 <p>我们在设计一个静态分析时，将merg与transfer functie 设置成safe的，也就是说，我们的设计保证了我们的分析结果一定会超过Truth这一点。</p>
 <p>进入safe之后何时停呢？</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-042942.png" alt="image-20210724115204556" style="zoom:33%;" />
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-042942.png" alt="image-20210724115204556" style="zoom:33%;" /></p>
 <p>我们的不动点可以有很多，但是虽然有很多不动点， 但是我们使用iterative alogrithm求解出的不动点，由我们之前给出的证明，iterative alogrithm求解出的不动点，一定是最小不动点(least fixed point)。</p>
 <p>那么我们得到的结果精度如何呢?</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-042944.png" alt="image-20210724115547408" style="zoom:30%;" />
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-042944.png" alt="image-20210724115547408" style="zoom:30%;" /></p>
 <p>无论是may还是must分析， 都是从准到不准走。 如上图，越往上的不动点越不准的，因为我们使用iterative algorithm能达到的是leaset fixed point, 那就是你能达到的所有结果中，最准的。这就是为什么一旦达到不动点，但是我们达到的fixed points里最准的(但他不一定是truth)。</p>
-<h3 id="must"><a class="markdownIt-Anchor" href="#must"></a> MUST</h3>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-042948.png" alt="截屏2020-08-13 上午8.54.34 " style="zoom:50%;" />
+<h3 id="must">MUST</h3>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-042948.png" alt="截屏2020-08-13 上午8.54.34 " style="zoom:50%;" /></p>
 <p>Must和May相反，一般是从Top(unsafe result)往下走到Bottom(Safe but unless result)。</p>
 <p>以available expressions为例，他是一个must analysis:</p>
 <ul>
@@ -544,73 +524,65 @@
 <p>Safe approximate 中safe是先满足的条件，能达到fixed point是后满足的。</p>
 </blockquote>
 <p>合照：</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-042951.png" alt="image-20210724122023792" style="zoom:70%;" />
-<h2 id="how-precise-is-our-solution"><a class="markdownIt-Anchor" href="#how-precise-is-our-solution"></a> How Precise Is Our Solution?</h2>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-042951.png" alt="image-20210724122023792" style="zoom:70%;" /></p>
+<h2 id="how-precise-is-our-solution">How Precise Is Our Solution?</h2>
 <blockquote>
 <p>64:30</p>
 </blockquote>
 <p>谈到精度的衡量， 我们就需要一个方法：</p>
 <p>MOP: Meet-Over-All-Paths Solution(MOP)</p>
 <p>其中，meet也包括了join, 就是所有分支汇聚到一点的情况。 具体就是：</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-042954.png" alt="image-20210724151555790" style="zoom:30%;" />
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-042954.png" alt="image-20210724151555790" style="zoom:30%;" /></p>
 <p>在control flow graph 中 path就是从entry开始一堆statement构成的Path； 有Path就有Transfer function <code>Fp</code>:</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-042956.png" alt="image-20210724151716351" style="zoom:50%;" />
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-042956.png" alt="image-20210724151716351" style="zoom:50%;" /></p>
 <p>就是这条流上每一点的transfer function 的composition。</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-042959.png" alt="image-20210724151920020" style="zoom:20%;" />
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-042959.png" alt="image-20210724151920020" style="zoom:20%;" /></p>
 <p>MOP(Meet-Over-All-Paths Solution)就是枚举从Entry点到Si的所有path, 然后对每条Path应用<code>Fp</code>， 并将得到的结果join/meet起来：</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043000.png" alt="image-20210724152233463" style="zoom:33%;" />
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043000.png" alt="image-20210724152233463" style="zoom:33%;" /></p>
 <ul>
 <li>not fully precise: 观察一下，所有的paths, may be not executable（动态运行时，无论什么输入之下都不能走的路径），在MOP中merge了此类路径，就是误报，所以就not fully precise。</li>
 </ul>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043003.png" alt="image-20210724152410470" style="zoom:40%;" />
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043003.png" alt="image-20210724152410470" style="zoom:40%;" /></p>
 <ul>
-<li>
-<p>Unbounded, and not enumerable: unbound就是说如果有循环的话，静态不可知循环终止(无边界)； not enumerable: 大型程序中，路径可能不可枚举的。</p>
- <img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043006.png" alt="image-20210724152837254" style="zoom:40%;" />
-</li>
+<li><p>Unbounded, and not enumerable: unbound就是说如果有循环的话，静态不可知循环终止(无边界)； not enumerable: 大型程序中，路径可能不可枚举的。</p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043006.png" alt="image-20210724152837254" style="zoom:40%;" /></p></li>
 </ul>
 <p>所以我们静态得到MOP其实是impractical的。</p>
-<h3 id="iterative-algorithm-vs-mop"><a class="markdownIt-Anchor" href="#iterative-algorithm-vs-mop"></a> Iterative Algorithm vs. MOP</h3>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043008.png" alt="image-20210724153327700" style="zoom:50%;" />
+<h3 id="iterative-algorithm-vs.-mop">Iterative Algorithm vs. MOP</h3>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043008.png" alt="image-20210724153327700" style="zoom:50%;" /></p>
 <p>如图， 我们要求S4点的IN:</p>
 <p>使用<code>iteractive algorithm</code>, 在所有merge的时候，用join: <img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043010.png" alt="image-20210724153422673" style="zoom:20%;" /></p>
-<p>而使用<code>MOP(meet-over-all-paths)</code>的方法，是在每条path都算法之后，对每条path进行join:  <img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043014.png" alt="image-20210724153642260" style="zoom:20%;" /></p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043016.png" alt="image-20210724153730294" style="zoom:30%;" />
+<p>而使用<code>MOP(meet-over-all-paths)</code>的方法，是在每条path都算法之后，对每条path进行join: <img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043014.png" alt="image-20210724153642260" style="zoom:20%;" /></p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043016.png" alt="image-20210724153730294" style="zoom:30%;" /></p>
 <p>上图我们可以看到，红色部分和黄色部分iterative algorithm 和 MOP其实是一样的，我们进行抽象：</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043020.png" alt="image-20210724153845650" style="zoom:33%;" />
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043020.png" alt="image-20210724153845650" style="zoom:33%;" /></p>
 <p>iterative algorithm和MOP有什么关系呢?</p>
 <p>证明:</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043023.png" alt="image-20210724154810672" style="zoom:30%;" />
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043023.png" alt="image-20210724154810672" style="zoom:30%;" /></p>
 <ul>
 <li>根据最小上界(least upper bound)定义, 我们有： x join y即是x的上界又是y的上界 (x&lt;=x u y and y &lt;= x u y)。</li>
 <li>因为一个transfer function是单调的，我们有：</li>
-<li>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043024.png" alt="image-20210724155201184" style="zoom:33%;" />
-</li>
+<li><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043024.png" alt="image-20210724155201184" style="zoom:33%;" /></li>
 </ul>
 <p>根据偏序关系， 这就意味着F(x u y) 是F(x)和F(y)的upper bound。</p>
 <ul>
-<li>
-<p>因为F(x)uF(y)是F(x)和F(y)的least upper bound, 所以我们有:</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043028.png" alt="image-20210724155421510" style="zoom:33%;" />
-</li>
-<li>
-<p>左边就是MOP右边就是Ours =&gt; MOP &lt;= Ours</p>
-</li>
+<li><p>因为F(x)uF(y)是F(x)和F(y)的least upper bound, 所以我们有:</p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043028.png" alt="image-20210724155421510" style="zoom:33%;" /></p></li>
+<li><p>左边就是MOP右边就是Ours =&gt; MOP &lt;= Ours</p></li>
 </ul>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043029.png" alt="image-20210724155530412" style="zoom:33%;" />
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043029.png" alt="image-20210724155530412" style="zoom:33%;" /></p>
 <p>因此， MOP更准。</p>
 <p>上边证明出的MOP和Iteractive Algorithm(Ours)满足一个偏序关系， 那么偏序关系有一个自反性， 如果满足自反性，那么Iteractive Algorithm就可以和MOP的精度相同。</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043035.png" alt="image-20210724155905712" style="zoom:25%;" />
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043035.png" alt="image-20210724155905712" style="zoom:25%;" /></p>
 <p>当Function是一个distributive(可分配性)的，就可以和MOP一样准：</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043031.png" alt="image-20210724160020053" style="zoom:30%;" />
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043031.png" alt="image-20210724160020053" style="zoom:30%;" /></p>
 <p>之前的4个分析，都是distributive的； 这样一类操作都可以叫做Bit-vector problems(or Gen/Kill problems)</p>
 <blockquote>
 <p>这里一类问题的集合操作都可以用集合的union和intersection操作</p>
 </blockquote>
 <p>Bit-vector problems都是distributive的。</p>
 <p>那么有没有不是distributive的呢?(MOP更准)， 这里介绍了: <code>Constant Propagation</code>常量传播问题。</p>
-<h2 id="constant-propagation"><a class="markdownIt-Anchor" href="#constant-propagation"></a> Constant Propagation</h2>
+<h2 id="constant-propagation">Constant Propagation</h2>
 <p>Define:</p>
 <p>Given a variable x at program point p, determine whether x is <code>guaranteed</code> to hold a constant value at p.</p>
 <p>一个variable在某一点，是否保证x一定指向某一个常量。</p>
@@ -619,17 +591,13 @@
 </ul>
 <p>这里的data flow的每个点上是一个个的pairs, 他代表了variable与value的对应。</p>
 <p>设计一个Constant Propagation的data flow analysis framework我们接下来考虑他的方向，格和transfer function:</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043038.png" alt="image-20210724161506207" style="zoom:33%;" />
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043038.png" alt="image-20210724161506207" style="zoom:33%;" /></p>
 <ul>
-<li>
-<p>Data flow direction: 数据流的分析方向是前向的。</p>
-</li>
-<li>
-<p>Lattice:</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043041.png" alt="image-20210724165738837" style="zoom:33%;" />
-</li>
+<li><p>Data flow direction: 数据流的分析方向是前向的。</p></li>
+<li><p>Lattice:</p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043041.png" alt="image-20210724165738837" style="zoom:33%;" /></p></li>
 </ul>
-<p>Lattice 来考虑两个构成部分:  Domain of the values; Meet Operator。</p>
+<p>Lattice 来考虑两个构成部分: Domain of the values; Meet Operator。</p>
 <p>首先看Domain:</p>
 <ul>
 <li>Bottom: NAC- 所有的variables都不是constants(safe but useless)</li>
@@ -637,20 +605,14 @@
 </ul>
 <p>再来看Meet:</p>
 <ul>
-<li>
-<p>NAC n V = NAC， 不管V是啥，因为时safe的，汇聚点一定是NAC</p>
-</li>
-<li>
-<p>UNDEF n V = V， 这里说明一下，一般一个data flow analysis只负责一件事情，这里虽然有uninitialized variables的问题（汇聚后undef的值变成v了）。但是在以constant propagation为目的分析中，不影响。</p>
-</li>
-<li>
-<p>c n v 分两种情况，如果常量相同就是c, 不同就是NAC</p>
-</li>
+<li><p>NAC n V = NAC， 不管V是啥，因为时safe的，汇聚点一定是NAC</p></li>
+<li><p>UNDEF n V = V， 这里说明一下，一般一个data flow analysis只负责一件事情，这里虽然有uninitialized variables的问题（汇聚后undef的值变成v了）。但是在以constant propagation为目的分析中，不影响。</p></li>
+<li><p>c n v 分两种情况，如果常量相同就是c, 不同就是NAC</p></li>
 </ul>
 <p>总结：</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043044.png" alt="image-20210724171008706" style="zoom:33%;" />
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043044.png" alt="image-20210724171008706" style="zoom:33%;" /></p>
 <p>再来看Transfer Function:</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043046.png" alt="image-20210724171459396" style="zoom:33%;" />
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043046.png" alt="image-20210724171459396" style="zoom:33%;" /></p>
 <p>Transfer Function中，比较特殊的是{(x, _)}, 因为元素是一个pair, 所以这里_是一个通配符，表示x无论指向什么，都会减去。</p>
 <p>我们用val(x), 来知道val指向的值：</p>
 <ul>
@@ -660,19 +622,19 @@
 </ul>
 <p>注意transform function只影响assignment statement。</p>
 <p>下边说明contant propagation 不是distributivity:</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043049.png" alt="image-20210724172107062" style="zoom:33%;" />
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043049.png" alt="image-20210724172107062" style="zoom:33%;" /></p>
 <p>可以看到，F（XnY）时C是NAC， F(X)nF(Y)时C是10。</p>
 <blockquote>
 <p>从Lattice上看，此例中NAC在10下边，所以在这个must analysis中越往下越不准的，所以MOP更准一些。</p>
 </blockquote>
-<h2 id="worklist-algorithm"><a class="markdownIt-Anchor" href="#worklist-algorithm"></a> Worklist Algorithm</h2>
+<h2 id="worklist-algorithm">Worklist Algorithm</h2>
 <p>worklist algorithm是iterative algorithm的一种优化。</p>
 <blockquote>
 <p>在实际工作中，不会用iterative algorithm, 而worklist algorithm更实用一些。</p>
 </blockquote>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043052.png" alt="image-20210724172347184 " style="zoom:33%;" />
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043052.png" alt="image-20210724172347184 " style="zoom:33%;" /></p>
 <p>这里的终止条件要求，只要有一个basic block变化，就要让所有的basic block 都跑一遍，会有很多冗余。 而worklist的核心，就是只对那些可能变化的BB执行transfer function：</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043056.png" alt="image-20210724172559644" style="zoom:33%;" />
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043056.png" alt="image-20210724172559644" style="zoom:33%;" /></p>
 <p>黄色的是新增的， 我们每一次迭代用新的out和之前的out比较， 如果一个out变了，那么意味着所有后继(successors)的IN变了。 我们就讲所有后继的B加入Worklist，就可以避免了大量的冗余计算。✌️～</p>
 
       
@@ -835,7 +797,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8D%97%E5%A4%A7%E9%9D%99%E6%80%81%E5%88%86%E6%9E%906"><span class="nav-number">1.</span> <span class="nav-text"> 南大静态分析6</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#review-the-questions-we-have-seen-before"><span class="nav-number">1.1.</span> <span class="nav-text"> Review The Questions We Have Seen Before</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#relate-iterative-algorithm-to-fixed-point-theorem"><span class="nav-number">1.2.</span> <span class="nav-text"> Relate Iterative Algorithm to Fixed-Point Theorem</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#may-and-must-analysis-a-lattice-view"><span class="nav-number">1.3.</span> <span class="nav-text"> May and Must Analysis, a Lattice View</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%98%A0%E5%B0%84"><span class="nav-number">1.4.</span> <span class="nav-text"> 映射</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#may"><span class="nav-number">1.4.1.</span> <span class="nav-text"> May</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#must"><span class="nav-number">1.4.2.</span> <span class="nav-text"> MUST</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#how-precise-is-our-solution"><span class="nav-number">1.5.</span> <span class="nav-text"> How Precise Is Our Solution?</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#iterative-algorithm-vs-mop"><span class="nav-number">1.5.1.</span> <span class="nav-text"> Iterative Algorithm vs. MOP</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#constant-propagation"><span class="nav-number">1.6.</span> <span class="nav-text"> Constant Propagation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#worklist-algorithm"><span class="nav-number">1.7.</span> <span class="nav-text"> Worklist Algorithm</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8D%97%E5%A4%A7%E9%9D%99%E6%80%81%E5%88%86%E6%9E%906"><span class="nav-number">1.</span> <span class="nav-text">南大静态分析6</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#review-the-questions-we-have-seen-before"><span class="nav-number">1.1.</span> <span class="nav-text">Review The Questions We Have Seen Before</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#relate-iterative-algorithm-to-fixed-point-theorem"><span class="nav-number">1.2.</span> <span class="nav-text">Relate Iterative Algorithm to Fixed-Point Theorem</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#may-and-must-analysis-a-lattice-view"><span class="nav-number">1.3.</span> <span class="nav-text">May and Must Analysis, a Lattice View</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%98%A0%E5%B0%84"><span class="nav-number">1.4.</span> <span class="nav-text">映射</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#may"><span class="nav-number">1.4.1.</span> <span class="nav-text">May</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#must"><span class="nav-number">1.4.2.</span> <span class="nav-text">MUST</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#how-precise-is-our-solution"><span class="nav-number">1.5.</span> <span class="nav-text">How Precise Is Our Solution?</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#iterative-algorithm-vs.-mop"><span class="nav-number">1.5.1.</span> <span class="nav-text">Iterative Algorithm vs. MOP</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#constant-propagation"><span class="nav-number">1.6.</span> <span class="nav-text">Constant Propagation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#worklist-algorithm"><span class="nav-number">1.7.</span> <span class="nav-text">Worklist Algorithm</span></a></li></ol></li></ol></div>
             
 
           </div>

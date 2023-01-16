@@ -354,157 +354,139 @@
       
 
       
-        <p>资料： <a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1GQ4y1T7zm?from=search&amp;seid=7528278619420042576">https://www.bilibili.com/video/BV1GQ4y1T7zm?from=search&amp;seid=7528278619420042576</a></p>
+        <p>资料： https://www.bilibili.com/video/BV1GQ4y1T7zm?from=search&amp;seid=7528278619420042576</p>
 <blockquote>
 <p>01:30 Motivation</p>
 <p>04:40 Call Graph Construction(CHA)</p>
 <p>65:40 Interprocedural Control-Flow Graph</p>
 <p>71:45 Interprocedural Data-Flow Analysis</p>
 </blockquote>
-<h1 id="problem-of-intraprocedural-analysis"><a class="markdownIt-Anchor" href="#problem-of-intraprocedural-analysis"></a> Problem of Intraprocedural Analysis</h1>
+<h1 id="problem-of-intraprocedural-analysis">Problem of Intraprocedural Analysis</h1>
 <p>过程内的常量传播过于保守， 造成结果的不准确</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043605.png" alt="image-20210102095211276" style="zoom:40%;" />
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043605.png" alt="image-20210102095211276" style="zoom:40%;" /></p>
 <p>如上所示，对于一个常量传播:</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> <span class="title function_">foo</span><span class="params">()</span> &#123;</span><br><span class="line">  <span class="type">int</span> <span class="variable">n</span> <span class="operator">=</span> ten();  <span class="comment">// 返回一个常量10</span></span><br><span class="line">  addOne(<span class="number">42</span>); <span class="comment">// 传出一个常量42</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">ten</span><span class="params">()</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="number">10</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">addOne</span><span class="params">(<span class="type">int</span> x)</span> &#123;</span><br><span class="line">  <span class="type">int</span> <span class="variable">y</span> <span class="operator">=</span> x + <span class="number">1</span>;  <span class="comment">// y值本程序中是确定的，但是只做过程内分析是不确定的。</span></span><br><span class="line">  <span class="keyword">return</span> y;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>涉及到过程间方法调用的元素： 1. Call site(实参) 2. function decl(形参) 。</p>
 <p>实际上，在分析foo的时候n就是10, 在分析addOne的时候x就是42,y就是43，但是过程内分析的时候，是不知道过程外的信息的，因此这里就是NAC。</p>
 <p>在传统的过程内分析中，都是保守的假设(safe-approximation)。</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043608.png" alt="image-20210102095421699" style="zoom:40%;" />
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043608.png" alt="image-20210102095421699" style="zoom:40%;" /></p>
 <p>在过程间分析时，作为caller, foo就可以通过return边得到n的值。</p>
 <p>作为callee, addOne就可以通过call边得到x和y的值。(caller得return, callee得实参)。</p>
 <p>这样就可以弥补过程内数据流分析过度假设造成精度的丢失。</p>
 <p>做过程间分析需要的信息有：</p>
-<ol>
+<ol type="1">
 <li>构造call graph</li>
 <li>根据call graph，构造ICFG（过程间控制流图）</li>
 <li>IDFG（过程间数据流分析）</li>
 </ol>
-<h1 id="call-graph"><a class="markdownIt-Anchor" href="#call-graph"></a> Call Graph</h1>
+<h1 id="call-graph">Call Graph</h1>
 <p>为了过程间分析， 引入了call graph。</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043620.png" alt="image-20210102100152715" style="zoom:20%;" />
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043620.png" alt="image-20210102100152715" style="zoom:20%;" /></p>
 <blockquote>
 <p>本图foo函数作为caller，call了bar和baz, bar又调用了baz。</p>
 </blockquote>
 <p>重要程度不言而喻（要有过程间的控制流边，就先要建立call graph边那(所有跨函数分析的基础)）</p>
-<h2 id="构造cg"><a class="markdownIt-Anchor" href="#构造cg"></a> 构造CG</h2>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043623.png" alt="image-20210102100255628" style="zoom:30%;" />
+<h2 id="构造cg">构造CG</h2>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043623.png" alt="image-20210102100255628" style="zoom:30%;" /></p>
 <p>蓝色为精度指标， 绿色为速度指标。 这里介绍CHA。</p>
 <p>首先看下java中函数调用方法。</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043628.png" alt="image-20210102100409591" style="zoom:30%;" />
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043628.png" alt="image-20210102100409591" style="zoom:30%;" /></p>
 <ul>
-<li>
-<p>static call: 静态调用（有点像非oo的function call）</p>
-</li>
-<li>
-<p>Special call:</p>
+<li>static call: 静态调用（有点像非oo的function call）</li>
+<li>Special call:
 <ul>
 <li>如：</li>
-<li>
-<ol>
+<li><ol type="1">
 <li>调用构造函数</li>
 <li>调用类自己的私有的实例方法</li>
 <li>调用父类中的实例方法</li>
-</ol>
-</li>
-</ul>
-</li>
-<li>
-<p>Virtual call:  其他调用实例方法(大部分的oo调用，用来实现__多态__特性)</p>
-</li>
+</ol></li>
+</ul></li>
+<li>Virtual call: 其他调用实例方法(大部分的oo调用，用来实现__多态__特性)</li>
 </ul>
 <p>static call和special call的目标方法只有一个， 比较好处理的。 关键是处理virtual call。</p>
 <p>在程序中，某一个程序点在其运行时Receiving objects的不同，可能调用不同的目标方法，所以由于__多态__的原因(polymorphism), 一个virtual call在运行期间调用的method可能是__大于一个__的(<code>运行时才能决定，取决于运行时的具体reciving object</code>)。</p>
 <blockquote>
 <p>所以对于OO语言， 如何处理virtual call 是构造call graph的关键所在</p>
 </blockquote>
-<h2 id="method-dispatch-of-virtual-calls"><a class="markdownIt-Anchor" href="#method-dispatch-of-virtual-calls"></a> Method Dispatch of Virtual Calls</h2>
+<h2 id="method-dispatch-of-virtual-calls">Method Dispatch of Virtual Calls</h2>
 <p>在处理virtual call中， 一个关键的步骤就是<code>method dispatch</code>。</p>
 <p>__Dispatch__在过程间分析中比较重要的一个概念。</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043639.png" alt="image-20210102101028005" style="zoom:30%;" />
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043639.png" alt="image-20210102101028005" style="zoom:30%;" /></p>
 <p>在程序运行时， call site调用 virtual call, 要去解这个方法需要两个关键：</p>
-<ol>
+<ol type="1">
 <li>Receiver object 的具体类型。（右边例子里变量o指向的对象的具体类型）</li>
-<li>Call site处方法的具体签名。(右边的例子里为foo(…))</li>
+<li>Call site处方法的具体签名。(右边的例子里为foo(...))</li>
 </ol>
 <p>动态的时候去求解这个virtual call的过程也叫做<code>method dispatch</code></p>
 <p>通过一个signature可以确定唯一的一个方法：</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043644.png" alt="image-20210102102131163" style="zoom:20%;" />
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043644.png" alt="image-20210102102131163" style="zoom:20%;" /></p>
 <ul>
 <li>Class type: 类名</li>
 <li>Method name: 方法名</li>
 <li>Descriptor： 由两部分构成： 1.返回值类型 2. 参数类型</li>
 </ul>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043658.png" alt="image-20210102102936695" style="zoom:25%;" />
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043658.png" alt="image-20210102102936695" style="zoom:25%;" /></p>
 <p>定义一个函数Dispatch， 这个函数模拟了动态时dispatch一个virtual call的具体过程。他的输入就是c(receiver object 的类型)， m(call si te这一点方法的签名)。</p>
 <p>dispatch函数的目的是找到一个能够被调用的方法， 必须是一个具体的有方法体的方法，所以返回的必须是一个非抽象的方法。</p>
-<ol>
-<li>
-<p>首先在c类中找是否有这样一个非抽象方法m’,</p>
-</li>
-<li>
-<p>如果c没有，就去找c的所有父类c’(注意，是找父类)，直到找到目标方法m’。</p>
-</li>
+<ol type="1">
+<li><p>首先在c类中找是否有这样一个非抽象方法m',</p></li>
+<li><p>如果c没有，就去找c的所有父类c'(注意，是找父类)，直到找到目标方法m'。</p></li>
 </ol>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043701.png" alt="image-20210102103447307" style="zoom:33%;" />
-<p>这个例子中有ABC三个类，如果dispatch中x.foo()这个call site的两个元素：1. x:  receiver object的具体类型是 B(因为它指向 new B()这个类), 2. Foo()这个call site的签名： &lt;B: void foo() &gt; 。所以首先回到B类中进行dispatch, B类中没有foo方法， 就去父类A中去找。</p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043701.png" alt="image-20210102103447307" style="zoom:33%;" /></p>
+<p>这个例子中有ABC三个类，如果dispatch中x.foo()这个call site的两个元素：1. x: receiver object的具体类型是 B(因为它指向 new B()这个类), 2. Foo()这个call site的签名： &lt;B: void foo() &gt; 。所以首先回到B类中进行dispatch, B类中没有foo方法， 就去父类A中去找。</p>
 <p>y.foo()中就是C的foo方法, 因为他的dispatch函数中，c是receiver object 指向的new C() 类型， 而且内部有一个foo方法供m匹配上。</p>
-<h1 id="chaclass-hierarchy-analysis"><a class="markdownIt-Anchor" href="#chaclass-hierarchy-analysis"></a> CHA(Class Hierarchy Analysis)</h1>
-<h2 id="dispatch"><a class="markdownIt-Anchor" href="#dispatch"></a> Dispatch</h2>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043711.png" alt="image-20210102105706369" style="zoom:25%;" />
+<h1 id="chaclass-hierarchy-analysis">CHA(Class Hierarchy Analysis)</h1>
+<h2 id="dispatch">Dispatch</h2>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043711.png" alt="image-20210102105706369" style="zoom:25%;" /></p>
 <p>CHA是用来解整个程序call graph的一方法， 他需要知道整个程序的class以及继承信息。 核心思想是对于一个virtual call， 基于这个virtual call的声明类型(不是recevier的具体类型)，以及receiver variable a。</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043718.png" alt="image-20210102110314592" style="zoom:25%;" />
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043718.png" alt="image-20210102110314592" style="zoom:25%;" /></p>
 <p>核心思想是给定一个receiver variable a, 他可能会指向他的类型下的所有子类型(即本身)。</p>
 <p>来看CHA的算法：</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043722.png" alt="image-20210103195541252" style="zoom:25%;" />
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043722.png" alt="image-20210103195541252" style="zoom:25%;" /></p>
 <p>CS： call site, 即调用点</p>
-<p>T:  target methods，返回的目标方法</p>
+<p>T: target methods，返回的目标方法</p>
 <p>m: 目标方法的签名</p>
 <p>有三个分支， 分别处理<code>static call</code>, <code>special call</code>和<code>virtual call</code></p>
-<ol>
-<li>
-<p>static call: 静态调用直接放入</p>
-</li>
-<li>
-<p>Special call: special call有三种： 父类方法(super), 构造方法和似有方法</p>
-<p>其中父类方法比较特殊，需要Dispatch(cm,m) cm指的是方法m的类型(不是声明类型，A c = new C(), 从C类找)。</p>
-</li>
-<li>
-<p>Virtual call:</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043730.png" alt="image-20210103200229662" style="zoom:25%;" />
-</li>
+<ol type="1">
+<li><p>static call: 静态调用直接放入</p></li>
+<li><p>Special call: special call有三种： 父类方法(super), 构造方法和似有方法</p>
+<p>其中父类方法比较特殊，需要Dispatch(cm,m) cm指的是方法m的类型(不是声明类型，A c = new C(), 从C类找)。</p></li>
+<li><p>Virtual call:</p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043730.png" alt="image-20210103200229662" style="zoom:25%;" /></p></li>
 </ol>
-<p>注意这里不是唯一的了， 所以使add 目标调用点的声明类型开始找所有符合方法签名m的本类或子类中的c’。</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043736.png" alt="image-20210103200405069" style="zoom:25%;" />
+<p>注意这里不是唯一的了， 所以使add 目标调用点的声明类型开始找所有符合方法签名m的本类或子类中的c'。</p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043736.png" alt="image-20210103200405069" style="zoom:25%;" /></p>
 <p>注意三点：</p>
-<ol>
+<ol type="1">
 <li>从本类以及子类中找所有的foo方法</li>
 <li>其中包含dispatch, 如果本类中没有foo, 回望父类中找，因此Resolve(b.foo())中B无foo(),因此dispatch到了A.foo()。</li>
 <li>和new B()无关(尽管new B()中不能调c.foo(), d.foo())，还是根据variable b的声明类(即B类)去找。</li>
 </ol>
-<h2 id="通过cha构建call-graph"><a class="markdownIt-Anchor" href="#通过cha构建call-graph"></a> 通过CHA构建Call Graph</h2>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043743.png" alt="image-20210103201000619" style="zoom:25%;" />
+<h2 id="通过cha构建call-graph">通过CHA构建Call Graph</h2>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043743.png" alt="image-20210103201000619" style="zoom:25%;" /></p>
 <p>从入口方法开始，没遇到一个可达方法，去解目标方法，得到新的方法后，再去解新的方法的可达方法。。。知道算法停止，得到call grap:</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043749.png" alt="image-20210103201150287" style="zoom:25%;" />
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043749.png" alt="image-20210103201150287" style="zoom:25%;" /></p>
 <p>三个数据结构：</p>
 <ul>
 <li>WL: worklist , 需要被处理的目标方法， 开始只有入口方法。</li>
 <li>CG: Call graph, 存调用变。</li>
-<li>RM:  可达方法，一个方法进入RM说明已经分析过了。</li>
+<li>RM: 可达方法，一个方法进入RM说明已经分析过了。</li>
 </ul>
 <p>算法：</p>
-<p>一个大的While循环。以起初main方法为例，首先将main方法从worklist中取出来，如果main方法不在RM中说明没有分析过， 进入call graph分析过程， 从main方法中找到所有的call site, 对每一个call site进行单个call site结点的CHA resolve(cs)得到该call site所有可能的target method, 对于每一个target method m’, 将其在call graph中与main方法中对应的call site相连(cs-&gt;m’), 并将这些target method标记为可达method(add m’ to WL), 此时main方法加入到RM里了，之后不会再被重复分析。(每次分析的目标方法:remove m from WL, add m to RM)。</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043754.png" alt="image-20210103202612835" style="zoom:25%;" />
+<p>一个大的While循环。以起初main方法为例，首先将main方法从worklist中取出来，如果main方法不在RM中说明没有分析过， 进入call graph分析过程， 从main方法中找到所有的call site, 对每一个call site进行单个call site结点的CHA resolve(cs)得到该call site所有可能的target method, 对于每一个target method m', 将其在call graph中与main方法中对应的call site相连(cs-&gt;m'), 并将这些target method标记为可达method(add m' to WL), 此时main方法加入到RM里了，之后不会再被重复分析。(每次分析的目标方法:remove m from WL, add m to RM)。</p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043754.png" alt="image-20210103202612835" style="zoom:25%;" /></p>
 <p>虚线是call graph其中C.m()并无调用关系。 此时WL=[]，构造完成，其中橙色的是每一个需要分析的method, 从中去找每一个call site（如B.bar()这个函数体为空，因此无任何call site), 找到所有call site, 对每个call site进行CHA 的resolve，得到调用边放入(cg，即虚线关系)，新增加的method放入WL（如果和RM重复就不分析了，因为已经分析过了）。</p>
-<h1 id="interprocedural-contrl-flow-graph"><a class="markdownIt-Anchor" href="#interprocedural-contrl-flow-graph"></a> Interprocedural Contrl-Flow Graph</h1>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043759.png" alt="image-20210103203046532" style="zoom:25%;" />
+<h1 id="interprocedural-contrl-flow-graph">Interprocedural Contrl-Flow Graph</h1>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043759.png" alt="image-20210103203046532" style="zoom:25%;" /></p>
 <p>ICFG就是在过程内的CFG的过程加上一堆call site的调用边和返回边连接起来。</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043807.png" alt="image-20210103203135345" style="zoom:25%;" />
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043811.png" alt="image-20210103210513165" style="zoom:25%;" />
-<h1 id="interprocedural-data-flow-graph"><a class="markdownIt-Anchor" href="#interprocedural-data-flow-graph"></a> Interprocedural Data-Flow Graph</h1>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043807.png" alt="image-20210103203135345" style="zoom:25%;" /></p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043811.png" alt="image-20210103210513165" style="zoom:25%;" /></p>
+<h1 id="interprocedural-data-flow-graph">Interprocedural Data-Flow Graph</h1>
 <p>在ICFG的基础上进行常量传播为例</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043822.png" alt="image-20210103210615560" style="zoom:25%;" />
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043822.png" alt="image-20210103210615560" style="zoom:25%;" /></p>
 <p>这里的转移函数除了node上的， 还需要加上边上的x=val(a)的参数传递以及b=val(y)的return传递，而加上那一条实现边(黄色标注)是为了传播a中的常量，如果没有这条边a的内容就会从过程外传到c=b-3这很不科学。</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043829.png" alt="image-20210103211000777" style="zoom:25%;" />
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043829.png" alt="image-20210103211000777" style="zoom:25%;" /></p>
 <p>还有一点要注意就是，如下b=ten()需要把b从过程内的常量传播中移除，这样b=10传到下一条stmt，不然b=7传下来的话就是NAC。</p>
 <p>O了。</p>
 
@@ -668,7 +650,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#problem-of-intraprocedural-analysis"><span class="nav-number">1.</span> <span class="nav-text"> Problem of Intraprocedural Analysis</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#call-graph"><span class="nav-number">2.</span> <span class="nav-text"> Call Graph</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9E%84%E9%80%A0cg"><span class="nav-number">2.1.</span> <span class="nav-text"> 构造CG</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#method-dispatch-of-virtual-calls"><span class="nav-number">2.2.</span> <span class="nav-text"> Method Dispatch of Virtual Calls</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#chaclass-hierarchy-analysis"><span class="nav-number">3.</span> <span class="nav-text"> CHA(Class Hierarchy Analysis)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#dispatch"><span class="nav-number">3.1.</span> <span class="nav-text"> Dispatch</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%9A%E8%BF%87cha%E6%9E%84%E5%BB%BAcall-graph"><span class="nav-number">3.2.</span> <span class="nav-text"> 通过CHA构建Call Graph</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#interprocedural-contrl-flow-graph"><span class="nav-number">4.</span> <span class="nav-text"> Interprocedural Contrl-Flow Graph</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#interprocedural-data-flow-graph"><span class="nav-number">5.</span> <span class="nav-text"> Interprocedural Data-Flow Graph</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#problem-of-intraprocedural-analysis"><span class="nav-number">1.</span> <span class="nav-text">Problem of Intraprocedural Analysis</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#call-graph"><span class="nav-number">2.</span> <span class="nav-text">Call Graph</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9E%84%E9%80%A0cg"><span class="nav-number">2.1.</span> <span class="nav-text">构造CG</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#method-dispatch-of-virtual-calls"><span class="nav-number">2.2.</span> <span class="nav-text">Method Dispatch of Virtual Calls</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#chaclass-hierarchy-analysis"><span class="nav-number">3.</span> <span class="nav-text">CHA(Class Hierarchy Analysis)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#dispatch"><span class="nav-number">3.1.</span> <span class="nav-text">Dispatch</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%9A%E8%BF%87cha%E6%9E%84%E5%BB%BAcall-graph"><span class="nav-number">3.2.</span> <span class="nav-text">通过CHA构建Call Graph</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#interprocedural-contrl-flow-graph"><span class="nav-number">4.</span> <span class="nav-text">Interprocedural Contrl-Flow Graph</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#interprocedural-data-flow-graph"><span class="nav-number">5.</span> <span class="nav-text">Interprocedural Data-Flow Graph</span></a></li></ol></div>
             
 
           </div>

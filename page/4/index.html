@@ -334,13 +334,13 @@
         
           
           抱着我一定要更新博客的决心， 我开始了RIPS折腾笔记。
- 0x00 背景
+0x00 背景
 PHP静态分析有个里程碑式的工具-RIPS，这个工具是最早Dahse博士提出来的， 现在早已闭源。
 
 到0.55是开源的最后一个版本。
 10年到17年期间，Dahse发表的文章有：
 
-2010 - RIPS-A static
+2010 - RIPS-A static 
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -467,17 +467,10 @@ PHP静态分析有个里程碑式的工具-RIPS，这个工具是最早Dahse博�
         
           
           
-
 Relate Iterative Algorithm to Fixed Point Theorem 4:20
-
-
-May/Must Analysis, A Lattice View  26:10
-
-
+May/Must Analysis, A Lattice View 26:10
 MOP and Distributivity 64:30
-
-
-Constant Propagat
+Constant Propagation 80:4
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -604,22 +597,23 @@ Constant Propagat
         
           
           放在这，没事儿了我就总结几个
- 1 child nodes
- AST_VAR
+1 child nodes
+AST_VAR
+
+截屏2020-07-14 下午4.07.05
 
 1$var
- AST_ECHO
+AST_ECHO
 
- 2 child nodes
- AST_CALL
+2 child nodes
+AST_CALL
 
 函数调用点
 
 
 1$a = foo(&#x27;a&#x27;);
 
-child0:  ARG_LIST - 参数列表
-child1:
+child0: ARG_L
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -746,11 +740,11 @@ child1:
         
           
           
-Iterative Algorithm, Another View    13:00
+Iterative Algorithm, Another View 13:00
 Partial Order 27:50
 Upper and Lower Bounds 38:10
 Lattice, Semilattice, Complete and Product Lattice 48:40
-
+Dat
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -876,13 +870,13 @@ Lattice, Semilattice, Complete and Product Lattice 48:40
       
         
           
-           Available Expressions Analysis （可用表达式分析）
+          Available Expressions Analysis （可用表达式分析）
 
 must analysis
 
 如果说一个表达式 x op y 在 program point p 上是available的，那么
 
-从流图入口点到点p的所有路径，都必须经过表达式x op y。(该表达式结点在流图上
+从流图入口点到点p的所有路径，都必须经过表达式x op y。(该表达式结点在流图上支
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -1009,7 +1003,7 @@ must analysis
         
           
           前言：
-reaching definitions, live variables和avaliable expressions  都是可以表示为对一个bit array（ bit map, bit set, bit string, or bit vector）迭代求解。 如reaching defin
+reaching definitions, live variables和avaliable expressions 都是可以表示为对一个bit array（ bit map, bit set, bit string, or bit vector）迭代求解。 如reaching defini
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -1140,7 +1134,7 @@ reaching definitions, live variables和avaliable expressions  都是可以表示
 一段文本输入，不是字符串就是代码。代码之所以为代码，是因为解析器认识他。
 
 ​
-​    以后端以PHP为例，常用的编码方式是htmlspecialchars($str)，这种方式会将&quot;,&lt;,&gt;等转化成html实体编码，对于PHP来说这是一个文本替换处理
+​ 以后端以PHP为例，常用的编码方式是htmlspecialchars($str)，这种方式会将",&lt;,&gt;等转化成html实体编码，对于PHP来说这是一个文本替换处理。但是输送到了浏
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -1266,17 +1260,14 @@ reaching definitions, live variables和avaliable expressions  都是可以表示
       
         
           
-           03 Data Flow Analysis I
+          03 Data Flow Analysis I
 课程链接
 
 
-
-Overiew of Data Flow Analysis  12:05
-
-
+Overiew of Data Flow Analysis 12:05
 Preliminaries of Data Flow Analysis 23:10
 
-Notations for Transfer Function’s C
+Notations for Transfer Function's Constr
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -1403,10 +1394,10 @@ Notations for Transfer Function’s C
         
           
           课程链接
- 0x01 Compilers and Static Analyzers
+0x01 Compilers and Static Analyzers
 编译器工作原理， 开始贴ppt：
 
-IR之前前端， 之后称后端。 前端是词法、语法、简单的语义检查。 后端是在IR上分析一些高级的程序属性。（其实我觉得编译过程任何一个阶段的输出表示，都可以叫做IR(中间表示)，一般
+IR之前前端， 之后称后端。 前端是词法、语法、简单的语义检查。 后端是在IR上分析一些高级的程序属性。（其实我觉得编译过程任何一个阶段的输出表示，都可以叫做IR(中间表示)，一般I
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -1534,17 +1525,17 @@ IR之前前端， 之后称后端。 前端是词法、语法、简单的语义�
           
           南京大学软件分析课程，这段时间可以把自己学习的内容总结一下。
 课程链接
- 0x01 PL and Static Analysis
+0x01 PL and Static Analysis
 
 08:05
 
-开始，剪课件…
+开始，剪课件...
 
 背景：将PL分了三个领域。 程序分析属于PL的应用领域。
 
 在语言的框架下谈到程序分析就是静态分析。
 
- 0x02 Why We Nee
+0x02 Why We Nee
           ...
           <!--noindex-->
           <div class="post-button text-center">

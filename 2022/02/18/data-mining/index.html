@@ -94,12 +94,12 @@
 
 
 
-<meta name="description" content="数据工程发现代漏洞的一个重要方法。 Fabs博士的博士论文就是通过发现代码中的pattern来进行漏洞挖掘(从代码问题时尚)。在传统方法不能够很好地处理的瓶颈问题上，在代码上使用数据工程发现facts不失是一个好的方法。  数据工程 主要参考自李沐实用机器学习 数据工程大致分为三个阶段： 数据收集、 特征工程、模型训练。 针对数据，我们要做的大致有：  从哪获得数据(数据来源):数据收集 数据中的">
+<meta name="description" content="数据工程发现代漏洞的一个重要方法。 Fabs博士的博士论文就是通过发现代码中的pattern来进行漏洞挖掘(从代码问题时尚)。在传统方法不能够很好地处理的瓶颈问题上，在代码上使用数据工程发现facts不失是一个好的方法。 数据工程 主要参考自李沐实用机器学习 数据工程大致分为三个阶段： 数据收集、 特征工程、模型训练。 针对数据，我们要做的大致有： - 从哪获得数据(数据来源):数据收集 - 数据">
 <meta property="og:type" content="article">
 <meta property="og:title" content="data_mining">
 <meta property="og:url" content="http://example.com/2022/02/18/data-mining/index.html">
 <meta property="og:site_name" content="Penlab">
-<meta property="og:description" content="数据工程发现代漏洞的一个重要方法。 Fabs博士的博士论文就是通过发现代码中的pattern来进行漏洞挖掘(从代码问题时尚)。在传统方法不能够很好地处理的瓶颈问题上，在代码上使用数据工程发现facts不失是一个好的方法。  数据工程 主要参考自李沐实用机器学习 数据工程大致分为三个阶段： 数据收集、 特征工程、模型训练。 针对数据，我们要做的大致有：  从哪获得数据(数据来源):数据收集 数据中的">
+<meta property="og:description" content="数据工程发现代漏洞的一个重要方法。 Fabs博士的博士论文就是通过发现代码中的pattern来进行漏洞挖掘(从代码问题时尚)。在传统方法不能够很好地处理的瓶颈问题上，在代码上使用数据工程发现facts不失是一个好的方法。 数据工程 主要参考自李沐实用机器学习 数据工程大致分为三个阶段： 数据收集、 特征工程、模型训练。 针对数据，我们要做的大致有： - 从哪获得数据(数据来源):数据收集 - 数据">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125846.png">
 <meta property="og:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125852.png">
@@ -336,40 +336,28 @@
 
       
         <p>数据工程发现代漏洞的一个重要方法。 Fabs博士的博士论文就是通过发现代码中的pattern来进行漏洞挖掘(从代码问题时尚)。在传统方法不能够很好地处理的瓶颈问题上，在代码上使用数据工程发现facts不失是一个好的方法。</p>
-<h1 id="数据工程"><a class="markdownIt-Anchor" href="#数据工程"></a> 数据工程</h1>
+<h1 id="数据工程">数据工程</h1>
 <p><a target="_blank" rel="noopener" href="https://c.d2l.ai/stanford-cs329p/syllabus.html">主要参考自李沐实用机器学习</a></p>
-<p>数据工程大致分为三个阶段： 数据收集、 特征工程、模型训练。<br />
-针对数据，我们要做的大致有：</p>
-<ul>
-<li>从哪获得数据(数据来源):数据收集</li>
-<li>数据中的噪声大(数据内容)： 数据清理</li>
-<li>数据不是模型想要的格式(数据格式)： 数据变换</li>
-<li>数据训练比较难(数据效果)： 特征工程</li>
-</ul>
-<h2 id="数据收集data-collection"><a class="markdownIt-Anchor" href="#数据收集data-collection"></a> 数据收集(Data Collection)</h2>
+<p>数据工程大致分为三个阶段： 数据收集、 特征工程、模型训练。 针对数据，我们要做的大致有： - 从哪获得数据(数据来源):数据收集 - 数据中的噪声大(数据内容)： 数据清理 - 数据不是模型想要的格式(数据格式)： 数据变换 - 数据训练比较难(数据效果)： 特征工程</p>
+<h2 id="数据收集data-collection">数据收集(Data Collection)</h2>
 <p><a target="_blank" rel="noopener" href="https://arxiv.org/pdf/1811.03402.pdf">相关文献</a></p>
 <p>数据收集的目标是构成目标数据集</p>
-<p>针对目标系统，数据的收集大致分为：获取数据、标注数据、数据质量优化。<br />
-看一张总图：</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125846.png" style="zoom:67%;" />
+<p>针对目标系统，数据的收集大致分为：获取数据、标注数据、数据质量优化。 看一张总图：</p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125846.png" style="zoom:67%;" /></p>
 <p>paper给出的一个分析流程:</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125852.png" style="zoom:67%;" />
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125852.png" style="zoom:67%;" /></p>
 <p>先从section2</p>
-<h3 id="获取数据"><a class="markdownIt-Anchor" href="#获取数据"></a> 获取数据</h3>
-<p>从流程上将就是section2中的内容回答三个问题:<br />
-- Have enough data?  有足够数据进入下一步标注<br />
-- Are there external datasets? 如果有差不多的数据集就去搜集并修改<br />
-- Have data generation method? 想办法生成数据。</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-02-18-023846.png" style="zoom:50%;" />
+<h3 id="获取数据">获取数据</h3>
+<p>从流程上将就是section2中的内容回答三个问题: - Have enough data? 有足够数据进入下一步标注 - Are there external datasets? 如果有差不多的数据集就去搜集并修改 - Have data generation method? 想办法生成数据。</p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-02-18-023846.png" style="zoom:50%;" /></p>
 <p>从三个角度的技术分析：</p>
-<h4 id="data-discovery-从外部获取已有数据集方法"><a class="markdownIt-Anchor" href="#data-discovery-从外部获取已有数据集方法"></a> <strong>Data Discovery</strong>: 从外部获取已有数据集，方法</h4>
-<p>Data Discovery 通常有两步：<br />
-1.找已经共享标注好的数据集(Data Sharing)，可以去许多的共享平台(如DataHub, kaggle)寻找之前工作整理好的数据集。也可以去CKAN， Quandl， DataMarket等购买。Google Fusion Tables也是一个数据云端管理整合平台，也可以去寻找。</p>
-<ol start="2">
+<h4 id="data-discovery-从外部获取已有数据集方法"><strong>Data Discovery</strong>: 从外部获取已有数据集，方法</h4>
+<p>Data Discovery 通常有两步： 1.找已经共享标注好的数据集(Data Sharing)，可以去许多的共享平台(如DataHub, kaggle)寻找之前工作整理好的数据集。也可以去CKAN， Quandl， DataMarket等购买。Google Fusion Tables也是一个数据云端管理整合平台，也可以去寻找。</p>
+<ol start="2" type="1">
 <li>Data Searching: 如果在以上这些平台没有找到你想要的数据集，就要自己去寻找了， data lakes的出现使得data searching普遍起来。</li>
 </ol>
-<h4 id="augmentation-另一种获取数据的方式是augmentation-对已有数据进行修改得到"><a class="markdownIt-Anchor" href="#augmentation-另一种获取数据的方式是augmentation-对已有数据进行修改得到"></a> <strong><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Data_augmentation">Augmentation</a></strong>: 另一种获取数据的方式是Augmentation, 对已有数据进行修改得到。</h4>
-<h3 id="标注数据"><a class="markdownIt-Anchor" href="#标注数据"></a> 标注数据</h3>
+<h4 id="augmentation-另一种获取数据的方式是augmentation-对已有数据进行修改得到"><strong><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Data_augmentation">Augmentation</a></strong>: 另一种获取数据的方式是Augmentation, 对已有数据进行修改得到。</h4>
+<h3 id="标注数据">标注数据</h3>
 
       
     </div>
@@ -531,7 +519,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%B7%A5%E7%A8%8B"><span class="nav-number">1.</span> <span class="nav-text"> 数据工程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E6%94%B6%E9%9B%86data-collection"><span class="nav-number">1.1.</span> <span class="nav-text"> 数据收集(Data Collection)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96%E6%95%B0%E6%8D%AE"><span class="nav-number">1.1.1.</span> <span class="nav-text"> 获取数据</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#data-discovery-%E4%BB%8E%E5%A4%96%E9%83%A8%E8%8E%B7%E5%8F%96%E5%B7%B2%E6%9C%89%E6%95%B0%E6%8D%AE%E9%9B%86%E6%96%B9%E6%B3%95"><span class="nav-number">1.1.1.1.</span> <span class="nav-text"> Data Discovery: 从外部获取已有数据集，方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#augmentation-%E5%8F%A6%E4%B8%80%E7%A7%8D%E8%8E%B7%E5%8F%96%E6%95%B0%E6%8D%AE%E7%9A%84%E6%96%B9%E5%BC%8F%E6%98%AFaugmentation-%E5%AF%B9%E5%B7%B2%E6%9C%89%E6%95%B0%E6%8D%AE%E8%BF%9B%E8%A1%8C%E4%BF%AE%E6%94%B9%E5%BE%97%E5%88%B0"><span class="nav-number">1.1.1.2.</span> <span class="nav-text"> Augmentation: 另一种获取数据的方式是Augmentation, 对已有数据进行修改得到。</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%87%E6%B3%A8%E6%95%B0%E6%8D%AE"><span class="nav-number">1.1.2.</span> <span class="nav-text"> 标注数据</span></a></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%B7%A5%E7%A8%8B"><span class="nav-number">1.</span> <span class="nav-text">数据工程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E6%94%B6%E9%9B%86data-collection"><span class="nav-number">1.1.</span> <span class="nav-text">数据收集(Data Collection)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96%E6%95%B0%E6%8D%AE"><span class="nav-number">1.1.1.</span> <span class="nav-text">获取数据</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#data-discovery-%E4%BB%8E%E5%A4%96%E9%83%A8%E8%8E%B7%E5%8F%96%E5%B7%B2%E6%9C%89%E6%95%B0%E6%8D%AE%E9%9B%86%E6%96%B9%E6%B3%95"><span class="nav-number">1.1.1.1.</span> <span class="nav-text">Data Discovery: 从外部获取已有数据集，方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#augmentation-%E5%8F%A6%E4%B8%80%E7%A7%8D%E8%8E%B7%E5%8F%96%E6%95%B0%E6%8D%AE%E7%9A%84%E6%96%B9%E5%BC%8F%E6%98%AFaugmentation-%E5%AF%B9%E5%B7%B2%E6%9C%89%E6%95%B0%E6%8D%AE%E8%BF%9B%E8%A1%8C%E4%BF%AE%E6%94%B9%E5%BE%97%E5%88%B0"><span class="nav-number">1.1.1.2.</span> <span class="nav-text">Augmentation: 另一种获取数据的方式是Augmentation, 对已有数据进行修改得到。</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%87%E6%B3%A8%E6%95%B0%E6%8D%AE"><span class="nav-number">1.1.2.</span> <span class="nav-text">标注数据</span></a></li></ol></li></ol></li></ol></div>
             
 
           </div>

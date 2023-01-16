@@ -94,12 +94,12 @@
 
 
 
-<meta name="description" content="放在这，没事儿了我就总结几个  1 child nodes  AST_VAR  1$var  AST_ECHO   2 child nodes  AST_CALL  函数调用点   1$a &#x3D; foo(&amp;#x27;a&amp;#x27;);  child0:  ARG_LIST - 参数列表 child1:  调用函数名   AST_DIM  数组引用   1$a &#x3D; foo[&amp;#x27;a&amp;#x27;]">
+<meta name="description" content="放在这，没事儿了我就总结几个 1 child nodes AST_VAR  截屏2020-07-14 下午4.07.05  1$var AST_ECHO  2 child nodes AST_CALL  函数调用点   1$a &#x3D; foo(&amp;#x27;a&amp;#x27;);  child0: ARG_LIST - 参数列表 child1: 调用函数名  AST_DIM  数组引用   1$a &#x3D; fo">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Penlab">
 <meta property="og:url" content="http://example.com/2020/06/01/PHP-AST/index.html">
 <meta property="og:site_name" content="Penlab">
-<meta property="og:description" content="放在这，没事儿了我就总结几个  1 child nodes  AST_VAR  1$var  AST_ECHO   2 child nodes  AST_CALL  函数调用点   1$a &#x3D; foo(&amp;#x27;a&amp;#x27;);  child0:  ARG_LIST - 参数列表 child1:  调用函数名   AST_DIM  数组引用   1$a &#x3D; foo[&amp;#x27;a&amp;#x27;]">
+<meta property="og:description" content="放在这，没事儿了我就总结几个 1 child nodes AST_VAR  截屏2020-07-14 下午4.07.05  1$var AST_ECHO  2 child nodes AST_CALL  函数调用点   1$a &#x3D; foo(&amp;#x27;a&amp;#x27;);  child0: ARG_LIST - 参数列表 child1: 调用函数名  AST_DIM  数组引用   1$a &#x3D; fo">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044304.png">
 <meta property="og:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044306.png">
@@ -352,133 +352,117 @@
 
       
         <p>放在这，没事儿了我就总结几个</p>
-<h1 id="1-child-nodes"><a class="markdownIt-Anchor" href="#1-child-nodes"></a> 1 child nodes</h1>
-<h2 id="ast_var"><a class="markdownIt-Anchor" href="#ast_var"></a> AST_VAR</h2>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044304.png" alt="截屏2020-07-14 下午4.07.05" /></p>
+<h1 id="child-nodes">1 child nodes</h1>
+<h2 id="ast_var">AST_VAR</h2>
+<figure>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044304.png" alt="截屏2020-07-14 下午4.07.05" /><figcaption aria-hidden="true">截屏2020-07-14 下午4.07.05</figcaption>
+</figure>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$var</span></span><br></pre></td></tr></table></figure>
-<h2 id="ast_echo"><a class="markdownIt-Anchor" href="#ast_echo"></a> AST_ECHO</h2>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044306.png" alt="截屏2020-07-27 下午3.42.44" style="zoom:50%;" />
-<h1 id="2-child-nodes"><a class="markdownIt-Anchor" href="#2-child-nodes"></a> 2 child nodes</h1>
-<h2 id="ast_call"><a class="markdownIt-Anchor" href="#ast_call"></a> AST_CALL</h2>
+<h2 id="ast_echo">AST_ECHO</h2>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044306.png" alt="截屏2020-07-27 下午3.42.44" style="zoom:50%;" /></p>
+<h1 id="child-nodes-1">2 child nodes</h1>
+<h2 id="ast_call">AST_CALL</h2>
 <blockquote>
 <p>函数调用点</p>
 </blockquote>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044310.png" alt="截屏2020-06-01 下午5.41.28" style="zoom:50%;" />
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044310.png" alt="截屏2020-06-01 下午5.41.28" style="zoom:50%;" /></p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$a</span> = <span class="title function_ invoke__">foo</span>(<span class="string">&#x27;a&#x27;</span>);</span><br></pre></td></tr></table></figure>
 <ul>
-<li>child0:  ARG_LIST - 参数列表</li>
-<li>child1:  调用函数名</li>
+<li>child0: ARG_LIST - 参数列表</li>
+<li>child1: 调用函数名</li>
 </ul>
-<h2 id="ast_dim"><a class="markdownIt-Anchor" href="#ast_dim"></a> AST_DIM</h2>
+<h2 id="ast_dim">AST_DIM</h2>
 <blockquote>
 <p>数组引用</p>
 </blockquote>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2020-06-29-123109.png" alt="截屏2020-06-01 下午5.48.46" style="zoom:50%;" />
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2020-06-29-123109.png" alt="截屏2020-06-01 下午5.48.46" style="zoom:50%;" /></p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$a</span> = foo[<span class="string">&#x27;a&#x27;</span>];</span><br></pre></td></tr></table></figure>
 <ul>
-<li>child0:  数组名</li>
-<li>child1:  索引值</li>
+<li>child0: 数组名</li>
+<li>child1: 索引值</li>
 </ul>
-<h2 id="zend_ast_prop"><a class="markdownIt-Anchor" href="#zend_ast_prop"></a> ZEND_AST_PROP</h2>
+<h2 id="zend_ast_prop">ZEND_AST_PROP</h2>
 <blockquote>
 <p>属性调用</p>
 </blockquote>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2020-06-29-123113.png" alt="截屏2020-06-20 下午4.39.26" style="zoom:67%;" />
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2020-06-29-123113.png" alt="截屏2020-06-20 下午4.39.26" style="zoom:67%;" /></p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$obj</span>-&gt;val;</span><br></pre></td></tr></table></figure>
 <ul>
 <li>child0: objetct_name</li>
 <li>child1: attr</li>
 </ul>
-<h2 id="zend_ast_while"><a class="markdownIt-Anchor" href="#zend_ast_while"></a> ZEND_AST_WHILE</h2>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2020-06-29-123116.png" alt="截屏2020-06-20 下午4.42.05" style="zoom:67%;" />
+<h2 id="zend_ast_while">ZEND_AST_WHILE</h2>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2020-06-29-123116.png" alt="截屏2020-06-20 下午4.42.05" style="zoom:67%;" /></p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span>(<span class="variable">$a</span>==<span class="number">1</span>)&#123;</span><br><span class="line">  [stmt_list]...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <ul>
 <li>child0: condtion</li>
 <li>child1: stmt_list</li>
 </ul>
-<h2 id="ast_if_elemet"><a class="markdownIt-Anchor" href="#ast_if_elemet"></a> AST_IF_ELEMET</h2>
+<h2 id="ast_if_elemet">AST_IF_ELEMET</h2>
 <blockquote>
 <p>区别于AST_IF</p>
 </blockquote>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2020-07-14-083801.png" alt="截屏2020-07-14 下午4.37.36" style="zoom:67%;" />
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2020-07-14-083801.png" alt="截屏2020-07-14 下午4.37.36" style="zoom:67%;" /></p>
 <p>AST_IF这个list下连接的每一个分支都由一个IF_ELEMENT进入。</p>
 <ul>
 <li>Child0 :条件判定式</li>
 <li>Child1: 代码语句块</li>
 </ul>
-<h2 id="ast_binary_op"><a class="markdownIt-Anchor" href="#ast_binary_op"></a> AST_BINARY_OP</h2>
+<h2 id="ast_binary_op">AST_BINARY_OP</h2>
 <blockquote>
 <p>二元操作</p>
 </blockquote>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2020-07-14-085207.png" alt="截屏2020-07-14 下午4.51.41" style="zoom:67%;" />
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2020-07-14-085207.png" alt="截屏2020-07-14 下午4.51.41" style="zoom:67%;" /></p>
 <p>控制流、数据流走判定表达式的话都是直接连这个点。代表整个二元操作表达式。</p>
 <p>在PHP-AST这个项目中， 此点有flags字段，决定作用方法：</p>
-<p><a target="_blank" rel="noopener" href="https://github.com/nikic/php-ast/blob/1b5d767dd326f535288786130b2215744feb2cbf/tests/metadata.phpt#L97">https://github.com/nikic/php-ast/blob/1b5d767dd326f535288786130b2215744feb2cbf/tests/metadata.phpt#L97</a></p>
+<p>https://github.com/nikic/php-ast/blob/1b5d767dd326f535288786130b2215744feb2cbf/tests/metadata.phpt#L97</p>
 <ul>
-<li>
-<p>位逻辑运算 BINARY_BITWISE_OR, BINARY_BITWISE_AND, BINARY_BITWISE_XOR,</p>
-</li>
-<li>
-<p>布尔逻辑运算 BINARY_BOOL_AND, BINARY_BOOL_OR, BINARY_BOOL_XOR,</p>
-</li>
-<li>
-<p>算术运算 BINARY_ADD, BINARY_SUB, BINARY_MUL, BINARY_DIV, BINARY_MOD, BINARY_POW,</p>
-</li>
-<li>
-<p>位运算 BINARY_SHIFT_LEFT, BINARY_SHIFT_RIGHT,</p>
-</li>
-<li>
-<p>相等关系运算 BINARY_IS_EQUAL, BINARY_IS_NOT_EQUAL,</p>
-</li>
-<li>
-<p>小于关系运算 BINARY_IS_SMALLER, BINARY_IS_SMALLER_OR_EQUAL,</p>
-</li>
-<li>
-<p>等于运算 BINARY_IS_GREATER, BINARY_IS_GREATER_OR_EQUAL,</p>
-</li>
-<li>
-<p>连接操作 BINARY_CONCAT,</p>
-</li>
-<li>
-<p>其他(就是还不懂) BINARY_COALESCE,BINARY_IS_IDENTICAL, BINARY_IS_NOT_IDENTICAL, BINARY_SPACESHIP</p>
-</li>
+<li><p>位逻辑运算 BINARY_BITWISE_OR, BINARY_BITWISE_AND, BINARY_BITWISE_XOR,</p></li>
+<li><p>布尔逻辑运算 BINARY_BOOL_AND, BINARY_BOOL_OR, BINARY_BOOL_XOR,</p></li>
+<li><p>算术运算 BINARY_ADD, BINARY_SUB, BINARY_MUL, BINARY_DIV, BINARY_MOD, BINARY_POW,</p></li>
+<li><p>位运算 BINARY_SHIFT_LEFT, BINARY_SHIFT_RIGHT,</p></li>
+<li><p>相等关系运算 BINARY_IS_EQUAL, BINARY_IS_NOT_EQUAL,</p></li>
+<li><p>小于关系运算 BINARY_IS_SMALLER, BINARY_IS_SMALLER_OR_EQUAL,</p></li>
+<li><p>等于运算 BINARY_IS_GREATER, BINARY_IS_GREATER_OR_EQUAL,</p></li>
+<li><p>连接操作 BINARY_CONCAT,</p></li>
+<li><p>其他(就是还不懂) BINARY_COALESCE,BINARY_IS_IDENTICAL, BINARY_IS_NOT_IDENTICAL, BINARY_SPACESHIP</p></li>
 </ul>
-<h2 id="ast_assign"><a class="markdownIt-Anchor" href="#ast_assign"></a> AST_ASSIGN</h2>
+<h2 id="ast_assign">AST_ASSIGN</h2>
 <p>另一个非常常见的两孩子点，就是赋值语句。当然， 左值和右值。</p>
 <p>数据流最爱连接的节点：</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2020-07-14-090810.png" alt="截屏2020-07-14 下午5.07.42" style="zoom:67%;" />
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2020-07-14-090953.png" alt="截屏2020-07-14 下午5.09.18" style="zoom:67%;" />
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2020-07-14-090810.png" alt="截屏2020-07-14 下午5.07.42" style="zoom:67%;" /></p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2020-07-14-090953.png" alt="截屏2020-07-14 下午5.09.18" style="zoom:67%;" /></p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$a</span> = <span class="title function_ invoke__">foo</span>();</span><br></pre></td></tr></table></figure>
 <ul>
 <li>0child:左值(通常是变量)</li>
 <li>1child: 右值(一波操作)</li>
 </ul>
 <p>追踪数据流变量在这一级上追踪。</p>
-<h2 id="ast_array_element"><a class="markdownIt-Anchor" href="#ast_array_element"></a> AST_ARRAY_ELEMENT</h2>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044347.png" alt="截屏2020-07-27 下午9.26.11" style="zoom:67%;" />
+<h2 id="ast_array_element">AST_ARRAY_ELEMENT</h2>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044347.png" alt="截屏2020-07-27 下午9.26.11" style="zoom:67%;" /></p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$arr</span> = <span class="keyword">array</span>(</span><br><span class="line">    <span class="string">&#x27;a&#x27;</span> =&gt; <span class="string">&#x27;1&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;b&#x27;</span> =&gt; <span class="string">&#x27;2&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;c&#x27;</span> =&gt; <span class="string">&#x27;3&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;d&#x27;</span> =&gt; <span class="string">&#x27;4&#x27;</span>,</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
-<h1 id="3-child-nodes"><a class="markdownIt-Anchor" href="#3-child-nodes"></a> 3 child nodes</h1>
-<h2 id="ast_method_call"><a class="markdownIt-Anchor" href="#ast_method_call"></a> AST_METHOD_CALL</h2>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2020-06-29-123118.png" alt="截屏2020-06-20 下午4.52.15" style="zoom:67%;" />
+<h1 id="child-nodes-2">3 child nodes</h1>
+<h2 id="ast_method_call">AST_METHOD_CALL</h2>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2020-06-29-123118.png" alt="截屏2020-06-20 下午4.52.15" style="zoom:67%;" /></p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$stu</span>-&gt;<span class="title function_ invoke__">getScore</span>(<span class="string">&#x27;math&#x27;</span>);</span><br></pre></td></tr></table></figure>
 <ul>
 <li>child0: var:stu //比AST_CALL多一个对象名</li>
 <li>child1: name: getScore</li>
 <li>child2: args:math //arg list</li>
 </ul>
-<h2 id="ast_static_call"><a class="markdownIt-Anchor" href="#ast_static_call"></a> AST_STATIC_CALL</h2>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2020-06-29-123122.png" alt="截屏2020-06-20 下午5.00.15" style="zoom:67%;" />
+<h2 id="ast_static_call">AST_STATIC_CALL</h2>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2020-06-29-123122.png" alt="截屏2020-06-20 下午5.00.15" style="zoom:67%;" /></p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">stu::<span class="title function_ invoke__">getScore</span>(<span class="string">&#x27;math&#x27;</span>);</span><br></pre></td></tr></table></figure>
 <ul>
 <li>child0: class:stu （直接指向该类）</li>
 <li>child1: name: getScore</li>
 <li>child2: args: math</li>
 </ul>
-<h2 id="ast_conditional"><a class="markdownIt-Anchor" href="#ast_conditional"></a> AST_CONDITIONAL</h2>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2020-06-29-123125.png" alt="截屏2020-06-20 下午5.05.39" style="zoom:67%;" />
-<h1 id="4-child-nodes"><a class="markdownIt-Anchor" href="#4-child-nodes"></a> 4 child nodes</h1>
-<h2 id="ast_foreach"><a class="markdownIt-Anchor" href="#ast_foreach"></a> AST_FOREACH</h2>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2020-06-29-123130.png" alt="截屏2020-06-20 下午3.42.11" style="zoom:67%;" />
+<h2 id="ast_conditional">AST_CONDITIONAL</h2>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2020-06-29-123125.png" alt="截屏2020-06-20 下午5.05.39" style="zoom:67%;" /></p>
+<h1 id="child-nodes-3">4 child nodes</h1>
+<h2 id="ast_foreach">AST_FOREACH</h2>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2020-06-29-123130.png" alt="截屏2020-06-20 下午3.42.11" style="zoom:67%;" /></p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">foreach</span>(<span class="variable">$arr</span> <span class="keyword">as</span> <span class="variable">$k</span> =&gt; <span class="variable">$v</span>)&#123;</span><br><span class="line">     <span class="keyword">echo</span> <span class="variable">$k</span>.<span class="variable">$v</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
 <ul>
 <li>child0: expr: $arr</li>
@@ -486,19 +470,19 @@
 <li>child2: valueVar: $v</li>
 <li>child3: stmts: 代码块list (ZEND_AST_STMT_LIST)</li>
 </ul>
-<h2 id="zend_ast_for"><a class="markdownIt-Anchor" href="#zend_ast_for"></a> ZEND_AST_FOR</h2>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2020-06-29-123134.png" alt="截屏2020-06-20 下午3.50.18" style="zoom:67%;" />
+<h2 id="zend_ast_for">ZEND_AST_FOR</h2>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2020-06-29-123134.png" alt="截屏2020-06-20 下午3.50.18" style="zoom:67%;" /></p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="variable">$i</span>=<span class="number">0</span>; <span class="variable">$i</span>&lt;=<span class="number">1</span>; <span class="variable">$i</span>++)</span><br><span class="line">&#123;</span><br><span class="line">  <span class="keyword">echo</span> <span class="variable">$i</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <ul>
 <li>child0: init: $i=0</li>
 <li>child1: condtion: $i&lt;=1</li>
 <li>child2: loop: $i++</li>
-<li>child3:  代码块list (ZEND_AST_STMT_LIST)</li>
+<li>child3: 代码块list (ZEND_AST_STMT_LIST)</li>
 </ul>
-<h1 id="list-nodes"><a class="markdownIt-Anchor" href="#list-nodes"></a> list nodes</h1>
-<p>AST_ARG_LIST = 1    //函数参数列表（实参）</p>
+<h1 id="list-nodes">list nodes</h1>
+<p>AST_ARG_LIST = 1 //函数参数列表（实参）</p>
 <p>AST_ARRAY //数组成员列表</p>
-<img src="PHP-AST/%E6%88%AA%E5%B1%8F2020-07-27%20%E4%B8%8B%E5%8D%889.26.11-5856522.png" alt="截屏2020-07-27 下午9.26.11" style="zoom:67%;" />
+<p><img src="PHP-AST/%E6%88%AA%E5%B1%8F2020-07-27%20%E4%B8%8B%E5%8D%889.26.11-5856522.png" alt="截屏2020-07-27 下午9.26.11" style="zoom:67%;" /></p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$arr</span> = <span class="keyword">array</span>(</span><br><span class="line">    <span class="string">&#x27;a&#x27;</span> =&gt; <span class="string">&#x27;1&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;b&#x27;</span> =&gt; <span class="string">&#x27;2&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;c&#x27;</span> =&gt; <span class="string">&#x27;3&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;d&#x27;</span> =&gt; <span class="string">&#x27;4&#x27;</span>,</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
 <p>AST_EXPR_LIST</p>
 <p>AST_STMT_LIST //表达式块</p>
@@ -510,57 +494,53 @@
 <p>AST_PROP_DECL</p>
 <p>AST_CONST_DECL</p>
 <p>AST_CLASS_CONST</p>
-<p>AST_NAME_LIST<br />
-AST_TRAIT_ADAPTATIONS<br />
-AST_USE<br />
-AST_TYPE_UNION<br />
-AST_ATTRIBUTE_LIST</p>
-<h2 id="ast_stmt_list"><a class="markdownIt-Anchor" href="#ast_stmt_list"></a> AST_STMT_LIST</h2>
+<p>AST_NAME_LIST AST_TRAIT_ADAPTATIONS AST_USE AST_TYPE_UNION AST_ATTRIBUTE_LIST</p>
+<h2 id="ast_stmt_list">AST_STMT_LIST</h2>
 <blockquote>
 <p>最常见的块</p>
 </blockquote>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2020-07-14-093758.png" alt="截屏2020-07-14 下午5.30.15" style="zoom:67%;" />
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2020-07-14-093758.png" alt="截屏2020-07-14 下午5.30.15" style="zoom:67%;" /></p>
 <p>儿孙满堂， 一般从这个点跳到块中各个语句中。</p>
-<h2 id="ast_if_list"><a class="markdownIt-Anchor" href="#ast_if_list"></a> AST_IF_LIST</h2>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2020-07-14-093754.png" alt="截屏2020-07-14 下午5.14.28" style="zoom:67%;" />
+<h2 id="ast_if_list">AST_IF_LIST</h2>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2020-07-14-093754.png" alt="截屏2020-07-14 下午5.14.28" style="zoom:67%;" /></p>
 <hr />
 <p>一个分支结构的入口， 因为分支结构是不确定的， 所以是list，从这个点可以纵览分支结构有几个。一般不连控制流边(控制流边一般练到数据操作表达式点上如BINARY_OP，ASSIGN)。</p>
 <p>下边的每一个分支入口，都是一个AST_IF（二元）:</p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">AST_IF-&gt; <span class="number">0</span>child(AST_IF_ELEMENT0)</span><br><span class="line">       -&gt; <span class="number">1</span>child(AST_IFELEMENT1)</span><br><span class="line"><span class="keyword">if</span>(<span class="number">0</span>child)&#123;</span><br><span class="line">  <span class="number">1</span>child;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">else</span> <span class="number">0</span>child:<span class="literal">null</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="number">1</span>child;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>注: AST没有else节点，每个分支块都是一个AST_IF。</p>
-<h1 id="declaration-nodes"><a class="markdownIt-Anchor" href="#declaration-nodes"></a> declaration nodes</h1>
+<h1 id="declaration-nodes">declaration nodes</h1>
 <p>声明式语句</p>
 <table>
 <thead>
-<tr>
+<tr class="header">
 <th>/* declaration nodes */</th>
 <th></th>
 </tr>
 </thead>
 <tbody>
-<tr>
+<tr class="odd">
 <td>ZEND_AST_FUNC_DECL</td>
 <td></td>
 </tr>
-<tr>
+<tr class="even">
 <td>ZEND_AST_CLOSURE</td>
 <td></td>
 </tr>
-<tr>
+<tr class="odd">
 <td>ZEND_AST_METHOD</td>
 <td></td>
 </tr>
-<tr>
+<tr class="even">
 <td>ZEND_AST_CLASS</td>
 <td></td>
 </tr>
-<tr>
+<tr class="odd">
 <td>ZEND_AST_ARROW_FUNC</td>
 <td></td>
 </tr>
 </tbody>
 </table>
-<h2 id="控制流起始点"><a class="markdownIt-Anchor" href="#控制流起始点"></a> 控制流起始点：</h2>
+<h2 id="控制流起始点">控制流起始点：</h2>
 <ul>
 <li>AST_CLASS</li>
 <li>AST_FUNC</li>
@@ -726,7 +706,7 @@ AST_ATTRIBUTE_LIST</p>
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-child-nodes"><span class="nav-number">1.</span> <span class="nav-text"> 1 child nodes</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ast_var"><span class="nav-number">1.1.</span> <span class="nav-text"> AST_VAR</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ast_echo"><span class="nav-number">1.2.</span> <span class="nav-text"> AST_ECHO</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-child-nodes"><span class="nav-number">2.</span> <span class="nav-text"> 2 child nodes</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ast_call"><span class="nav-number">2.1.</span> <span class="nav-text"> AST_CALL</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ast_dim"><span class="nav-number">2.2.</span> <span class="nav-text"> AST_DIM</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#zend_ast_prop"><span class="nav-number">2.3.</span> <span class="nav-text"> ZEND_AST_PROP</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#zend_ast_while"><span class="nav-number">2.4.</span> <span class="nav-text"> ZEND_AST_WHILE</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ast_if_elemet"><span class="nav-number">2.5.</span> <span class="nav-text"> AST_IF_ELEMET</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ast_binary_op"><span class="nav-number">2.6.</span> <span class="nav-text"> AST_BINARY_OP</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ast_assign"><span class="nav-number">2.7.</span> <span class="nav-text"> AST_ASSIGN</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ast_array_element"><span class="nav-number">2.8.</span> <span class="nav-text"> AST_ARRAY_ELEMENT</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-child-nodes"><span class="nav-number">3.</span> <span class="nav-text"> 3 child nodes</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ast_method_call"><span class="nav-number">3.1.</span> <span class="nav-text"> AST_METHOD_CALL</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ast_static_call"><span class="nav-number">3.2.</span> <span class="nav-text"> AST_STATIC_CALL</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ast_conditional"><span class="nav-number">3.3.</span> <span class="nav-text"> AST_CONDITIONAL</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-child-nodes"><span class="nav-number">4.</span> <span class="nav-text"> 4 child nodes</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ast_foreach"><span class="nav-number">4.1.</span> <span class="nav-text"> AST_FOREACH</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#zend_ast_for"><span class="nav-number">4.2.</span> <span class="nav-text"> ZEND_AST_FOR</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#list-nodes"><span class="nav-number">5.</span> <span class="nav-text"> list nodes</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ast_stmt_list"><span class="nav-number">5.1.</span> <span class="nav-text"> AST_STMT_LIST</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ast_if_list"><span class="nav-number">5.2.</span> <span class="nav-text"> AST_IF_LIST</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#declaration-nodes"><span class="nav-number">6.</span> <span class="nav-text"> declaration nodes</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8E%A7%E5%88%B6%E6%B5%81%E8%B5%B7%E5%A7%8B%E7%82%B9"><span class="nav-number">6.1.</span> <span class="nav-text"> 控制流起始点：</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#child-nodes"><span class="nav-number">1.</span> <span class="nav-text">1 child nodes</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ast_var"><span class="nav-number">1.1.</span> <span class="nav-text">AST_VAR</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ast_echo"><span class="nav-number">1.2.</span> <span class="nav-text">AST_ECHO</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#child-nodes-1"><span class="nav-number">2.</span> <span class="nav-text">2 child nodes</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ast_call"><span class="nav-number">2.1.</span> <span class="nav-text">AST_CALL</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ast_dim"><span class="nav-number">2.2.</span> <span class="nav-text">AST_DIM</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#zend_ast_prop"><span class="nav-number">2.3.</span> <span class="nav-text">ZEND_AST_PROP</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#zend_ast_while"><span class="nav-number">2.4.</span> <span class="nav-text">ZEND_AST_WHILE</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ast_if_elemet"><span class="nav-number">2.5.</span> <span class="nav-text">AST_IF_ELEMET</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ast_binary_op"><span class="nav-number">2.6.</span> <span class="nav-text">AST_BINARY_OP</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ast_assign"><span class="nav-number">2.7.</span> <span class="nav-text">AST_ASSIGN</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ast_array_element"><span class="nav-number">2.8.</span> <span class="nav-text">AST_ARRAY_ELEMENT</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#child-nodes-2"><span class="nav-number">3.</span> <span class="nav-text">3 child nodes</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ast_method_call"><span class="nav-number">3.1.</span> <span class="nav-text">AST_METHOD_CALL</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ast_static_call"><span class="nav-number">3.2.</span> <span class="nav-text">AST_STATIC_CALL</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ast_conditional"><span class="nav-number">3.3.</span> <span class="nav-text">AST_CONDITIONAL</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#child-nodes-3"><span class="nav-number">4.</span> <span class="nav-text">4 child nodes</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ast_foreach"><span class="nav-number">4.1.</span> <span class="nav-text">AST_FOREACH</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#zend_ast_for"><span class="nav-number">4.2.</span> <span class="nav-text">ZEND_AST_FOR</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#list-nodes"><span class="nav-number">5.</span> <span class="nav-text">list nodes</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ast_stmt_list"><span class="nav-number">5.1.</span> <span class="nav-text">AST_STMT_LIST</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ast_if_list"><span class="nav-number">5.2.</span> <span class="nav-text">AST_IF_LIST</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#declaration-nodes"><span class="nav-number">6.</span> <span class="nav-text">declaration nodes</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8E%A7%E5%88%B6%E6%B5%81%E8%B5%B7%E5%A7%8B%E7%82%B9"><span class="nav-number">6.1.</span> <span class="nav-text">控制流起始点：</span></a></li></ol></li></ol></div>
             
 
           </div>

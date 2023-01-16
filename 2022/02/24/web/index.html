@@ -94,12 +94,12 @@
 
 
 
-<meta name="description" content="本文基于Securing web applications from injection and logic vulnerabilities: Approaches and chanlleengs[1] 首先给出一张典型的Web架构图， 分为前后端两个部分，从Architecture,Software,以及Technology三个方面去说的。   Web漏洞分类 Web系统面临的主要攻击有: -">
+<meta name="description" content="本文基于Securing web applications from injection and logic vulnerabilities: Approaches and chanlleengs[1] 首先给出一张典型的Web架构图， 分为前后端两个部分，从Architecture,Software,以及Technology三个方面去说的。  Web漏洞分类 Web系统面临的主要攻击有: - 不">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Web应用系中注入类漏洞调研">
 <meta property="og:url" content="http://example.com/2022/02/24/web/index.html">
 <meta property="og:site_name" content="Penlab">
-<meta property="og:description" content="本文基于Securing web applications from injection and logic vulnerabilities: Approaches and chanlleengs[1] 首先给出一张典型的Web架构图， 分为前后端两个部分，从Architecture,Software,以及Technology三个方面去说的。   Web漏洞分类 Web系统面临的主要攻击有: -">
+<meta property="og:description" content="本文基于Securing web applications from injection and logic vulnerabilities: Approaches and chanlleengs[1] 首先给出一张典型的Web架构图， 分为前后端两个部分，从Architecture,Software,以及Technology三个方面去说的。  Web漏洞分类 Web系统面临的主要攻击有: - 不">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044203.jpg">
 <meta property="og:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044206.jpg">
@@ -338,49 +338,38 @@
       
         <p>本文基于Securing web applications from injection and logic vulnerabilities: Approaches and chanlleengs[1]</p>
 <p>首先给出一张典型的Web架构图， 分为前后端两个部分，从Architecture,Software,以及Technology三个方面去说的。</p>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044203.jpg" alt="" /></p>
-<h1 id="web漏洞分类"><a class="markdownIt-Anchor" href="#web漏洞分类"></a> Web漏洞分类</h1>
-<p>Web系统面临的主要攻击有:<br />
-- 不充分地输入验证(improper input validation)，缺少或者错误的输入验证，可触发<strong>注入类漏洞(Injecton Vulnerabilities)</strong>。<br />
-- 不充分地身份验证(improper authentication and authorization mechanisms)，错误地实现身份验证(authentication functions)与会话管理(access-control policies)。可触发<strong>业务逻辑类漏洞(Business Logic Vulnerabilities)</strong>。<br />
-- 不充分地会话管理(improper managerment of session information)，与session令牌的使用有关，可触发<strong>会话管理类漏洞(Session Manangement Vulnerabilities)</strong>。</p>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044206.jpg" alt="" /></p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044203.jpg" /></p>
+<h1 id="web漏洞分类">Web漏洞分类</h1>
+<p>Web系统面临的主要攻击有: - 不充分地输入验证(improper input validation)，缺少或者错误的输入验证，可触发<strong>注入类漏洞(Injecton Vulnerabilities)</strong>。 - 不充分地身份验证(improper authentication and authorization mechanisms)，错误地实现身份验证(authentication functions)与会话管理(access-control policies)。可触发<strong>业务逻辑类漏洞(Business Logic Vulnerabilities)</strong>。 - 不充分地会话管理(improper managerment of session information)，与session令牌的使用有关，可触发<strong>会话管理类漏洞(Session Manangement Vulnerabilities)</strong>。</p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044206.jpg" /></p>
 <p>根据上图，总结一下，Web系统里最常见也是流行度最广的漏洞类型有三类： 注入类、业务逻辑类、会话管理类。</p>
 <p>本文主要介绍注入。</p>
-<h1 id="注入漏洞"><a class="markdownIt-Anchor" href="#注入漏洞"></a> 注入漏洞</h1>
+<h1 id="注入漏洞">注入漏洞</h1>
 <p>注入类漏洞本质上是攻击者可以通过操纵用作某种查询的user-input parameters，来改变该查询的语法。从而造成了应用系统的安全问题。主要引发该类漏洞的原因是缺少输入验证或者验证不充分。主要的注入漏洞有XSS和SQL注入两种。</p>
-<h1 id="相关工作"><a class="markdownIt-Anchor" href="#相关工作"></a> 相关工作</h1>
+<h1 id="相关工作">相关工作</h1>
 <p>(先整理XSS)</p>
-<h2 id="xss"><a class="markdownIt-Anchor" href="#xss"></a> XSS</h2>
-<p>尽管已经有很多XSS漏洞相关的工作了，但是XSS攻击在Web系统中仍然十分的流行。<br />
-Weinberger et al.的工作生成web开发框架不能够很好地提供XSS的防护(在上下文敏感分析方面)，以及不能够应对DOM-based XSS攻击。另一方面，taint-based的漏洞挖掘方法不能够handle动态特性与object-oriented code。</p>
-<p>防止XSS可以通过secure coding pratices以及使用secure development frameworks。 目前的漏洞探测方法聚焦于identifying missing sanitization routines 以及 analyzing the effectiveness of sanitization routes。</p>
-<h3 id="xss安全编程secure-programming"><a class="markdownIt-Anchor" href="#xss安全编程secure-programming"></a> XSS安全编程(Secure programming)</h3>
-<p>XSS漏洞可通过安全编程(secure coding practices)来排除，如：sanitization of untrusted input for removing the harmful properties. 具体方法包括<code>强制输入限制(impose restrictions on user-input)</code>, <code>采用转义序列表示特殊字符(use escape sequences for referencing special characters)</code>，以及<code>从输入中更换或者移除恶意字符串replacement or removal of malicious characters from the input</code>。</p>
-<h3 id="xss漏洞挖掘vulnerability-detecion"><a class="markdownIt-Anchor" href="#xss漏洞挖掘vulnerability-detecion"></a> XSS漏洞挖掘(Vulnerability detecion)</h3>
+<h2 id="xss">XSS</h2>
+<p>尽管已经有很多XSS漏洞相关的工作了，但是XSS攻击在Web系统中仍然十分的流行。 Weinberger et al.的工作生成web开发框架不能够很好地提供XSS的防护(在上下文敏感分析方面)，以及不能够应对DOM-based XSS攻击。另一方面，taint-based的漏洞挖掘方法不能够handle动态特性与object-oriented code。</p>
+<p>防止XSS可以通过secure coding pratices以及使用secure development frameworks。 目前的漏洞探测方法聚焦于identifying missing sanitization routines 以及 analyzing the effectiveness of sanitization routes。 ### XSS安全编程(Secure programming) XSS漏洞可通过安全编程(secure coding practices)来排除，如：sanitization of untrusted input for removing the harmful properties. 具体方法包括<code>强制输入限制(impose restrictions on user-input)</code>, <code>采用转义序列表示特殊字符(use escape sequences for referencing special characters)</code>，以及<code>从输入中更换或者移除恶意字符串replacement or removal of malicious characters from the input</code>。</p>
+<h3 id="xss漏洞挖掘vulnerability-detecion">XSS漏洞挖掘(Vulnerability detecion)</h3>
 <ul>
 <li>Di lucca et al.提出对web页面进行控制流图构建的XSS挖掘方法。</li>
 <li>尽管XSS漏洞的主要原因是input sanitization function实现的不正确。很少有web应用程序没有包含input sanitizers for filtering out malicious characters.</li>
-<li>污点分析使用用的发现缺少input sanitization的手段。他用来跟踪user-input流并加测untrusted input是否应用于HTML output statements.Pixy是比较早的一个工作，使用过程内，上下文敏感的数据流分析来验证漏洞。Pixy验证user-input在到达sink之前，是不是被sanitized了，but cannot guarantee the correctness of sanitization。<br />
-对于消毒方法的正确性验证(Correctness of sanitization routines)，可以使用<em>string taint analysis</em>方法，Wassermann and Su使用该方法验证input string。<br />
-在黑盒方面，Kals et al. 开发了黑盒漏洞扫描系统，用来探测SQL注入和XSS漏洞，该工作使用一个爬虫进行web页面爬取，使用攻击载荷填写form field，</li>
+<li>污点分析使用用的发现缺少input sanitization的手段。他用来跟踪user-input流并加测untrusted input是否应用于HTML output statements.Pixy是比较早的一个工作，使用过程内，上下文敏感的数据流分析来验证漏洞。Pixy验证user-input在到达sink之前，是不是被sanitized了，but cannot guarantee the correctness of sanitization。 对于消毒方法的正确性验证(Correctness of sanitization routines)，可以使用<em>string taint analysis</em>方法，Wassermann and Su使用该方法验证input string。 在黑盒方面，Kals et al. 开发了黑盒漏洞扫描系统，用来探测SQL注入和XSS漏洞，该工作使用一个爬虫进行web页面爬取，使用攻击载荷填写form field，</li>
 </ul>
-<h3 id="xss漏洞防护vulnerability-prevention"><a class="markdownIt-Anchor" href="#xss漏洞防护vulnerability-prevention"></a> XSS漏洞防护(Vulnerability prevention)</h3>
-<h3 id="xss漏洞预测vulnerability-prediction"><a class="markdownIt-Anchor" href="#xss漏洞预测vulnerability-prediction"></a> XSS漏洞预测(Vulnerability prediction)</h3>
-<h3 id="xss攻击发现attack-detection"><a class="markdownIt-Anchor" href="#xss攻击发现attack-detection"></a> XSS攻击发现(Attack detection)</h3>
-<h3 id="xss攻击防护attack-prevention"><a class="markdownIt-Anchor" href="#xss攻击防护attack-prevention"></a> XSS攻击防护(Attack prevention)</h3>
+<h3 id="xss漏洞防护vulnerability-prevention">XSS漏洞防护(Vulnerability prevention)</h3>
+<h3 id="xss漏洞预测vulnerability-prediction">XSS漏洞预测(Vulnerability prediction)</h3>
+<h3 id="xss攻击发现attack-detection">XSS攻击发现(Attack detection)</h3>
+<h3 id="xss攻击防护attack-prevention">XSS攻击防护(Attack prevention)</h3>
 <ul>
 <li>保护Web应用程序免受XSS漏洞影响的缓解机制：</li>
 </ul>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044209.jpg" alt="" /></p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044209.jpg" /></p>
 <ul>
 <li>保护Web应用程序免受XSS攻击的缓解机制：</li>
 </ul>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044212.jpg" alt="" /></p>
-<p>对于XSS防护机制，在web应用服务端存在以下问题：<br />
-1. 性能开销，大多数防护都是设置为HTTP请求与响应间的中间代理。<br />
-2. 他涉及检测应用程序的源代码以防止攻击。<br />
-3. 一些方法需要开发者人为定义安全策略。</p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044212.jpg" /></p>
+<p>对于XSS防护机制，在web应用服务端存在以下问题： 1. 性能开销，大多数防护都是设置为HTTP请求与响应间的中间代理。 2. 他涉及检测应用程序的源代码以防止攻击。 3. 一些方法需要开发者人为定义安全策略。</p>
 <p><a target="_blank" rel="noopener" href="https://www.sciencedirect.com/science/article/pii/S0950584916300234">参考1</a></p>
 
       
@@ -543,7 +532,7 @@ Weinberger et al.的工作生成web开发框架不能够很好地提供XSS的防
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#web%E6%BC%8F%E6%B4%9E%E5%88%86%E7%B1%BB"><span class="nav-number">1.</span> <span class="nav-text"> Web漏洞分类</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B3%A8%E5%85%A5%E6%BC%8F%E6%B4%9E"><span class="nav-number">2.</span> <span class="nav-text"> 注入漏洞</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%9B%B8%E5%85%B3%E5%B7%A5%E4%BD%9C"><span class="nav-number">3.</span> <span class="nav-text"> 相关工作</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#xss"><span class="nav-number">3.1.</span> <span class="nav-text"> XSS</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#xss%E5%AE%89%E5%85%A8%E7%BC%96%E7%A8%8Bsecure-programming"><span class="nav-number">3.1.1.</span> <span class="nav-text"> XSS安全编程(Secure programming)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#xss%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98vulnerability-detecion"><span class="nav-number">3.1.2.</span> <span class="nav-text"> XSS漏洞挖掘(Vulnerability detecion)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#xss%E6%BC%8F%E6%B4%9E%E9%98%B2%E6%8A%A4vulnerability-prevention"><span class="nav-number">3.1.3.</span> <span class="nav-text"> XSS漏洞防护(Vulnerability prevention)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#xss%E6%BC%8F%E6%B4%9E%E9%A2%84%E6%B5%8Bvulnerability-prediction"><span class="nav-number">3.1.4.</span> <span class="nav-text"> XSS漏洞预测(Vulnerability prediction)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#xss%E6%94%BB%E5%87%BB%E5%8F%91%E7%8E%B0attack-detection"><span class="nav-number">3.1.5.</span> <span class="nav-text"> XSS攻击发现(Attack detection)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#xss%E6%94%BB%E5%87%BB%E9%98%B2%E6%8A%A4attack-prevention"><span class="nav-number">3.1.6.</span> <span class="nav-text"> XSS攻击防护(Attack prevention)</span></a></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#web%E6%BC%8F%E6%B4%9E%E5%88%86%E7%B1%BB"><span class="nav-number">1.</span> <span class="nav-text">Web漏洞分类</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B3%A8%E5%85%A5%E6%BC%8F%E6%B4%9E"><span class="nav-number">2.</span> <span class="nav-text">注入漏洞</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%9B%B8%E5%85%B3%E5%B7%A5%E4%BD%9C"><span class="nav-number">3.</span> <span class="nav-text">相关工作</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#xss"><span class="nav-number">3.1.</span> <span class="nav-text">XSS</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#xss%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98vulnerability-detecion"><span class="nav-number">3.1.1.</span> <span class="nav-text">XSS漏洞挖掘(Vulnerability detecion)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#xss%E6%BC%8F%E6%B4%9E%E9%98%B2%E6%8A%A4vulnerability-prevention"><span class="nav-number">3.1.2.</span> <span class="nav-text">XSS漏洞防护(Vulnerability prevention)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#xss%E6%BC%8F%E6%B4%9E%E9%A2%84%E6%B5%8Bvulnerability-prediction"><span class="nav-number">3.1.3.</span> <span class="nav-text">XSS漏洞预测(Vulnerability prediction)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#xss%E6%94%BB%E5%87%BB%E5%8F%91%E7%8E%B0attack-detection"><span class="nav-number">3.1.4.</span> <span class="nav-text">XSS攻击发现(Attack detection)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#xss%E6%94%BB%E5%87%BB%E9%98%B2%E6%8A%A4attack-prevention"><span class="nav-number">3.1.5.</span> <span class="nav-text">XSS攻击防护(Attack prevention)</span></a></li></ol></li></ol></li></ol></div>
             
 
           </div>

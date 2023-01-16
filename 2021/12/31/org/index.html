@@ -94,12 +94,12 @@
 
 
 
-<meta name="description" content="新的一年打算使用org mod 做日程计划。Good Luck~ 我目前使用的版本是spacemacs。 原教程: https:&#x2F;&#x2F;www.youtube.com&#x2F;watch?v&#x3D;PVsSOmUB7ic  1. Create nodes and subtrees 创建一个org文件：  Create a new buffer: SPC b N-n Change into org mode: M-x">
+<meta name="description" content="新的一年打算使用org mod 做日程计划。Good Luck~ 我目前使用的版本是spacemacs。 原教程: https:&#x2F;&#x2F;www.youtube.com&#x2F;watch?v&#x3D;PVsSOmUB7ic 1. Create nodes and subtrees 创建一个org文件：  Create a new buffer: SPC b N-n Change into org mode: M-x">
 <meta property="og:type" content="article">
 <meta property="og:title" content="org使用入门">
 <meta property="og:url" content="http://example.com/2021/12/31/org/index.html">
 <meta property="og:site_name" content="Penlab">
-<meta property="og:description" content="新的一年打算使用org mod 做日程计划。Good Luck~ 我目前使用的版本是spacemacs。 原教程: https:&#x2F;&#x2F;www.youtube.com&#x2F;watch?v&#x3D;PVsSOmUB7ic  1. Create nodes and subtrees 创建一个org文件：  Create a new buffer: SPC b N-n Change into org mode: M-x">
+<meta property="og:description" content="新的一年打算使用org mod 做日程计划。Good Luck~ 我目前使用的版本是spacemacs。 原教程: https:&#x2F;&#x2F;www.youtube.com&#x2F;watch?v&#x3D;PVsSOmUB7ic 1. Create nodes and subtrees 创建一个org文件：  Create a new buffer: SPC b N-n Change into org mode: M-x">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2021-12-31-065024.png">
 <meta property="og:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044132.png">
@@ -345,10 +345,10 @@
       
         <p>新的一年打算使用org mod 做日程计划。Good Luck~</p>
 <p>我目前使用的版本是spacemacs。</p>
-<p>原教程: <a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=PVsSOmUB7ic">https://www.youtube.com/watch?v=PVsSOmUB7ic</a></p>
-<h2 id="1-create-nodes-and-subtrees"><a class="markdownIt-Anchor" href="#1-create-nodes-and-subtrees"></a> 1. Create nodes and subtrees</h2>
+<p>原教程: https://www.youtube.com/watch?v=PVsSOmUB7ic</p>
+<h2 id="create-nodes-and-subtrees">1. Create nodes and subtrees</h2>
 <p>创建一个org文件：</p>
-<ol>
+<ol type="1">
 <li>Create a new buffer: <code>SPC b N-n</code></li>
 <li>Change into org mode: <code>M-x org mode</code></li>
 </ol>
@@ -356,8 +356,8 @@
 <p><code>SPC-is</code>(i即是插入，可以选择插入的标签)</p>
 <figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#+TITLE: 标题</span></span><br><span class="line"><span class="comment">#+DESCRIPTION: 描述</span></span><br></pre></td></tr></table></figure>
 <p>Create the Tree:</p>
-<p>​	使用*+SPC（同markdown）</p>
-<p>​		使用**+SPC子note</p>
+<p>​ 使用*+SPC（同markdown）</p>
+<p>​ 使用**+SPC子note</p>
 <p>(也可以使用命令<code>,is</code>(sub level)或者<code>,ih</code>(same level))</p>
 <blockquote>
 <p>Tips: 使用tab可折叠一个tree, 使用shift+tab全局折叠/展开</p>
@@ -368,11 +368,15 @@
 <p>subtree:</p>
 <p><code>,sn</code>:进入一颗子树</p>
 <p>返回整个文件: 视频里说的是<code>,sN</code>,但是我这里是<code>,sw</code>,总之看<code>,s</code>选项中的wide</p>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2021-12-31-065024.png" alt="image-20211231145019900" /></p>
-<h2 id="2-formatting-text"><a class="markdownIt-Anchor" href="#2-formatting-text"></a> 2. Formatting Text</h2>
+<figure>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2021-12-31-065024.png" alt="image-20211231145019900" /><figcaption aria-hidden="true">image-20211231145019900</figcaption>
+</figure>
+<h2 id="formatting-text">2. Formatting Text</h2>
 <p>使用<code>,+x</code>面板来做formatting Text。</p>
 <p>使用vim的viwe模式选中文本(spacemacs太强了), 然后可以做格式化操作了</p>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044132.png" alt="image-20211231145648418" /></p>
+<figure>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044132.png" alt="image-20211231145648418" /><figcaption aria-hidden="true">image-20211231145648418</figcaption>
+</figure>
 <blockquote>
 <p>还可以使用vim中的ys(surround)</p>
 </blockquote>
@@ -380,35 +384,53 @@
 <li>插入代码：</li>
 </ul>
 <p><code>SPC i s</code>, 选择<code>EXAMPLE</code>标签</p>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2021-12-31-070459.png" alt="image-20211231150457798" /></p>
-<h2 id="3-add-todo-and-timestamps"><a class="markdownIt-Anchor" href="#3-add-todo-and-timestamps"></a> 3. Add TODO and timestamps</h2>
-<h4 id="list"><a class="markdownIt-Anchor" href="#list"></a> List</h4>
+<figure>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2021-12-31-070459.png" alt="image-20211231150457798" /><figcaption aria-hidden="true">image-20211231150457798</figcaption>
+</figure>
+<h2 id="add-todo-and-timestamps">3. Add TODO and timestamps</h2>
+<h4 id="list">List</h4>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">- item 1</span><br><span class="line">- item 2</span><br><span class="line">也可以</span><br><span class="line">1. item 1</span><br><span class="line">2. item 2</span><br></pre></td></tr></table></figure>
 <p>在list前加<code>[ ]</code>, 并点击<code>C-c C-c</code>， 就可以给item加一个check</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">1. [ ] item 1</span><br><span class="line">1. [X] item 1 //点击C-c C-c后</span><br></pre></td></tr></table></figure>
 <p>在list的上级note中加<code>[/]</code>,然后<code>C-c C-c</code>:</p>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2021-12-31-091433.png" alt="image-20211231171431548" /></p>
+<figure>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2021-12-31-091433.png" alt="image-20211231171431548" /><figcaption aria-hidden="true">image-20211231171431548</figcaption>
+</figure>
 <p>做完了一条item就<code>C-c C-c</code>。</p>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2021-12-31-091447.png" alt="image-20211231171445473" /></p>
-<h4 id="todo"><a class="markdownIt-Anchor" href="#todo"></a> TODO</h4>
+<figure>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2021-12-31-091447.png" alt="image-20211231171445473" /><figcaption aria-hidden="true">image-20211231171445473</figcaption>
+</figure>
+<h4 id="todo">TODO</h4>
 <p>将一条note变为<code>TODO</code>： <code>shift+left</code> (<code>shift+right</code> remove it), 再来一遍就由TODO变为DONE</p>
 <p>设置优先级: <code>shift+up</code>:</p>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044143.png" alt="image-20211231171934954" /></p>
-<h4 id="agenda"><a class="markdownIt-Anchor" href="#agenda"></a> Agenda</h4>
+<figure>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044143.png" alt="image-20211231171934954" /><figcaption aria-hidden="true">image-20211231171934954</figcaption>
+</figure>
+<h4 id="agenda">Agenda</h4>
 <p>设置aganda 使用<code>,d</code>，如schedule <code>,ds</code>:</p>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044145.png" alt="image-20211231172132119" /></p>
+<figure>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044145.png" alt="image-20211231172132119" /><figcaption aria-hidden="true">image-20211231172132119</figcaption>
+</figure>
 <p>可以通过方向键任意选择。同样在问不去也可以通过<code>shift + 方向键</code>选择。</p>
-<h2 id="4-browse-the-agenda"><a class="markdownIt-Anchor" href="#4-browse-the-agenda"></a> 4. Browse the agenda</h2>
+<h2 id="browse-the-agenda">4. Browse the agenda</h2>
 <p>加载org-agenda:</p>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044149.png" alt="image-20211231172757425" /></p>
+<figure>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044149.png" alt="image-20211231172757425" /><figcaption aria-hidden="true">image-20211231172757425</figcaption>
+</figure>
 <p>点击<code>,a</code>, 就会看到一个新的agenda view, 可以做很多事，比如使用t来查看TODO:</p>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044151.png" alt="image-20211231172937596" /></p>
+<figure>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044151.png" alt="image-20211231172937596" /><figcaption aria-hidden="true">image-20211231172937596</figcaption>
+</figure>
 <p><code>,aa</code>可以看我们的agenda</p>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044154.png" alt="image-20211231173256006" /></p>
+<figure>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044154.png" alt="image-20211231173256006" /><figcaption aria-hidden="true">image-20211231173256006</figcaption>
+</figure>
 <p>可以在配置中改颜色和新的keywords。 这个暂时不需要。</p>
-<h2 id="5-search"><a class="markdownIt-Anchor" href="#5-search"></a> 5. search</h2>
+<h2 id="search">5. search</h2>
 <p><code>,ss</code>进入search, 如<code>,sst</code>找到所有的todo:</p>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044157.png" alt="image-20211231190225564" /></p>
+<figure>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-044157.png" alt="image-20211231190225564" /><figcaption aria-hidden="true">image-20211231190225564</figcaption>
+</figure>
 <p>先介绍这么多，后续的逐渐熟悉。</p>
 
       
@@ -571,7 +593,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-create-nodes-and-subtrees"><span class="nav-number">1.</span> <span class="nav-text"> 1. Create nodes and subtrees</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-formatting-text"><span class="nav-number">2.</span> <span class="nav-text"> 2. Formatting Text</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-add-todo-and-timestamps"><span class="nav-number">3.</span> <span class="nav-text"> 3. Add TODO and timestamps</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#list"><span class="nav-number">3.0.1.</span> <span class="nav-text"> List</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#todo"><span class="nav-number">3.0.2.</span> <span class="nav-text"> TODO</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#agenda"><span class="nav-number">3.0.3.</span> <span class="nav-text"> Agenda</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-browse-the-agenda"><span class="nav-number">4.</span> <span class="nav-text"> 4. Browse the agenda</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-search"><span class="nav-number">5.</span> <span class="nav-text"> 5. search</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#create-nodes-and-subtrees"><span class="nav-number">1.</span> <span class="nav-text">1. Create nodes and subtrees</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#formatting-text"><span class="nav-number">2.</span> <span class="nav-text">2. Formatting Text</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#add-todo-and-timestamps"><span class="nav-number">3.</span> <span class="nav-text">3. Add TODO and timestamps</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#list"><span class="nav-number">3.0.1.</span> <span class="nav-text">List</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#todo"><span class="nav-number">3.0.2.</span> <span class="nav-text">TODO</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#agenda"><span class="nav-number">3.0.3.</span> <span class="nav-text">Agenda</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#browse-the-agenda"><span class="nav-number">4.</span> <span class="nav-text">4. Browse the agenda</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#search"><span class="nav-number">5.</span> <span class="nav-text">5. search</span></a></li></ol></div>
             
 
           </div>

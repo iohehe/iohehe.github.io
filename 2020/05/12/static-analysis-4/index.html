@@ -94,12 +94,12 @@
 
 
 
-<meta name="description" content="前言： reaching definitions, live variables和avaliable expressions  都是可以表示为对一个bit array（ bit map, bit set, bit string, or bit vector）迭代求解。 如reaching definitions, using a bit for a definition position in t">
+<meta name="description" content="前言： reaching definitions, live variables和avaliable expressions 都是可以表示为对一个bit array（ bit map, bit set, bit string, or bit vector）迭代求解。 如reaching definitions, using a bit for a definition position in th">
 <meta property="og:type" content="article">
 <meta property="og:title" content="南大静态分析-4(Live Variables Analysis)">
 <meta property="og:url" content="http://example.com/2020/05/12/static-analysis-4/index.html">
 <meta property="og:site_name" content="Penlab">
-<meta property="og:description" content="前言： reaching definitions, live variables和avaliable expressions  都是可以表示为对一个bit array（ bit map, bit set, bit string, or bit vector）迭代求解。 如reaching definitions, using a bit for a definition position in t">
+<meta property="og:description" content="前言： reaching definitions, live variables和avaliable expressions 都是可以表示为对一个bit array（ bit map, bit set, bit string, or bit vector）迭代求解。 如reaching definitions, using a bit for a definition position in th">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125636.png">
 <meta property="og:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125640.png">
@@ -350,76 +350,70 @@
 
       
         <p>前言：</p>
-<p><code>reaching definitions</code>, <code>live variables</code>和<code>avaliable expressions</code>  都是可以表示为对一个<code>bit array</code>（ <code>bit map, bit set, bit string, or bit vector</code>）迭代求解。 如<code>reaching definitions</code>, using a bit for a definition position in the program. 因此这一类问题也称 为<code>Bit vector problems</code><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Data-flow_analysis">https://en.wikipedia.org/wiki/Data-flow_analysis</a>。</p>
+<p><code>reaching definitions</code>, <code>live variables</code>和<code>avaliable expressions</code> 都是可以表示为对一个<code>bit array</code>（ <code>bit map, bit set, bit string, or bit vector</code>）迭代求解。 如<code>reaching definitions</code>, using a bit for a definition position in the program. 因此这一类问题也称 为<code>Bit vector problems</code><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Data-flow_analysis">https://en.wikipedia.org/wiki/Data-flow_analysis</a>。</p>
 <blockquote>
-<p>Live Variables Analysis:  06:10</p>
+<p>Live Variables Analysis: 06:10</p>
 <p>Available Expressions Analysis:</p>
 <p>总结：</p>
 </blockquote>
-<h1 id="live-variables-analysis活跃变量分析"><a class="markdownIt-Anchor" href="#live-variables-analysis活跃变量分析"></a> Live Variables Analysis(活跃变量分析)</h1>
+<h1 id="live-variables-analysis活跃变量分析">Live Variables Analysis(活跃变量分析)</h1>
 <blockquote>
 <p>May analysis</p>
 </blockquote>
 <p>活跃变量分析， 如果一个变量v在程序点p开始的路径里被使用过，那么在这条路径上，变量v就是一个Live Variables。 这种分析常常用作寄存器优化，将那些从某一程序点不活跃的变量(即之后不再使用的变量)，做为寄存器替换对象。</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125636.png" alt="截屏2020-05-14 下午9.29.10 z" style="zoom:50%;" />
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125636.png" alt="截屏2020-05-14 下午9.29.10 z" style="zoom:50%;" /></p>
 <blockquote>
-<ol>
+<ol type="1">
 <li>v在路径上被使用过</li>
 <li>v没有被重定义</li>
 </ol>
 </blockquote>
-<h2 id="目标抽象"><a class="markdownIt-Anchor" href="#目标抽象"></a> 目标抽象</h2>
+<h2 id="目标抽象">目标抽象</h2>
 <p>关注的抽象应该是<code>live variables</code>，即活跃变量。我们设立一个数据结构来表示程序中所有的变量活跃状态。</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125640.png" alt="截屏2020-05-14 下午9.30.51 " style="zoom:50%;" />
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125640.png" alt="截屏2020-05-14 下午9.30.51 " style="zoom:50%;" /></p>
 <p>比特位表示状态，比如有100个variables，每一个比特位代表一个变量。形成bit vector, 每一个program point上分配一个(bit vectors)。 有了抽象的状态表示，接下来做safe-approximation制定transfer function 和control flow analysis来操作这些状态位。</p>
-<h2 id="方法设计"><a class="markdownIt-Anchor" href="#方法设计"></a> 方法设计</h2>
+<h2 id="方法设计">方法设计</h2>
 <p>我们的程序在流动之后，如何变换我们的标志位，使得我们得到的结果safe?</p>
 <p>即如何设计transfer function和control flow 合并。</p>
-<h3 id="分析方向"><a class="markdownIt-Anchor" href="#分析方向"></a> 分析方向</h3>
+<h3 id="分析方向">分析方向</h3>
 <p>前向分析和后向分析都是可以的， 但是在live variables的分析中， 我没每个program point的bit vector表示的是路径上所有变量在之后是否被用了，如果是forward分析的话， 从entry点开始向下，我们在每一个program point上不能确定每个variable是否在之后的语句中被use了， 此时如果再往下走，发现某一个variable被use了，那么需要向上传播这个消息来通知之前program point此变量在后边被use了。 但是backward的话，从exit开始进入，先找到的是variable的use点，后找definition信息， 因此变量被use了这个信息就可以随着后向数据流propagate, 从而节省了开销。</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125645.png" alt="截屏2020-05-14 下午9.36.52 " style="zoom:50%;" />
-<h3 id="汇聚点处理"><a class="markdownIt-Anchor" href="#汇聚点处理"></a> 汇聚点处理</h3>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125645.png" alt="截屏2020-05-14 下午9.36.52 " style="zoom:50%;" /></p>
+<h3 id="汇聚点处理">汇聚点处理</h3>
 <p>看这里在BB[P]处有一个<code>v=3</code> 的表达式，BB[B]不知道。而在BB[S1]处用到了<code>v</code>， 在backward中走到BB[B]，BB[S1]和BB[S2]汇合，看图中抽象公式，要处理在merge处的近似，因为是may analysis所以使用Union。(不放过任何一条path)</p>
 <p>然后就是核心的设计Transfer function：</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125649.png" alt="截屏2020-05-15 下午6.51.57 " style="zoom:50%;" />
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125649.png" alt="截屏2020-05-15 下午6.51.57 " style="zoom:50%;" /></p>
 <p>刚才我们说过， 在此数据流分析中， 我们采用backward, <code>v</code>在BB[S1]中被使用了，且在汇合处，我们做union操作，所以得到有<code>OUT[B] = &#123;v&#125;</code>，现在在程序中， 我们要backward过一个条任意语句(假设Baisc Block中只有一条statement,即以单条statement为分析单位)。我们要设计transfer function，得出上出program proint处的IN[B]，即OUT[B]-&gt;IN[B]。</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125652.png" alt="截屏2020-05-15 下午7.00.47 " style="zoom:70%;" />
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125652.png" alt="截屏2020-05-15 下午7.00.47 " style="zoom:70%;" /></p>
 <p>这里有一个场景，现在<code>v=3</code>寄存 器<code>R</code>中待着，经过我们的<code>live</code>分析，如果走过该点，经过我们设计的transfer function，IN[B] = { v }， 那么这个值就在寄存器里待着。如果IN[B] = {}，那么就把它从寄存器中拿出。因为我们的目的是分析数据流中，变量的<code>live</code>情况，由前面的定义如果BB[P]处的变量v是live的：</p>
-<ol>
+<ol type="1">
 <li>BB[B]中v被使用过？</li>
 <li>BB[B]中v没有被重新定义？</li>
 </ol>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125655.png" alt="截屏2020-05-15 下午8.00.26 " style="zoom:80%;" />
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125655.png" alt="截屏2020-05-15 下午8.00.26 " style="zoom:80%;" /></p>
 <p>因为我们是在backward分析IN[B]这个<code>program point</code>的状态，来决定<code>v=3</code>是否被寄存器丢掉，即<code>IN[B]</code>这一点的事关<code>v</code>在未来是否会被使用到。看在第一个情况中，与<code>v</code>无关，但是我们知道OUT[B]这一点我们union出了<code>OUT[B]=&#123;v&#125;</code>，因为是<code>backward</code>分析，即接下来<code>v</code>会被使用到(BB[S1]处)。那么这一点中，<code>v</code>没有被重新定义，那么<code>IN[B]=&#123;v&#125;</code></p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125658.png" alt="截屏2020-05-15 下午8.09.19 " style="zoom:80%;" />
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125658.png" alt="截屏2020-05-15 下午8.09.19 " style="zoom:80%;" /></p>
 <p>这里面<code>v</code>被使用了，离着<code>v=3</code>更近，这种情况下，即使<code>OUT[B]=&#123;&#125;</code>，也会有<code>IN[B]=&#123;v&#125;</code>。</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125700.png" alt="截屏2020-05-15 下午8.11.14 z" style="zoom:80%;" />
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125700.png" alt="截屏2020-05-15 下午8.11.14 z" style="zoom:80%;" /></p>
 <p>这里<code>v=2</code>，v是<code>lval</code>左值，那么这个defition中v被重新定义了，上边<code>v=3</code>就不live了，因为没有被使用过，就被<code>redefine</code>了。此时<code>IN[B]=&#123;&#125;</code>，依据这个状态，从这个<code>program point</code>开始，寄存器中的<code>3</code>可以拿掉了。</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125701.png" alt="截屏2020-05-15 下午8.18.10" style="zoom:80%;" />
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125701.png" alt="截屏2020-05-15 下午8.18.10" style="zoom:80%;" /></p>
 <p>再想象一下寄存器中的那个3，<code>v=v-1</code>中，右边的表达式是一个使用了寄存器中该值的二元操作。因此在这一时刻，我们需要使用寄存器中的3，那么<code>IN[B]=&#123;v&#125;</code>。</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125703.png" alt="截屏2020-05-15 下午8.21.04 " style="zoom:80%;" />
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125703.png" alt="截屏2020-05-15 下午8.21.04 " style="zoom:80%;" /></p>
 <p>这里case5是先写后读，case6是先读后写。在先写的时候 ，寄存器完全可以舍去<code>3</code> 。因为没有用到，还要重新读，而在case6中，寄存器中的<code>3</code>先被user了一下，所以在被<code>redefine</code>之前，有<code>use</code>，就是<code>live</code>咯。</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125707.png" alt="截屏2020-05-15 下午8.28.22 " style="zoom:80%;" />
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125707.png" alt="截屏2020-05-15 下午8.28.22 " style="zoom:80%;" /></p>
 <p>这里就定义了经过BB时的transfer function。</p>
 <p>设计好了，就开始用算法动起来。</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125709.png" alt="截屏2020-05-15 下午8.31.52 " style="zoom:50%;" />
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125709.png" alt="截屏2020-05-15 下午8.31.52 " style="zoom:50%;" /></p>
 <blockquote>
 <p>这里的定义，我理解的是因为transfer function是从下往上一句一句走的，那么先走到define被删掉了，然后use就又加上了。所以正序来看，先use后define就是live的。</p>
 </blockquote>
 <ul>
-<li>
-<p>INPUT:  CFG</p>
-</li>
-<li>
-<p>OUTPUT: 每一个program  point的标志位的状态</p>
-</li>
-<li>
-<p>METHOD: 第一句的边界条件，因为是backward的，所以是IN[exit]，这里设置是空。（未来没有变量会被用到了）。然后所有BB初始化为空，求到所有的IN[B]不回被change了(反向)。</p>
-</li>
+<li><p>INPUT: CFG</p></li>
+<li><p>OUTPUT: 每一个program point的标志位的状态</p></li>
+<li><p>METHOD: 第一句的边界条件，因为是backward的，所以是IN[exit]，这里设置是空。（未来没有变量会被用到了）。然后所有BB初始化为空，求到所有的IN[B]不回被change了(反向)。</p></li>
 </ul>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125710.png" alt="截屏2020-05-15 下午9.22.50 " style="zoom:50%;" />
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125710.png" alt="截屏2020-05-15 下午9.22.50 " style="zoom:50%;" /></p>
 <p>STEP:</p>
-<ol>
+<ol type="1">
 <li>抽象7个变量位7个特位</li>
 <li>分配给每一个program point(IN处)，并初始化为零。</li>
 <li>第一次迭代(backward)开始</li>
@@ -429,16 +423,14 @@
 <li>B2: IN[B4]+IN[B3] = 1101000，加m,减y，加k，减m =&gt; 1101001</li>
 <li>B1: +q+z-y+p-x=&gt;0111001</li>
 </ol>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125715.png" alt="截屏2020-05-15 下午9.34.54 " style="zoom:50%;" />
-<ol start="9">
-<li>
-<p>因为上一轮即初始化IN[]都为0，现在变了，依据算法进行第二轮迭代。</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125719.png" alt="截屏2020-05-15 下午9.37.49 " style="zoom:50%;" />
-</li>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125715.png" alt="截屏2020-05-15 下午9.34.54 " style="zoom:50%;" /></p>
+<ol start="9" type="1">
+<li><p>因为上一轮即初始化IN[]都为0，现在变了，依据算法进行第二轮迭代。</p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125719.png" alt="截屏2020-05-15 下午9.37.49 " style="zoom:50%;" /></p></li>
 </ol>
 <p>10.第二轮后IN[B4]变了，下一轮：</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125725.png" alt="截屏2020-05-15 下午9.38.29 " style="zoom:50%;" />
-<ol start="11">
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125725.png" alt="截屏2020-05-15 下午9.38.29 " style="zoom:50%;" /></p>
+<ol start="11" type="1">
 <li>第三轮没有IN转变。</li>
 </ol>
 
@@ -608,7 +600,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#live-variables-analysis%E6%B4%BB%E8%B7%83%E5%8F%98%E9%87%8F%E5%88%86%E6%9E%90"><span class="nav-number">1.</span> <span class="nav-text"> Live Variables Analysis(活跃变量分析)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9B%AE%E6%A0%87%E6%8A%BD%E8%B1%A1"><span class="nav-number">1.1.</span> <span class="nav-text"> 目标抽象</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%B9%E6%B3%95%E8%AE%BE%E8%AE%A1"><span class="nav-number">1.2.</span> <span class="nav-text"> 方法设计</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E6%9E%90%E6%96%B9%E5%90%91"><span class="nav-number">1.2.1.</span> <span class="nav-text"> 分析方向</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B1%87%E8%81%9A%E7%82%B9%E5%A4%84%E7%90%86"><span class="nav-number">1.2.2.</span> <span class="nav-text"> 汇聚点处理</span></a></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#live-variables-analysis%E6%B4%BB%E8%B7%83%E5%8F%98%E9%87%8F%E5%88%86%E6%9E%90"><span class="nav-number">1.</span> <span class="nav-text">Live Variables Analysis(活跃变量分析)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9B%AE%E6%A0%87%E6%8A%BD%E8%B1%A1"><span class="nav-number">1.1.</span> <span class="nav-text">目标抽象</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%B9%E6%B3%95%E8%AE%BE%E8%AE%A1"><span class="nav-number">1.2.</span> <span class="nav-text">方法设计</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E6%9E%90%E6%96%B9%E5%90%91"><span class="nav-number">1.2.1.</span> <span class="nav-text">分析方向</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B1%87%E8%81%9A%E7%82%B9%E5%A4%84%E7%90%86"><span class="nav-number">1.2.2.</span> <span class="nav-text">汇聚点处理</span></a></li></ol></li></ol></li></ol></div>
             
 
           </div>

@@ -94,12 +94,12 @@
 
 
 
-<meta name="description" content="抱着我一定要更新博客的决心， 我开始了RIPS折腾笔记。  0x00 背景 PHP静态分析有个里程碑式的工具-RIPS，这个工具是最早Dahse博士提出来的， 现在早已闭源。  到0.55是开源的最后一个版本。 10年到17年期间，Dahse发表的文章有：  2010 - RIPS-A static source code analyser for vulnerabilities in PHP s">
+<meta name="description" content="抱着我一定要更新博客的决心， 我开始了RIPS折腾笔记。 0x00 背景 PHP静态分析有个里程碑式的工具-RIPS，这个工具是最早Dahse博士提出来的， 现在早已闭源。  到0.55是开源的最后一个版本。 10年到17年期间，Dahse发表的文章有：  2010 - RIPS-A static source code analyser for vulnerabilities in PHP sc">
 <meta property="og:type" content="article">
 <meta property="og:title" content="rips">
 <meta property="og:url" content="http://example.com/2020/08/12/rips/index.html">
 <meta property="og:site_name" content="Penlab">
-<meta property="og:description" content="抱着我一定要更新博客的决心， 我开始了RIPS折腾笔记。  0x00 背景 PHP静态分析有个里程碑式的工具-RIPS，这个工具是最早Dahse博士提出来的， 现在早已闭源。  到0.55是开源的最后一个版本。 10年到17年期间，Dahse发表的文章有：  2010 - RIPS-A static source code analyser for vulnerabilities in PHP s">
+<meta property="og:description" content="抱着我一定要更新博客的决心， 我开始了RIPS折腾笔记。 0x00 背景 PHP静态分析有个里程碑式的工具-RIPS，这个工具是最早Dahse博士提出来的， 现在早已闭源。  到0.55是开源的最后一个版本。 10年到17年期间，Dahse发表的文章有：  2010 - RIPS-A static source code analyser for vulnerabilities in PHP sc">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125136.png">
 <meta property="og:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125142.png">
@@ -355,95 +355,129 @@
 
       
         <p>抱着我一定要更新博客的决心， 我开始了RIPS折腾笔记。</p>
-<h1 id="0x00-背景"><a class="markdownIt-Anchor" href="#0x00-背景"></a> 0x00 背景</h1>
+<h1 id="x00-背景">0x00 背景</h1>
 <p>PHP静态分析有个里程碑式的工具-RIPS，这个工具是最早Dahse博士提出来的， 现在早已闭源。</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125136.png" alt="截屏2020-08-12 下午12.11.26" style="zoom: 50%;" />
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125136.png" alt="截屏2020-08-12 下午12.11.26" style="zoom: 50%;" /></p>
 <p>到0.55是开源的最后一个版本。</p>
 <p>10年到17年期间，Dahse发表的文章有：</p>
 <ul>
 <li>2010 - RIPS-A static source code analyser for vulnerabilities in PHP scripts : 简单介绍RIPS工具，对应在0.3版本</li>
-<li>2014 -  Simulation of Built-in PHP Features for Precise Static Code Analysis:  发表在NDSS上， 如何模拟内建函数来精确静态分析</li>
+<li>2014 - Simulation of Built-in PHP Features for Precise Static Code Analysis: 发表在NDSS上， 如何模拟内建函数来精确静态分析</li>
 <li>2014 - Static Detection of Second-Order Vulnerabilities in Web Applications: 发表在USENIX上，二次注入漏洞探测问题。</li>
 <li>2014 - Code Reuse Attacks in PHP: Automated POP Chain Generatio: 发表在CCS上，POP链探测</li>
 <li>2015 - Experience report: an empirical study of PHP security mechanism usage: 一个软工的B</li>
-<li>2016 - Thesis. Static Detection of Complex Vulnerabilities in Modern PHP Applications: 总结性的文章，毕业了…</li>
+<li>2016 - Thesis. Static Detection of Complex Vulnerabilities in Modern PHP Applications: 总结性的文章，毕业了...</li>
 </ul>
 <p>不得不说， 时间点卡的非常好， 10-15年正是PHP发展火爆的上升期，在14年发表了三篇也是醉了。如今四大上关注PHP的文章寥寥。</p>
 <hr />
-<h1 id="0x01-032版本工作流程"><a class="markdownIt-Anchor" href="#0x01-032版本工作流程"></a> 0x01 0.32版本工作流程</h1>
+<h1 id="x01-0.32版本工作流程">0x01 0.32版本工作流程</h1>
 <p>能找的最早版本，是RIPS-0.32，从这一版开始，结合文章资料开始分析，看RIPS是如何发展起来的。(此时还没有相对复杂的前端)</p>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125142.png" alt="截屏2020-08-12 下午3.32.16" /></p>
+<figure>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125142.png" alt="截屏2020-08-12 下午3.32.16" /><figcaption aria-hidden="true">截屏2020-08-12 下午3.32.16</figcaption>
+</figure>
 <p>目录相对也简单， 直接index.php入口，也没有正则搜索功能了(虽然我平时只用这个)。</p>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125147.png" alt="截屏2020-08-12 下午3.38.13" /></p>
+<figure>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125147.png" alt="截屏2020-08-12 下午3.38.13" /><figcaption aria-hidden="true">截屏2020-08-12 下午3.38.13</figcaption>
+</figure>
 <p>画风可以说非常的清气，板正。</p>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125149.gif" alt="6a04b428gy1g0zyyluaozg203j036no9" /></p>
+<figure>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125149.gif" alt="6a04b428gy1g0zyyluaozg203j036no9" /><figcaption aria-hidden="true">6a04b428gy1g0zyyluaozg203j036no9</figcaption>
+</figure>
 <p>看代码入口处：</p>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125152.png" alt="截屏2020-08-12 下午3.42.20" /></p>
+<figure>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125152.png" alt="截屏2020-08-12 下午3.42.20" /><figcaption aria-hidden="true">截屏2020-08-12 下午3.42.20</figcaption>
+</figure>
 <p>导入config里是一些需要使用的数据；functions里是处理token，扫描和输出三个功能；classes是定义了几个需要使用的数据结构(以类的形式，其实更像是结构体)。</p>
 <p>根据作者的污点分析论述，此版本RIPS有139个PVFs(潜在漏洞函数)，首先第一步找到这些漏洞函数，这些PVFs标记在<code>config/PVF.php</code>中，如一个命令执行：</p>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125153.png" alt="截屏2020-08-12 下午3.52.20" /></p>
+<figure>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125153.png" alt="截屏2020-08-12 下午3.52.20" /><figcaption aria-hidden="true">截屏2020-08-12 下午3.52.20</figcaption>
+</figure>
 <p>我们扫描这样一段代码：</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125157.png" alt="截屏2020-08-14 下午3.28.27" style="zoom:50%;" />
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125157.png" alt="截屏2020-08-14 下午3.28.27" style="zoom:50%;" /></p>
 <p>看到没，这是一个命令执行，最后输出：</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125201.png" alt="截屏2020-08-14 下午3.29.18" style="zoom: 67%;" />
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125201.png" alt="截屏2020-08-14 下午3.29.18" style="zoom: 67%;" /></p>
 <p>从效果上看，是一个完整有效的污点分析了噜， 大体来看这段代码的扫描是怎样实现的？ 大致分为三个阶段：读代码-&gt;token化-&gt;扫描。</p>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125204.png" alt="截屏2020-08-14 上午10.47.59" /></p>
+<figure>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125204.png" alt="截屏2020-08-14 上午10.47.59" /><figcaption aria-hidden="true">截屏2020-08-14 上午10.47.59</figcaption>
+</figure>
 <p>RIPS将所有文件读入到$data，然后循环针对每一个文件进行scan_file。</p>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125209.png" alt="截屏2020-08-14 下午4.14.08" /></p>
+<figure>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125209.png" alt="截屏2020-08-14 下午4.14.08" /><figcaption aria-hidden="true">截屏2020-08-14 下午4.14.08</figcaption>
+</figure>
 <blockquote>
 <p>file_name文件名， scan_functions目标PVFs，其他T开头的都是从tokens中读取的标识好的token集合。</p>
 </blockquote>
 <p>进入<code>scan_file</code>方法也就是进入了<code>functions/scan.php</code>这个文件中，它是扫描的主逻辑所在地，文件在此完成扫描。先进行token化代码然后在此之上进行一些处理</p>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125213.png" alt="截屏2020-08-14 下午4.25.13" /></p>
+<figure>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125213.png" alt="截屏2020-08-14 下午4.25.13" /><figcaption aria-hidden="true">截屏2020-08-14 下午4.25.13</figcaption>
+</figure>
 <p>这里的<code>$lines_pointer</code>是一个<code>scan_file</code>里注册的一个局部变量，用来装目标源码的。总之做了一些处理，放入到<code>$tokens</code>这个就是待分析源吗的目标token，进行<code>prepare_tokens</code>和<code>fix_tokens</code>，这里使用token进行污点分析的一个很关键的点就是我们分析每一个token的时候可以通过当前token的标号在<code>$tokens</code>这个数组中随意提取周围的token以确定代码环境。这样我们就需要把<code>$tokens</code>进行一些处理，比如去掉空格这种东西，因为<code>$a=$b</code>有的人会加任意空格<code>$a = $b</code>这样我们计算这个表达式的时候比如扫描到了<code>$a</code>我们需要知道这是不是一个<code>declare</code>就要在<code>$tokens[i+1]</code>找等号。这些工作是在token处理中完成的(<code>prepare_tokens</code>)，然后这里是在一个基本块里的例子，<code>fix_tokens</code>没什么用所以先不理会。</p>
 <p>接下来就是扫描阶段：</p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="variable">$i</span>=<span class="number">0</span>; <span class="variable">$tokencount</span>=<span class="title function_ invoke__">count</span>(<span class="variable">$tokens</span>); <span class="variable">$i</span>&lt;<span class="variable">$tokencount</span>; <span class="variable">$i</span>++) <span class="comment">//遍历每一个token</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="variable">$token</span> = <span class="variable">$tokens</span>[<span class="variable">$i</span>]; <span class="comment">//此处既有当前token又保留了tokens可以随意提取周围token。</span></span><br><span class="line">  <span class="keyword">if</span> (<span class="title function_ invoke__">is_array</span>(<span class="variable">$token</span>))</span><br><span class="line">  &#123;</span><br><span class="line">    ...token是数组处理</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">else</span></span><br><span class="line">  &#123;</span><br><span class="line">    token不是数组处理</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>此处迭代每一个<code>$tokens</code>。分为数组和非数组两大块，每一块又分不同的情形：</p>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125219.png" alt="截屏2020-08-14 下午4.51.44" /></p>
+<figure>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125219.png" alt="截屏2020-08-14 下午4.51.44" /><figcaption aria-hidden="true">截屏2020-08-14 下午4.51.44</figcaption>
+</figure>
 <p>这里简单记录了一下他的注释。针对每种情况的不同 RIPS有自己处理的case。</p>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125223.png" alt="截屏2020-08-14 下午5.09.07" /></p>
+<figure>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125223.png" alt="截屏2020-08-14 下午5.09.07" /><figcaption aria-hidden="true">截屏2020-08-14 下午5.09.07</figcaption>
+</figure>
 <p>看对上边的代码进行扫描，起作用的token，看到这个最简单的污点追踪，分别有<code>variable declarations</code>和标红的<code>check if token is a function call and a function to scan</code></p>
-<h2 id="变量声明信息"><a class="markdownIt-Anchor" href="#变量声明信息"></a> 变量声明信息</h2>
+<h2 id="变量声明信息">变量声明信息</h2>
 <p>在扫描到第0个token的时候，进入这个判断:</p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">else</span> <span class="keyword">if</span>( <span class="variable">$token_name</span> === T_VARIABLE</span><br><span class="line">					&amp;&amp; ( <span class="variable">$tokens</span>[<span class="variable">$i</span>+<span class="number">1</span>][<span class="number">0</span>] === <span class="string">&#x27;=&#x27;</span> || <span class="comment">// normal assignment</span></span><br><span class="line">					  (<span class="title function_ invoke__">in_array</span>(<span class="variable">$tokens</span>[<span class="variable">$i</span>+<span class="number">1</span>][<span class="number">0</span>], <span class="variable">$T_ASSIGNMENT</span>))  <span class="comment">// mathematical assignment</span></span><br><span class="line">					  || (<span class="variable">$tokens</span>[<span class="variable">$i</span>-<span class="number">1</span>][<span class="number">0</span>] === T_AS <span class="comment">// foreach($var as $key=&gt;$value)</span></span><br><span class="line">					   || (<span class="variable">$tokens</span>[<span class="variable">$i</span>-<span class="number">1</span>][<span class="number">0</span>] === T_DOUBLE_ARROW</span><br><span class="line">					    &amp;&amp; <span class="variable">$tokens</span>[<span class="variable">$i</span>-<span class="number">2</span>][<span class="number">0</span>] === T_VARIABLE)) </span><br><span class="line">					   || (<span class="variable">$tokens</span>[<span class="variable">$i</span>+<span class="number">1</span>] === <span class="string">&#x27;[&#x27;</span>  <span class="comment">// $foo[&#x27;a&#x27;], hard to check all keys and assignments</span></span><br><span class="line">					   <span class="comment">// example: $a[0][$i+$k] &amp;= $_GET[&#x27;a&#x27;];</span></span><br><span class="line">					   <span class="comment">// easier: the last token was an ending statement or beginning of the file</span></span><br><span class="line">					   &amp;&amp; (<span class="variable">$tokens</span>[<span class="variable">$i</span>-<span class="number">1</span>] === <span class="string">&#x27;&#125;&#x27;</span> || <span class="variable">$tokens</span>[<span class="variable">$i</span>-<span class="number">1</span>] === <span class="string">&#x27;&#123;&#x27;</span> </span><br><span class="line">						|| <span class="variable">$tokens</span>[<span class="variable">$i</span>-<span class="number">1</span>] === <span class="string">&#x27;;&#x27;</span> || !<span class="keyword">isset</span>(<span class="variable">$tokens</span>[<span class="variable">$i</span>-<span class="number">1</span>][<span class="number">0</span>]))) </span><br><span class="line">					  ) </span><br></pre></td></tr></table></figure>
-<p>这个条件很长， 为了涵盖所有变量声明的形式，此处是最简单的<code>normal assignment</code>也就是在<code>$tokens[$i+1][0]</code>处发现了<code>=</code>，即0号token是一个变量而1号token是一个’='也就是说这个变量是一个左值，他正在被注册，因此进入该逻辑，new 一个<code>varDeclare</code>来注册这个变量。</p>
+<p>这个条件很长， 为了涵盖所有变量声明的形式，此处是最简单的<code>normal assignment</code>也就是在<code>$tokens[$i+1][0]</code>处发现了<code>=</code>，即0号token是一个变量而1号token是一个'='也就是说这个变量是一个左值，他正在被注册，因此进入该逻辑，new 一个<code>varDeclare</code>来注册这个变量。</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php	</span><br><span class="line">// variable declarations = childs</span><br><span class="line">	class VarDeclare</span><br><span class="line">	&#123;</span><br><span class="line">		public $id;</span><br><span class="line">    	public $value;</span><br><span class="line">    	public $line;	</span><br><span class="line">		public $marker;</span><br><span class="line">		public $dependencies;</span><br><span class="line">		</span><br><span class="line">		function __construct($value = null) </span><br><span class="line">		&#123;</span><br><span class="line">			$this-&gt;id = 0;</span><br><span class="line">			$this-&gt;value = $value;</span><br><span class="line">			$this-&gt;line = &#x27;&#x27;;</span><br><span class="line">			$this-&gt;marker = 0;</span><br><span class="line">			$this-&gt;dependencies = array();</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
 <p>首先进入这个逻辑：</p>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125229.png" alt="截屏2020-08-14 下午5.27.13" /></p>
+<figure>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125229.png" alt="截屏2020-08-14 下午5.27.13" /><figcaption aria-hidden="true">截屏2020-08-14 下午5.27.13</figcaption>
+</figure>
 <p>先经过getmultiline的处理（提取整句语句），然后注册一个对象，填数据。</p>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125235.png" alt="截屏2020-08-14 下午5.29.19" /></p>
+<figure>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125235.png" alt="截屏2020-08-14 下午5.29.19" /><figcaption aria-hidden="true">截屏2020-08-14 下午5.29.19</figcaption>
+</figure>
 <p>然后把它插入到<code>$var_declares_global</code>中供之后分析使用(如果是函数内部的变量注册到<code>$var_declares_local</code>数组中)。同理，第7个token亦是如此。</p>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125237.png" alt="截屏2020-08-14 下午5.32.23" /></p>
+<figure>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125237.png" alt="截屏2020-08-14 下午5.32.23" /><figcaption aria-hidden="true">截屏2020-08-14 下午5.32.23</figcaption>
+</figure>
 <p>这样我们便能拿到所有的变量声明信息。</p>
-<h2 id="pvf分析"><a class="markdownIt-Anchor" href="#pvf分析"></a> PVF分析</h2>
+<h2 id="pvf分析">PVF分析</h2>
 <p>当到走到第四行的<code>system</code>token后判断他是一个PVF。这是后就注册一个<code>VlnTreeNode</code>然后进行污点分析， 因为认为这个污点函数的参数是之前的变量传播的，与后边的token无关，因此触发一次污点分析。</p>
 <p>找到PVF system的token后， rips就开始生成一个<code>VulnTreeNode</code>对象，叫做<code>$new_find</code>，来记录这个污点链。</p>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125240.png" alt="截屏2020-08-12 下午4.34.39" /></p>
+<figure>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125240.png" alt="截屏2020-08-12 下午4.34.39" /><figcaption aria-hidden="true">截屏2020-08-12 下午4.34.39</figcaption>
+</figure>
 <p>初始化了name，和lines(第4行的system)。接下来进行污点追踪，我们来看scan_parameter这个函数的标头：</p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">scan_parameter</span>(<span class="params"><span class="variable">$file_name</span>, <span class="variable">$mainparent</span>, <span class="variable">$parent</span>, <span class="variable">$var_name</span>, <span class="variable">$var_declares</span>, <span class="variable">$last_token_id</span>, <span class="variable">$var_declares_global</span>, <span class="variable">$function_params</span>, <span class="variable">$function_obj</span>, <span class="variable">$userinput</span>, <span class="variable">$F_SECURES</span>, <span class="variable">$return_scan</span>=<span class="literal">false</span></span>)</span></span><br><span class="line"><span class="function"></span></span><br></pre></td></tr></table></figure>
 <p>开始进入的时候<code>$mainparent</code>和<code>$parent</code> 都是由<code>$new_find</code>传来的:</p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$userinput</span> = <span class="title function_ invoke__">scan_parameter</span>(<span class="variable">$file_name</span>, <span class="variable">$new_find</span>, <span class="variable">$new_find</span>, <span class="variable">$trace_par_var</span>, <span class="variable">$var_declares_global</span>, <span class="variable">$i</span>+<span class="variable">$c</span>, <span class="literal">null</span>, <span class="keyword">array</span>(), <span class="literal">null</span>, <span class="literal">false</span>, <span class="variable">$scan_functions</span>[<span class="variable">$token_value</span>][<span class="number">1</span>]);</span><br></pre></td></tr></table></figure>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125243.png" alt="截屏2020-08-14 下午9.20.34" /></p>
-<p>这么进来了，<code>$trace_par_var</code>是第一个参数也就是<code>$b</code>，追踪这一个变量，直到找到相关的declare，然后递归…</p>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125246.png" alt="截屏2020-08-14 下午9.22.15" /></p>
-<p>此时栈中有两个<code>scan_parameter</code>了， 第一个是<code>$b</code>，第二个是<code>$a</code>，此时<code>$mainparent</code>不变，而<code>$parent</code>更新， <code>$var_name</code>也是这一次递归的目标变量<code>$a</code>，继续…</p>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125250.png" alt="截屏2020-08-14 下午9.26.29" /></p>
+<figure>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125243.png" alt="截屏2020-08-14 下午9.20.34" /><figcaption aria-hidden="true">截屏2020-08-14 下午9.20.34</figcaption>
+</figure>
+<p>这么进来了，<code>$trace_par_var</code>是第一个参数也就是<code>$b</code>，追踪这一个变量，直到找到相关的declare，然后递归...</p>
+<figure>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125246.png" alt="截屏2020-08-14 下午9.22.15" /><figcaption aria-hidden="true">截屏2020-08-14 下午9.22.15</figcaption>
+</figure>
+<p>此时栈中有两个<code>scan_parameter</code>了， 第一个是<code>$b</code>，第二个是<code>$a</code>，此时<code>$mainparent</code>不变，而<code>$parent</code>更新， <code>$var_name</code>也是这一次递归的目标变量<code>$a</code>，继续...</p>
+<figure>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125250.png" alt="截屏2020-08-14 下午9.26.29" /><figcaption aria-hidden="true">截屏2020-08-14 下午9.26.29</figcaption>
+</figure>
 <p>看一下三次递归：</p>
 <ul>
-<li>
-<p>$last_token_id: 13-&gt;7-&gt;0</p>
-</li>
-<li>
-<p>$var_name: <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>b</mi><mo>−</mo><mo>&gt;</mo></mrow><annotation encoding="application/x-tex">b-&gt;</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.77777em;vertical-align:-0.08333em;"></span><span class="mord mathdefault">b</span><span class="mord">−</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&gt;</span></span></span></span>a-&gt;$_GET[‘a’]</p>
-</li>
+<li><p>$last_token_id: 13-&gt;7-&gt;0</p></li>
+<li><p>$var_name: <span class="math inline">\(b-&gt;\)</span>a-&gt;$_GET['a']</p></li>
 </ul>
 <p>其中还有一些变量的变化还没有仔细去追。总之走到userinput之后，<code>scan_parameter</code>出栈的时候会通过<code>output.php</code>进行记录，然后整个结果展示粗来。</p>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125255.png" alt="截屏2020-08-12 下午4.41.00" /></p>
+<figure>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125255.png" alt="截屏2020-08-12 下午4.41.00" /><figcaption aria-hidden="true">截屏2020-08-12 下午4.41.00</figcaption>
+</figure>
 <p>okay~ 大致是这样。</p>
-<h1 id="0x02-总结"><a class="markdownIt-Anchor" href="#0x02-总结"></a> 0x02 总结</h1>
-<p>目前已经基本走通了一个基本块内的污点分析，做为一个完整的污点分析，你甭管在什么层面，用什么方法，只要能达到效果就成， 这里在token层面进行分析，判断条件写的也很复杂，主要就是想要通过对token环境的约束覆盖所有的情况来。那么接下来还要考虑控制语句(包括三元运算符)，过程间分析，OOP特性，语言动态特性…，总之，祝你幸福。</p>
+<h1 id="x02-总结">0x02 总结</h1>
+<p>目前已经基本走通了一个基本块内的污点分析，做为一个完整的污点分析，你甭管在什么层面，用什么方法，只要能达到效果就成， 这里在token层面进行分析，判断条件写的也很复杂，主要就是想要通过对token环境的约束覆盖所有的情况来。那么接下来还要考虑控制语句(包括三元运算符)，过程间分析，OOP特性，语言动态特性...，总之，祝你幸福。</p>
 <p>P.S. 本来想写完全分析的，有点长，有空再来篇新的。</p>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125300.jpg" alt="Unknown" /></p>
+<figure>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-30-125300.jpg" alt="Unknown" /><figcaption aria-hidden="true">Unknown</figcaption>
+</figure>
 
       
     </div>
@@ -605,7 +639,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#0x00-%E8%83%8C%E6%99%AF"><span class="nav-number">1.</span> <span class="nav-text"> 0x00 背景</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x01-032%E7%89%88%E6%9C%AC%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B"><span class="nav-number">2.</span> <span class="nav-text"> 0x01 0.32版本工作流程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%98%E9%87%8F%E5%A3%B0%E6%98%8E%E4%BF%A1%E6%81%AF"><span class="nav-number">2.1.</span> <span class="nav-text"> 变量声明信息</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pvf%E5%88%86%E6%9E%90"><span class="nav-number">2.2.</span> <span class="nav-text"> PVF分析</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x02-%E6%80%BB%E7%BB%93"><span class="nav-number">3.</span> <span class="nav-text"> 0x02 总结</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#x00-%E8%83%8C%E6%99%AF"><span class="nav-number">1.</span> <span class="nav-text">0x00 背景</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#x01-0.32%E7%89%88%E6%9C%AC%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B"><span class="nav-number">2.</span> <span class="nav-text">0x01 0.32版本工作流程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%98%E9%87%8F%E5%A3%B0%E6%98%8E%E4%BF%A1%E6%81%AF"><span class="nav-number">2.1.</span> <span class="nav-text">变量声明信息</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pvf%E5%88%86%E6%9E%90"><span class="nav-number">2.2.</span> <span class="nav-text">PVF分析</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#x02-%E6%80%BB%E7%BB%93"><span class="nav-number">3.</span> <span class="nav-text">0x02 总结</span></a></li></ol></div>
             
 
           </div>

@@ -94,12 +94,12 @@
 
 
 
-<meta name="description" content="从上次南大静态分析搞完之后，就说博客再也不写学习笔记了。 于是，我就很久没有更新了… 算了， 还是把博客搞成学习笔记本好了…xD 李宏毅老师的机器学习课程非常的棒，我一定要好好学习…  定义 对于机器学习可以理解成：  其实就是约等于一个找函数的能力， 如：   语音辨识(Image Recognition)：    这里的声音信号做为输入， 而对应的文字作为输出。 这种函数会非常的复杂， 因此我">
+<meta name="description" content="从上次南大静态分析搞完之后，就说博客再也不写学习笔记了。 于是，我就很久没有更新了... 算了， 还是把博客搞成学习笔记本好了...xD 李宏毅老师的机器学习课程非常的棒，我一定要好好学习.... 定义 对于机器学习可以理解成：  image-20210707203503647  其实就是约等于一个找函数的能力， 如：  语音辨识(Image Recognition)：   这里的声音信号做为输入">
 <meta property="og:type" content="article">
 <meta property="og:title" content="台大深度学习2021-1">
 <meta property="og:url" content="http://example.com/2021/07/07/ml-2021-1/index.html">
 <meta property="og:site_name" content="Penlab">
-<meta property="og:description" content="从上次南大静态分析搞完之后，就说博客再也不写学习笔记了。 于是，我就很久没有更新了… 算了， 还是把博客搞成学习笔记本好了…xD 李宏毅老师的机器学习课程非常的棒，我一定要好好学习…  定义 对于机器学习可以理解成：  其实就是约等于一个找函数的能力， 如：   语音辨识(Image Recognition)：    这里的声音信号做为输入， 而对应的文字作为输出。 这种函数会非常的复杂， 因此我">
+<meta property="og:description" content="从上次南大静态分析搞完之后，就说博客再也不写学习笔记了。 于是，我就很久没有更新了... 算了， 还是把博客搞成学习笔记本好了...xD 李宏毅老师的机器学习课程非常的棒，我一定要好好学习.... 定义 对于机器学习可以理解成：  image-20210707203503647  其实就是约等于一个找函数的能力， 如：  语音辨识(Image Recognition)：   这里的声音信号做为输入">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043405.png">
 <meta property="og:image" content="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043407.png">
@@ -354,142 +354,126 @@
       
 
       
-        <p>从上次南大静态分析搞完之后，就说博客再也不写学习笔记了。 于是，我就很久没有更新了…</p>
-<p>算了， 还是把博客搞成学习笔记本好了…xD</p>
-<p>李宏毅老师的机器学习课程非常的棒，我一定要好好学习…</p>
-<h2 id="定义"><a class="markdownIt-Anchor" href="#定义"></a> 定义</h2>
+        <p>从上次南大静态分析搞完之后，就说博客再也不写学习笔记了。 于是，我就很久没有更新了...</p>
+<p>算了， 还是把博客搞成学习笔记本好了...xD</p>
+<p>李宏毅老师的机器学习课程非常的棒，我一定要好好学习....</p>
+<h2 id="定义">定义</h2>
 <p>对于机器学习可以理解成：</p>
-<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043405.png" alt="image-20210707203503647" /></p>
+<figure>
+<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043405.png" alt="image-20210707203503647" /><figcaption aria-hidden="true">image-20210707203503647</figcaption>
+</figure>
 <p>其实就是约等于一个找函数的能力， 如：</p>
 <ul>
-<li>
-<p>语音辨识(Image Recognition)：</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043407.png" alt="image-20210707203601984" style="zoom:80%;" />
-</li>
+<li><p>语音辨识(Image Recognition)：</p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043407.png" alt="image-20210707203601984" style="zoom:80%;" /></p></li>
 </ul>
 <p>这里的声音信号做为输入， 而对应的文字作为输出。 这种函数会非常的复杂， 因此我们期望通过机器把它找出来。</p>
 <ul>
-<li>
-<p>图像识别(Image Recognition):</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043412.png" alt="image-20210707203916147" style="zoom:80%;" />
-</li>
+<li><p>图像识别(Image Recognition):</p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043412.png" alt="image-20210707203916147" style="zoom:80%;" /></p></li>
 </ul>
 <p>同理图像识别图片是输入，输出是图片的内容。</p>
-<p>等等…</p>
+<p>等等...</p>
 <hr />
-<h3 id="专有名词介绍"><a class="markdownIt-Anchor" href="#专有名词介绍"></a> 专有名词介绍</h3>
+<h3 id="专有名词介绍">专有名词介绍</h3>
 <ul>
-<li>
-<p><code>Regression</code>: The function outputs a scalar.</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043416.png" alt="image-20210707204151325" style="zoom:80%;" />
-</li>
+<li><p><code>Regression</code>: The function outputs a scalar.</p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043416.png" alt="image-20210707204151325" style="zoom:80%;" /></p></li>
 </ul>
 <p>如上图所示，是一个回归(Regression)任务，此函数输入是今天已知的与输出有关的各种参数， 输出是对于明天PM2.5指数的预测。</p>
 <ul>
 <li><code>Classification</code>: Given options(classes), the function outputs the correct one.</li>
 </ul>
 <p>Classification是做选择题:</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043418.png" alt="image-20210707204729572" style="zoom:80%;" />
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043418.png" alt="image-20210707204729572" style="zoom:80%;" /></p>
 <p>如上图，一个函数帮我们甄别是否一封邮件是垃圾邮件。他的输入就是一封电子邮件，输出是一个选项(选项是提前设定好的)。 选项可以有多个， 如:</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043420.png" alt="image-20210707205158308" style="zoom:50%;" />
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043420.png" alt="image-20210707205158308" style="zoom:50%;" /></p>
 <p>Playing Go 也是一个Classification, 他有19*19(棋盘大小)个选项。</p>
 <ul>
 <li>Structured Learning: 除了Regression和Classification以外，如机器不止是产生一个数字或者做一个选择题。 他需要Create something with structure(e.g., image, document)，那么就称为Structured Learning（让机器学会创造）</li>
 </ul>
 <hr />
-<h2 id="case-study"><a class="markdownIt-Anchor" href="#case-study"></a> Case Study</h2>
+<h2 id="case-study">Case Study</h2>
 <p>来直观的看一下如何通过机器学习解决问题。</p>
-<p>老师的YouTube地址: <a target="_blank" rel="noopener" href="https://www.youtube.com/c/HungyiLeeNTU">https://www.youtube.com/c/HungyiLeeNTU</a></p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043423.png" alt="image-20210707205846249" style="zoom:50%;" />
+<p>老师的YouTube地址: https://www.youtube.com/c/HungyiLeeNTU</p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043423.png" alt="image-20210707205846249" style="zoom:50%;" /></p>
 <p>后台记录了每一天的观看人数等数据。 现在， 老师想找到一个function，他能够帮我们预测今天有多少人会观看老师的频道。 机器学习找这个function，需要三个步骤：</p>
-<h3 id="1-function-with-unknown-parameters"><a class="markdownIt-Anchor" href="#1-function-with-unknown-parameters"></a> 1. Function with unknown parameters</h3>
+<h3 id="function-with-unknown-parameters">1. Function with unknown parameters</h3>
 <p>写出一个带有<code>未知参数(unknow parameters)</code>的函数:</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043425.png" alt="image-20210707210146306" style="zoom:100%;" />
-<p>我们来猜测一下， 我们要找的数学式是:</p>
-<p class='katex-block'><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>y</mi><mo>=</mo><mi>b</mi><mo>+</mo><mi>w</mi><msub><mi>x</mi><mn>1</mn></msub></mrow><annotation encoding="application/x-tex">y = b+wx_1
-</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.19444em;"></span><span class="mord mathdefault" style="margin-right:0.03588em;">y</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.77777em;vertical-align:-0.08333em;"></span><span class="mord mathdefault">b</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.58056em;vertical-align:-0.15em;"></span><span class="mord mathdefault" style="margin-right:0.02691em;">w</span><span class="mord"><span class="mord mathdefault">x</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span></span></p>
-<p>这个带有unknown parameters的函数我们就称为模型(Model)。</p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043425.png" alt="image-20210707210146306" style="zoom:100%;" /></p>
+<p>我们来猜测一下， 我们要找的数学式是: <span class="math display">\[
+y = b+wx_1
+\]</span> 这个带有unknown parameters的函数我们就称为模型(Model)。</p>
 <p>其中<code>y</code>是我们所需要的预测的，当天观看频道的总人数。 而<code>x1</code>是我们输入的，已知的昨天观看该频道的人数。</p>
 <p>而<code>b</code>和<code>w</code>就是unknow parameters。其中<code>b</code>定义为<code>bias</code>， 而<code>w</code>定义为<code>weight</code>。</p>
 <p>这个model不一定是对的，等下会有修正。</p>
-<h2 id="2-define-loss-from-training-data"><a class="markdownIt-Anchor" href="#2-define-loss-from-training-data"></a> 2. Define Loss from Training Data</h2>
-<p>第二步骤， 定义一个Loss Function:</p>
-<p class='katex-block'><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>L</mi><mo stretchy="false">(</mo><mi>b</mi><mo separator="true">,</mo><mi>w</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">L(b, w)
-</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault">L</span><span class="mopen">(</span><span class="mord mathdefault">b</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathdefault" style="margin-right:0.02691em;">w</span><span class="mclose">)</span></span></span></span></span></p>
-<p>L的输入就是我们model里的参数<code>b</code>跟<code>w</code>;  输出是一个代表了model使用改组参数的好坏。</p>
-<p>假设现在设置:</p>
-<p class='katex-block'><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>L</mi><mo stretchy="false">(</mo><mn>0.5</mn><mi>k</mi><mo separator="true">,</mo><mn>1</mn><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">L(0.5k, 1)
-</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault">L</span><span class="mopen">(</span><span class="mord">0</span><span class="mord">.</span><span class="mord">5</span><span class="mord mathdefault" style="margin-right:0.03148em;">k</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord">1</span><span class="mclose">)</span></span></span></span></span></p>
-<p>那么我们的model就变为：</p>
-<p class='katex-block'><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>y</mi><mo>=</mo><mi>b</mi><mo>+</mo><mi>w</mi><msub><mi>x</mi><mn>1</mn></msub><mo>→</mo><mi>y</mi><mo>=</mo><mn>0.5</mn><mi>k</mi><mo>+</mo><mn>1</mn><msub><mi>x</mi><mn>1</mn></msub></mrow><annotation encoding="application/x-tex">y = b+ wx_1 \rightarrow y=0.5k +1x_1
-</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.19444em;"></span><span class="mord mathdefault" style="margin-right:0.03588em;">y</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.77777em;vertical-align:-0.08333em;"></span><span class="mord mathdefault">b</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.58056em;vertical-align:-0.15em;"></span><span class="mord mathdefault" style="margin-right:0.02691em;">w</span><span class="mord"><span class="mord mathdefault">x</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">→</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.19444em;"></span><span class="mord mathdefault" style="margin-right:0.03588em;">y</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.77777em;vertical-align:-0.08333em;"></span><span class="mord">0</span><span class="mord">.</span><span class="mord">5</span><span class="mord mathdefault" style="margin-right:0.03148em;">k</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.79444em;vertical-align:-0.15em;"></span><span class="mord">1</span><span class="mord"><span class="mord mathdefault">x</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span></span></p>
-<p>那么如何衡量目前这个已定参数的model有多好呢？就需要使用Loss Function。</p>
+<h2 id="define-loss-from-training-data">2. Define Loss from Training Data</h2>
+<p>第二步骤， 定义一个Loss Function: <span class="math display">\[
+L(b, w)
+\]</span> L的输入就是我们model里的参数<code>b</code>跟<code>w</code>; 输出是一个代表了model使用改组参数的好坏。</p>
+<p>假设现在设置: <span class="math display">\[
+L(0.5k, 1)
+\]</span> 那么我们的model就变为： <span class="math display">\[
+y = b+ wx_1 \rightarrow y=0.5k +1x_1
+\]</span> 那么如何衡量目前这个已定参数的model有多好呢？就需要使用Loss Function。</p>
 <p>我们需要从训练资料中找答案：</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043434.png" alt="image-20210708204015376" style="zoom:30%;" />
-<p>如上图中， 使用我们已定的model去计算已知的，从2017/01/01到2020/12/30日的数据。 我们都可以将每一天的数值带入model， 得到隔天的估测数据，然后计算与真实值的误差来衡量model:</p>
-<p class='katex-block'><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>e</mi><mn>2</mn></msub><mo>=</mo><mi mathvariant="normal">∣</mi><mi>y</mi><mo>−</mo><mover accent="true"><mi>y</mi><mo>^</mo></mover><mi mathvariant="normal">∣</mi><mo>=</mo><mn>2.1</mn><mi>k</mi></mrow><annotation encoding="application/x-tex">e_2 = \vert y-\hat{y}\vert = 2.1k
-</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.58056em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault">e</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">∣</span><span class="mord mathdefault" style="margin-right:0.03588em;">y</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord accent"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.69444em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.03588em;">y</span></span></span><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="accent-body" style="left:-0.19444em;">^</span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.19444em;"><span></span></span></span></span></span><span class="mord">∣</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.69444em;vertical-align:0em;"></span><span class="mord">2</span><span class="mord">.</span><span class="mord">1</span><span class="mord mathdefault" style="margin-right:0.03148em;">k</span></span></span></span></span></p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043434.png" alt="image-20210708204015376" style="zoom:30%;" /></p>
+<p>如上图中， 使用我们已定的model去计算已知的，从2017/01/01到2020/12/30日的数据。 我们都可以将每一天的数值带入model， 得到隔天的估测数据，然后计算与真实值的误差来衡量model: <span class="math display">\[
+e_2 = \vert y-\hat{y}\vert = 2.1k
+\]</span></p>
 <blockquote>
 <p>每一天的真实数值就叫做Label</p>
 </blockquote>
 <p>如e2代表我们对2017/01/02的估值。 我们可以依次算出三年的训练资料的误差：</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043443.png" alt="image-20210708205313401" style="zoom:20%;" />
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043443.png" alt="image-20210708205313401" style="zoom:20%;" /></p>
 <p>这个L越大效果越差， 越小效果越小。</p>
 <p>这种依据绝对值求Loss的方法叫做<code>MAE</code>, 而使用平方和求Loss的方法叫做<code>MSE</code>:</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043439.png" alt="image-20210708205441134" style="zoom:25%;" />
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043439.png" alt="image-20210708205441134" style="zoom:25%;" /></p>
 <p>两种求误差的方法根据需求选择。</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043447.png" alt="image-20210708205619696" style="zoom:30%;" />
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043447.png" alt="image-20210708205619696" style="zoom:30%;" /></p>
 <p>经过作者对Model进行一系列的调参后的真实结果， 在穷举各种<code>w</code>和<code>b</code>后，使用真实数据计算出来的Loss结果。各种组合的Loss表示为上边的等高线图，越偏红色， 表示计算出的Loss越大， <code>w</code>跟<code>b</code>放入mdoel，效果越差。可以看到估测最准的大约在<code>w</code>在1，b在100左右。</p>
-<h2 id="3-optimization"><a class="markdownIt-Anchor" href="#3-optimization"></a> 3. Optimization</h2>
+<h2 id="optimization">3. Optimization</h2>
 <p>第三步是解一个最佳化的问题， 找到一组最好的<code>w</code>跟<code>b</code>(<code>w*</code>, <code>b*</code>)，可以让Loss的值最小 ：</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043452.png" alt="image-20210709202254891" style="zoom:25%;" />
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043452.png" alt="image-20210709202254891" style="zoom:25%;" /></p>
 <p>此门课程中唯一用到的Optimization方法是<code>Gradient Descent</code>。</p>
 <p>上大图：</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043456.png" alt="image-20210709202351925" style="zoom:50%;" />
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043456.png" alt="image-20210709202351925" style="zoom:50%;" /></p>
 <p>如图， 为了简化期间， 假设我们已知参数<code>b</code>, 只有一个参数<code>w</code>未知。 当<code>w</code>在不同的数值的时候， 就会得到不同的Loss, 由于简化为只有一个参数， 所以是一条曲线(1D)。</p>
 <p>现在的问题是， 如何找到一个<code>w</code>， 使得<code>Loss</code>的值最小?</p>
 <p>首先， 我们随机选择一个随机的点<code>w0</code>。 接下来计算， 当<code>w=w0</code>时， <code>w</code>这个参数对<code>L</code>的微分。 即使计算<code>w0</code>点的<code>error surface</code>的切线斜率。如果是<code>Negative</code>就<code>Increase w</code>, 反之。</p>
 <p>如图就是猴子哥现在的位置。猴子哥站在那里， 看到左高右低，就向右<code>Increase w</code>。</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043458.png" alt="image-20210709203107456" style="zoom:50%;" />
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043458.png" alt="image-20210709203107456" style="zoom:50%;" /></p>
 <p>再来一张图，此时猴子哥移动了一段位置，由<code>w0</code>到了<code>w1</code>, 这段距离还依赖于一个参数<code>η</code>, 这个参数是认为设定的<code>learning rate</code>。</p>
 <blockquote>
 <p>在机器学习中， 自己设定的值，就叫做hyperparameters</p>
 </blockquote>
-<p>继续反复操作， 最后停下了： 两种情况下停下了: 1)到上限了(hyperparameters)  2)   到达极值点</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043504.png" alt="image-20210709203845841" style="zoom:50%;" />
+<p>继续反复操作， 最后停下了： 两种情况下停下了: 1)到上限了(hyperparameters) 2) 到达极值点</p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043504.png" alt="image-20210709203845841" style="zoom:50%;" /></p>
 <p>如图假设我们移动到了<code>Local minima</code>的位置停止了， 那么， 我们其实没有到达真正最好的， 可以让<code>Loss</code>最小的<code>w</code>(global minima)。但是实际上，这是一个假问题(不是实际中真正的痛点)。</p>
 <p>以上例子只有一个参数<code>w</code>。 那么有<code>w</code>, 跟<code>b</code>如何做<code>Gradient Descent</code>呢？</p>
 <ul>
-<li>
-<p>给定随机初始值 <code>w0</code>, <code>b0</code></p>
-</li>
-<li>
-<p>分别在初始位置计算<code>w</code>和<code>b</code>对<code>L</code>的微分</p>
-</li>
-<li>
-<p>更新<code>w</code>跟<code>b</code>，得到<code>w1</code>跟<code>b1</code></p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043509.png" alt="image-20210709204432226" style="zoom:33%;" />
-</li>
-<li>
-<p>迭代更新， 找到<code>w*</code>跟<code>b*</code></p>
-</li>
+<li><p>给定随机初始值 <code>w0</code>, <code>b0</code></p></li>
+<li><p>分别在初始位置计算<code>w</code>和<code>b</code>对<code>L</code>的微分</p></li>
+<li><p>更新<code>w</code>跟<code>b</code>，得到<code>w1</code>跟<code>b1</code></p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043509.png" alt="image-20210709204432226" style="zoom:33%;" /></p></li>
+<li><p>迭代更新， 找到<code>w*</code>跟<code>b*</code></p></li>
 </ul>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043511.png" alt="image-20210709204603236" style="zoom:50%;" />
-<p>将<code>w</code>跟<code>b</code>结合起来，得到箭头的方向，一直移动…</p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043511.png" alt="image-20210709204603236" style="zoom:50%;" /></p>
+<p>将<code>w</code>跟<code>b</code>结合起来，得到箭头的方向，一直移动...</p>
 <p>算出来的<code>w*=0.97</code>, <code>b*=0.1k</code> , <code>Loss=0.48K</code>(观看误差大约500人)。</p>
 <p>我们以上的三个步骤， 叫做训练。 我们真正要做的是， 对未来的未知的观看次数的预测。</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043514.png" alt="image-20210709204838642" style="zoom:50%;" />
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043514.png" alt="image-20210709204838642" style="zoom:50%;" /></p>
 <p>如图我们发现在2021的误差值是0.58。因此在位置的数据上， 误差相对较大。</p>
 <p>如何再缩小误差， 分析结果：</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043518.png" alt="image-20210709205158675" style="zoom:50%;" />
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043518.png" alt="image-20210709205158675" style="zoom:50%;" /></p>
 <p>蓝色的线几乎是红色向右平移，因为这个model只参考前一天的结果。 找规律， 发现有<code>每七天一个循环</code>，也许使用一个参考7天的model结果会更准确。修改模型</p>
 <blockquote>
 <p>对模型的修改往往来自于对问题的理解(Domain Knowledge)</p>
 </blockquote>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043519.png" alt="image-20210709205554126" style="zoom:33%;" />
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043519.png" alt="image-20210709205554126" style="zoom:33%;" /></p>
 <p>第二个模型，将7天的数据，都列入考虑。我们得到了一个更低的<code>Loss</code>（0.38k）。这个模型中计算了前七天的<code>wjxj</code>, 每一个<code>w</code>跟<code>b</code>都用Gradient Descent计算，来看每一天的<code>w*</code>，让<code>L</code>减小的是<code>w2, w4, w5</code>为负值。</p>
-<img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043523.png" alt="image-20210709205750727" style="zoom:50%;" /> 
-<p>以此类推考虑更多天…28天…56天…<code>Loss</code>在没有看过的资料上还是<code>0.46k</code>。</p>
+<p><img src="https://penlab-1252869057.cos.ap-beijing.myqcloud.com/2022-03-31-043523.png" alt="image-20210709205750727" style="zoom:50%;" /></p>
+<p>以此类推考虑更多天...28天...56天...<code>Loss</code>在没有看过的资料上还是<code>0.46k</code>。</p>
 <p>这种将x(feature)乘上一个weight, 再加上bias得到预测结果的模型， 叫做<code>Linear models</code>。</p>
 <p>下一讲介绍如何将linear model做到更好。</p>
 
@@ -653,7 +637,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89"><span class="nav-number">1.</span> <span class="nav-text"> 定义</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%93%E6%9C%89%E5%90%8D%E8%AF%8D%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.1.</span> <span class="nav-text"> 专有名词介绍</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#case-study"><span class="nav-number">2.</span> <span class="nav-text"> Case Study</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-function-with-unknown-parameters"><span class="nav-number">2.1.</span> <span class="nav-text"> 1. Function with unknown parameters</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-define-loss-from-training-data"><span class="nav-number">3.</span> <span class="nav-text"> 2. Define Loss from Training Data</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-optimization"><span class="nav-number">4.</span> <span class="nav-text"> 3. Optimization</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89"><span class="nav-number">1.</span> <span class="nav-text">定义</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%93%E6%9C%89%E5%90%8D%E8%AF%8D%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.1.</span> <span class="nav-text">专有名词介绍</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#case-study"><span class="nav-number">2.</span> <span class="nav-text">Case Study</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#function-with-unknown-parameters"><span class="nav-number">2.1.</span> <span class="nav-text">1. Function with unknown parameters</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#define-loss-from-training-data"><span class="nav-number">3.</span> <span class="nav-text">2. Define Loss from Training Data</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#optimization"><span class="nav-number">4.</span> <span class="nav-text">3. Optimization</span></a></li></ol></div>
             
 
           </div>
